@@ -2,7 +2,7 @@
 
 This repo is designed to hold code for building a production-grade Modern Data Stack to support both batch and streaming data ingestion. It will be created with pragmatism in mind with both self-hosted and managed services included as reference points where possible.
 
-## The datasets
+## The datasets
 
 The project is relatively contrived in order to simplify the requirements of the data stack. It will very simply mimic a sales functionality, where sales can be recorded in an app for products. Supporting data about the customers, products and exchanges rates are also retrieved.
 
