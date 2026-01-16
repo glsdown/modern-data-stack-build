@@ -45,7 +45,7 @@ SaaS data - `dim_customers`
 | --- | --- | --- | --- | --- |
 | bigint | string | string | string | timestamp |
 
-### Gold
+### Gold
 
 Finally they will be joined in Gold to create the following sales report - `sales`
 
