@@ -146,6 +146,7 @@ For the data engineer role, we'll use a managed policy that provides permissions
 5. Click "Next"
 6. Search for and select the following managed policies:
     - `AmazonS3FullAccess` - for data lake storage
+    - `AmazonDynamoDBFullAccess` - for Terraform state locking
     - `SecretsManagerReadWrite` - for managing credentials
     - `CloudWatchFullAccess` - for logging and monitoring
     - `IAMReadOnlyAccess` - to view users and roles
