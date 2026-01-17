@@ -67,13 +67,9 @@ Configure who can access your repository and what they can do.
 
 #### Data Engineers
 - **Team name**: `data-engineers`
-- **Description**: "Can create and modify data pipelines"
+- **Description**: "Data Engineers"
+- **Visibility**: Visible (team members can see who else is on the team)
 - **Add members**: Add your data engineering team
-
-#### Data Analysts (Optional)
-- **Team name**: `data-analysts`
-- **Description**: "Read-only access for understanding infrastructure"
-- **Add members**: Add analysts who need visibility
 
 ### Assign Repository Permissions
 
