@@ -131,7 +131,7 @@ Let's create a simple test to verify Terraform works correctly.
 Ensure you are in a directory where you store your projects. Run the following:
 
 ```sh
-cd directory/you/store/projects/in
+cd projects/data  # or wherever you store your projects
 take terraform-test
 code .
 ```
@@ -260,7 +260,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-file_path = "directory/you/store/projects/in/terraform-test/test-output.txt"
+file_path = "projects/data/terraform-test/test-output.txt"
 ```
 
 ### Verify the Result
