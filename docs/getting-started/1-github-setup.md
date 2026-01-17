@@ -46,43 +46,6 @@ A repository (or repo) in git is the name given for what many people would call 
 7. Choose a licence: **MIT License** (or your preference)
 8. Click **Create repository**
 
-### Repository Structure
-
-Your repository should follow this structure (we'll build this incrementally):
-
-```
-data-stack-infrastructure/
-├── .github/
-|   ├── CODEOWNERS                  # PR review owners
-|   ├── pull_request_template.md    # Template for PRs
-│   └── workflows/                  # GitHub Actions for CI/CD
-|
-├── terraform/
-│   ├── github/             # GitHub organisation/team management
-│   │   ├── config/         # GitHub Terraform configuration
-│   │   └── modules/        # Reusable GitHub modules
-│   ├── snowflake/
-│   │   ├── config/         # Snowflake configuration files
-│   │   └── modules/        # Reusable Snowflake modules
-│   └── aws/
-│   │   ├── config/         # AWS resources
-│   │   └── modules/        # Reusable AWS modules
-│   └── .../
-|
-├── docs/                   # Additional documentation
-├── scripts/                # Helper scripts
-├── .gitignore
-├── README.md
-└── CONTRIBUTING.md
-```
-
-!!! note "Why This Structure?"
-    - **Separate folders per provider** (github, snowflake, aws, confluent) keeps concerns isolated
-    - **`config/` vs `modules/`** distinguishes between specific resources and reusable components
-    - **`.github/workflows/`** centralises automation
-    - **Clear documentation** helps onboard new team members
-    - **GitHub in Terraform** allows us to manage teams, repos, and settings as code
-
 ## Set Up Team Access
 
 Configure who can access your repository and what they can do.
