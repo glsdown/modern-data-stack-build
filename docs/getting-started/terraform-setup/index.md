@@ -178,7 +178,7 @@ Take the GitHub organisation and repository you created manually and bring them 
 - Team permissions
 - Branch protection rules
 
-[Add GitHub to Terraform](4-add-github-to-terraform.md) →
+[Add GitHub to Terraform](github/index.md) →
 
 ### 5. Terraform Deployment with CI/CD
 
@@ -204,7 +204,7 @@ Bring your AWS infrastructure under Terraform management, including the resource
 - Budget alerts
 - Service accounts for Terraform
 
-[Add AWS Resources](6-aws-resources.md) →
+[Add AWS Resources](aws/index.md) →
 
 ### 7. Add Snowflake Resources to Terraform
 
@@ -217,7 +217,7 @@ Finally, bring the Snowflake account you created in the account setup guide unde
 !!! note "Starting Small with Snowflake"
     This page focuses only on the resources created during account setup. You'll add warehouses, databases, roles, and other Snowflake infrastructure incrementally in the Build section as you need them. This keeps complexity manageable whilst you're still learning.
 
-[Add Snowflake Resources](7-snowflake-resources.md) →
+[Add Snowflake Resources](snowflake/index.md) →
 
 ## The Incremental Approach
 
@@ -241,14 +241,7 @@ This approach means:
 
 You might be wondering: "I already created my GitHub organisation, AWS roles, and Snowflake account manually. Do I need to delete everything and start over?"
 
-**No!** Terraform can import existing resources. You'll learn this in the subsequent pages.
-
-The process is:
-1. Write the Terraform code describing the resource
-2. Import the existing resource into Terraform state
-3. From then on, Terraform manages it
-
-Your existing infrastructure stays intact - you're just bringing it under Terraform's management.
+**No!** Terraform can import existing resources. You'll learn this in the subsequent pages. Your existing infrastructure stays intact - you're just bringing it under Terraform's management.
 
 !!! warning "Manual Changes vs Terraform Management"
     Once a resource is managed by Terraform, you must make changes through Terraform code, not through the UI or CLI. If you create something manually in the AWS Console or Snowflake UI whilst Terraform is managing your infrastructure, Terraform won't know about it.
@@ -256,6 +249,41 @@ Your existing infrastructure stays intact - you're just bringing it under Terraf
     Even worse: if you make manual changes to a Terraform-managed resource, the next time Terraform runs, it may undo your changes to match what's in the code. This is by design - Terraform enforces the declared state.
 
     **Best practice**: Decide which resources Terraform manages and which you'll manage manually. Once a resource is in Terraform, always use Terraform to change it. If you need to make an emergency manual change, document it and update the Terraform code afterwards.
+
+### Understanding the Import Workflow
+
+Importing resources into Terraform follows this process:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│  1. Write Terraform configuration for the resource      │
+│     - Define what you want to manage                    │
+│     ↓                                                   │
+│  2. Add import block to tell Terraform where it exists  │
+│     - Map Terraform resource to real resource           │
+│     ↓                                                   │
+│  3. Run terraform plan                                  │
+│     - Terraform fetches real state from provider        │
+│     - Compares with your configuration                  │
+│     - Shows any drift                                   │
+│     ↓                                                   │
+│  4. Adjust configuration to match reality               │
+│     - Fix any differences shown in plan                 │
+│     ↓                                                   │
+│  5. Run terraform apply                                 │
+│     - Terraform imports resource into state             │
+│     - Now managed by Terraform                          │
+│     ↓                                                   │
+│  6. Remove import blocks                                │
+│     - Import blocks only needed once                    │
+│     - Keep the resource configuration                   │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+!!! warning "Import Blocks Are Temporary"
+    Import blocks tell Terraform where to find existing resources. Once imported, you remove them. The resource configuration stays, but the import block is deleted.
 
 ## Why This Order?
 

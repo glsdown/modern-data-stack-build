@@ -91,7 +91,7 @@ In the large text editor below enter the following:
 
 ```
 # Global owners
-*       @data-platform-admins   @data-engineers
+*       @your-org/data-platform-admins   @your-org/data-engineers
 ```
 
 Press the "commit changes" button, then type "Add global owners to CODEOWNERS file" as your commit message, ensure "Commit directly to the main branch" is selected, and press "commit changes".

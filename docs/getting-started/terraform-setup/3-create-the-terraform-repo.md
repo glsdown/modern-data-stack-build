@@ -5,15 +5,13 @@ On this page, you will:
 - [x] Clone your infrastructure repository
 - [x] Set up the Terraform directory structure
 - [x] Configure the remote state backend
-- [x] Set up provider configurations for GitHub, AWS, and Snowflake
-- [x] Create variables and outputs structure
 - [x] Set up pre-commit hooks
 - [x] Configure .gitignore for Terraform
 - [x] Initialise Terraform and verify the setup
 
 ## Clone Your Infrastructure Repository
 
-Navigate to your projects directory and clone the `data-stack-infrastructure` repository you created in the [GitHub setup guide](../1-github-setup.md).
+Navigate to your projects directory and clone the `data-stack-infrastructure` repository you created in the [GitHub setup guide](../initial-setup/1-github-setup.md).
 
 ```sh
 cd ~/projects/data  # or wherever you store your projects
@@ -36,6 +34,68 @@ origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (fetch)
 origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (push)
 ```
 
+As we are doing a new piece of work, let's create a new branch:
+
+```sh
+git checkout -b feature/add-github-provider
+```
+
+## Set Up `.envrc` for Environment Variables
+
+We'll use [direnv](https://direnv.net/) to automatically load environment variables when you enter the project directory. This is much better than manually exporting variables every time. You should have already installed it during [Local Development Environment](../initial-setup/2-local-environment.md#install-direnv).
+
+### Add `.envrc` to `.gitignore`
+
+direnv is a tool that runs script commands whenever you `cd` into a given directory. Those commands are stored in a `.envrc` file.
+
+The `.envrc` file is already excluded by your global `.gitignore` (you set this up in [Local Development Environment](../initial-setup/2-local-environment.md#set-up-a-global-gitignore)). However, if someone else hasn't added it to their own, they could accidentally end up committing it to git. Therefore, it's good practice to also include it in your project `.gitignore` - you can never be too careful.
+
+Add the following line to the project `.gitignore` file (if not already present):
+
+```gitignore
+# Secrets
+.envrc
+```
+
+### Create .envrc File
+
+In your repository root, create a `.envrc` file:
+
+```sh
+touch ~/projects/data/data-stack-infrastructure/.envrc
+```
+
+As we are using AWS S3 for the backend for all resources, we need to make sure that we are using the correct AWS profile from those we setup in the [AWS account setup](../account-setup/aws.md). Add this to your `.envrc` file:
+
+```sh
+# AWS Profile for Terraform Backend
+export AWS_PROFILE="data-engineer"
+```
+
+It's also useful to include a template for other developers using the repo to use for reference. This will be held under version control, so should only ever contain placeholders. 
+
+```sh
+touch ~/projects/data/data-stack-infrastructure/.envrc.example
+```
+
+Add the templated profile above:
+
+```sh
+# AWS Profile for Terraform Backend
+# Update this with the profile to use with AWS
+# or choose "default" if you don't have profiles configured
+export AWS_PROFILE="data-engineer"
+```
+
+#### Allow direnv
+
+```sh
+direnv allow .
+```
+
+Now, whenever you `cd` into this directory, direnv will automatically load your environment variables. When you leave, it unloads them.
+
+
 ## Create the Directory Structure
 
 Terraform projects benefit from a clear, consistent structure. With multiple providers (GitHub, AWS, Snowflake), we'll organise code by provider whilst keeping shared configuration at the root level.
@@ -49,17 +109,31 @@ cd ~/projects/data/data-stack-infrastructure
 mkdir -p terraform/{github,aws,snowflake,modules}
 ```
 
+Add `.gitkeep` files into the folders to ensure that the directory structure is committed to GitHub:
+
+```sh
+touch github/.gitkeep
+touch aws/.gitkeep
+touch snowflake/.gitkeep
+touch modules/.gitkeep
+```
+
 Your repository should now look like:
 
 ```
 data-stack-infrastructure/
+├── .envrc
 ├── .github/
 │   └── CODEOWNERS
 ├── terraform/
 │   ├── github/           # GitHub provider resources
+|   │   └── .gitkeep
 │   ├── aws/              # AWS provider resources
+|   │   └── .gitkeep
 │   ├── snowflake/        # Snowflake provider resources
+|   │   └── .gitkeep
 │   └── modules/          # Reusable Terraform modules (future)
+|   │   └── .gitkeep
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -84,124 +158,6 @@ All providers use the same S3 bucket and DynamoDB table, but each provider direc
     - `snowflake/terraform.tfstate` - Snowflake resources
 
     This isolates changes and reduces the risk of conflicts.
-
-## Configure the Remote State Backend
-
-We'll start with the GitHub provider. Each provider directory will have its own backend configuration pointing to the same S3 bucket but with different state file keys.
-
-```sh
-cd terraform/github
-```
-
-Create `backend.tf`:
-
-```hcl
-terraform {
-  backend "s3" {
-    bucket         = "terraform-state-123456789012"  # Replace with your bucket name
-    key            = "github/terraform.tfstate"       # GitHub-specific state file
-    region         = "eu-west-2"                      # Replace with your region
-    dynamodb_table = "terraform-state-lock"
-    encrypt        = true
-  }
-}
-```
-
-Replace:
-- `terraform-state-123456789012` with your S3 bucket name (from page 1)
-- `eu-west-2` with your AWS region
-
-!!! warning "Bucket Name Must Match"
-    Use the exact bucket name you created in [Set Up Terraform Remote State](1-set-up-terraform-remote-state.md). You can verify it with:
-
-    ```sh
-    aws s3 ls --profile data-engineer | grep terraform-state
-    ```
-
-!!! tip "Provider-Specific State Keys"
-    Notice the `key` is `github/terraform.tfstate`. When you set up AWS and Snowflake later, you'll use `aws/terraform.tfstate` and `snowflake/terraform.tfstate` respectively. This keeps each provider's state isolated whilst using the same S3 bucket.
-
-## Configure Terraform and Provider Versions
-
-Create `main.tf` to specify Terraform version requirements and the GitHub provider:
-
-```hcl
-terraform {
-  required_version = ">= 1.14.0"
-
-  required_providers {
-    github = {
-      source  = "integrations/github"
-      version = "~> 6.0"
-    }
-  }
-}
-```
-
-This configuration:
-- Requires Terraform 1.14.0 or later
-- Specifies only the GitHub provider (AWS and Snowflake will have their own `main.tf` files in their respective directories)
-- Uses version constraints (`~> 6.0` means >= 6.0 and < 7.0)
-
-!!! tip "Provider Versioning"
-    Using `~>` (pessimistic constraint) allows patch and minor updates but prevents major version changes that might break your code. This balances stability with security updates.
-
-!!! note "One Provider Per Directory"
-    Each provider directory only declares the provider it needs. The `github/` directory only needs the GitHub provider, `aws/` will only need the AWS provider, etc. This keeps configurations focused and reduces unnecessary provider downloads.
-
-## Configure the GitHub Provider
-
-Create `providers.tf` to configure the GitHub provider:
-
-```hcl
-# GitHub Provider
-provider "github" {
-  owner = var.github_organization
-}
-```
-
-This configuration:
-- References a variable for the organisation name (keeps config reusable)
-- Authentication will use the `GITHUB_TOKEN` environment variable (we'll set this in the next page)
-
-## Create Variables
-
-Create `variables.tf` to define input variables for GitHub:
-
-```hcl
-# GitHub Variables
-variable "github_organization" {
-  description = "GitHub organization name"
-  type        = string
-}
-```
-
-## Create Variable Values
-
-Create `terraform.tfvars` to provide values for your variables:
-
-```hcl
-# GitHub Configuration
-github_organization = "your-org-name"  # Replace with your GitHub org
-```
-
-!!! warning "Never Commit Secrets"
-    This `terraform.tfvars` file doesn't contain secrets (yet), so it's safe to commit. Later, when you add sensitive values like passwords, you'll use a `.tfvars` file that's gitignored or use environment variables instead.
-
-## Create Outputs
-
-Create `outputs.tf` for values you want to display after Terraform runs:
-
-```hcl
-# Future outputs will be added here as we create resources
-# For example:
-# output "github_teams" {
-#   description = "List of GitHub teams"
-#   value       = { for team in github_team.teams : team.name => team.id }
-# }
-```
-
-This file is empty for now but provides a place to add outputs as we create resources.
 
 ## Update .gitignore for Terraform-Specific Files
 
@@ -355,54 +311,6 @@ This installs the hooks to run before you push code to the remote repository.
     pre-commit run --all-files
     ```
 
-## Initialise Terraform
-
-Now that everything is configured, initialise Terraform for the GitHub provider:
-
-```sh
-cd terraform/github
-terraform init
-```
-
-Expected output:
-
-```
-Initializing the backend...
-
-Successfully configured the backend "s3"! Terraform will automatically
-use this backend unless the backend configuration changes.
-
-Initializing provider plugins...
-- Finding integrations/github versions matching "~> 6.0"...
-- Installing integrations/github v6.0.0...
-- Installed integrations/github v6.0.0
-
-Terraform has been successfully initialized!
-```
-
-This command:
-- Configures the S3 backend with key `github/terraform.tfstate`
-- Downloads the GitHub provider
-- Creates a `.terraform/` directory with provider plugins
-- Creates a `.terraform.lock.hcl` file
-
-### Verify Backend Configuration
-
-Check that Terraform created the state file in S3:
-
-```sh
-aws s3 ls s3://terraform-state-123456789012/github/ --profile data-engineer
-```
-
-You should see an empty state file:
-
-```
-2026-01-17 22:00:00         0 terraform.tfstate
-```
-
-!!! tip "Empty State is Normal"
-    The state file exists but is empty because we haven't created any resources yet. This confirms the backend is working correctly.
-
 ## Validate the Configuration
 
 Run Terraform's built-in validation:
@@ -420,7 +328,6 @@ Success! The configuration is valid.
 This checks:
 - Syntax is correct
 - Required variables are defined
-- Provider configurations are valid
 
 ## Format the Code
 
@@ -432,62 +339,6 @@ terraform fmt -recursive
 
 This ensures consistent formatting across all `.tf` files.
 
-## Create Initial README
-
-Create `terraform/github/README.md` documenting the GitHub configuration:
-
-```markdown
-# GitHub Infrastructure
-
-This directory manages GitHub organisation settings, teams, repositories, and permissions via Terraform.
-
-## Prerequisites
-
-- Terraform >= 1.14.0
-- AWS CLI configured with appropriate credentials (for S3 backend)
-- GitHub personal access token with `repo` and `admin:org` scopes
-
-## Structure
-
-- `backend.tf` - S3 backend configuration for remote state
-- `main.tf` - Terraform and GitHub provider version requirements
-- `providers.tf` - GitHub provider configuration
-- `variables.tf` - Input variable definitions
-- `terraform.tfvars` - Variable values (non-sensitive)
-- `outputs.tf` - Output definitions
-
-## Usage
-
-### Initialize
-
-\`\`\`sh
-cd terraform/github
-terraform init
-\`\`\`
-
-### Plan Changes
-
-\`\`\`sh
-terraform plan
-\`\`\`
-
-### Apply Changes (CI/CD only)
-
-Terraform apply should only be run by CI/CD, never locally.
-
-## Managed Resources
-
-Currently managing:
-- (None yet - will be added in the next page)
-
-Future resources:
-- GitHub organisation settings
-- Teams (data-platform-admins, data-engineers, data-analysts)
-- Repository configuration
-- Team permissions
-- Branch protection rules
-```
-
 ## Commit Your Work
 
 Now commit the initial Terraform setup.
@@ -496,11 +347,9 @@ Now commit the initial Terraform setup.
 cd ../..  # Back to repository root
 git checkout -b feature/terraform-setup
 git add .
-git commit -m "Initial Terraform setup with GitHub provider configured
+git commit -m "Initial Terraform setup
 
 - Create provider-specific directory structure
-- Configure S3 backend for GitHub resources
-- Set up GitHub provider in terraform/github/
 - Add pre-commit hooks for code quality
 - Create TFLint and Checkov configurations"
 ```
@@ -523,25 +372,6 @@ git push -u origin feature/terraform-setup
 
 ## Verify Your Setup
 
-Your `terraform/github/` directory should now contain:
-
-```sh
-ls -la terraform/github/
-```
-
-Expected files:
-
-```
-.terraform/           # Provider plugins (gitignored)
-backend.tf           # Remote state configuration
-main.tf              # Terraform and provider versions
-outputs.tf           # Output definitions (empty for now)
-providers.tf         # GitHub provider configuration
-README.md            # Documentation
-terraform.tfvars     # Variable values
-variables.tf         # Variable definitions
-```
-
 Your `terraform/` directory structure:
 
 ```sh
@@ -553,59 +383,29 @@ Expected structure:
 ```
 terraform/
 ├── github/
-│   ├── .terraform/
-│   ├── backend.tf
-│   ├── main.tf
-│   ├── outputs.tf
-│   ├── providers.tf
-│   ├── README.md
-│   ├── terraform.tfvars
-│   └── variables.tf
-├── aws/              # Empty for now
-├── snowflake/        # Empty for now
-└── modules/          # Empty for now
+│   └── .gitkeep
+├── aws/
+│   └── .gitkeep
+├── snowflake/
+│   └── .gitkeep
+└── modules/
+    └── .gitkeep
 ```
 
 Repository root should contain:
 
 ```
-.checkov.yaml        # Checkov configuration
-.github/             # GitHub configuration
-.gitignore          # Git ignore rules
-.pre-commit-config.yaml  # Pre-commit hooks
-.tflint.hcl         # TFLint configuration
-LICENSE             # Repository license
-README.md           # Repository README
-terraform/          # Terraform configuration
+.checkov.yaml             # Checkov configuration
+.github/                  # GitHub configuration
+.gitignore                # Git ignore rules
+.pre-commit-config.yaml   # Pre-commit hooks
+.tflint.hcl               # TFLint configuration
+LICENSE                   # Repository license
+README.md                 # Repository README
+terraform/                # Terraform configuration
 ```
 
 ## Troubleshooting
-
-### Error: Failed to get existing workspaces
-
-If you see:
-
-```
-Error: Failed to get existing workspaces: AccessDenied
-```
-
-Check your AWS credentials:
-
-```sh
-aws sts get-caller-identity --profile data-engineer
-```
-
-Ensure you're using the correct profile with permissions for S3 and DynamoDB.
-
-### Error: No valid credential sources found
-
-For the GitHub provider, set your token:
-
-```sh
-export GITHUB_TOKEN="ghp_your_token_here"
-```
-
-Generate a token at [github.com/settings/tokens](https://github.com/settings/tokens) with `repo` and `admin:org` scopes.
 
 ### Pre-commit Hook Failures
 
@@ -624,29 +424,15 @@ git commit --amend --no-edit
 git push
 ```
 
-### Terraform Init Fails
-
-If `terraform init` fails, check:
-
-1. Backend configuration matches your S3 bucket and region
-2. AWS credentials are valid
-3. S3 bucket and DynamoDB table exist
-4. Network connectivity to AWS
-
 ## What's Next
 
 You now have a complete Terraform repository structure:
 
 - ✅ Provider-specific directory structure (github/, aws/, snowflake/)
-- ✅ Remote state configured in S3 with GitHub-specific state key
-- ✅ GitHub provider configured in terraform/github/
 - ✅ Pre-commit hooks configured
 - ✅ Code quality checks in place (TFLint, Checkov)
 - ✅ Documentation structure ready
 
-Next, you'll add your first resources by importing the GitHub organisation and teams you created manually into Terraform.
+Next, you'll add your first resources by configuring the github provider and importing the GitHub organisation settings and teams you created manually into Terraform.
 
-!!! note "AWS and Snowflake Later"
-    We've created the `aws/` and `snowflake/` directories but they're empty for now. You'll configure these providers in later pages after you've learned the import workflow with GitHub first.
-
-Continue to [Add GitHub to Terraform](4-add-github-to-terraform.md) →
+Continue to [Add GitHub to Terraform](github/index.md) →

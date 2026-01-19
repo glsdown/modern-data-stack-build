@@ -171,6 +171,9 @@ Take a look at the [themes](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes) avai
 ZSH_THEME="themename"
 ```
 
+!!! tip "git branch"
+  I strongly recommend choosing a theme that includes your git branch in the prompt. This is incredibly useful for development. You can see the themes that include it in the docs, as they will contain `master` or `main`. If you get stuck with the wide range of choice, the default `robbyrussell` is a good one.
+
 Additionally, oh-my-zsh has a number of [plugins](https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins) available to improve the functionality. To use a plugin, often you first have to install it, then you have to add it to the plugins list in your `~/zshrc` file.
 
 Here are some recommended ones:
@@ -421,6 +424,21 @@ brew install pre-commit
 ```
 
 We'll configure pre-commit hooks when we set up the Terraform project.
+
+## Install direnv
+
+[direnv](https://direnv.net/) is a very useful tool to allow you to automatically set up a project environment when you `cd` into the project folder. For example, set environment variables.
+
+```sh
+brew install direnv
+```
+
+Add direnv hook to your shell profile:
+
+```sh
+echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
+source ~/.zshrc
+```
 
 ## Verify Your Setup
 
