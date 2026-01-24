@@ -440,6 +440,23 @@ echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
+## Install 1Password
+
+[1Password](https://1password.com/) is a password manager that securely stores credentials, API keys, and other secrets. For team environments, shared vaults allow secure credential sharing without sending passwords through insecure channels.
+
+### Download 1Password
+
+Download and install 1Password from [1password.com/downloads](https://1password.com/downloads/mac/).
+
+!!! tip "1Password CLI"
+    1Password also offers a CLI tool that integrates with your terminal and can inject secrets into commands. Install it with:
+
+    ```sh
+    brew install 1password-cli
+    ```
+
+    We'll cover secrets management in detail in [Secrets Management](4-secrets-management.md), including how 1Password works alongside AWS Secrets Manager for a complete secrets strategy.
+
 ## Verify Your Setup
 
 Run these commands to ensure everything is installed correctly:
@@ -508,8 +525,14 @@ git clone git@github.com:YOUR-ORG/data-stack-infrastructure.git
 cd data-stack-infrastructure
 ```
 
-!!! success
-    Your local development environment is now fully configured and ready for building infrastructure!
+!!! success "What You've Accomplished"
+    - [x] Terminal and shell configured (iTerm2 + Oh My Zsh)
+    - [x] Package manager installed (Homebrew)
+    - [x] Code editor set up (VS Code with extensions)
+    - [x] Version control configured (Git + SSH keys)
+    - [x] Infrastructure tools ready (Terraform, AWS CLI)
+    - [x] Code quality tools installed (pre-commit)
+    - [x] Password manager available (1Password)
 
 ## Next Steps
 

@@ -28,6 +28,9 @@ Visit the [AWS sign-up page](https://portal.aws.amazon.com/billing/signup) and c
 !!! info "About the Root User"
     The email you provide creates the **root user** - the most powerful account in AWS with unrestricted access to all services and billing. You should rarely use this account for day-to-day operations.
 
+!!! tip "Store Credentials in 1Password"
+    As you complete sign-up, immediately create a new entry in your 1Password vault for "AWS Root User". Store the email address and password securely. You'll add MFA details to this entry shortly. Make sure to store this in a Vault that has locked down access - you should only give root user access to a small handful of people.
+
 ### Selecting Your Home Region
 
 During the sign-up process and when first logging in, AWS will ask you to select a default region. Choose the region nearest to your data and that fulfils any data residency requirements.
@@ -75,12 +78,24 @@ Multi-factor authentication (MFA) is critical for the root account. Enable it im
 3. Scroll to "Multi-factor authentication (MFA)"
 4. Click "Assign MFA device"
 5. Choose your MFA type:
-    - **Authenticator app** (recommended) - Google Authenticator, Authy, 1Password, etc.
+    - **1Password** (recommended) - stores both password and TOTP codes together
+    - **Authenticator app** - Google Authenticator, Authy, etc.
     - **Security key** - hardware key like YubiKey
     - **Hardware TOTP token** - physical device that generates codes
 
+!!! tip "Using 1Password for MFA"
+    1Password can generate TOTP codes directly. When setting up MFA:
+
+    1. Select "Authenticator app" in AWS
+    2. In 1Password, edit your "AWS Root User" entry
+    3. Add a new field: **One-time password**
+    4. Scan the QR code or enter the secret key
+    5. 1Password will now generate codes for this account
+
+    This keeps your password and MFA codes together securely.
+
 !!! warning "Store Recovery Codes"
-    When setting up MFA, AWS provides recovery codes. Store these securely (password manager, encrypted document). If you lose your MFA device and recovery codes, you cannot access your account.
+    When setting up MFA, AWS provides recovery codes. Add these to your 1Password entry as a secure note or attachment. If you lose your MFA device and recovery codes, you cannot access your account.
 
 ### When to Use the Root User
 
@@ -218,14 +233,23 @@ Now create an IAM user for yourself. This user will be able to assume both roles
 5. **Uncheck** "Users must create a new password at next sign-in" (optional)
 6. Click "Apply"
 
+!!! tip "Store in 1Password"
+    Create a new 1Password entry for "AWS IAM User - [your name]" in your personal Vault. Store:
+
+    - Account ID (for sign-in)
+    - Username
+    - Password
+    - You'll add MFA codes to this entry next
+
 ### Enable MFA for Your User
 
 1. Still in Security credentials, scroll to "Multi-factor authentication (MFA)"
 2. Click "Assign MFA device"
 3. Choose device name (e.g., `jbloggs-phone`)
-4. Select your MFA type (authenticator app recommended)
-5. Follow the setup wizard
-6. Click "Add MFA"
+4. Select your MFA type (1Password or authenticator app)
+5. If using 1Password, add a one-time password field to your IAM user entry and scan the QR code
+6. Follow the setup wizard
+7. Click "Add MFA"
 
 !!! warning "MFA is Essential"
     Every IAM user should have MFA enabled, especially those with role assumption permissions. This is a critical security control.
@@ -368,8 +392,16 @@ You need programmatic access credentials for the CLI:
 10. Click "Create access key"
 11. **Important**: Copy the Access Key ID and Secret Access Key - you won't see the secret again
 
+!!! tip "Store Access Keys in 1Password"
+    Add the access keys to your "AWS IAM User" entry in 1Password:
+
+    - Add a field for "Access Key ID"
+    - Add a field for "Secret Access Key"
+
+    This provides a secure backup if you need to reconfigure the CLI later.
+
 !!! warning "Protect Your Access Keys"
-    Access keys are like passwords. Never commit them to Git, share them in Slack, or store them unencrypted. Consider using a password manager or AWS credentials encryption.
+    Access keys are like passwords. Never commit them to Git, share them in Slack, or store them unencrypted.
 
 ### Configure AWS CLI
 

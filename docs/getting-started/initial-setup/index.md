@@ -9,6 +9,7 @@ By the end of this section, you'll have:
 - [x] A GitHub organisation with proper repository structure
 - [x] A fully configured local development environment (macOS)
 - [x] Understanding of the development workflow and best practices
+- [x] A secrets management strategy using 1Password and AWS Secrets Manager
 - [x] All necessary tools installed and configured
 
 ## Prerequisites
@@ -57,11 +58,6 @@ Follow these guides in order:
 1. **[GitHub Organisation Setup](1-github-setup.md)** - Create repositories, configure teams, set branch protection
 2. **[Local Development Environment](2-local-environment.md)** - Install and configure all necessary tools
 3. **[Development Workflow](3-development-workflow.md)** - Learn the branching strategy, PR process, and best practices
-
-## Time Commitment
-
-- **GitHub setup**: 30-60 minutes
-- **Local environment**: 30-45 minutes (plus download/installation time)
-- **Workflow understanding**: 15-30 minutes (reading and reference)
+4. **[Secrets Management](4-secrets-management.md)** - Set up 1Password and AWS Secrets Manager for secure credential handling
 
 Let's get started!
