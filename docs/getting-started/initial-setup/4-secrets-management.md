@@ -9,7 +9,7 @@ On this page, you will:
 
 ## Why Secrets Management Matters
 
-Secrets—API keys, database passwords, access tokens—are the keys to your infrastructure. Poor secrets management leads to:
+Secrets - API keys, database passwords, access tokens - are the keys to your infrastructure. Poor secrets management leads to:
 
 - **Security breaches**: Credentials in Git history, Slack messages, or shared documents
 - **Credential sprawl**: Nobody knows which credentials exist or who has access
@@ -122,8 +122,8 @@ export SNOWFLAKE_PASSWORD=$(op item get "Snowflake Admin" --fields password)
 
 AWS Secrets Manager is the second half of your secrets strategy. While 1Password handles human access to credentials, Secrets Manager handles programmatic access for applications and CI/CD pipelines.
 
-!!! info "Set Up Later"
-    You'll configure AWS Secrets Manager after completing the [AWS Account Setup](../account-setup/aws.md). This section introduces the concepts so you understand the complete strategy.
+!!! info "Hands-On Setup"
+    You'll create secrets in AWS Secrets Manager after completing the [AWS Account Setup](../account-setup/aws.md). The [Terraform Deployment](../terraform-setup/4-terraform-deployment.md) guide covers the CLI commands and GitHub Actions integration.
 
 ### Why AWS Secrets Manager?
 
@@ -154,10 +154,10 @@ This structure makes it easy to apply IAM policies to groups of secrets, grantin
 
 ### GitHub Actions Integration
 
-Once configured, GitHub Actions can retrieve secrets from Secrets Manager using OIDC authentication. This eliminates the need to store application secrets directly in GitHub — you'll only need bootstrap secrets like `AWS_ACCOUNT_ID` in GitHub to establish the initial AWS connection.
+Once configured, GitHub Actions can retrieve secrets from Secrets Manager using OIDC authentication. This eliminates the need to store application secrets directly in GitHub - you'll only need bootstrap secrets like `AWS_ACCOUNT_ID` in GitHub to establish the initial AWS connection.
 
-!!! tip "Starting with GitHub Secrets"
-    Until you've set up AWS and Secrets Manager, you'll use GitHub's built-in secrets and variables for CI/CD. This is covered in [Terraform Deployment](../terraform-setup/4-terraform-deployment.md). Later, you can migrate appropriate secrets to Secrets Manager for centralised management.
+!!! tip "Bootstrap Secrets Stay in GitHub"
+    You'll always need `AWS_ACCOUNT_ID` in GitHub Secrets - it's required to authenticate with AWS in the first place. Once authenticated, your workflows retrieve other secrets from Secrets Manager. See [Terraform Deployment](../terraform-setup/4-terraform-deployment.md) for the complete setup.
 
 ## Best Practices
 

@@ -246,4 +246,13 @@ documentation/
 
 ---
 
+## 10. Style
+
+* Should be written in British English
+* Should be conversational in tone
+* Use spaced hyphens ( - ) for parenthetical statements, not em dashes (—): "you'll need this - it's required" **NOT** "you'll need this—it's required"
+* When writing e.g. don't include a following comma: "e.g." **NOT** "e.g.,"
+
+---
+
 This file serves as a **reference for other AI agents** or team members to understand the stack, its orchestration, documentation structure, and best practices for implementation.
