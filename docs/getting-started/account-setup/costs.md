@@ -1,0 +1,221 @@
+# Cost Overview
+
+This page provides an overview of the costs associated with the tools and services used in this data stack. Understanding costs upfront helps with budgeting and avoiding surprises.
+
+## Cost Philosophy
+
+This stack follows a pragmatic approach to costs:
+
+- **Start small**: Begin with free tiers and minimal configurations
+- **Pay for value**: Invest in managed services that reduce operational burden
+- **Scale gradually**: Increase spend only as data volumes and team size grow
+- **Monitor continuously**: Set up billing alerts before costs become a problem
+
+## Current Stack Costs
+
+These are the tools introduced so far in the documentation, organised by category.
+
+### Version Control & CI/CD
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **GitHub** | Free (public repos, limited private) | Team: $4/user/month | [github.com/pricing](https://github.com/pricing) |
+| **GitHub Actions** | 2,000 mins/month (Free), 3,000 mins (Team) | $0.008/min (Linux) after allowance | [GitHub Actions billing](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions) |
+
+!!! info "GitHub Plan Recommendations"
+    - **Solo/Learning**: Free tier is sufficient
+    - **Small team (2-5)**: Team plan for protected branches and CODEOWNERS
+    - **Larger team**: Enterprise for SAML SSO and advanced security
+
+### Secrets Management
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **1Password** | None (14-day trial) | Teams: $19.95/month (up to 10 users) | [1password.com/teams/pricing](https://1password.com/teams/pricing/) |
+| **AWS Secrets Manager** | None | $0.40/secret/month + $0.05/10,000 API calls | [AWS Secrets Manager pricing](https://aws.amazon.com/secrets-manager/pricing/) |
+
+!!! tip "1Password Alternatives"
+    If 1Password doesn't fit your budget, consider:
+
+    - **Bitwarden Teams**: $4/user/month
+    - **LastPass Teams**: $4/user/month
+
+    The concepts in this documentation apply to any password manager with shared vaults.
+
+### Cloud Infrastructure
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **AWS** | 12-month free tier for new accounts | Pay-as-you-go | [aws.amazon.com/pricing](https://aws.amazon.com/pricing/) |
+| **AWS S3** | 5GB (free tier) | ~$0.023/GB/month (Standard) | [S3 pricing](https://aws.amazon.com/s3/pricing/) |
+| **AWS DynamoDB** | 25GB + 25 read/write units | Pay-per-request or provisioned | [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/) |
+
+### Data Warehouse
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Snowflake** | $400 credit trial (30 days) | Compute + Storage (varies by edition) | [snowflake.com/pricing](https://www.snowflake.com/en/data-cloud/pricing-options/) |
+
+Snowflake pricing is based on:
+
+- **Compute**: Credits consumed by warehouses (varies by size and runtime)
+- **Storage**: ~$23-40/TB/month depending on region and edition
+- **Edition**: Standard, Enterprise, or Business Critical
+
+!!! warning "Snowflake Cost Management"
+    Snowflake can become expensive quickly if warehouses are left running. Always configure:
+
+    - `AUTO_SUSPEND` (60-300 seconds recommended)
+    - `AUTO_RESUME = TRUE`
+    - Resource monitors with credit limits
+
+## Estimated Monthly Costs
+
+Here's a rough estimate for a small data team (3-5 people) in the early stages:
+
+| Category | Low Estimate | High Estimate | Notes |
+|----------|--------------|---------------|-------|
+| GitHub Team | $12/month | $20/month | 3-5 users |
+| 1Password Teams | $20/month | $20/month | Up to 10 users |
+| AWS (Terraform state) | $1/month | $5/month | S3 + DynamoDB minimal usage |
+| AWS Secrets Manager | $2/month | $10/month | 5-25 secrets |
+| Snowflake | $50/month | $300/month | Depends heavily on usage |
+| **Total** | **~$85/month** | **~$355/month** | |
+
+!!! info "Your Costs Will Vary"
+    These estimates assume minimal usage during initial setup. Costs will increase as you:
+
+    - Add more data sources
+    - Run more frequent transformations
+    - Increase warehouse sizes for performance
+    - Store more data
+
+## Future Stack Costs
+
+As you progress through the documentation, you'll encounter these additional tools:
+
+### Orchestration
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Prefect Cloud** | Free (single workspace, limited features) | Pro: from $500/month | [prefect.io/pricing](https://www.prefect.io/pricing) |
+
+### Data Ingestion
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Airbyte Cloud** | 14-day trial | Based on data volume | [airbyte.com/pricing](https://airbyte.com/pricing) |
+| **dlt** | Open source (free) | N/A | [dlthub.com](https://dlthub.com/) |
+
+### Transformation
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **dbt Cloud** | Developer (1 seat, free) | Team: $100/seat/month | [getdbt.com/pricing](https://www.getdbt.com/pricing/) |
+| **dbt Core** | Open source (free) | N/A | [docs.getdbt.com](https://docs.getdbt.com/) |
+
+### Streaming (Optional)
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Confluent Cloud** | $400 credit (limited time) | Pay-as-you-go | [confluent.io/pricing](https://www.confluent.io/confluent-cloud/pricing/) |
+
+### Business Intelligence
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Metabase** | Open source (self-hosted) | Pro: $85/user/month | [metabase.com/pricing](https://www.metabase.com/pricing/) |
+
+## Cost Optimisation Tips
+
+### AWS
+
+- **Use the free tier**: New accounts get 12 months of free tier benefits
+- **Set billing alerts**: Configure alerts at $10, $50, $100 thresholds
+- **Review unused resources**: Regularly check for orphaned resources
+- **Use S3 lifecycle policies**: Move old data to cheaper storage classes
+
+### Snowflake
+
+- **Right-size warehouses**: Start with X-Small, scale up only when needed
+- **Use auto-suspend**: Set aggressive auto-suspend (60 seconds for dev)
+- **Monitor credits**: Set up resource monitors with email alerts
+- **Separate warehouses**: Different warehouses for different workloads (dev vs prod)
+
+### General
+
+- **Annual billing**: Many tools offer discounts for annual commitment
+- **Negotiate**: Enterprise pricing is often negotiable
+- **Start self-hosted**: Consider self-hosted options before committing to cloud
+- **Review monthly**: Set a calendar reminder to review cloud bills
+
+## Setting Up Billing Alerts
+
+### AWS Budget Alerts
+
+Create a budget alert in AWS:
+
+```sh
+aws budgets create-budget \
+    --account-id YOUR_ACCOUNT_ID \
+    --budget '{
+        "BudgetName": "Monthly-Spend-Alert",
+        "BudgetLimit": {
+            "Amount": "100",
+            "Unit": "USD"
+        },
+        "TimeUnit": "MONTHLY",
+        "BudgetType": "COST"
+    }' \
+    --notifications-with-subscribers '[
+        {
+            "Notification": {
+                "NotificationType": "ACTUAL",
+                "ComparisonOperator": "GREATER_THAN",
+                "Threshold": 80,
+                "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+                {
+                    "SubscriptionType": "EMAIL",
+                    "Address": "your-email@company.com"
+                }
+            ]
+        }
+    ]'
+```
+
+### Snowflake Resource Monitors
+
+Create via Terraform (covered in later sections) or SQL:
+
+```sql
+USE ROLE ACCOUNTADMIN;
+
+CREATE RESOURCE MONITOR monthly_limit
+    WITH CREDIT_QUOTA = 100
+    FREQUENCY = MONTHLY
+    START_TIMESTAMP = IMMEDIATELY
+    TRIGGERS
+        ON 75 PERCENT DO NOTIFY
+        ON 90 PERCENT DO NOTIFY
+        ON 100 PERCENT DO SUSPEND;
+
+ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
+```
+
+## Summary
+
+| Phase | Expected Monthly Cost |
+|-------|----------------------|
+| **Getting Started** (GitHub, 1Password, minimal AWS) | $30-50 |
+| **Terraform Setup** (+ Snowflake dev usage) | $80-150 |
+| **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
+
+The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.
+
+!!! success "Key Takeaways"
+    - [x] Understand pricing models before signing up
+    - [x] Set up billing alerts immediately
+    - [x] Start with free tiers and minimal configurations
+    - [x] Monitor costs monthly and optimise regularly
