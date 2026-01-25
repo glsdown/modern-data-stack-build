@@ -83,21 +83,24 @@ You'll create the S3 bucket manually this first time. Later, you'll import it in
 
 ### Sign in to AWS
 
-Use your IAM user with the DataEngineerRole (or AdminRole if needed):
+Use your IAM user with the InfrastructureAdminRole. This role has write access to state files, which is required for setting up the remote state infrastructure:
 
 ```sh
-aws sts get-caller-identity --profile data-engineer
+aws sts get-caller-identity --profile infrastructure-admin
 ```
 
-Expected output showing you're using the DataEngineerRole (note - your account ID will be different):
+Expected output showing you're using the InfrastructureAdminRole (note - your account ID will be different):
 
 ```json
 {
     "UserId": "AROAEXAMPLE:aws-cli-session",
     "Account": "123456789012",
-    "Arn": "arn:aws:sts::123456789012:assumed-role/DataEngineerRole/aws-cli-session"
+    "Arn": "arn:aws:sts::123456789012:assumed-role/InfrastructureAdminRole/aws-cli-session"
 }
 ```
+
+!!! info "Why InfrastructureAdminRole?"
+    The InfrastructureAdminRole is specifically designed for Terraform state operations. Using it here establishes the correct access pattern from the start. DataEngineerRole will have read-only access to state files once we configure the final permissions.
 
 ### Determine Your Bucket Name
 
@@ -110,7 +113,7 @@ terraform-state-<your-aws-account-id>
 Get your AWS account ID:
 
 ```sh
-aws sts get-caller-identity --query Account --output text --profile data-engineer
+aws sts get-caller-identity --query Account --output text --profile infrastructure-admin
 ```
 
 Example output:
@@ -132,7 +135,7 @@ aws s3api create-bucket \
   --bucket terraform-state-123456789012 \
   --region eu-west-2 \
   --create-bucket-configuration LocationConstraint=eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 !!! note "Region Constraint"
@@ -154,7 +157,7 @@ Versioning allows you to recover from accidental deletions or corruption:
 aws s3api put-bucket-versioning \
   --bucket terraform-state-123456789012 \
   --versioning-configuration Status=Enabled \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Verify versioning is enabled:
@@ -162,7 +165,7 @@ Verify versioning is enabled:
 ```sh
 aws s3api get-bucket-versioning \
   --bucket terraform-state-123456789012 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Expected output:
@@ -188,7 +191,7 @@ aws s3api put-bucket-encryption \
       "BucketKeyEnabled": true
     }]
   }' \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Verify encryption is enabled:
@@ -196,7 +199,7 @@ Verify encryption is enabled:
 ```sh
 aws s3api get-bucket-encryption \
   --bucket terraform-state-123456789012 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Expected output:
@@ -248,7 +251,7 @@ Apply the lifecycle policy:
 aws s3api put-bucket-lifecycle-configuration \
   --bucket terraform-state-123456789012 \
   --lifecycle-configuration file://lifecycle-policy.json \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 This policy:
@@ -268,7 +271,7 @@ aws s3api put-public-access-block \
   --bucket terraform-state-123456789012 \
   --public-access-block-configuration \
     "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true" \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Verify public access is blocked:
@@ -276,7 +279,7 @@ Verify public access is blocked:
 ```sh
 aws s3api get-public-access-block \
   --bucket terraform-state-123456789012 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Expected output:
@@ -305,7 +308,7 @@ aws dynamodb create-table \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 This creates a table with:
@@ -341,7 +344,7 @@ The table takes a few moments to create:
 aws dynamodb wait table-exists \
   --table-name terraform-state-lock \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 This command waits until the table is ready (no output means success).
@@ -353,7 +356,7 @@ aws dynamodb describe-table \
   --table-name terraform-state-lock \
   --query 'Table.TableStatus' \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Expected output:
@@ -371,7 +374,7 @@ aws dynamodb update-continuous-backups \
   --table-name terraform-state-lock \
   --point-in-time-recovery-specification PointInTimeRecoveryEnabled=true \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 Expected output:
@@ -404,7 +407,7 @@ aws s3api put-bucket-tagging \
     {Key=ManagedBy,Value=Manual},
     {Key=Environment,Value=Shared}
   ]' \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 ### Tag the DynamoDB Table
@@ -414,7 +417,7 @@ aws dynamodb tag-resource \
   --resource-arn arn:aws:dynamodb:eu-west-2:123456789012:table/terraform-state-lock \
   --tags Key=Purpose,Value=TerraformStateLock Key=ManagedBy,Value=Manual Key=Environment,Value=Shared \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 !!! note "Finding Your Table ARN"
@@ -425,7 +428,7 @@ aws dynamodb tag-resource \
       --table-name terraform-state-lock \
       --query 'Table.TableArn' \
       --region eu-west-2 \
-      --profile data-engineer
+      --profile infrastructure-admin
     ```
 
 ## Verify Your Setup
@@ -434,10 +437,10 @@ aws dynamodb tag-resource \
 
 ```sh
 # List all configuration for the bucket
-aws s3api head-bucket --bucket terraform-state-123456789012 --profile data-engineer
-aws s3api get-bucket-versioning --bucket terraform-state-123456789012 --profile data-engineer
-aws s3api get-bucket-encryption --bucket terraform-state-123456789012 --profile data-engineer
-aws s3api get-public-access-block --bucket terraform-state-123456789012 --profile data-engineer
+aws s3api head-bucket --bucket terraform-state-123456789012 --profile infrastructure-admin
+aws s3api get-bucket-versioning --bucket terraform-state-123456789012 --profile infrastructure-admin
+aws s3api get-bucket-encryption --bucket terraform-state-123456789012 --profile infrastructure-admin
+aws s3api get-public-access-block --bucket terraform-state-123456789012 --profile infrastructure-admin
 ```
 
 ### Check DynamoDB Table
@@ -446,7 +449,7 @@ aws s3api get-public-access-block --bucket terraform-state-123456789012 --profil
 aws dynamodb describe-table \
   --table-name terraform-state-lock \
   --region eu-west-2 \
-  --profile data-engineer
+  --profile infrastructure-admin
 ```
 
 ## Cost Considerations
@@ -504,7 +507,7 @@ S3 bucket names are globally unique. If someone else has already taken your chos
 Ensure you're using the correct AWS profile and that your DataEngineerRole has the necessary permissions:
 
 ```sh
-aws sts get-caller-identity --profile data-engineer
+aws sts get-caller-identity --profile infrastructure-admin
 ```
 
 ### Cannot Find lifecycle-policy.json

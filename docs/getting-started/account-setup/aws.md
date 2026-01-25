@@ -5,7 +5,7 @@ On this page, you will:
 - [x] Create a new AWS account
 - [x] Secure the root user with MFA
 - [x] Create your personal IAM user
-- [x] Create `AdminRole` and `DataEngineerRole` for permissions
+- [x] Create `AdminRole`, `DataEngineerRole`, and `InfrastructureAdminRole` for permissions
 - [x] Set up cost-based alerts
 - [x] Configure AWS CLI for local development
 
@@ -52,10 +52,6 @@ AWS offers two account types:
 - **Business** - for company use, may require business verification documents
 
 For a data stack project, either works. Business accounts provide some additional support options but aren't required to access any AWS services.
-
-### Account name
-
-Your account can be referenced by both an ID and a name. The name should be something human-readable and memorable, for example `my-company-name`. You can change the account name when logged in as the root user, by clicking on your profile in the top right, choosing Account. Then under "Account Details", choose "Actions" and "Update Account Name".
 
 ## Secure the Root User
 
@@ -108,6 +104,12 @@ Only use the root account for tasks that [specifically require it](https://docs.
 
 For all other tasks, use IAM users or roles (which we'll create next).
 
+## Account alias
+
+Your account can be referenced by both an ID and [an alias](https://docs.aws.amazon.com/IAM/latest/UserGuide/console-account-alias.html). The name should be something human-readable and memorable, for example `my-company-name`.
+
+To change the account alias, when logged in as the root user, open the IAM console at https://console.aws.amazon.com/iam/. In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.
+
 ## Enable IAM Access to Billing
 
 By default, IAM users cannot access billing information, even with admin permissions. Enable this so your admin users can manage costs:
@@ -127,10 +129,11 @@ This allows IAM users with appropriate permissions to view and manage billing.
 
 AWS uses role-based access control (RBAC). Rather than granting permissions directly to users, you create roles with specific permissions and assign roles to users.
 
-We'll create two roles:
+We'll create three roles:
 
 - **AdminRole** - full administrative access (use sparingly)
 - **DataEngineerRole** - permissions needed for data platform work
+- **InfrastructureAdminRole** - permissions needed for managing infrastructure (use only for terraform apply)
 
 !!! note "Additional Roles"
     You will find that you may need to introduce new roles as you scale. We'll talk about better ways of managing roles in the terraform setup. This is just to get you started.
@@ -173,6 +176,34 @@ For the data engineer role, we'll use a managed policy that provides permissions
 !!! tip "Refining Permissions"
     These permissions are a starting point. As you build your data platform, you'll likely need to add more specific permissions for services. We'll address these as they become relevant in later sections.
 
+### Create the InfrastructureAdminRole
+
+This role is specifically for Terraform and infrastructure operations. It has write access to Terraform state files, which DataEngineerRole intentionally lacks.
+
+1. Return to IAM → Roles
+2. Click "Create role"
+3. Select **"AWS account"** as the trusted entity type
+4. Select **"This account"**
+5. Click "Next"
+6. Search for and select the following managed policies:
+    - `AmazonS3FullAccess` - for Terraform state and infrastructure
+    - `AmazonDynamoDBFullAccess` - for Terraform state locking
+    - `SecretsManagerReadWrite` - for managing infrastructure secrets
+    - `IAMFullAccess` - for managing IAM resources
+    - `CloudWatchFullAccess` - for logging and monitoring
+7. Click "Next"
+8. For role name, enter: `InfrastructureAdminRole`
+9. For description, enter: `Role for Terraform infrastructure management`
+10. Click "Create role"
+
+!!! warning "Why a Separate Infrastructure Role?"
+    You might wonder why we need InfrastructureAdminRole when DataEngineerRole has similar permissions. The key difference is **state file access**:
+
+    - **InfrastructureAdminRole**: Full read/write to Terraform state files
+    - **DataEngineerRole**: Read-only access to state files (we'll configure this in Terraform setup)
+
+    This separation ensures data engineers can't accidentally run `terraform apply` locally - only the InfrastructureAdminRole (and later, the CI/CD pipeline) can modify infrastructure.
+
 ### Configure Role Trust Relationships
 
 Roles need to specify who can assume them. We'll configure both roles to allow users in this account:
@@ -199,7 +230,7 @@ Roles need to specify who can assume them. We'll configure both roles to allow u
 
 5. Replace `ACCOUNT_ID` with your actual AWS account ID (visible in the top-right corner)
 6. Click "Update policy"
-7. Repeat these steps for **DataEngineerRole**
+7. Repeat these steps for **DataEngineerRole** and **InfrastructureAdminRole**
 
 ## Create Your Personal IAM User
 
@@ -272,7 +303,8 @@ We need to grant your user permission to assume the roles we created:
       "Action": "sts:AssumeRole",
       "Resource": [
         "arn:aws:iam::ACCOUNT_ID:role/AdminRole",
-        "arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole"
+        "arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole",
+        "arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole"
       ]
     }
   ]
@@ -282,6 +314,11 @@ We need to grant your user permission to assume the roles we created:
 5. Click "Next"
 6. For policy name, enter: `AssumeRolesPolicy`
 7. Click "Create policy"
+
+!!! info "Role Usage Guidelines"
+    - **DataEngineerRole**: Use for day-to-day data platform work (queries, pipelines, monitoring)
+    - **InfrastructureAdminRole**: Use only when running Terraform locally during initial setup
+    - **AdminRole**: Use sparingly for account-level administration tasks
 
 ### Test Console Access with Roles
 
@@ -427,7 +464,7 @@ This creates `~/.aws/credentials` and `~/.aws/config` files with your configurat
 To easily switch between roles, add profiles to your AWS config. Edit `~/.aws/config`:
 
 ```sh
-vim ~/.aws/config  # or use your preferred editor
+code ~/.aws/config  # or use your preferred editor
 ```
 
 Add the following configurations (replace `ACCOUNT_ID` with your account ID):
@@ -443,6 +480,12 @@ source_profile = default
 region = eu-west-2
 output = json
 
+[profile infrastructure-admin]
+role_arn = arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole
+source_profile = default
+region = eu-west-2
+output = json
+
 [profile admin]
 role_arn = arn:aws:iam::ACCOUNT_ID:role/AdminRole
 source_profile = default
@@ -453,9 +496,10 @@ output = json
 This configuration:
 
 - Uses your IAM user credentials as the base (`default` profile)
-- Defines `data-engineer` profile that assumes the DataEngineerRole
-- Defines `admin` profile that assumes the AdminRole
-- Both role profiles use the default credentials to assume their respective roles
+- Defines `data-engineer` profile that assumes the DataEngineerRole (day-to-day work)
+- Defines `infrastructure-admin` profile that assumes the InfrastructureAdminRole (Terraform operations)
+- Defines `admin` profile that assumes the AdminRole (account administration)
+- All role profiles use the default credentials to assume their respective roles
 
 ### Test Your Configuration
 
@@ -625,6 +669,9 @@ aws-vault exec data-engineer -- aws sts get-caller-identity
 
 # Verify admin role
 aws-vault exec admin -- aws sts get-caller-identity
+
+# Verify infrastructure admin role
+aws-vault exec infrastructure-admin -- aws sts get-caller-identity
 ```
 
 ## Best Practices Summary
@@ -640,6 +687,7 @@ aws-vault exec admin -- aws sts get-caller-identity
     - [x] Cost alerts configured to prevent surprise bills
     - [x] IAM user uses `DataEngineerRole` by default
     - [x] `AdminRole` only used when necessary
+    - [x] `InfrastructureAdminRole` used for Terraform state operations
 
 ## Next Steps
 
