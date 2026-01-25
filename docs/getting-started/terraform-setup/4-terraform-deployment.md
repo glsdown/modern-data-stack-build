@@ -101,7 +101,8 @@ Rather than storing the PAT in GitHub Secrets, store it in AWS Secrets Manager. 
 aws secretsmanager create-secret \
     --name "terraform/github-token" \
     --description "GitHub PAT for Terraform provider" \
-    --secret-string "ghp_xxxxxxxxxxxxxxxxxxxx"
+    --secret-string "ghp_xxxxxxxxxxxxxxxxxxxx" \
+    --profile admin
 ```
 
 Replace `ghp_xxxxxxxxxxxxxxxxxxxx` with your actual PAT value.
@@ -113,7 +114,8 @@ Replace `ghp_xxxxxxxxxxxxxxxxxxxx` with your actual PAT value.
     aws secretsmanager create-secret \
         --name "terraform/github-token" \
         --description "GitHub PAT for Terraform provider" \
-        --secret-string "$(op item get 'GitHub PAT - Terraform' --fields credential)"
+        --secret-string "$(op item get 'GitHub PAT - Terraform' --fields credential)" \
+        --profile admin
     ```
 
 ### The CI Workflow (Plan on PR)
@@ -443,12 +445,12 @@ Rather than storing long-lived AWS credentials as GitHub secrets, use OpenID Con
 
 ### Create the OIDC Identity Provider
 
-In your AWS account, create the GitHub OIDC provider. You only need to do this once per account.
+In your AWS account, create the GitHub OIDC provider. You only need to do this once per account. These IAM operations require elevated permissions, so use the `admin` profile.
 
 First, check if the provider already exists:
 
 ```sh
-aws iam list-open-id-connect-providers
+aws iam list-open-id-connect-providers --profile admin
 ```
 
 If no GitHub provider is listed, create one:
@@ -457,7 +459,8 @@ If no GitHub provider is listed, create one:
 aws iam create-open-id-connect-provider \
   --url https://token.actions.githubusercontent.com \
   --client-id-list sts.amazonaws.com \
-  --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
+  --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1 \
+  --profile admin
 ```
 
 !!! info "About the Thumbprint"
@@ -474,7 +477,7 @@ Create an IAM role that GitHub Actions can assume. This involves creating a trus
 First, get your AWS account ID:
 
 ```sh
-aws sts get-caller-identity --query Account --output text
+aws sts get-caller-identity --query Account --output text --profile admin
 ```
 
 Note this value - you'll use it in the trust policy below.
@@ -517,7 +520,8 @@ Create the IAM role using the trust policy:
 aws iam create-role \
   --role-name TerraformGitHubActionsRole \
   --assume-role-policy-document file://trust-policy.json \
-  --description "Role for GitHub Actions to run Terraform"
+  --description "Role for GitHub Actions to run Terraform" \
+  --profile admin
 ```
 
 You should see output confirming the role was created. Note the `Arn` value - you'll need this for your workflows.
@@ -592,15 +596,17 @@ Create the policy and attach it to the role:
 aws iam create-policy \
   --policy-name TerraformGitHubActionsPolicy \
   --policy-document file://terraform-policy.json \
-  --description "Permissions for Terraform GitHub Actions"
+  --description "Permissions for Terraform GitHub Actions" \
+  --profile admin
 
 # Get your account ID for the policy ARN
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text --profile admin)
 
 # Attach the policy to the role
 aws iam attach-role-policy \
   --role-name TerraformGitHubActionsRole \
-  --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/TerraformGitHubActionsPolicy"
+  --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/TerraformGitHubActionsPolicy" \
+  --profile admin
 ```
 
 #### Step 6: Verify the Role
@@ -609,10 +615,10 @@ Confirm the role is set up correctly:
 
 ```sh
 # View the role
-aws iam get-role --role-name TerraformGitHubActionsRole
+aws iam get-role --role-name TerraformGitHubActionsRole --profile admin
 
 # List attached policies
-aws iam list-attached-role-policies --role-name TerraformGitHubActionsRole
+aws iam list-attached-role-policies --role-name TerraformGitHubActionsRole --profile admin
 ```
 
 You can now clean up the temporary policy files:
@@ -721,7 +727,7 @@ To prevent accidental local applies, add a `role_arn` to your backend configurat
 First, get your role ARN:
 
 ```sh
-aws iam get-role --role-name TerraformGitHubActionsRole --query 'Role.Arn' --output text
+aws iam get-role --role-name TerraformGitHubActionsRole --query 'Role.Arn' --output text --profile admin
 ```
 
 Then update your backend configuration. In your Terraform configuration directory (e.g., `github/`), edit the `backend.tf` file:

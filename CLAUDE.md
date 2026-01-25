@@ -2,6 +2,8 @@
 
 This document summarizes the recommended architecture, tools, and orchestration strategies for a modern, production-grade data stack for a small company. It is designed to be **pragmatic, incremental, and AI-friendly** for project documentation. It should be written in British English with a focus on clarity and learning.
 
+There is a skill available to help with building documentation pages - `generate-docs`
+
 ---
 
 ## 1. Core Principles
@@ -50,6 +52,27 @@ This document summarizes the recommended architecture, tools, and orchestration 
 
 * **AWS Secrets Manager**: Store credentials for Snowflake, Kafka, dlt, dbt, Airbyte
 * **RBAC**: Snowflake roles, Kafka service accounts, GitHub CODEOWNERS
+
+### AWS IAM Role Model
+
+The project uses a three-role model for AWS access:
+
+| Role | State File Access | Purpose |
+|------|------------------|---------|
+| **DataEngineerRole** | Read-only | Day-to-day data platform work (queries, pipelines, monitoring) |
+| **InfrastructureAdminRole** | Read/Write | Local Terraform operations during setup/debugging |
+| **TerraformGitHubActionsRole** | Read/Write | CI/CD pipeline (primary method for infrastructure changes) |
+
+**Key principles**:
+- DataEngineerRole has explicit **Deny** policies preventing writes to Terraform state files (S3) and lock table (DynamoDB)
+- InfrastructureAdminRole is only used during initial import of existing resources
+- After CI/CD is configured, all infrastructure changes go through pull requests and the TerraformGitHubActionsRole
+- OIDC authentication eliminates long-lived credentials for GitHub Actions
+
+**AWS CLI profiles**:
+- `data-engineer` - assumes DataEngineerRole (default for data work)
+- `infrastructure-admin` - assumes InfrastructureAdminRole (Terraform operations)
+- `admin` - assumes AdminRole (account administration)
 
 ### Metadata & Governance
 
@@ -116,9 +139,16 @@ def etl_flow():
 The documentation follows an incremental learning path:
 
 ### Getting Started (`docs/getting-started/`)
-- **GitHub organisation setup** - Repository structure, team access, branch protection
-- **Local developer environment** - VS Code, iTerm, Homebrew, Git configuration (macOS focus)
-- **Development workflow** - Branching strategy, PR process, code review
+- **Initial Setup** - GitHub organisation, local dev environment, development workflow, secrets management
+- **Account Setup** - AWS account (with AdminRole, DataEngineerRole, InfrastructureAdminRole), Snowflake account, cost overview
+- **Terraform Setup** - Remote state, local setup, repository structure, GitHub provider, CI/CD deployment
+
+#### Terraform Setup Subfolders
+- **terraform-setup/github/** - Import GitHub organisation, teams, users into Terraform
+- **terraform-setup/aws/** - Import IAM roles, state infrastructure, users, budgets, Secrets Manager
+- **terraform-setup/snowflake/** - Import admin user, configure Snowflake provider
+
+**Key pattern**: All Terraform operations during initial import use the `infrastructure-admin` AWS profile. After CI/CD is configured, the TerraformGitHubActionsRole handles all infrastructure changes through GitHub Actions.
 
 ### Infrastructure as Code (`docs/build/infrastructure-as-code/`)
 - **Terraform fundamentals** - Installation, configuration, basic concepts

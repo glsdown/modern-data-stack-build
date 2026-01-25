@@ -87,6 +87,15 @@ Add the templated profile above:
 export AWS_PROFILE="data-engineer"
 ```
 
+!!! tip "Using aws-vault"
+    If you configured aws-vault in [AWS Account Setup](../account-setup/aws.md), the `AWS_PROFILE` environment variable won't work the same way. Instead, you'll need to run Terraform commands within an aws-vault session:
+
+    ```sh
+    aws-vault exec data-engineer -- terraform init
+    ```
+
+    Or start a shell session with `aws-vault exec data-engineer` and run commands from there.
+
 #### Allow direnv
 
 ```sh
