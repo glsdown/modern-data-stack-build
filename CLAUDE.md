@@ -74,6 +74,24 @@ The project uses a three-role model for AWS access:
 - `infrastructure-admin` - assumes InfrastructureAdminRole (Terraform operations)
 - `admin` - assumes AdminRole (account administration)
 
+### AWS IAM Policy Patterns
+
+**Use `aws_iam_policy_document` for all policies** - this is the Terraform-native approach:
+- Validates at plan time, catching errors early
+- References variables and resources directly (no hard-coded ARNs)
+- No separate JSON template files - all policies inline
+- Type-safe Terraform syntax
+
+**Single-role assume policies** - one policy per role for flexible user assignment:
+- `AssumeAdminRolePolicy`, `AssumeDataEngineerRolePolicy`, `AssumeInfrastructureAdminRolePolicy`
+- Users get multiple policies attached based on needs (configured in `iam_users.auto.tfvars`)
+- Policies reference actual IAM role resources (e.g. `aws_iam_role.admin.arn`)
+
+**Secrets Manager** - containers managed by Terraform, values set via CLI:
+- AWS section only imports existing `terraform/github-token` secret
+- Snowflake credentials secret created in the Snowflake section (not prematurely in AWS)
+- Pattern documented for adding new secrets without creating them before they're needed
+
 ### Metadata & Governance
 
 * **OpenMetadata**: Tracks Kafka topics, Snowflake tables, dlt pipelines, dbt models
