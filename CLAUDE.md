@@ -92,6 +92,14 @@ The project uses a three-role model for AWS access:
 - Snowflake credentials secret created in the Snowflake section (not prematurely in AWS)
 - Pattern documented for adding new secrets without creating them before they're needed
 
+### Snowflake Patterns
+
+**Service account naming**: Use `SVC_` prefix for service accounts (e.g. `SVC_TERRAFORM`, `SVC_DBT`, `SVC_AIRBYTE`)
+
+**Terraform authentication**: Key-pair authentication (not password) for service accounts - more secure and required for CI/CD
+
+**Credentials storage**: Snowflake service account credentials stored in AWS Secrets Manager (`terraform/snowflake-credentials`)
+
 ### Metadata & Governance
 
 * **OpenMetadata**: Tracks Kafka topics, Snowflake tables, dlt pipelines, dbt models

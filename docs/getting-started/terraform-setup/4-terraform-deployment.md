@@ -70,7 +70,7 @@ We will be adding the following structure to your Terraform repository:
 Before setting up the workflows, you need a GitHub Personal Access Token (PAT) for the Terraform GitHub provider. This PAT allows Terraform to manage your GitHub organisation's resources.
 
 !!! tip "Use a Service / Bot Account"
-    Rather than using your personal GitHub account, consider creating a dedicated "service" account for your organisation (e.g., `acme-data-bot`). This provides:
+    Rather than using your personal GitHub account, consider creating a dedicated "service" account for your organisation (e.g., `svc)-acme-data`). This provides:
 
     - **Continuity**: The PAT doesn't break when team members leave
     - **Auditing**: Actions appear as the bot user, not personal accounts
