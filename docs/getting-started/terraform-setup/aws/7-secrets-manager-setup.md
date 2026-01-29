@@ -4,8 +4,7 @@ On this page, you will:
 
 - [x] Understand the pattern for managing secrets with Terraform
 - [x] Import the existing GitHub token secret
-- [x] Create additional secret containers for Snowflake
-- [x] Update IAM policies for CI/CD secret access
+- [x] Establish a pattern for adding new secrets
 
 ## Navigate to Your Terraform Directory
 
@@ -108,17 +107,6 @@ resource "aws_secretsmanager_secret" "github_token" {
     Environment = "all"
   }
 }
-
-resource "aws_secretsmanager_secret" "snowflake_credentials" {
-  name        = "terraform/snowflake-credentials"
-  description = "Snowflake service account credentials for Terraform provider"
-
-  tags = {
-    Name        = "terraform/snowflake-credentials"
-    ManagedBy   = "terraform"
-    Environment = "all"
-  }
-}
 ```
 
 !!! info "Why No Secret Values?"
@@ -136,9 +124,6 @@ import {
 }
 ```
 
-!!! note "New vs Imported Secrets"
-    The `github_token` secret already exists and will be imported. The `snowflake_credentials` secret is new and will be created by Terraform.
-
 ## Plan and Apply
 
 ```sh
@@ -148,11 +133,10 @@ terraform plan
 Review the output. You should see:
 
 ```
-Plan: 1 to import, 1 to add, 0 to change, 0 to destroy.
+Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 ```
 
-- **1 to import**: The existing `terraform/github-token` secret
-- **1 to add**: The new `terraform/snowflake-credentials` secret
+The existing `terraform/github-token` secret will be imported into Terraform state.
 
 Apply the changes:
 
@@ -160,81 +144,19 @@ Apply the changes:
 terraform apply
 ```
 
-## Set Secret Values
+## CI/CD Permissions
 
-After Terraform creates the secret containers, set the values using the CLI.
+The `TerraformGitHubActionsRole` already has permission to read secrets with the `terraform/` prefix. The policy document in `oidc.tf` uses a wildcard pattern:
 
-### Set Snowflake Credentials
-
-You'll set these credentials after creating the Snowflake service account in the [Snowflake Terraform setup](../../terraform-setup/snowflake/2-create-terraform-service-account.md). For now, you can create a placeholder:
-
-```sh
-aws secretsmanager put-secret-value \
-  --secret-id "terraform/snowflake-credentials" \
-  --secret-string '{"account": "placeholder", "user": "placeholder", "private_key": "placeholder"}' \
-  --profile infrastructure-admin
-```
-
-!!! warning "Update After Snowflake Setup"
-    Remember to update this secret with real credentials after completing the Snowflake service account setup. The placeholder values will cause Terraform to fail when configuring the Snowflake provider.
-
-!!! tip "Avoid Shell History"
-    To keep secrets out of your shell history, pipe the value from 1Password or use a heredoc with environment variables:
-
-    ```sh
-    aws secretsmanager put-secret-value \
-      --secret-id "terraform/snowflake-credentials" \
-      --secret-string "$(op item get 'Snowflake Terraform Service Account' --format json | jq -c '{account: .fields[0].value, user: .fields[1].value, private_key: .fields[2].value}')" \
-      --profile infrastructure-admin
-    ```
-
-## Update CI/CD Permissions
-
-The `TerraformGitHubActionsRole` needs permission to read the new Snowflake credentials secret. Update `policies/permissions/terraform-github-actions.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "TerraformStateAccess",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::terraform-state-${account_id}",
-        "arn:aws:s3:::terraform-state-${account_id}/*"
-      ]
-    },
-    {
-      "Sid": "TerraformStateLocking",
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/terraform-state-lock"
-    },
-    {
-      "Sid": "SecretsManagerAccess",
-      "Effect": "Allow",
-      "Action": [
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": [
-        "arn:aws:secretsmanager:${region}:${account_id}:secret:terraform/*"
-      ]
-    }
-  ]
+```hcl
+statement {
+  sid       = "SecretsManagerAccess"
+  actions   = ["secretsmanager:GetSecretValue"]
+  resources = ["arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"]
 }
 ```
 
-The wildcard `terraform/*` in the `SecretsManagerAccess` statement already covers both secrets. If you add secrets with different prefixes, you'll need to update this policy.
+This pattern covers any secret with the `terraform/` prefix. When you add new secrets with this prefix, no policy changes are needed.
 
 ## Secret Naming Convention
 
@@ -242,7 +164,7 @@ Organise secrets using a prefix-based naming convention:
 
 | Prefix | Purpose | Example |
 |--------|---------|---------|
-| `terraform/` | Secrets used by Terraform providers | `terraform/github-token`, `terraform/snowflake-credentials` |
+| `terraform/` | Secrets used by Terraform providers | `terraform/github-token` |
 | `applications/` | Secrets used by applications | `applications/api-keys`, `applications/database-urls` |
 | `cicd/` | Secrets specific to CI/CD | `cicd/deploy-keys`, `cicd/registry-credentials` |
 
@@ -250,17 +172,17 @@ This structure makes it straightforward to apply IAM policies to groups of secre
 
 ## Adding More Secrets
 
-To add a new secret:
+When you need additional secrets (for example, Snowflake credentials for the Terraform provider), follow this pattern:
 
 1. **Add the resource to `secrets.tf`**:
 
     ```hcl
-    resource "aws_secretsmanager_secret" "new_secret" {
-      name        = "terraform/new-secret"
-      description = "Description of the secret"
+    resource "aws_secretsmanager_secret" "snowflake_credentials" {
+      name        = "terraform/snowflake-credentials"
+      description = "Snowflake service account credentials for Terraform provider"
 
       tags = {
-        Name        = "terraform/new-secret"
+        Name        = "terraform/snowflake-credentials"
         ManagedBy   = "terraform"
         Environment = "all"
       }
@@ -273,12 +195,22 @@ To add a new secret:
 
     ```sh
     aws secretsmanager put-secret-value \
-      --secret-id "terraform/new-secret" \
-      --secret-string "your-secret-value" \
+      --secret-id "terraform/snowflake-credentials" \
+      --secret-string '{"account": "your-account", "user": "TERRAFORM_SVC", "private_key": "..."}' \
       --profile infrastructure-admin
     ```
 
 4. **Update IAM policies** if the secret uses a new prefix
+
+!!! tip "Avoid Shell History"
+    To keep secrets out of your shell history, pipe the value from a password manager:
+
+    ```sh
+    aws secretsmanager put-secret-value \
+      --secret-id "terraform/snowflake-credentials" \
+      --secret-string "$(op item get 'Snowflake Terraform' --format json | jq -c '...')" \
+      --profile infrastructure-admin
+    ```
 
 ## Secret Rotation
 
@@ -309,11 +241,6 @@ output "github_token_secret_arn" {
   description = "ARN of the GitHub token secret"
   value       = aws_secretsmanager_secret.github_token.arn
 }
-
-output "snowflake_credentials_secret_arn" {
-  description = "ARN of the Snowflake credentials secret"
-  value       = aws_secretsmanager_secret.snowflake_credentials.arn
-}
 ```
 
 ## Verify the Setup
@@ -332,7 +259,6 @@ Expected state output:
 
 ```
 aws_secretsmanager_secret.github_token
-aws_secretsmanager_secret.snowflake_credentials
 ```
 
 ## Commit Your Work
