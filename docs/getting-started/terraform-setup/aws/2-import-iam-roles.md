@@ -107,199 +107,30 @@ github_infrastructure_repo = "data-stack-infrastructure"  # Replace with your re
 !!! note "Variable Naming"
     We use `github_organization` (not `github_org`) to match the variable name used in `terraform/github/`. This makes environment variable sharing seamless.
 
-## Organise Policies in Separate Files
-
-Rather than embedding JSON policies inline in HCL, store them as separate JSON files. This makes policies easier to read, test, and reuse.
-
-Create the policies directory structure:
-
-```sh
-mkdir -p terraform/aws/policies/trust
-mkdir -p terraform/aws/policies/permissions
-```
-
-Your directory structure will look like:
-
-```
-terraform/aws/
-├── policies/
-│   ├── trust/
-│   │   ├── assume-role-same-account.json
-│   │   └── github-oidc-trust.json.tpl
-│   └── permissions/
-│       ├── data-engineer-s3.json.tpl
-│       ├── data-engineer-dynamodb.json.tpl
-│       ├── infrastructure-admin.json.tpl
-│       └── terraform-github-actions.json.tpl
-├── iam_roles.tf
-├── oidc.tf
-└── ...
-```
-
-!!! tip "Template Files"
-    Files ending in `.tpl` use Terraform's `templatefile()` function to substitute variables. Plain `.json` files are static and use the `file()` function.
-
-## Create Trust Policy Files
-
-### Same-Account Trust Policy
-
-Create `policies/trust/assume-role-same-account.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${account_id}:root"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-```
-
-### GitHub OIDC Trust Policy
-
-Create `policies/trust/github-oidc-trust.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "${oidc_provider_arn}"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-        },
-        "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:${github_organization}/${github_infrastructure_repo}:*"
-        }
-      }
-    }
-  ]
-}
-```
-
-## Create Permission Policy Files
-
-### Terraform GitHub Actions Policy
-
-Create `policies/permissions/terraform-github-actions.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "TerraformStateAccess",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::terraform-state-${account_id}",
-        "arn:aws:s3:::terraform-state-${account_id}/*"
-      ]
-    },
-    {
-      "Sid": "TerraformStateLocking",
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/terraform-state-lock"
-    },
-    {
-      "Sid": "SecretsManagerAccess",
-      "Effect": "Allow",
-      "Action": [
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": [
-        "arn:aws:secretsmanager:${region}:${account_id}:secret:terraform/*"
-      ]
-    }
-  ]
-}
-```
-
-### Data Engineer S3 Policy
-
-Create `policies/permissions/data-engineer-s3.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "S3FullAccessExceptState",
-      "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "DenyTerraformStateWrite",
-      "Effect": "Deny",
-      "Action": [
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::terraform-state-${account_id}/*"
-      ]
-    }
-  ]
-}
-```
-
-### Data Engineer DynamoDB Policy
-
-Create `policies/permissions/data-engineer-dynamodb.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "DynamoDBFullAccess",
-      "Effect": "Allow",
-      "Action": "dynamodb:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "DenyTerraformStateLockWrite",
-      "Effect": "Deny",
-      "Action": [
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:UpdateItem"
-      ],
-      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/terraform-state-lock"
-    }
-  ]
-}
-```
-
 ## Create IAM Roles Configuration
 
-Now create `iam_roles.tf` using the policy files:
+Create `iam_roles.tf` using `aws_iam_policy_document` for all policies. This is the Terraform-native approach - it validates at plan time, references resources directly, and handles JSON formatting automatically.
 
 ```hcl
 # =============================================================================
 # IAM Roles
 # =============================================================================
+
+# -----------------------------------------------------------------------------
+# Trust Policy Documents
+# -----------------------------------------------------------------------------
+
+# Trust policy allowing users in the same account to assume roles
+data "aws_iam_policy_document" "assume_role_same_account" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.aws_account_id}:root"]
+    }
+  }
+}
 
 # -----------------------------------------------------------------------------
 # AdminRole - Full administrative access
@@ -308,9 +139,7 @@ resource "aws_iam_role" "admin" {
   name        = "AdminRole"
   description = "Full administrative access for account administrators"
 
-  assume_role_policy = templatefile("${path.module}/policies/trust/assume-role-same-account.json.tpl", {
-    account_id = var.aws_account_id
-  })
+  assume_role_policy = data.aws_iam_policy_document.assume_role_same_account.json
 
   tags = {
     Name = "AdminRole"
@@ -329,23 +158,36 @@ resource "aws_iam_role" "data_engineer" {
   name        = "DataEngineerRole"
   description = "Permissions for data platform development and operations"
 
-  assume_role_policy = templatefile("${path.module}/policies/trust/assume-role-same-account.json.tpl", {
-    account_id = var.aws_account_id
-  })
+  assume_role_policy = data.aws_iam_policy_document.assume_role_same_account.json
 
   tags = {
     Name = "DataEngineerRole"
   }
 }
 
-# Custom policies for DataEngineerRole (with state file restrictions)
+# S3 policy with state file write restrictions
+data "aws_iam_policy_document" "data_engineer_s3" {
+  statement {
+    sid       = "S3FullAccessExceptState"
+    actions   = ["s3:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "DenyTerraformStateWrite"
+    effect = "Deny"
+    actions = [
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+    resources = ["arn:aws:s3:::terraform-state-${var.aws_account_id}/*"]
+  }
+}
+
 resource "aws_iam_policy" "data_engineer_s3" {
   name        = "DataEngineerS3Policy"
   description = "S3 access for data engineers with state file write restrictions"
-
-  policy = templatefile("${path.module}/policies/permissions/data-engineer-s3.json.tpl", {
-    account_id = var.aws_account_id
-  })
+  policy      = data.aws_iam_policy_document.data_engineer_s3.json
 }
 
 resource "aws_iam_role_policy_attachment" "data_engineer_s3" {
@@ -353,14 +195,30 @@ resource "aws_iam_role_policy_attachment" "data_engineer_s3" {
   policy_arn = aws_iam_policy.data_engineer_s3.arn
 }
 
+# DynamoDB policy with state lock restrictions
+data "aws_iam_policy_document" "data_engineer_dynamodb" {
+  statement {
+    sid       = "DynamoDBFullAccess"
+    actions   = ["dynamodb:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "DenyTerraformStateLockWrite"
+    effect = "Deny"
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:UpdateItem"
+    ]
+    resources = ["arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/terraform-state-lock"]
+  }
+}
+
 resource "aws_iam_policy" "data_engineer_dynamodb" {
   name        = "DataEngineerDynamoDBPolicy"
   description = "DynamoDB access for data engineers with state lock restrictions"
-
-  policy = templatefile("${path.module}/policies/permissions/data-engineer-dynamodb.json.tpl", {
-    account_id = var.aws_account_id
-    region     = var.aws_region
-  })
+  policy      = data.aws_iam_policy_document.data_engineer_dynamodb.json
 }
 
 resource "aws_iam_role_policy_attachment" "data_engineer_dynamodb" {
@@ -391,9 +249,7 @@ resource "aws_iam_role" "infrastructure_admin" {
   name        = "InfrastructureAdminRole"
   description = "Role for Terraform infrastructure management"
 
-  assume_role_policy = templatefile("${path.module}/policies/trust/assume-role-same-account.json.tpl", {
-    account_id = var.aws_account_id
-  })
+  assume_role_policy = data.aws_iam_policy_document.assume_role_same_account.json
 
   tags = {
     Name = "InfrastructureAdminRole"
@@ -429,17 +285,39 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 # -----------------------------------------------------------------------------
+# Trust policy for GitHub Actions OIDC
+# -----------------------------------------------------------------------------
+data "aws_iam_policy_document" "github_oidc_trust" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.github.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:${var.github_organization}/${var.github_infrastructure_repo}:*"]
+    }
+  }
+}
+
+# -----------------------------------------------------------------------------
 # TerraformGitHubActionsRole - Role for CI/CD pipelines
 # -----------------------------------------------------------------------------
 resource "aws_iam_role" "terraform_github_actions" {
   name        = "TerraformGitHubActionsRole"
   description = "Role for GitHub Actions to run Terraform"
 
-  assume_role_policy = templatefile("${path.module}/policies/trust/github-oidc-trust.json.tpl", {
-    oidc_provider_arn = aws_iam_openid_connect_provider.github.arn
-    github_organization        = var.github_organization
-    github_infrastructure_repo = var.github_infrastructure_repo
-  })
+  assume_role_policy = data.aws_iam_policy_document.github_oidc_trust.json
 
   tags = {
     Name = "TerraformGitHubActionsRole"
@@ -449,14 +327,89 @@ resource "aws_iam_role" "terraform_github_actions" {
 # -----------------------------------------------------------------------------
 # Policy for Terraform GitHub Actions Role
 # -----------------------------------------------------------------------------
+data "aws_iam_policy_document" "terraform_github_actions" {
+  # State management
+  statement {
+    sid = "TerraformStateAccess"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::terraform-state-${var.aws_account_id}",
+      "arn:aws:s3:::terraform-state-${var.aws_account_id}/*"
+    ]
+  }
+
+  statement {
+    sid = "TerraformStateLocking"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = ["arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/terraform-state-lock"]
+  }
+
+  # Secrets Manager - read for provider credentials, manage for terraform/* secrets
+  statement {
+    sid       = "SecretsManagerAccess"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = ["arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"]
+  }
+
+  statement {
+    sid = "SecretsManagerManagement"
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecrets",
+      "secretsmanager:TagResource",
+      "secretsmanager:CreateSecret"
+    ]
+    resources = ["arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"]
+  }
+
+  # IAM - read access for planning, tag access for applying
+  statement {
+    sid = "IAMReadAccess"
+    actions = [
+      "iam:GetRole",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListRolePolicies",
+      "iam:ListAttachedRolePolicies",
+      "iam:GetUser",
+      "iam:ListUserPolicies",
+      "iam:ListAttachedUserPolicies",
+      "iam:ListOpenIDConnectProviders",
+      "iam:GetOpenIDConnectProvider",
+      "iam:TagRole",
+      "iam:TagPolicy",
+      "iam:TagUser",
+      "iam:TagOpenIDConnectProvider"
+    ]
+    resources = ["*"]
+  }
+
+  # Budgets - for managing AWS budget alerts
+  statement {
+    sid = "BudgetsManagement"
+    actions = [
+      "budgets:ViewBudget",
+      "budgets:ModifyBudget",
+      "budgets:DescribeBudget",
+      "budgets:DescribeBudgets"
+    ]
+    resources = ["*"]
+  }
+}
+
 resource "aws_iam_policy" "terraform_github_actions" {
   name        = "TerraformGitHubActionsPolicy"
   description = "Permissions for Terraform GitHub Actions"
-
-  policy = templatefile("${path.module}/policies/permissions/terraform-github-actions.json.tpl", {
-    account_id = var.aws_account_id
-    region     = var.aws_region
-  })
+  policy      = data.aws_iam_policy_document.terraform_github_actions.json
 
   tags = {
     Name = "TerraformGitHubActionsPolicy"
@@ -469,89 +422,82 @@ resource "aws_iam_role_policy_attachment" "terraform_github_actions" {
 }
 ```
 
+!!! info "CI/CD Permissions for AWS Management"
+    This policy includes permissions for IAM, Budgets, and Secrets Manager so that GitHub Actions can run `terraform plan` and `terraform apply` on the AWS configuration. Without these, CI/CD would fail when you add AWS plan/apply jobs to the workflows.
+
+    The policy follows least privilege - read access for most resources, with limited write access for tags and secrets management.
+
 ## Create Infrastructure Admin Policy
 
-Create `policies/permissions/infrastructure-admin.json.tpl`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "TerraformStateFullAccess",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::terraform-state-${account_id}",
-        "arn:aws:s3:::terraform-state-${account_id}/*"
-      ]
-    },
-    {
-      "Sid": "TerraformStateLocking",
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/terraform-state-lock"
-    },
-    {
-      "Sid": "IAMFullAccess",
-      "Effect": "Allow",
-      "Action": "iam:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "S3FullAccess",
-      "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "DynamoDBFullAccess",
-      "Effect": "Allow",
-      "Action": "dynamodb:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "SecretsManagerFullAccess",
-      "Effect": "Allow",
-      "Action": "secretsmanager:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "BudgetsFullAccess",
-      "Effect": "Allow",
-      "Action": "budgets:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "CloudWatchFullAccess",
-      "Effect": "Allow",
-      "Action": "cloudwatch:*",
-      "Resource": "*"
-    }
-  ]
-}
-```
-
-Add the policy resource to `iam_roles.tf` (add this before the InfrastructureAdminRole attachment):
+Add the policy document and resource to `iam_roles.tf` (before the InfrastructureAdminRole attachment):
 
 ```hcl
+data "aws_iam_policy_document" "infrastructure_admin" {
+  statement {
+    sid = "TerraformStateFullAccess"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::terraform-state-${var.aws_account_id}",
+      "arn:aws:s3:::terraform-state-${var.aws_account_id}/*"
+    ]
+  }
+
+  statement {
+    sid = "TerraformStateLocking"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = ["arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/terraform-state-lock"]
+  }
+
+  statement {
+    sid       = "IAMFullAccess"
+    actions   = ["iam:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "S3FullAccess"
+    actions   = ["s3:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "DynamoDBFullAccess"
+    actions   = ["dynamodb:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "SecretsManagerFullAccess"
+    actions   = ["secretsmanager:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "BudgetsFullAccess"
+    actions   = ["budgets:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "CloudWatchFullAccess"
+    actions   = ["cloudwatch:*"]
+    resources = ["*"]
+  }
+}
+
 resource "aws_iam_policy" "infrastructure_admin" {
   name        = "InfrastructureAdminPolicy"
   description = "Permissions for infrastructure management via Terraform"
-
-  policy = templatefile("${path.module}/policies/permissions/infrastructure-admin.json.tpl", {
-    account_id = var.aws_account_id
-    region     = var.aws_region
-  })
+  policy      = data.aws_iam_policy_document.infrastructure_admin.json
 
   tags = {
     Name = "InfrastructureAdminPolicy"
@@ -559,12 +505,12 @@ resource "aws_iam_policy" "infrastructure_admin" {
 }
 ```
 
-!!! tip "Benefits of External Policy Files"
-    - **Readability**: JSON is easier to read than embedded HCL strings
-    - **Validation**: JSON files can be validated with external tools
-    - **Reusability**: Same policy file can be used by multiple resources
-    - **Testing**: Policies can be tested independently with AWS IAM Policy Simulator
-    - **Version control**: Changes to policies are clearly visible in diffs
+!!! tip "Benefits of aws_iam_policy_document"
+    - **Validation**: Errors caught at plan time, not apply time
+    - **Direct references**: Use variables and resource attributes directly
+    - **No separate files**: Everything in one place, easier to review
+    - **Type safety**: Terraform validates the structure
+    - **Reusability**: Policy documents can be combined with `source_policy_documents`
 
 ## Create Import Configuration
 
