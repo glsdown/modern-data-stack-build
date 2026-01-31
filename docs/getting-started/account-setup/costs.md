@@ -58,9 +58,15 @@ These are the tools introduced so far in the documentation, organised by categor
 
 Snowflake pricing is based on:
 
-- **Compute**: Credits consumed by warehouses (varies by size and runtime)
-- **Storage**: ~$23-40/TB/month depending on region and edition
+- **Compute**: Credits consumed by warehouses (per-second billing, 60-second minimum)
+- **Storage**: ~$23/TB/month (compressed data, typically 3-5x compression ratio)
+- **Data transfer**: Egress from Snowflake (minimal for most use cases)
 - **Edition**: Standard, Enterprise, or Business Critical
+
+For a small team just starting out, expect:
+
+- **Compute**: $50-200/month depending on query volume
+- **Storage**: $23/TB/month (your raw data compresses significantly)
 
 !!! warning "Snowflake Cost Management"
     Snowflake can become expensive quickly if warehouses are left running. Always configure:
@@ -68,6 +74,9 @@ Snowflake pricing is based on:
     - `AUTO_SUSPEND` (60-300 seconds recommended)
     - `AUTO_RESUME = TRUE`
     - Resource monitors with credit limits
+
+!!! tip "Start Small"
+    Begin with X-Small warehouses and scale up only when needed. Snowflake makes it easy to resize warehouses without downtime.
 
 ## Estimated Monthly Costs
 
