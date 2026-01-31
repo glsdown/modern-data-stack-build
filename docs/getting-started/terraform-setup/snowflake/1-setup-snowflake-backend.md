@@ -94,6 +94,12 @@ variable "snowflake_account_name" {
   description = "Snowflake account name"
   type        = string
 }
+
+variable "snowflake_username" {
+  description = "Snowflake username"
+  type        = string
+  default     = null
+}
 ```
 
 ## Create Variable Values
@@ -104,6 +110,7 @@ Create `terraform.tfvars` to provide your specific values:
 # Snowflake Configuration
 snowflake_organization_name = "MYORG"     # Replace with your organization name
 snowflake_account_name      = "MYACCOUNT" # Replace with your account name
+snowflake_username          = "your-admin-username" # Temporary - will be SVC_TERRAFORM once setup
 ```
 
 !!! info "Finding Your Organization and Account Names"
@@ -148,7 +155,7 @@ provider "snowflake" {
   alias             = "account_admin"
   organization_name = var.snowflake_organization_name
   account_name      = var.snowflake_account_name
-  user              = "your_admin_username"  # Your admin user from account setup
+  user              = var.snowflake_username
   password          = var.SNOWFLAKE_PASSWORD
   role              = "ACCOUNTADMIN"
 }
@@ -158,7 +165,7 @@ provider "snowflake" {
   alias             = "sys_admin"
   organization_name = var.snowflake_organization_name
   account_name      = var.snowflake_account_name
-  user              = "your_admin_username"
+  user              = var.snowflake_username
   password          = var.SNOWFLAKE_PASSWORD
   role              = "SYSADMIN"
 }
@@ -168,7 +175,7 @@ provider "snowflake" {
   alias             = "security_admin"
   organization_name = var.snowflake_organization_name
   account_name      = var.snowflake_account_name
-  user              = "your_admin_username"
+  user              = var.snowflake_username
   password          = var.SNOWFLAKE_PASSWORD
   role              = "SECURITYADMIN"
 }
@@ -178,14 +185,11 @@ provider "snowflake" {
   alias             = "user_admin"
   organization_name = var.snowflake_organization_name
   account_name      = var.snowflake_account_name
-  user              = "your_admin_username"
+  user              = var.snowflake_username
   password          = var.SNOWFLAKE_PASSWORD
   role              = "USERADMIN"
 }
 ```
-
-!!! warning "Replace Username"
-    Replace `your_admin_username` with your actual admin username from Snowflake account setup.
 
 !!! info "Authentication Methods"
     The Snowflake provider supports several authentication methods:
@@ -223,7 +227,7 @@ variable "SNOWFLAKE_PASSWORD" {
 
 ### Set the Password Environment Variable
 
-Export the password as an environment variable:
+Export the password as an environment variable. Add this to your .envrc and reload the variables using `direnv allow .`
 
 ```sh
 export TF_VAR_SNOWFLAKE_PASSWORD="your-admin-password"
