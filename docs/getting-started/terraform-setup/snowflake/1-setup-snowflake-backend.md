@@ -123,23 +123,69 @@ snowflake_account_name      = "MYACCOUNT" # Replace with your account name
     SHOW ORGANIZATION ACCOUNTS;
     ```
 
-## Configure the Snowflake Provider
+## Configure the Snowflake Providers
+
+Snowflake uses role-based access control (RBAC) where different operations require different roles. Rather than running Terraform with `ACCOUNTADMIN` for everything (which would work but violates least privilege), we configure separate providers for each role:
+
+| Role | Purpose |
+|------|---------|
+| **ACCOUNTADMIN** | Account-level settings (network policies, storage integrations) |
+| **SYSADMIN** | Object management (warehouses, databases, schemas) |
+| **SECURITYADMIN** | Access control (grants, privileges) |
+| **USERADMIN** | User management (users, roles) |
 
 Create `providers.tf`:
 
 ```hcl
-# Snowflake Provider
-# Authentication via environment variables (SNOWFLAKE_USER, SNOWFLAKE_PRIVATE_KEY)
+# =============================================================================
+# Snowflake Providers
+# =============================================================================
+# Each provider uses a different Snowflake role for least-privilege access.
+# Modules specify which provider they need via configuration_aliases.
+
+# Account Admin - for account-level settings (rarely needed)
 provider "snowflake" {
+  alias             = "account_admin"
   organization_name = var.snowflake_organization_name
   account_name      = var.snowflake_account_name
+  user              = "your_admin_username"  # Your admin user from account setup
+  password          = var.SNOWFLAKE_PASSWORD
+  role              = "ACCOUNTADMIN"
+}
+
+# System Admin - for creating warehouses, databases, schemas
+provider "snowflake" {
+  alias             = "sys_admin"
+  organization_name = var.snowflake_organization_name
+  account_name      = var.snowflake_account_name
+  user              = "your_admin_username"
+  password          = var.SNOWFLAKE_PASSWORD
+  role              = "SYSADMIN"
+}
+
+# Security Admin - for managing grants and privileges
+provider "snowflake" {
+  alias             = "security_admin"
+  organization_name = var.snowflake_organization_name
+  account_name      = var.snowflake_account_name
+  user              = "your_admin_username"
+  password          = var.SNOWFLAKE_PASSWORD
+  role              = "SECURITYADMIN"
+}
+
+# User Admin - for creating users and roles
+provider "snowflake" {
+  alias             = "user_admin"
+  organization_name = var.snowflake_organization_name
+  account_name      = var.snowflake_account_name
+  user              = "your_admin_username"
+  password          = var.SNOWFLAKE_PASSWORD
+  role              = "USERADMIN"
 }
 ```
 
-This configuration:
-
-- Sets the organisation and account names from variables
-- Uses environment variables for authentication (we'll set these up next)
+!!! warning "Replace Username"
+    Replace `your_admin_username` with your actual admin username from Snowflake account setup.
 
 !!! info "Authentication Methods"
     The Snowflake provider supports several authentication methods:
@@ -149,25 +195,11 @@ This configuration:
     - OAuth
     - Browser-based SSO
 
-    We'll use key-pair authentication because it's more secure than passwords and works in CI/CD pipelines.
+    We'll use password authentication temporarily for bootstrapping. In the next section, you'll create a service account with key-pair authentication and update these providers.
 
 ## Set Up Authentication
 
-Before you can initialise Terraform, you need to set up authentication. For the initial setup, you'll use your admin user with password authentication. Later, you'll create a service account with key-pair authentication.
-
-### Temporary Password Authentication
-
-For initial bootstrapping, add password authentication to your provider:
-
-```hcl
-# Snowflake Provider - temporary password auth for initial setup
-provider "snowflake" {
-  organization_name = var.snowflake_organization_name
-  account_name      = var.snowflake_account_name
-  user              = "your_admin_username"  # Your admin user from account setup
-  password          = var.SNOWFLAKE_PASSWORD
-}
-```
+Before you can initialise Terraform, you need to set up authentication. For the initial setup, you'll use your admin user with password authentication.
 
 Add the password variable to `variables.tf`:
 
