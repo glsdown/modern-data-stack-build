@@ -150,7 +150,7 @@ You should have a working `terraform/snowflake/` directory with:
 | [3. Databases](3-databases.md) | ANALYTICS, ANALYTICS_DEV, ADMIN databases |
 | [4. Functional Roles](4-functional-roles.md) | ANALYTICS_DEVELOPER, TRANSFORMER, REPORTER roles |
 | [5. Users](5-users.md) | Admin users, developers, service accounts |
-| [6. Schemas](6-schemas.md) | RAW, STAGING, MARTS, REPORTING schemas |
+| [6. Schemas](6-schemas.md) | REPORTING schema with fine-grained access |
 | [7. Network Policies](7-network-policies.md) | IP allowlisting for security |
 | [8. Storage Integrations](8-storage-integrations.md) | S3 access for data loading |
 | [9. SSO Setup](9-sso-setup.md) | SAML2 integration (optional) |
