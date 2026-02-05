@@ -50,6 +50,15 @@ These are the tools introduced so far in the documentation, organised by categor
 | **AWS S3** | 5GB (free tier) | ~$0.023/GB/month (Standard) | [S3 pricing](https://aws.amazon.com/s3/pricing/) |
 | **AWS DynamoDB** | 25GB + 25 read/write units | Pay-per-request or provisioned | [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/) |
 
+!!! note "S3 Data Lake Costs"
+    The stack creates three S3 buckets for the data lake (dev, staging, prod). Costs depend on data volume:
+
+    - **Storage**: ~$0.023/GB/month (Standard), less for Infrequent Access
+    - **Requests**: $0.005 per 1,000 PUT requests, $0.0004 per 1,000 GET requests
+    - **Data transfer**: Free within the same region, egress charges for cross-region
+
+    For a small data platform, expect $5-50/month for S3 depending on data volume.
+
 ### Data Warehouse
 
 | Tool | Free Tier | Paid Tier | Pricing Link |
@@ -87,9 +96,10 @@ Here's a rough estimate for a small data team (3-5 people) in the early stages:
 | GitHub Team | $12/month | $20/month | 3-5 users |
 | 1Password Teams | $20/month | $20/month | Up to 10 users |
 | AWS (Terraform state) | $1/month | $5/month | S3 + DynamoDB minimal usage |
+| AWS (S3 Data Lake) | $5/month | $50/month | 3 buckets (dev, staging, prod) |
 | AWS Secrets Manager | $2/month | $10/month | 5-25 secrets |
 | Snowflake | $50/month | $300/month | Depends heavily on usage |
-| **Total** | **~$85/month** | **~$355/month** | |
+| **Total** | **~$90/month** | **~$405/month** | |
 
 !!! info "Your Costs Will Vary"
     These estimates assume minimal usage during initial setup. Costs will increase as you:
@@ -219,6 +229,7 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 |-------|----------------------|
 | **Getting Started** (GitHub, 1Password, minimal AWS) | $30-50 |
 | **Terraform Setup** (+ Snowflake dev usage) | $80-150 |
+| **Data Warehouse Build** (+ S3 data lake, storage integrations) | $100-400 |
 | **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.

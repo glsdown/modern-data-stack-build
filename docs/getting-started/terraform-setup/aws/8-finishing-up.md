@@ -437,3 +437,8 @@ You've successfully configured AWS infrastructure with Terraform:
 Your next step is to configure Snowflake with Terraform. You'll create a service account for Terraform, import your admin user, and establish patterns for managing Snowflake resources.
 
 Continue to [Snowflake Infrastructure with Terraform](../snowflake/index.md) →
+
+---
+
+!!! info "Building More AWS Infrastructure"
+    This section focused on importing existing AWS resources and establishing the foundation. When you're ready to build additional AWS infrastructure for your data platform (S3 data lake buckets, application secrets), continue to the [Build Your AWS Infrastructure](../../../build/aws/index.md) section.
