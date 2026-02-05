@@ -38,6 +38,7 @@ Quick reference for documentation style decisions in the modern data stack proje
 | `!!! info` | Background, context, explanations | "About Snowflake Editions", "Why Use RBAC" |
 | `!!! tip` | Best practices, recommendations | "Choosing a Region", "Keyboard Shortcuts" |
 | `!!! warning` | Critical info, risks, irreversible actions | "Store Recovery Codes", "Cannot Be Undone" |
+| `!!! danger` | Severe risks, potential lockouts, destructive actions | "Use With Caution", "Risk of Lockout" |
 | `!!! success` | Achievements, completions, checklists | "What You've Accomplished", "Security Checklist" |
 | `!!! note` | Additional info, future considerations | "Future Enhancements", "For Reference" |
 
@@ -88,6 +89,36 @@ Quick reference for documentation style decisions in the modern data stack proje
 | Sequential steps | `1. Navigate to IAM`<br>`2. Click Roles` |
 | Options/features | `- Option A`<br>`- Option B` |
 | Checklists | `- [x] Task complete`<br>`- [ ] Task pending` |
+
+## Tabbed Content
+
+Use Material for MkDocs tabbed content for platform-specific instructions:
+
+```markdown
+=== "AWS S3"
+
+    Content for AWS users goes here.
+
+    - Indented with 4 spaces
+    - Can include code blocks, lists, etc.
+
+=== "Google Cloud Storage"
+
+    Content for GCP users goes here.
+```
+
+| Use For | Example Tabs |
+|---------|--------------|
+| Cloud provider variants | "AWS S3", "Google Cloud Storage", "Azure Blob" |
+| Operating system instructions | "macOS", "Linux", "Windows" |
+| Identity provider setup | "Okta", "Azure AD", "Google Workspace" |
+| Tool alternatives | "Homebrew", "apt", "Manual Install" |
+
+Guidelines:
+- Use when content differs significantly between options
+- Keep tab names short and descriptive
+- Ensure all tabs have equivalent content coverage
+- Indent content with 4 spaces under each tab
 
 ## Common Patterns
 

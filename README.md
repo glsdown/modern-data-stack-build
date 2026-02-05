@@ -10,7 +10,7 @@ The project is relatively contrived in order to simplify the requirements of the
 
 There will be 4 sources of ingestion:
 
-- A simple Python app which will run in [PythonAnywhere](https://www.pythonanywhere.com/) which will send event data simulating product purchases to a Kafka topic
+- A simple local React app which will be used to send event data simulating product purchases to a Kafka topic
 - A free PostgreSQL database holding customer details hosted on [Clever Cloud](https://www.clever.cloud/) and mocked via [Mockaroo](https://mockaroo.com/)
 - API endpoint for [exchange rate data](https://docs.openexchangerates.org/reference/historical-json)
 - Customer data held in [HubSpot](https://www.hubspot.com/products/crm) as example SaaS data extraction
@@ -23,9 +23,9 @@ dbt will be responsible for loading the data from bronze and into silver.
 
 Streamed data - `fact_purchases`
 
-| customer_email | product_id | quantity | purchase_ts |
+| customer_id | product_id | quantity | purchase_ts |
 | --- | --- | --- | --- |
-| string | string | int | timestamp |
+| bigint | bigint | int | timestamp |
 
 Database data - `dim_products`
 
@@ -35,7 +35,7 @@ Database data - `dim_products`
 
 API data - `dim_currency`
 
-| id | base_currency | currency | rate | exchange_ts | 
+| id | base_currency | currency | rate | exchange_ts |
 | --- |--- | --- | --- | --- |
 | string | string | string | float | timestamp |
 
