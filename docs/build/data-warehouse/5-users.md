@@ -3,7 +3,7 @@
 On this page, you will:
 
 - [x] Build the `snowflake_user` module
-- [x] Create service accounts for dbt and BI tools
+- [x] Import the `SVC_TERRAFORM` service account
 - [x] Create developer and admin users
 
 ## User Categories
@@ -12,11 +12,14 @@ Our Snowflake setup has several categories of users:
 
 | Category | Example | Default Role | Default Warehouse |
 |----------|---------|--------------|-------------------|
+| **Infrastructure** | `SVC_TERRAFORM` | ACCOUNTADMIN | DEVELOPER |
 | **Admin** | `JBLOGGS_ADMIN` | SYSADMIN | DEVELOPER |
 | **Developer** | `JBLOGGS` | ANALYTICS_DEVELOPER | DEVELOPER |
-| **Transformer** | `SVC_DBT` | ANALYTICS_TRANSFORMER | TRANSFORMING |
-| **Reporter** | `SVC_METABASE` | ANALYTICS_REPORTER | REPORTING |
-| **Loader** | `SVC_AIRBYTE` | Dedicated role | LOADING |
+| **Transformer** | `SVC_DBT` (future) | ANALYTICS_TRANSFORMER | TRANSFORMING |
+| **Reporter** | `SVC_METABASE` (future) | ANALYTICS_REPORTER | REPORTING |
+| **Loader** | `SVC_AIRBYTE` (future) | Dedicated role | LOADING |
+
+Service accounts for tools like dbt, Metabase, and Airbyte are created when those tools are set up, not here. This page focuses on the core users needed for the data warehouse.
 
 Users share the workload-specific warehouses we created earlier. This approach:
 
@@ -155,11 +158,6 @@ variable "user_default_role" {
   description = "Default role for the user (ignored if user_create_dedicated_role is true)"
   type        = string
   default     = "PUBLIC"
-
-  validation {
-    condition     = upper(var.user_default_role) != "ACCOUNTADMIN"
-    error_message = "Default role cannot be ACCOUNTADMIN. Use SYSADMIN as the highest default."
-  }
 }
 
 variable "user_default_warehouse" {
@@ -207,7 +205,9 @@ output "user_default_warehouse" {
 }
 ```
 
-## Create Service Accounts
+## Import SVC_TERRAFORM
+
+The `SVC_TERRAFORM` service account was created during the [Getting Started](../../getting-started/terraform-setup/snowflake/2-create-terraform-service-account.md) section. Now we'll import it into this module-based configuration.
 
 Create `users.tf` in your root Snowflake directory:
 
@@ -217,9 +217,9 @@ Create `users.tf` in your root Snowflake directory:
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# dbt Transformer
+# Terraform Service Account
 # -----------------------------------------------------------------------------
-module "user_svc_dbt" {
+module "user_svc_terraform" {
   source = "./modules/snowflake_user"
 
   providers = {
@@ -227,35 +227,34 @@ module "user_svc_dbt" {
     snowflake.user_admin     = snowflake.user_admin
   }
 
-  user_name               = "SVC_DBT"
-  user_comment            = "Service account for dbt transformations."
-  user_display_name       = "dbt Service Account"
+  user_name               = "SVC_TERRAFORM"
+  user_comment            = "Service account for Terraform infrastructure management."
+  user_display_name       = "Terraform Service Account"
   user_is_service_account = true
 
-  user_default_warehouse = module.warehouse_transforming.warehouse_name
-  user_default_role      = module.role_analytics_transformer.role_name
-}
-
-# -----------------------------------------------------------------------------
-# Metabase Reporter
-# -----------------------------------------------------------------------------
-module "user_svc_metabase" {
-  source = "./modules/snowflake_user"
-
-  providers = {
-    snowflake.security_admin = snowflake.security_admin
-    snowflake.user_admin     = snowflake.user_admin
-  }
-
-  user_name               = "SVC_METABASE"
-  user_comment            = "Service account for Metabase BI tool."
-  user_display_name       = "Metabase Service Account"
-  user_is_service_account = true
-
-  user_default_warehouse = module.warehouse_reporting.warehouse_name
-  user_default_role      = module.role_analytics_reporter.role_name
+  user_default_warehouse = module.warehouse_developer.warehouse_name
+  user_default_role      = "SYSADMIN"
+  user_additional_roles  = ["SYSADMIN", "SECURITYADMIN", "USERADMIN"]
 }
 ```
+
+Create `imports.tf` to import the existing user:
+
+```hcl
+# =============================================================================
+# Import Blocks
+# =============================================================================
+# These blocks import existing Snowflake resources into Terraform state.
+# Remove these blocks after the initial import is complete.
+
+import {
+  to = module.user_svc_terraform.snowflake_user.this
+  id = "SVC_TERRAFORM"
+}
+```
+
+!!! note "After Import"
+    Once you've run `terraform apply` and the import is successful, delete the `imports.tf` file. The user is now managed by Terraform and doesn't need the import block.
 
 ## Create Human Users
 
@@ -417,7 +416,7 @@ Commit your changes and push to trigger the CI/CD pipeline:
 
 ```sh
 git add terraform/snowflake/
-git commit -m "Add snowflake_user module and service accounts"
+git commit -m "Add snowflake_user module and import SVC_TERRAFORM"
 git push
 ```
 
@@ -426,14 +425,14 @@ git push
 After the pipeline completes, verify the users:
 
 ```sql
--- Check users exist
+-- Check service account exists
 SHOW USERS LIKE 'SVC_%';
 
 -- Check user configuration
-DESCRIBE USER SVC_DBT;
+DESCRIBE USER SVC_TERRAFORM;
 
 -- Check role grants
-SHOW GRANTS TO USER SVC_DBT;
+SHOW GRANTS TO USER SVC_TERRAFORM;
 ```
 
 ## Summary
@@ -441,8 +440,11 @@ SHOW GRANTS TO USER SVC_DBT;
 You've created the user infrastructure for your data platform:
 
 - [x] Built the `snowflake_user` module
-- [x] Created `SVC_DBT` and `SVC_METABASE` service accounts
+- [x] Imported the `SVC_TERRAFORM` service account using an import block
 - [x] Set up patterns for developer and admin users with shared warehouses
+
+!!! info "Service Accounts for Tools"
+    Service accounts for dbt, Metabase, Airbyte, and other tools are created when those tools are set up. This keeps the configuration focused and avoids creating unused accounts.
 
 ## What's Next
 
