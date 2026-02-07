@@ -49,6 +49,7 @@ These are the tools introduced so far in the documentation, organised by categor
 | **AWS** | 12-month free tier for new accounts | Pay-as-you-go | [aws.amazon.com/pricing](https://aws.amazon.com/pricing/) |
 | **AWS S3** | 5GB (free tier) | ~$0.023/GB/month (Standard) | [S3 pricing](https://aws.amazon.com/s3/pricing/) |
 | **AWS DynamoDB** | 25GB + 25 read/write units | Pay-per-request or provisioned | [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/) |
+| **AWS VPC** | VPC, subnets, Internet Gateway: Free | NAT Gateway: ~$32/month + data | [VPC pricing](https://aws.amazon.com/vpc/pricing/) |
 
 !!! note "S3 Data Lake Costs"
     The stack creates three S3 buckets for the data lake (dev, staging, prod). Costs depend on data volume:
@@ -97,6 +98,7 @@ Here's a rough estimate for a small data team (3-5 people) in the early stages:
 | 1Password Teams | $20/month | $20/month | Up to 10 users |
 | AWS (Terraform state) | $1/month | $5/month | S3 + DynamoDB minimal usage |
 | AWS (S3 Data Lake) | $5/month | $50/month | 3 buckets (dev, staging, prod) |
+| AWS (VPC) | $0/month | $35/month | Optional - only if running ECS/EC2 |
 | AWS Secrets Manager | $2/month | $10/month | 5-25 secrets |
 | Snowflake | $50/month | $300/month | Depends heavily on usage |
 | **Total** | **~$90/month** | **~$405/month** | |

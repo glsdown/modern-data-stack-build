@@ -1,16 +1,11 @@
 # Self-Hosted: ECS Production
 
 !!! warning "Advanced - Requires VPC and Networking"
-    This page covers production self-hosted Prefect on ECS, which requires:
+    This page covers production self-hosted Prefect on ECS, which requires AWS VPC with public and private subnets. See [VPC Networking](../aws/2-vpc-networking.md) to set this up first.
 
-    - AWS VPC with public and private subnets across multiple AZs
-    - NAT gateways for private subnet internet access
-    - Security group configuration
-    - Optionally, a domain and ACM certificate for HTTPS
+    **Most users should use [Prefect Cloud](3-prefect-cloud-setup.md)** - it's simpler, has no infrastructure to manage, and provides the same features.
 
-    **This infrastructure is not covered in the current guide.** Most users should use [Prefect Cloud](3-prefect-cloud-setup.md) instead.
-
-    Self-hosting on ECS is only recommended if you have strict data sovereignty requirements AND existing AWS networking expertise.
+    Self-hosting on ECS is recommended only if you have strict data sovereignty requirements.
 
 On this page, you will:
 
@@ -62,13 +57,13 @@ This is the production-grade self-hosted option - Prefect server runs on ECS Far
 
 ## Prerequisites
 
-- [x] **AWS VPC with multi-AZ networking** - Public subnets for ALB, private subnets for ECS/RDS, NAT gateways. This is not covered in this guide.
+- [x] **AWS VPC with multi-AZ networking** - See [VPC Networking](../aws/2-vpc-networking.md) to set this up
 - [x] Terraform configured with remote state
 - [x] Domain name (optional, for HTTPS)
 - [x] ACM certificate (optional, for HTTPS)
 
 !!! tip "Don't Have VPC Infrastructure?"
-    Setting up VPC with multi-AZ networking is a significant undertaking. We recommend using [Prefect Cloud](3-prefect-cloud-setup.md) instead - it provides the same features without any infrastructure management.
+    Either follow the [VPC Networking](../aws/2-vpc-networking.md) guide first (~$35/month), or use [Prefect Cloud](3-prefect-cloud-setup.md) instead.
 
 ## Terraform Module
 

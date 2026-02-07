@@ -1,13 +1,11 @@
 # Self-Hosted: Docker Compose
 
 !!! warning "Advanced - Requires VPC Configuration"
-    This page covers self-hosted Prefect, which requires AWS VPC and networking infrastructure not yet covered in this guide. **Most users should use [Prefect Cloud](3-prefect-cloud-setup.md)** - it's simpler, has no infrastructure to manage, and the free tier is sufficient for getting started.
+    This page covers self-hosted Prefect, which requires AWS VPC and networking infrastructure. If you don't have VPC set up, see [VPC Networking](../aws/2-vpc-networking.md) first.
 
-    Self-hosting is only recommended if you have:
+    **Most users should use [Prefect Cloud](3-prefect-cloud-setup.md)** - it's simpler, has no infrastructure to manage, and the free tier is sufficient for getting started.
 
-    - Strict data sovereignty requirements
-    - Existing VPC infrastructure
-    - Experience managing EC2 instances
+    Self-hosting is recommended only if you have strict data sovereignty requirements.
 
 On this page, you will:
 
@@ -45,13 +43,16 @@ This is the simplest self-hosted option - a single EC2 instance running Prefect 
 
 ## Prerequisites
 
-- [x] **AWS VPC with subnets** - You need an existing VPC with at least one subnet (private recommended). VPC setup is not covered in this guide.
+- [x] **AWS VPC with subnets** - You need an existing VPC with at least one subnet (private recommended). See [VPC Networking](../aws/2-vpc-networking.md) to set this up.
 - [x] Terraform configured with remote state
 - [x] SSH key pair for EC2 access
 - [x] VPN or bastion host access to private subnets
 
 !!! tip "Don't Have a VPC?"
-    If you don't have VPC infrastructure set up, we recommend using [Prefect Cloud](3-prefect-cloud-setup.md) instead. You can always migrate to self-hosted later when you have networking in place.
+    If you don't have VPC infrastructure set up, either:
+
+    1. Follow the [VPC Networking](../aws/2-vpc-networking.md) guide first (~$35/month)
+    2. Use [Prefect Cloud](3-prefect-cloud-setup.md) instead (free tier available)
 
 ## Terraform Infrastructure
 
