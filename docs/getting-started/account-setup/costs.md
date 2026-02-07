@@ -113,11 +113,62 @@ Here's a rough estimate for a small data team (3-5 people) in the early stages:
 
 As you progress through the documentation, you'll encounter these additional tools:
 
-### Orchestration
+### Orchestration (Prefect)
 
-| Tool | Free Tier | Paid Tier | Pricing Link |
-|------|-----------|-----------|--------------|
-| **Prefect Cloud** | Free (single workspace, limited features) | Pro: from $500/month | [prefect.io/pricing](https://www.prefect.io/pricing) |
+Prefect offers three deployment options with different cost profiles:
+
+#### Option 1: Prefect Cloud (Recommended to Start)
+
+| Tier | Monthly Cost | Users | Deployments | Key Features |
+|------|-------------|-------|-------------|--------------|
+| **Hobby** | Free | 2 | 5 | Basic orchestration, 7-day retention |
+| **Starter** | $100 | 3 | 20 | Webhooks, bring your own compute |
+| **Team** | $100/user | 4-8 | 100 | Service accounts, audit logs |
+| **Pro** | Custom | 5-20 | 1,000 | Multiple workspaces, SSO |
+| **Enterprise** | Custom | Unlimited | Unlimited | RBAC, SLA, PrivateLink |
+
+[prefect.io/pricing](https://www.prefect.io/pricing)
+
+!!! tip "Start with Hobby"
+    The free Hobby tier is sufficient for getting started and learning. Upgrade as your needs grow.
+
+#### Option 2: Self-Hosted - Docker Compose
+
+Run Prefect on a single EC2 instance with Docker Compose:
+
+| Component | Specification | Monthly Cost |
+|-----------|--------------|--------------|
+| EC2 instance | t3.small (2 vCPU, 2GB RAM) | ~$15 |
+| EBS storage | 20GB gp3 | ~$2 |
+| **Total** | | **~$17/month** |
+
+Plus engineer time for maintenance (~2-4 hours/month).
+
+#### Option 3: Self-Hosted - ECS + RDS (Production)
+
+Run Prefect on AWS ECS with RDS PostgreSQL for high availability:
+
+| Component | Specification | Monthly Cost |
+|-----------|--------------|--------------|
+| ECS Fargate (server) | 0.5 vCPU, 1GB RAM, 24/7 | ~$18 |
+| ECS Fargate (worker) | 0.5 vCPU, 1GB RAM, 24/7 | ~$18 |
+| RDS PostgreSQL | db.t3.micro, 20GB | ~$15 |
+| Application Load Balancer | Basic usage | ~$16 |
+| **Total** | | **~$67/month** |
+
+Lower maintenance burden than Docker Compose (~1-2 hours/month).
+
+#### Which Option to Choose?
+
+| Requirement | Recommended Option |
+|-------------|-------------------|
+| Just getting started | Prefect Cloud (Hobby - free) |
+| Small team, simple needs | Prefect Cloud (Starter - $100/mo) |
+| Data sovereignty required | Self-hosted Docker Compose |
+| Production HA required | Self-hosted ECS + RDS |
+| Minimal operational burden | Prefect Cloud |
+
+See [Orchestration Build Section](../../build/orchestration/2-choosing-deployment.md) for detailed comparison.
 
 ### Data Ingestion
 
@@ -230,6 +281,7 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 | **Getting Started** (GitHub, 1Password, minimal AWS) | $30-50 |
 | **Terraform Setup** (+ Snowflake dev usage) | $80-150 |
 | **Data Warehouse Build** (+ S3 data lake, storage integrations) | $100-400 |
+| **Orchestration** (Prefect Cloud free or self-hosted) | $0-100 |
 | **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.

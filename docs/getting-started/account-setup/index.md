@@ -7,6 +7,7 @@ On this page, you will find guides for:
 - [x] Understanding costs and budgeting for the stack
 - [x] AWS (organisation and initial accounts)
 - [x] Snowflake (account creation and initial admin hardening)
+- [ ] Prefect Cloud (optional - only if using managed orchestration)
 
 Each page links to a detailed walkthrough.
 
@@ -15,5 +16,6 @@ Each page links to a detailed walkthrough.
 1. Review the [Cost Overview](costs.md) to understand pricing and set up billing alerts
 2. Follow the [AWS guide](aws.md) to create your organisation and initial accounts
 3. Follow the [Snowflake guide](snowflake.md) for manual Snowflake account creation and admin hardening
+4. (Optional) Follow the [Prefect Cloud guide](prefect.md) if you plan to use Prefect Cloud for orchestration
 
 Continue to the [Cost Overview](costs.md) page to understand the investment required.
