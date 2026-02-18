@@ -176,8 +176,38 @@ See [Orchestration Build Section](../../build/orchestration/2-choosing-deploymen
 
 | Tool | Free Tier | Paid Tier | Pricing Link |
 |------|-----------|-----------|--------------|
-| **Airbyte Cloud** | 14-day trial | Based on data volume | [airbyte.com/pricing](https://airbyte.com/pricing) |
 | **dlt** | Open source (free) | N/A | [dlthub.com](https://dlthub.com/) |
+| **Airbyte Cloud** | 14-day trial | Based on data volume | [airbyte.com/pricing](https://airbyte.com/pricing) |
+| **Open Exchange Rates** | 1,000 req/month | From $12/month | [openexchangerates.org](https://openexchangerates.org/signup) |
+| **Clever Cloud PostgreSQL** | DEV (free, testing only) | From ~€5/month | [clever-cloud.com](https://www.clever-cloud.com/postgresql/) |
+
+#### Snowpipe Costs
+
+Snowpipe auto-ingestion has minimal costs for low-volume pipelines:
+
+| Component | Cost |
+|-----------|------|
+| Snowpipe compute | ~$0.06 per 1,000 files processed |
+| S3 storage (staging) | ~$0.023/GB/month |
+| S3 PUT requests | ~$0.005 per 1,000 requests |
+| SQS notifications | Free tier (1 million requests/month) |
+
+For the currencies pipeline (one file per week), expect < $1/month total.
+
+### Alerting (Optional)
+
+| Tool | Free Tier | Paid Tier | Pricing Link |
+|------|-----------|-----------|--------------|
+| **Slack** | Free (with limits) | Pro: $8.75/user/month | [slack.com/pricing](https://slack.com/pricing) |
+| **PagerDuty** | Free (≤5 users) | Professional: $21/user/month | [pagerduty.com/pricing](https://www.pagerduty.com/pricing/) |
+
+!!! tip "Start with Slack Only"
+    For most teams starting out, Slack notifications are sufficient. PagerDuty is valuable when you need:
+
+    - 24/7 on-call rotations
+    - Escalation policies
+    - Phone/SMS alerts for critical failures
+    - Incident management
 
 ### Transformation
 
@@ -284,6 +314,7 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 | **Terraform Setup** (+ Snowflake dev usage) | $80-150 |
 | **Data Warehouse Build** (+ S3 data lake, storage integrations) | $100-400 |
 | **Orchestration** (Prefect Cloud free or self-hosted) | $0-100 |
+| **Batch Data Ingestion** (dlt, Snowpipe, minimal API costs) | $1-10 |
 | **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.
