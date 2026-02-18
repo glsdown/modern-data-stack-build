@@ -263,14 +263,117 @@ PagerDuty provides advanced incident management for production systems. Use it w
 
 ### Create PagerDuty Block
 
-```python
-from prefect.blocks.notifications import PagerDutyWebHook
+=== "Terraform"
 
-pagerduty = PagerDutyWebHook(
-    integration_key="your-integration-key",
-    api_key="your-api-key",  # Optional, for API access
-)
-pagerduty.save("data-pipelines")
+    Add to `terraform/prefect/blocks.tf`:
+
+    ```hcl
+    resource "prefect_block" "pagerduty_data_pipelines" {
+      name      = "data-pipelines"
+      type_slug = "pager-duty-webhook"
+
+      data = jsonencode({
+        integration_key = var.pagerduty_integration_key
+        api_key         = var.pagerduty_api_key
+      })
+    }
+    ```
+
+    Add to `terraform/prefect/variables.tf`:
+
+    ```hcl
+    variable "pagerduty_integration_key" {
+      description = "PagerDuty Events API v2 integration key for data pipeline alerts"
+      type        = string
+      sensitive   = true
+      default     = ""
+    }
+
+    variable "pagerduty_api_key" {
+      description = "PagerDuty API key for incident management"
+      type        = string
+      sensitive   = true
+      default     = ""
+    }
+    ```
+
+    **Store the credentials in AWS Secrets Manager:**
+
+    ```sh
+    aws secretsmanager create-secret \
+        --name "prefect/pagerduty-integration-key" \
+        --description "PagerDuty integration key for Prefect pipeline alerts" \
+        --secret-string "YOUR_INTEGRATION_KEY" \
+        --profile admin
+    ```
+
+    **Update your GitHub Actions workflows** to retrieve the secret. In `.github/workflows/terraform_ci.yml` and `.github/workflows/terraform_apply.yml`, add to the `secret-ids` in the Prefect plan/apply jobs:
+
+    ```yaml
+    - name: Get secrets from AWS Secrets Manager
+      uses: aws-actions/aws-secretsmanager-get-secrets@v2
+      with:
+        secret-ids: |
+          TF_VAR_PAGERDUTY_INTEGRATION_KEY, prefect/pagerduty-integration-key
+        parse-json-secrets: false
+    ```
+
+=== "CLI"
+
+    ```sh
+    prefect block register -m prefect.blocks.notifications
+
+    prefect block create pager-duty-webhook/data-pipelines \
+        --integration-key "your-integration-key"
+    ```
+
+=== "Python"
+
+    ```python
+    from prefect.blocks.notifications import PagerDutyWebHook
+
+    pagerduty = PagerDutyWebHook(
+        integration_key="your-integration-key",
+        api_key="your-api-key",  # Optional, for API access
+    )
+    pagerduty.save("data-pipelines")
+    ```
+
+### Add PagerDuty Automation (Terraform)
+
+For critical failures, add an automation that pages via PagerDuty. Add to `terraform/prefect/automations.tf`:
+
+```hcl
+resource "prefect_automation" "dlt_critical_alert" {
+  name        = "DLT Pipeline Critical Alert (PagerDuty)"
+  description = "Page on-call engineer after 3 consecutive dlt pipeline failures"
+  enabled     = true
+
+  trigger = {
+    type    = "event"
+    posture = "Reactive"
+
+    expect = ["prefect.flow-run.Failed", "prefect.flow-run.Crashed"]
+
+    match_related = {
+      "prefect.resource.role" = "flow-run"
+      "prefect.tag"           = "dlt"
+    }
+
+    # Only trigger after 3 consecutive failures
+    threshold = 3
+    within    = 86400  # 24 hours
+  }
+
+  actions = [
+    {
+      type     = "send-notification"
+      block_id = prefect_block.pagerduty_data_pipelines.id
+      subject  = "CRITICAL: {{ flow.name }} failed 3 times"
+      body     = "Flow {{ flow.name }} has failed 3 times in 24 hours. State: {{ flow_run.state.message }}"
+    }
+  ]
+}
 ```
 
 ### Tiered Alerting
