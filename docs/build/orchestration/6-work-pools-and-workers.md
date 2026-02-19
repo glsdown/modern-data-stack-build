@@ -63,11 +63,8 @@ Flows run as AWS ECS Fargate tasks - serverless containers. This is what the `pr
 For local development, start a worker in your terminal:
 
 ```sh
-# Activate your virtual environment
-source .venv/bin/activate
-
 # Start a worker for the development pool
-prefect worker start --pool development
+uv run prefect worker start --pool development
 ```
 
 Keep this running while developing flows. The worker will execute any flows deployed to the `development` pool.
@@ -119,10 +116,10 @@ Check worker status via CLI:
 
 ```sh
 # List workers for a pool
-prefect worker ls --pool development
+uv run prefect worker ls --pool development
 
 # Inspect work pool details
-prefect work-pool inspect development
+uv run prefect work-pool inspect development
 ```
 
 The Prefect UI also shows:

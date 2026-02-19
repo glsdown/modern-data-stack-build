@@ -8,7 +8,7 @@ On this page, you will:
 
 ## What You've Built
 
-Congratulations! You now have a production-ready orchestration layer for your data platform.
+You now have a production-ready orchestration layer for your data platform.
 
 ### Architecture Summary
 
@@ -85,6 +85,7 @@ Congratulations! You now have a production-ready orchestration layer for your da
 | **Blocks** | AWS Credentials, Snowflake Connector, S3 Bucket |
 | **Terraform** | Infrastructure as code for all components |
 | **CI/CD** | GitHub Actions for flow deployment |
+| **Alerting** | Automations for Slack and PagerDuty notifications |
 
 ## Verification Checklist
 
@@ -93,8 +94,8 @@ Run through this checklist to verify your setup:
 ### Control Plane
 
 - [ ] Prefect UI is accessible
-- [ ] Can authenticate with CLI (`prefect version`)
-- [ ] Work pools are visible (`prefect work-pool ls`)
+- [ ] Can authenticate with CLI (`uv run prefect version`)
+- [ ] Work pools are visible (`uv run prefect work-pool ls`)
 
 ### Workers
 
@@ -104,7 +105,7 @@ Run through this checklist to verify your setup:
 
 ### Deployments
 
-- [ ] Test deployment exists (`prefect deployment ls`)
+- [ ] Test deployment exists (`uv run prefect deployment ls`)
 - [ ] Can trigger a flow run manually
 - [ ] Flow completes successfully
 - [ ] Logs are visible in UI
@@ -118,24 +119,37 @@ Run through this checklist to verify your setup:
 ### CI/CD
 
 - [ ] GitHub Actions workflow is configured
-- [ ] Pushing to main deploys flows
-- [ ] Service account API key is in Secrets Manager
+- [ ] Pushing to `main` deploys flows automatically
+- [ ] Prefect API key is in AWS Secrets Manager
+
+### Alerting
+
+- [ ] Slack webhook automation is active
+- [ ] Test failure triggers notification
+- [ ] PagerDuty integration configured (if applicable)
 
 ## File Structure
 
 Your project should now look like:
 
 ```
-data-platform/
+data-pipelines/
 ├── flows/
 │   ├── __init__.py
-│   ├── hello_world.py
-│   └── etl_example.py
+│   └── hello_world.py
+├── pipelines/
+│   └── __init__.py
+├── sources/
+│   └── __init__.py
 ├── utils/
 │   ├── __init__.py
-│   └── secrets.py
+│   └── vault_provider.py
+├── .dlt/
+│   ├── config.toml
+│   └── secrets.toml
 ├── prefect.yaml
-├── requirements.txt
+├── pyproject.toml
+├── uv.lock
 └── .github/
     └── workflows/
         └── prefect-deploy.yml
@@ -169,7 +183,7 @@ terraform/
 
 ```sh
 # Check worker is running
-prefect worker ls --pool your-pool
+uv run prefect worker ls --pool your-pool
 
 # Verify API URL
 echo $PREFECT_API_URL
@@ -182,10 +196,10 @@ journalctl -u prefect-worker -f
 
 ```sh
 # Verify deployment config
-prefect deployment inspect flow-name/deployment-name
+uv run prefect deployment inspect flow-name/deployment-name
 
 # Check for syntax errors in prefect.yaml
-prefect deploy --dry-run
+uv run prefect deploy --dry-run
 ```
 
 ### Secrets Not Found
@@ -218,8 +232,10 @@ You've completed the orchestration section:
 - [x] Set up the control plane and workers
 - [x] Deployed and ran your first flow
 - [x] Integrated with AWS Secrets Manager
+- [x] Configured CI/CD for automated flow deployment
+- [x] Set up alerting for pipeline failures
 
 Your data platform now has a central orchestration layer ready to coordinate all your data workflows.
 
 !!! success "Orchestration Complete"
-    You have a production-ready orchestration layer. Next, you'll build the pipelines that Prefect will orchestrate - starting with dlt for API ingestion.
+    You have a production-ready orchestration layer with automated deployment and alerting. Next, you'll build the data pipelines that Prefect will orchestrate — starting with dlt for batch ingestion.

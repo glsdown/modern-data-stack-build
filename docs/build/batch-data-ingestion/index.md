@@ -74,25 +74,25 @@ dlt sits in the ingestion layer, loading raw data into dedicated loader database
 
 ## What You'll Build
 
-In this section, you'll create three data pipelines demonstrating different ingestion patterns:
+In this section, you'll create four data pipelines demonstrating different ingestion patterns:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        BATCH DATA INGESTION                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  Pipeline 1: Exchange Rates (API → Snowflake)                               │
+│  Pipeline 1: Currencies (API → Snowflake direct)                            │
 │  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
-│  │ Open Exchange   │  dlt   │    Snowflake    │ Prefect│  Daily 09:00    │  │
-│  │ Rates API       │ ────▶  │ DLT.OPEN_       │ ◀───── │  + backfill     │  │
-│  │ /latest.json    │        │ EXCHANGE_RATES  │        │                 │  │
+│  │ Open Exchange   │  dlt   │    Snowflake    │ Prefect│  Weekly refresh │  │
+│  │ Rates API       │ ────▶  │ DLT.OPEN_       │ ◀───── │  replace mode   │  │
+│  │ /currencies.json│        │ EXCHANGE_RATES  │        │                 │  │
 │  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
 │                                                                             │
-│  Pipeline 2: Currencies (API → S3 → Snowpipe → Snowflake)                   │
+│  Pipeline 2: Exchange Rates (API → S3 → Snowpipe → Snowflake)               │
 │  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
 │  │ Open Exchange   │  dlt   │   S3 Bucket     │Snowpipe│   SNOWPIPE.     │  │
-│  │ Rates API       │ ────▶  │ /currencies/    │ ────▶  │ OPEN_EXCHANGE_  │  │
-│  │ /currencies.json│        │                 │        │ RATES           │  │
+│  │ Rates API       │ ────▶  │ /exchange-rates/ │ ────▶  │ OPEN_EXCHANGE_  │  │
+│  │ /historical/    │        │                 │        │ RATES           │  │
 │  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
 │                                                                             │
 │  Pipeline 3: Products (PostgreSQL → Snowflake)                              │
@@ -102,13 +102,19 @@ In this section, you'll create three data pipelines demonstrating different inge
 │  │ (Products)      │        │ _DATA           │        │                 │  │
 │  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
 │                                                                             │
+│  Pipeline 4: HubSpot (API → Snowflake)                                      │
+│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
+│  │ HubSpot CRM     │  dlt   │    Snowflake    │ Prefect│  Daily 07:00    │  │
+│  │ (contacts)      │ ────▶  │ DLT.HUBSPOT     │ ◀───── │  incremental    │  │
+│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Key patterns demonstrated:**
 
-- Direct API to Snowflake loading with dlt
-- S3 staging with Snowpipe auto-ingestion
+- Direct API to Snowflake loading with dlt (simplest pattern)
+- S3 staging with Snowpipe auto-ingestion for high-volume appends
 - Database extraction with Type 2 SCD handling
 - Prefect orchestration with schedules, retries, and alerting
 - Incremental loading with merge keys for idempotency
@@ -131,14 +137,15 @@ You'll also need:
 | Page | What You'll Learn |
 |------|-------------------|
 | [1. dlt Concepts](1-dlt-concepts.md) | Core concepts: sources, resources, pipelines, destinations |
-| [2. Project Setup](2-project-setup.md) | Repository structure for dlt + Prefect pipelines |
-| [3. Snowflake Infrastructure](3-snowflake-infrastructure.md) | DLT and SNOWPIPE databases, roles, external stages |
+| [2. Project Setup](2-project-setup.md) | Repository structure, uv, pyproject.toml, VaultDocProvider |
+| [3. Snowflake Infrastructure](3-snowflake-infrastructure.md) | DLT and SNOWPIPE databases, dedicated roles, Snowpipe module |
 | [4. Credentials Setup](4-credentials-setup.md) | API keys and database credentials in AWS Secrets Manager |
-| [5. Exchange Rates Pipeline](5-exchange-rates-pipeline.md) | Build your first dlt pipeline (API → Snowflake) |
-| [6. Currencies to S3](6-currencies-to-s3.md) | S3 staging with Snowpipe auto-ingestion |
-| [7. Products Pipeline](7-products-pipeline.md) | Database extraction with Type 2 SCD |
+| [5. Currencies Pipeline](5-currencies-pipeline.md) | Your first dlt pipeline — reference data direct to Snowflake |
+| [6. Exchange Rates to S3](6-exchange-rates-to-s3.md) | Historical data via S3 staging and Snowpipe auto-ingestion |
+| [7. Products Pipeline](7-products-pipeline.md) | Database extraction with incremental loading |
 | [8. Prefect Orchestration](8-prefect-orchestration.md) | Wrap pipelines in Prefect flows with schedules and alerting |
 | [9. Finishing Up](9-finishing-up.md) | Verification and next steps |
+| [10. HubSpot Pipeline](10-hubspot-pipeline.md) | CRM data ingestion with the dlt HubSpot connector |
 
 ## Cost Considerations
 

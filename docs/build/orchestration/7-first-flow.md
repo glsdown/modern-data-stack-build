@@ -31,12 +31,9 @@ cd ~/projects/data
 git clone git@github.com:YOUR-ORG/data-pipelines.git
 cd data-pipelines
 
-# Create virtual environment with uv
-uv venv
-source .venv/bin/activate
-
-# Install dependencies
-uv pip install prefect prefect-aws prefect-snowflake
+# Initialise project and install dependencies
+uv init
+uv add prefect prefect-aws prefect-snowflake
 ```
 
 ### Create Project Structure
@@ -181,7 +178,7 @@ if __name__ == "__main__":
 Run the flow locally to verify it works:
 
 ```sh
-python flows/hello_world.py
+uv run python flows/hello_world.py
 ```
 
 Expected output:
@@ -239,10 +236,10 @@ Deploy your flow to Prefect Cloud:
 
 ```sh
 # Deploy all flows defined in prefect.yaml
-prefect deploy --all
+uv run prefect deploy --all
 
 # Or deploy a specific deployment
-prefect deploy --name hello-world
+uv run prefect deploy --name hello-world
 ```
 
 Expected output:
@@ -265,8 +262,7 @@ In a separate terminal, start a worker:
 
 ```sh
 cd ~/projects/data/data-pipelines
-source .venv/bin/activate
-prefect worker start --pool development
+uv run prefect worker start --pool development
 ```
 
 ### Trigger a Run
@@ -275,10 +271,10 @@ From CLI:
 
 ```sh
 # Run with default parameters
-prefect deployment run hello-world/hello-world
+uv run prefect deployment run hello-world/hello-world
 
 # Run with custom parameters
-prefect deployment run hello-world/hello-world --param name=Prefect
+uv run prefect deployment run hello-world/hello-world --param name=Prefect
 ```
 
 From the Prefect UI:
@@ -303,30 +299,22 @@ The Prefect UI provides:
 
 ```sh
 # List recent flow runs
-prefect flow-run ls
+uv run prefect flow-run ls
 
 # Get details of a specific run
-prefect flow-run inspect <flow-run-id>
+uv run prefect flow-run inspect <flow-run-id>
 
 # View logs
-prefect flow-run logs <flow-run-id>
+uv run prefect flow-run logs <flow-run-id>
 ```
 
-## Create Requirements File
+## Commit the Project
 
-Create `requirements.txt` for reproducibility:
-
-```txt
-prefect>=3.0.0
-prefect-aws>=0.5.0
-prefect-snowflake>=0.28.0
-```
-
-Commit this file:
+Commit your project files including the lock file for reproducible installs:
 
 ```sh
-git add requirements.txt
-git commit -m "Add requirements.txt"
+git add pyproject.toml uv.lock flows/ prefect.yaml .gitignore
+git commit -m "Add hello world flow and project setup"
 git push
 ```
 

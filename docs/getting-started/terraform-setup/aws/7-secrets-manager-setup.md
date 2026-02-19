@@ -303,6 +303,115 @@ If GitHub Actions can't retrieve a secret:
 2. Check the `TerraformGitHubActionsRole` policy includes the secret ARN pattern
 3. Ensure the secret has a value set (empty secrets fail to retrieve)
 
+## Security Considerations
+
+As you add more secrets for data pipelines (`dlt/*`, `airbyte/*`, `prefect/*`), it's important to control who can read and write secret values.
+
+### Separate Read and Write Access
+
+Not everyone who creates secrets needs to read them. Use separate IAM policies:
+
+**Write-only policy** — for administrators who set secret values:
+
+```hcl
+resource "aws_iam_policy" "secrets_writer" {
+  name        = "SecretsManagerWriter"
+  description = "Allow creating and updating secret values"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "WriteSecrets"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:CreateSecret",
+          "secretsmanager:TagResource",
+        ]
+        Resource = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:*"
+      }
+    ]
+  })
+}
+```
+
+**Read-only policy** — scoped by prefix for services that consume secrets:
+
+```hcl
+resource "aws_iam_policy" "dlt_secrets_reader" {
+  name        = "DltSecretsReader"
+  description = "Allow reading dlt pipeline secrets"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ReadDltSecrets"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+        ]
+        Resource = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:dlt/*"
+      }
+    ]
+  })
+}
+```
+
+### Prefix-Based Access Control
+
+Use secret name prefixes to scope access:
+
+| Prefix | Who Reads | Who Writes |
+|--------|-----------|------------|
+| `terraform/*` | CI/CD role (`TerraformGitHubActionsRole`) | Admins via CLI |
+| `dlt/*` | Prefect worker IAM role | Admins via CLI |
+| `airbyte/*` | Prefect worker IAM role, Airbyte ECS task role | Admins via CLI |
+| `prefect/*` | CI/CD role, Prefect worker IAM role | Admins via CLI |
+
+This ensures that, for example, the Prefect worker can read `dlt/*` secrets to run pipelines but cannot read `terraform/*` secrets that control infrastructure.
+
+### Resource Policies
+
+For additional protection, attach resource policies to individual secrets to restrict access even if an IAM policy would otherwise allow it:
+
+```hcl
+resource "aws_secretsmanager_secret_policy" "restrict_dlt_secrets" {
+  secret_arn = aws_secretsmanager_secret.dlt_snowflake_credentials.arn
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "RestrictToWorkerRole"
+        Effect    = "Allow"
+        Principal = {
+          AWS = var.prefect_worker_role_arn
+        }
+        Action    = "secretsmanager:GetSecretValue"
+        Resource  = "*"
+      }
+    ]
+  })
+}
+```
+
+### Encryption
+
+AWS Secrets Manager encrypts all secrets at rest using AWS KMS. By default, this uses the AWS-managed key (`aws/secretsmanager`). For stricter control, use a customer-managed KMS key:
+
+```hcl
+resource "aws_secretsmanager_secret" "sensitive_secret" {
+  name       = "dlt/snowflake-credentials"
+  kms_key_id = aws_kms_key.secrets_key.arn
+}
+```
+
+This lets you control who can decrypt secrets independently of who can call the Secrets Manager API.
+
 ## What's Next
 
 You've successfully set up Secrets Manager with Terraform:
@@ -311,5 +420,6 @@ You've successfully set up Secrets Manager with Terraform:
 - [x] Secret values kept out of Terraform state
 - [x] CI/CD permissions configured for secret access
 - [x] Pattern established for adding new secrets
+- [x] Security best practices for read/write separation
 
 Continue to [finishing up](8-finishing-up.md) →

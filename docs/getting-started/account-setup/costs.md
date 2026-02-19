@@ -177,9 +177,36 @@ See [Orchestration Build Section](../../build/orchestration/2-choosing-deploymen
 | Tool | Free Tier | Paid Tier | Pricing Link |
 |------|-----------|-----------|--------------|
 | **dlt** | Open source (free) | N/A | [dlthub.com](https://dlthub.com/) |
-| **Airbyte Cloud** | 14-day trial | Based on data volume | [airbyte.com/pricing](https://airbyte.com/pricing) |
 | **Open Exchange Rates** | 1,000 req/month | From $12/month | [openexchangerates.org](https://openexchangerates.org/signup) |
 | **Clever Cloud PostgreSQL** | DEV (free, testing only) | From ~€5/month | [clever-cloud.com](https://www.clever-cloud.com/postgresql/) |
+
+### SaaS Ingestion (Airbyte)
+
+Airbyte is used for complex SaaS connectors and reverse ETL. Two deployment options:
+
+#### Airbyte Cloud
+
+| Tier | Monthly Cost | Connections | Records Included | Record Overage |
+|------|-------------|-------------|-----------------|----------------|
+| **Free** | $0 | 5 | Limited credits | N/A |
+| **Starter** | $99 | 4 | 4M records | $15 per 1M records |
+| **Team** | $499 | 10 | 20M records | $10 per 1M records |
+| **Enterprise** | Custom | Unlimited | Custom | Custom |
+
+[airbyte.com/pricing](https://airbyte.com/pricing)
+
+#### Airbyte Self-Hosted (ECS)
+
+| Component | Specification | Monthly Cost |
+|-----------|--------------|-------------|
+| ECS Fargate (server) | 1 vCPU, 2GB RAM | ~$30 |
+| ECS Fargate (workers) | 1 vCPU, 2GB RAM (scales to 0) | ~$20 |
+| RDS PostgreSQL | db.t4g.micro, 20GB | ~$15 |
+| Application Load Balancer | Basic usage | ~$16 |
+| **Total** | | **~$81/month** |
+
+!!! tip "dlt Alternative"
+    For 1-2 SaaS sources with dlt verified sources (e.g., HubSpot contacts), you can use dlt instead of Airbyte at no extra cost. See [HubSpot Pipeline](../../build/batch-data-ingestion/10-hubspot-pipeline.md) for this approach.
 
 #### Snowpipe Costs
 
@@ -315,6 +342,7 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 | **Data Warehouse Build** (+ S3 data lake, storage integrations) | $100-400 |
 | **Orchestration** (Prefect Cloud free or self-hosted) | $0-100 |
 | **Batch Data Ingestion** (dlt, Snowpipe, minimal API costs) | $1-10 |
+| **SaaS Ingestion** (Airbyte Cloud Starter or self-hosted) | $81-99 |
 | **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.

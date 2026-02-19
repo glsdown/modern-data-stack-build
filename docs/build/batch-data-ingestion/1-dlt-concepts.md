@@ -5,6 +5,7 @@ On this page, you will:
 - [x] Understand dlt's core building blocks
 - [x] Learn how sources, resources, and pipelines work together
 - [x] Understand schema evolution and incremental loading
+- [x] Understand how pipeline state works in production
 
 ## Overview
 
@@ -133,7 +134,52 @@ Pipelines maintain state between runs. This enables:
 - **Deduplication** - Remember primary keys to avoid duplicates
 - **Recovery** - Resume from failures
 
-State is stored locally by default (in `.dlt/` folder) or can be stored in the destination.
+State is stored locally by default (in the `.dlt/` folder) and is also automatically persisted to the destination.
+
+### Remote State for Production
+
+In production, pipelines typically run on ephemeral infrastructure (containers, CI/CD workers) where the local filesystem is wiped between runs. dlt handles this automatically:
+
+1. **State is saved to the destination**: After each successful load, dlt writes the pipeline state to a `_dlt_pipeline_state` table at the destination (e.g. Snowflake).
+2. **State is restored automatically**: When a pipeline starts on a clean filesystem, dlt detects the missing local state and restores it from the destination.
+3. **State is identified by three values**: `pipeline_name`, destination location, and `dataset_name`. As long as these remain consistent between runs, state is preserved.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       PIPELINE STATE LIFECYCLE                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Run 1 (Container A)                     Run 2 (Container B)                │
+│  ────────────────────                    ────────────────────               │
+│                                                                             │
+│  1. No local state found                 1. No local state found            │
+│  2. Check destination ──▶ Not found      2. Check destination ──▶ Found!    │
+│  3. Start fresh                          3. Restore state                   │
+│  4. Extract + Load data                  4. Extract only NEW data           │
+│  5. Save state to destination            5. Save updated state              │
+│                                                                             │
+│              ┌─────────────────────────────────--─┐                         │
+│              │    _dlt_pipeline_state table       │                         │
+│              │    (in Snowflake / destination)    │                         │
+│              │                                    │                         │
+│              │  pipeline_name: exchange_rates     │                         │
+│              │  dataset_name: open_exchange_rates │                         │
+│              │  state: {last incremental values}  │                         │
+│              └──────────────────────────────────--┘                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+This means:
+
+- **No manual state management** is needed for production deployments
+- **Incremental loading works** across container restarts and re-deployments
+- **Multiple environments** (dev, staging, prod) maintain independent state via different `dataset_name` values
+
+!!! tip "Consistent Naming"
+    Always use the same `pipeline_name` and `dataset_name` for a given pipeline. If you change these, dlt treats it as a new pipeline and starts from scratch.
+
+If you're running pipelines with persistent storage (e.g. a dedicated VM), you can disable remote state restoration by setting `restore_from_destination=false` in `.dlt/config.toml` to avoid the overhead.
 
 ## Write Dispositions
 
@@ -298,7 +344,14 @@ dlt uses a layered configuration system:
 └── pipeline_name/   # Pipeline state (auto-managed)
 ```
 
-In production, you'll typically use environment variables or a secrets manager instead of files.
+In production, you'll typically use environment variables or a secrets manager instead of files. dlt uses a specific naming convention for environment variables — sections are separated with double underscores and names are capitalised:
+
+| Config Path | Environment Variable |
+|-------------|---------------------|
+| `destination.snowflake.credentials.database` | `DESTINATION__SNOWFLAKE__CREDENTIALS__DATABASE` |
+| `sources.open_exchange_rates.api_key` | `SOURCES__OPEN_EXCHANGE_RATES__API_KEY` |
+
+dlt also supports **vault providers** for fetching secrets from external systems like AWS Secrets Manager. We'll set this up in [Project Setup](2-project-setup.md).
 
 ## Summary
 
@@ -310,6 +363,7 @@ You've learned dlt's core concepts:
 - [x] **Write dispositions** - Control how data is written (replace, append, merge)
 - [x] **Schema evolution** - Automatic handling of schema changes
 - [x] **Incremental loading** - Load only new/changed data
+- [x] **Remote state** - Pipeline state persists automatically in production
 
 ## What's Next
 

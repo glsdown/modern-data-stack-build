@@ -123,20 +123,19 @@ Using `uv` (installed in [Local Environment Setup](../../getting-started/initial
 mkdir -p ~/projects/data/data-pipelines
 cd ~/projects/data/data-pipelines
 
-# Create virtual environment and install Prefect
-uv venv
-source .venv/bin/activate
-uv pip install prefect prefect-aws prefect-snowflake
+# Initialise project and install Prefect
+uv init
+uv add prefect prefect-aws prefect-snowflake
 ```
 
 ### Authenticate with Prefect Cloud
 
 ```sh
 # Login to Prefect Cloud (opens browser)
-prefect cloud login
+uv run prefect cloud login
 
 # Or use API key directly
-prefect cloud login --key YOUR_API_KEY
+uv run prefect cloud login --key YOUR_API_KEY
 ```
 
 ### Verify Connection and Get IDs
@@ -145,11 +144,11 @@ Once logged in, retrieve your account and workspace IDs:
 
 ```sh
 # Verify connection
-prefect version
-prefect cloud workspace ls
+uv run prefect version
+uv run prefect cloud workspace ls
 
 # Get account and workspace IDs from the API URL
-prefect config view --show-sources | grep PREFECT_API_URL
+uv run prefect config view --show-sources | grep PREFECT_API_URL
 # The URL format is: .../accounts/{account_id}/workspaces/{workspace_id}
 ```
 
@@ -457,7 +456,7 @@ After CI/CD completes, verify the work pools were created:
 
 ```sh
 # List work pools
-prefect work-pool ls
+uv run prefect work-pool ls
 ```
 
 Expected output:
@@ -477,12 +476,10 @@ Expected output:
 Start a worker locally to test flow execution:
 
 ```sh
-# Activate your virtual environment
 cd ~/projects/data/data-pipelines
-source .venv/bin/activate
 
 # Start a worker for the development pool
-prefect worker start --pool development
+uv run prefect worker start --pool development
 ```
 
 Keep this running in a terminal while developing flows.

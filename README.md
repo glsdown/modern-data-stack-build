@@ -11,7 +11,7 @@ The project is relatively contrived in order to simplify the requirements of the
 There will be 4 sources of ingestion:
 
 - A simple local React app which will be used to send event data simulating product purchases to a Kafka topic
-- A free PostgreSQL database holding customer details hosted on [Clever Cloud](https://www.clever.cloud/) and mocked via [Mockaroo](https://mockaroo.com/)
+- A free PostgreSQL database holding product details hosted on [Clever Cloud](https://www.clever.cloud/) and mocked via [Mockaroo](https://mockaroo.com/)
 - API endpoint for [exchange rate data](https://docs.openexchangerates.org/reference/historical-json)
 - Customer data held in [HubSpot](https://www.hubspot.com/products/crm) as example SaaS data extraction
 
