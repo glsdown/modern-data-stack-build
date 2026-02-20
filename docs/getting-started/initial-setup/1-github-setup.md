@@ -17,7 +17,7 @@ A GitHub organisation (rather than a personal account) provides:
 - **Scalability**: Easy to add new repositories and team members
 
 !!! info "Infrastructure as Code Coming Soon"
-    In this guide, we'll set up the organisation and first repository manually. This is necessary because we need somewhere to store our Terraform code! Once we have this initial repository, we'll use Terraform to manage teams, additional repositories, branch protection, and other GitHub settings. You'll learn this in the [Infrastructure as Code](../build/infrastructure-as-code/index.md) section.
+    In this guide, we'll set up the organisation and first repository manually. This is necessary because we need somewhere to store our Terraform code! Once we have this initial repository, we'll use Terraform to manage teams, membership, and organisation settings. You'll learn this in the [Infrastructure as Code](../build/infrastructure-as-code/index.md) section.
 
 ## Create Your Organisation
 
@@ -103,9 +103,6 @@ Press the "commit changes" button, then type "Add global owners to CODEOWNERS fi
 
 Protect your main branch from accidental changes and enforce code review.
 
-!!! tip "Automating This Later"
-    Branch protection rules can also be managed with Terraform, ensuring consistent policies across all repositories. We'll set this up manually now and migrate to Terraform in the infrastructure-as-code section.
-
 ### Set Branch Protection Rules
 
 !!! warning "You can't approve your own code"
@@ -178,6 +175,6 @@ You've completed the manual GitHub setup that provides the foundation for everyt
 - **[Local Development Environment](2-local-environment.md)** - Install Git, Terraform, and other tools
 - **[Development Workflow](3-development-workflow.md)** - Learn the branching and PR process
 - **[Infrastructure as Code](../build/infrastructure-as-code/index.md)** - Learn Terraform using GitHub as your first provider
-- **Automate GitHub** - Move teams, branch protection, and repos to Terraform
+- **Automate GitHub** - Move teams, membership, and organisation settings to Terraform
 
 Continue to [Local Development Environment](2-local-environment.md) →
