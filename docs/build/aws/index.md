@@ -29,13 +29,13 @@ By the end of this section, you'll have:
 
 ## Why Separate AWS Infrastructure?
 
-The [Getting Started](../../getting-started/terraform-setup/aws/index.md) section focused on importing existing AWS resources (IAM roles, state infrastructure, budget alerts) and establishing the [Secrets Manager pattern](../../getting-started/terraform-setup/aws/7-secrets-manager-setup.md). This section creates new infrastructure specifically for your data platform:
+The [Getting Started](../../getting-started/terraform-setup/aws/index.md) section focused on importing existing AWS resources (IAM roles, state infrastructure, budget alerts) and establishing the [Secrets Manager pattern](../../getting-started/terraform-setup/aws/6-secrets-manager-setup.md). This section creates new infrastructure specifically for your data platform:
 
 - **S3 Buckets**: Storage for data lake files, used by Snowflake storage integrations
 - **VPC Networking**: Network infrastructure for EC2 instances, ECS tasks, and other compute workloads
 
 !!! tip "Adding Secrets"
-    When you add tools to your stack (dbt, Metabase, etc.), add their secrets following the pattern in [Secrets Manager Setup](../../getting-started/terraform-setup/aws/7-secrets-manager-setup.md#adding-more-secrets).
+    When you add tools to your stack (dbt, Metabase, etc.), add their secrets following the pattern in [Secrets Manager Setup](../../getting-started/terraform-setup/aws/6-secrets-manager-setup.md#adding-more-secrets).
 
 ## Architecture Patterns
 

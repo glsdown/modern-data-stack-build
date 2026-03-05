@@ -212,7 +212,7 @@ The Prefect worker (or ECS task) needs IAM permissions to read dlt secrets. Add 
 If using ECS, attach this to the task execution role. If using EC2, attach it to the instance profile. The `dlt/*` prefix ensures the worker can only read dlt pipeline secrets, not Terraform or Airbyte secrets.
 
 !!! info "Prefix-Based Access Control"
-    The [Secrets Manager Setup](../../getting-started/terraform-setup/aws/7-secrets-manager-setup.md) page explains the full prefix-based access control pattern. Each tool (`dlt/*`, `airbyte/*`, `prefect/*`, `terraform/*`) gets its own read policy scoped to its prefix.
+    The [Secrets Manager Setup](../../getting-started/terraform-setup/aws/6-secrets-manager-setup.md) page explains the full prefix-based access control pattern. Each tool (`dlt/*`, `airbyte/*`, `prefect/*`, `terraform/*`) gets its own read policy scoped to its prefix.
 
 ## Verify Secrets
 

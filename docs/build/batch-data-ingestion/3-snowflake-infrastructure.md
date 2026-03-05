@@ -426,7 +426,7 @@ output "stage_name" {
 
 ## Secret Containers
 
-The pipeline credentials need to be stored in AWS Secrets Manager. Following the pattern from [Secrets Manager Setup](../../getting-started/terraform-setup/aws/7-secrets-manager-setup.md), you create the secret containers in Terraform and set values via the CLI.
+The pipeline credentials need to be stored in AWS Secrets Manager. Following the pattern from [Secrets Manager Setup](../../getting-started/terraform-setup/aws/6-secrets-manager-setup.md), you create the secret containers in Terraform and set values via the CLI.
 
 Navigate to your AWS Terraform directory:
 
@@ -487,7 +487,7 @@ resource "aws_secretsmanager_secret" "dlt_hubspot_api_key" {
 ```
 
 !!! info "Why No Secret Values?"
-    Secret containers are managed by Terraform, but the values are set via CLI to keep them out of Terraform state. See [Secrets Manager Setup](../../getting-started/terraform-setup/aws/7-secrets-manager-setup.md) for the full explanation.
+    Secret containers are managed by Terraform, but the values are set via CLI to keep them out of Terraform state. See [Secrets Manager Setup](../../getting-started/terraform-setup/aws/6-secrets-manager-setup.md) for the full explanation.
 
 ## Generate SVC_DLT Key Pair
 
