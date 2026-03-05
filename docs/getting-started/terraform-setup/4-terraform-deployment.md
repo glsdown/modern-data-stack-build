@@ -118,6 +118,32 @@ Replace `ghp_xxxxxxxxxxxxxxxxxxxx` with your actual PAT value.
         --profile admin
     ```
 
+
+### Version Pinning
+
+It's always a good idea to pin the version of terraform that you are using to ensure consistency between local dev and CI/CD. The workflows you create will read the Terraform version from a `.terraform-version` file. You need to create this file manually in your repository root.
+
+First, check which version you've been using locally:
+
+```sh
+terraform version
+```
+
+Then create the version file with just the version number (no "v" prefix):
+
+```sh
+echo "1.10.3" > .terraform-version
+```
+
+Commit this file to your repository:
+
+```sh
+git add .terraform-version
+git commit -m "Add Terraform version file for CI/CD"
+```
+
+This ensures CI/CD uses the same Terraform version as your local development, preventing version mismatch issues.
+
 ### The CI Workflow (Plan on PR)
 
 Create `.github/workflows/terraform_ci.yml`:
@@ -396,31 +422,6 @@ runs:
       run: terraform -chdir=${{ inputs.prefix }} apply -auto-approve -input=false
       shell: bash
 ```
-
-### Version Pinning
-
-The workflows above read the Terraform version from a `.terraform-version` file. You need to create this file manually in your repository root.
-
-First, check which version you've been using locally:
-
-```sh
-terraform version
-```
-
-Then create the version file with just the version number (no "v" prefix):
-
-```sh
-echo "1.10.3" > .terraform-version
-```
-
-Commit this file to your repository:
-
-```sh
-git add .terraform-version
-git commit -m "Add Terraform version file for CI/CD"
-```
-
-This ensures CI/CD uses the same Terraform version as your local development, preventing version mismatch issues.
 
 ## OIDC Authentication with AWS
 

@@ -158,4 +158,4 @@ Before creating any resources in Snowflake, you'll set up Terraform to manage yo
 - Documented
 - Reviewed by your team
 
-Continue to [Set Up Terraform](1-terraform-setup.md) →
+Continue to [Set Up Terraform](../terraform-setup/index.md) →

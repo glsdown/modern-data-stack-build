@@ -338,4 +338,4 @@ You've successfully imported budget alerts into Terraform:
 - [x] Alert notifications configured
 - [x] Pattern established for service-specific budgets
 
-Continue to [set up Secrets Manager](7-secrets-manager-setup.md) →
+Continue to [set up Secrets Manager](6-secrets-manager-setup.md) →

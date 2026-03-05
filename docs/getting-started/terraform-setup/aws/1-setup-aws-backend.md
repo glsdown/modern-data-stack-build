@@ -261,4 +261,4 @@ git commit -m "Add AWS Terraform provider configuration"
 
 You've successfully configured the AWS provider and backend. Before importing resources, you need to understand how the existing TerraformGitHubActionsRole fits in.
 
-Continue to [import your IAM roles](3-import-iam-roles.md) →
+Continue to [import your IAM roles](2-import-iam-roles.md) →

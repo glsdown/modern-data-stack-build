@@ -190,7 +190,7 @@ Set up GitHub Actions to automatically plan and apply Terraform changes when you
 - Terraform apply on merge to main
 - State management in CI/CD
 
-[Terraform Deployment](5-terraform-deployment.md) →
+[Terraform Deployment](4-terraform-deployment.md) →
 
 ### 6. Add AWS Resources to Terraform
 
@@ -307,7 +307,7 @@ Once you're comfortable with Terraform using GitHub, adding AWS and Snowflake wi
 
 Before starting this section, you should have completed:
 
-- [x] [GitHub Organisation Setup](../1-github-setup.md) - You need a GitHub organisation and repository
+- [x] [GitHub Organisation Setup](../initial-setup/1-github-setup.md) - You need a GitHub organisation and repository
 - [x] [AWS Account Setup](../account-setup/aws.md) - You need an AWS account with CLI access configured
 - [x] [Snowflake Account Setup](../account-setup/snowflake.md) - You need a Snowflake account (for later pages)
 

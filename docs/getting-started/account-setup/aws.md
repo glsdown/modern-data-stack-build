@@ -701,4 +701,4 @@ Your next step is to configure Terraform to manage AWS infrastructure as code. T
 - Peer reviewed
 - Documented
 
-Continue to [Set Up Terraform for AWS](../../build/infrastructure-as-code/terraform-fundamentals.md) →
+Continue to [Set Up Terraform](../terraform-setup/index.md) →

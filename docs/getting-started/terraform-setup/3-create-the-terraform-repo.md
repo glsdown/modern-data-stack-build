@@ -37,7 +37,7 @@ origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (push)
 As we are doing a new piece of work, let's create a new branch:
 
 ```sh
-git checkout -b feature/add-github-provider
+git checkout -b feature/terraform-setup
 ```
 
 ## Set Up `.envrc` for Environment Variables
@@ -72,13 +72,13 @@ As we are using AWS S3 for the backend for all resources, we need to make sure t
 export AWS_PROFILE="data-engineer"
 ```
 
-It's also useful to include a template for other developers using the repo to use for reference. This will be held under version control, so should only ever contain placeholders. 
+It's also useful to include a template for other developers using the repo to use for reference. This will be held under version control, so should only ever contain placeholders.
 
 ```sh
 touch ~/projects/data/data-stack-infrastructure/.envrc.example
 ```
 
-Add the templated profile above:
+Add the templated profile above - it's useful to include details for other developers about the purpose of the variable:
 
 ```sh
 # AWS Profile for Terraform Backend

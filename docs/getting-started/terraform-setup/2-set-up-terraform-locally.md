@@ -111,10 +111,10 @@ Initialises a Terraform working directory. Downloads providers and configures th
 Shows what changes Terraform will make without actually making them. Always run this before apply to review changes.
 
 **`terraform apply`**
-Executes the changes shown in the plan. Creates, updates, or deletes resources to match your configuration. **You should never run this locally - this should always be handled by a service principle.**
+Executes the changes shown in the plan. Creates, updates, or deletes resources to match your configuration. **You should never run this locally in production - this should always be handled by a service principal.**
 
 **`terraform destroy`**
-Removes all resources managed by Terraform. Use with extreme caution in production. **You should never run this locally - this should always be handled by a service principle.**
+Removes all resources managed by Terraform. Use with extreme caution in production. **You should never run this locally in production - this should always be handled by a service principal.**
 
 **`terraform fmt`**
 Formats your Terraform files to standard style. Run before committing code.

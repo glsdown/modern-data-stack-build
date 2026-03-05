@@ -66,7 +66,7 @@ For personal development or testing:
 2. Select **API Keys**
 3. Click **Create API Key**
 4. Name it (e.g. `laptop` or `development`)
-5. Set an expiration (or leave as never for development)
+5. Set an expiration (90-180 days is recommended)
 6. Click **Create**
 7. Copy the generated API key
 

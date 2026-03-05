@@ -766,4 +766,4 @@ You've successfully imported IAM roles into Terraform:
 - [x] TerraformGitHubActionsRole managed in code
 - [x] GitHub OIDC provider managed in code
 
-Continue to [import state infrastructure](4-import-state-infrastructure.md) →
+Continue to [import state infrastructure](3-import-state-infrastructure.md) →

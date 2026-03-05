@@ -51,7 +51,7 @@ Note down:
 
 ## Add Variables
 
-Update `variables.tf` to add user configuration. This follows the same pattern as [AWS IAM User Management](../aws/5-import-iam-users.md) and [GitHub User Management](../github/4-github-user-management.md):
+Update `variables.tf` to add user configuration. This follows the same pattern as [AWS IAM User Management](../aws/4-import-iam-users.md) and [GitHub User Management](../github/4-github-user-management.md):
 
 ```hcl
 variable "snowflake_users" {
@@ -106,7 +106,7 @@ snowflake_users = {
     Snowflake usernames are case-insensitive but stored in uppercase. Use uppercase in your configuration to match what Snowflake stores.
 
 !!! info "Why a Separate File?"
-    Using `users.auto.tfvars` follows the same pattern as [GitHub User Management](../github/4-github-user-management.md) and [AWS IAM Users](../aws/5-import-iam-users.md):
+    Using `users.auto.tfvars` follows the same pattern as [GitHub User Management](../github/4-github-user-management.md) and [AWS IAM Users](../aws/4-import-iam-users.md):
 
     - **Auto-loaded**: Terraform automatically loads `*.auto.tfvars` files
     - **Separation**: User configuration is separate from general settings

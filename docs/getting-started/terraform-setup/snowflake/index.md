@@ -92,7 +92,7 @@ Service account credentials will be stored in AWS Secrets Manager:
 |--------|----------|
 | `terraform/snowflake-credentials` | Account identifier, username, private key |
 
-This follows the pattern established in [Secrets Manager Setup](../aws/7-secrets-manager-setup.md) - Terraform creates the secret container, you set the value via CLI.
+This follows the pattern established in [Secrets Manager Setup](../aws/6-secrets-manager-setup.md) - Terraform creates the secret container, you set the value via CLI.
 
 ## Running Terraform Locally
 

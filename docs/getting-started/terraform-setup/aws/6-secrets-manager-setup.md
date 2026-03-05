@@ -422,4 +422,4 @@ You've successfully set up Secrets Manager with Terraform:
 - [x] Pattern established for adding new secrets
 - [x] Security best practices for read/write separation
 
-Continue to [finishing up](8-finishing-up.md) →
+Continue to [finishing up](7-finishing-up.md) →

@@ -407,4 +407,4 @@ You've successfully imported the state infrastructure:
 - [x] Lifecycle rules active
 - [x] DynamoDB table managed in code
 
-Continue to [import IAM users](5-import-iam-users.md) →
+Continue to [import IAM users](4-import-iam-users.md) →

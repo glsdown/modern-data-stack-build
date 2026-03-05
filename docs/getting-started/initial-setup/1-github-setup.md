@@ -17,7 +17,7 @@ A GitHub organisation (rather than a personal account) provides:
 - **Scalability**: Easy to add new repositories and team members
 
 !!! info "Infrastructure as Code Coming Soon"
-    In this guide, we'll set up the organisation and first repository manually. This is necessary because we need somewhere to store our Terraform code! Once we have this initial repository, we'll use Terraform to manage teams, membership, and organisation settings. You'll learn this in the [Infrastructure as Code](../build/infrastructure-as-code/index.md) section.
+    In this guide, we'll set up the organisation and first repository manually. This is necessary because we need somewhere to store our Terraform code! Once we have this initial repository, we'll use Terraform to manage teams, membership, and organisation settings. You'll learn this in the [Infrastructure as Code](../terraform-setup/index.md) section.
 
 ## Create Your Organisation
 
@@ -79,7 +79,6 @@ Configure who can access your repository and what they can do.
 4. Add teams with permissions:
    - **data-platform-admins**: Admin
    - **data-engineers**: Write
-   - **data-analysts**: Read (optional)
 
 ### Create a CODEOWNERS file
 
@@ -151,7 +150,7 @@ Now configure which merge methods are allowed and how PRs behave. A merge is how
     - **Easy rollback**: Can revert (undo) entire features with one command
     - **Better readability**: Main branch shows what changed, not how, and link to the PR that changed them for more details.
     - **Consistent**: All PRs merged the same way
-    
+
     Individual commits are still visible in the PR for review, but main stays clean.
 
 ### Why These Rules Matter
@@ -174,7 +173,7 @@ You've completed the manual GitHub setup that provides the foundation for everyt
 
 - **[Local Development Environment](2-local-environment.md)** - Install Git, Terraform, and other tools
 - **[Development Workflow](3-development-workflow.md)** - Learn the branching and PR process
-- **[Infrastructure as Code](../build/infrastructure-as-code/index.md)** - Learn Terraform using GitHub as your first provider
+- **[Infrastructure as Code](../terraform-setup/index.md)** - Learn Terraform using GitHub as your first provider
 - **Automate GitHub** - Move teams, membership, and organisation settings to Terraform
 
 Continue to [Local Development Environment](2-local-environment.md) →

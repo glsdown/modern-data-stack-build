@@ -497,4 +497,4 @@ You've successfully set up flexible IAM user management:
 - [x] Single-role assume policies for granular access control
 - [x] Pattern established for managing users with configurable role combinations
 
-Continue to [import budget alerts](6-import-budget-alerts.md) →
+Continue to [import budget alerts](5-import-budget-alerts.md) →
