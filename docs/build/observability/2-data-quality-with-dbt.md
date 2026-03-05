@@ -605,7 +605,7 @@ columns:
           max_value: 1000000
           config:
             meta:
-              description: "Order totals capped at £1M to catch data entry errors"
+              description: "Order totals capped at $1M to catch data entry errors"
 ```
 
 ### 5. Monitor Test Results Over Time

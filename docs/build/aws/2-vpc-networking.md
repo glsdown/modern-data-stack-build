@@ -740,6 +740,6 @@ This VPC can support any compute workloads you add to your data platform - EC2 i
 
 ## What's Next
 
-Continue with S3 data lake if you haven't already:
+Your AWS infrastructure is ready. The S3 data lake provides storage and the VPC provides networking for any compute workloads you add later.
 
-Continue to [S3 Data Lake](1-s3-data-lake.md) →
+Continue to [Data Warehouse](../data-warehouse/index.md) →

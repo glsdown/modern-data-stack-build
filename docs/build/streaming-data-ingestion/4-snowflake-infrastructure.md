@@ -108,7 +108,7 @@ Adjust based on your requirements:
 
 ### Apply Terraform
 
-```bash
+```sh
 cd repositories/terraform/snowflake/config
 
 # Set AWS profile for Secrets Manager access
@@ -161,7 +161,7 @@ Snowflake service accounts use **key-pair authentication** (not passwords) for s
 
 Generate an RSA key pair:
 
-```bash
+```sh
 # Create directory for keys
 mkdir -p ~/.ssh/snowflake
 
@@ -248,7 +248,7 @@ This pattern creates a role matching the service account name (`SVC_KAFKA_CONNEC
 
 ### Apply Terraform
 
-```bash
+```sh
 terraform plan -out=tfplan
 
 # Review changes:
@@ -319,7 +319,7 @@ module "analytics_sources_reader_role" {
 
 ### Apply Terraform
 
-```bash
+```sh
 terraform plan -out=tfplan
 
 # Review: Should show grant of STREAMING_DB_READER to ANALYTICS_SOURCES_READER
@@ -355,7 +355,7 @@ Store the Snowflake service account credentials for Kafka Connect to use.
 
 ### Create Secret
 
-```bash
+```sh
 # Set AWS profile
 export AWS_PROFILE=data-engineer
 
@@ -396,7 +396,7 @@ aws secretsmanager create-secret \
 
 ### Retrieve Secret (Test)
 
-```bash
+```sh
 aws secretsmanager get-secret-value \
     --secret-id snowflake/svc-kafka-connector \
     --region eu-west-2 \
@@ -512,13 +512,13 @@ if __name__ == '__main__':
 
 ### Install Dependencies
 
-```bash
+```sh
 pip install snowflake-connector-python cryptography boto3
 ```
 
 ### Run Test
 
-```bash
+```sh
 python test_snowflake_auth.py
 ```
 

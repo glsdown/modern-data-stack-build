@@ -379,8 +379,8 @@ You've completed the Snowflake data warehouse setup:
 
 With your data warehouse infrastructure in place, you're ready to:
 
-1. **[Set up data loading](../data-loaders/index.md)** - Configure Fivetran or Airbyte to load data
-2. **[Build transformations](../data-transformations/index.md)** - Set up dbt for data modelling
-3. **[Connect BI tools](../data-reporting/index.md)** - Configure Metabase or your preferred tool
+1. **[Set up batch data ingestion](../batch-data-ingestion/index.md)** — Configure dlt pipelines to load data
+2. **[Build transformations](../data-transformation/index.md)** — Set up dbt for data modelling
+3. **[Connect BI tools](../data-analytics/index.md)** — Configure Lightdash or your preferred tool
 
 Your Snowflake account is now production-ready with proper access controls, cost-efficient shared warehouses, and secure authentication.

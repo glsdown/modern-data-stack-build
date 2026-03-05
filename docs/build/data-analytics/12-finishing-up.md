@@ -195,7 +195,7 @@ Lightdash (or Metabase, Omni) is excellent for small to mid-size teams. Upgrade 
 
 ### From Lightdash to Looker
 
-**Easier path**: Looker's LookML is code-based (like dbt metrics). You can translate dbt YAML metrics to LookML views.
+**More straightforward path**: Looker's LookML is code-based (like dbt metrics). You can translate dbt YAML metrics to LookML views.
 
 **Example:**
 
@@ -234,7 +234,7 @@ This is more mechanical than Tableau (UI-based metrics).
 
 **When:**
 - You **don't have a dbt transformation layer** (or don't plan to build one)
-- You want a **user-friendly UI** for non-technical business users (Metabase easier than Lightdash for SQL beginners)
+- You want a **user-friendly UI** for non-technical business users (Metabase is more accessible than Lightdash for SQL beginners)
 - You need **mature open source** (Metabase has been around since 2015)
 
 **Trade-off**: No dbt integration. Metrics defined in Metabase UI (not code). Business logic lives in BI tool, not dbt.

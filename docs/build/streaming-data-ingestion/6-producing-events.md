@@ -341,7 +341,7 @@ if __name__ == '__main__':
 
 ### Run Producer
 
-```bash
+```sh
 python produce_orders.py
 ```
 
@@ -479,7 +479,7 @@ if __name__ == '__main__':
 
 ### Deploy to Prefect Cloud
 
-```bash
+```sh
 # Build deployment
 prefect deploy flows/produce_order_events_flow.py:produce_order_events_flow \
     --name "Order Events Producer" \

@@ -28,9 +28,9 @@ This page provides detailed cost breakdowns and decision criteria to help you ch
 │  ────────────────                                                       │
 │  ┌──────────────────────────────────────────────────────┐              │
 │  │ Fully Managed (Kafka + Schema Registry + Connect)   │              │
-│  │ • Basic: £150/mo (1 CKU)                            │              │
-│  │ • Standard: £300/mo (multi-AZ, better SLA)          │              │
-│  │ • Dedicated: £500+/mo (isolated, private network)   │              │
+│  │ • Basic: $150/mo (1 CKU)                            │              │
+│  │ • Standard: $300/mo (multi-AZ, better SLA)          │              │
+│  │ • Dedicated: $500+/mo (isolated, private network)   │              │
 │  │ • Zero ops burden                                   │              │
 │  └──────────────────────────────────────────────────────┘              │
 │                                                                         │
@@ -38,8 +38,8 @@ This page provides detailed cost breakdowns and decision criteria to help you ch
 │  ────────                                                               │
 │  ┌──────────────────────────────────────────────────────┐              │
 │  │ AWS-Native Kafka                                     │              │
-│  │ • Serverless: ~£0.08/GB ingested + storage          │              │
-│  │ • Provisioned: ~£250/mo (3x kafka.m5.large)         │              │
+│  │ • Serverless: ~$0.08/GB ingested + storage          │              │
+│  │ • Provisioned: ~$250/mo (3x kafka.m5.large)         │              │
 │  │ • Medium ops burden (config, monitoring, upgrades)  │              │
 │  │ • Need separate Schema Registry (Glue or Confluent) │              │
 │  └──────────────────────────────────────────────────────┘              │
@@ -48,7 +48,7 @@ This page provides detailed cost breakdowns and decision criteria to help you ch
 │  ───────────────────────                                                │
 │  ┌──────────────────────────────────────────────────────┐              │
 │  │ Kafka-Compatible, Simpler Architecture              │              │
-│  │ • ECS Fargate: ~£100/mo (3 nodes + ALB)             │              │
+│  │ • ECS Fargate: ~$100/mo (3 nodes + ALB)             │              │
 │  │ • Built-in Schema Registry                          │              │
 │  │ • High ops burden (deploy, scale, monitor, debug)   │              │
 │  │ • Full control                                      │              │
@@ -76,7 +76,7 @@ This page provides detailed cost breakdowns and decision criteria to help you ch
 
 #### Basic Cluster
 
-**Cost:** ~£150/month base + usage
+**Cost:** ~$150/month base + usage
 
 **What's included:**
 - 1 CKU (Confluent Kafka Unit) = dedicated compute capacity
@@ -87,19 +87,19 @@ This page provides detailed cost breakdowns and decision criteria to help you ch
 - Kafka Connect included
 
 **Additional costs:**
-- **Ingress:** £0.08/GB (data written to Kafka)
-- **Egress:** £0.08/GB (data read from Kafka, excluding same-region)
-- **Storage:** £0.08/GB/month (data retention)
-- **Partition overage:** £0.40/partition/month (over 100 partitions)
+- **Ingress:** $0.08/GB (data written to Kafka)
+- **Egress:** $0.08/GB (data read from Kafka, excluding same-region)
+- **Storage:** $0.08/GB/month (data retention)
+- **Partition overage:** $0.40/partition/month (over 100 partitions)
 
 **Example workload:**
 ```
-1 GB/day ingress × 30 days = 30 GB ingress = £2.50
-1 GB/day egress × 30 days = 30 GB egress = £2.50
-30-day retention, 30 GB stored = £2.50
+1 GB/day ingress × 30 days = 30 GB ingress = $2.50
+1 GB/day egress × 30 days = 30 GB egress = $2.50
+30-day retention, 30 GB stored = $2.50
 5 topics, 3 partitions each = 15 partitions (no overage)
 
-Total: £150 + £2.50 + £2.50 + £2.50 = £157.50/month
+Total: $150 + $2.50 + $2.50 + $2.50 = $157.50/month
 ```
 
 **Best for:**
@@ -110,7 +110,7 @@ Total: £150 + £2.50 + £2.50 + £2.50 = £157.50/month
 
 #### Standard Cluster
 
-**Cost:** ~£300/month base + usage
+**Cost:** ~$300/month base + usage
 
 **What's included:**
 - Multi-zone deployment (HA across 3 availability zones)
@@ -127,7 +127,7 @@ Total: £150 + £2.50 + £2.50 + £2.50 = £157.50/month
 
 #### Dedicated Cluster
 
-**Cost:** £500+/month base + usage (varies by region and CKU count)
+**Cost:** $500+/month base + usage (varies by region and CKU count)
 
 **What's included:**
 - Isolated single-tenant cluster
@@ -147,16 +147,16 @@ Total: £150 + £2.50 + £2.50 + £2.50 = £157.50/month
 
 | Component | Monthly Cost |
 |-----------|-------------|
-| **Base cluster** (1 CKU) | £150 |
-| **Ingress** (1 GB/day × 30 days × £0.08/GB) | £2.50 |
-| **Egress** (1 GB/day × 30 days × £0.08/GB) | £2.50 |
-| **Storage** (30 GB × £0.08/GB) | £2.50 |
+| **Base cluster** (1 CKU) | $150 |
+| **Ingress** (1 GB/day × 30 days × $0.08/GB) | $2.50 |
+| **Egress** (1 GB/day × 30 days × $0.08/GB) | $2.50 |
+| **Storage** (30 GB × $0.08/GB) | $2.50 |
 | **Schema Registry** | Included |
 | **Kafka Connect** | Included |
 | **Ops time** (monitoring, alerts) | 1-2 hours/month |
-| **Total** | **~£157.50 + engineer time** |
+| **Total** | **~$157.50 + engineer time** |
 
-**Engineer cost:** If your engineer costs £60/hour, add £60-120/month = **£217.50-277.50 total**
+**Engineer cost:** If your engineer costs $60/hour, add $60-120/month = **$217.50-277.50 total**
 
 **When to upgrade to Standard:**
 - Production workload with HA requirements
@@ -194,17 +194,17 @@ Total: £150 + £2.50 + £2.50 + £2.50 = £157.50/month
 **Cost:** Pay per usage (no base cost)
 
 **Pricing:**
-- **Ingress:** £0.08/GB (data written)
-- **Storage:** £0.08/GB/month (data retained)
-- **Partition hours:** ~£0.0015/partition/hour = ~£1.10/partition/month
+- **Ingress:** $0.08/GB (data written)
+- **Storage:** $0.08/GB/month (data retained)
+- **Partition hours:** ~$0.0015/partition/hour = ~$1.10/partition/month
 
 **Example workload:**
 ```
-1 GB/day ingress × 30 days = 30 GB = £2.50
-30 GB storage × £0.08 = £2.50
-5 topics × 3 partitions × £1.10 = £16.50
+1 GB/day ingress × 30 days = 30 GB = $2.50
+30 GB storage × $0.08 = $2.50
+5 topics × 3 partitions × $1.10 = $16.50
 
-Total: £21.50/month
+Total: $21.50/month
 ```
 
 **Pros:**
@@ -224,7 +224,7 @@ Total: £21.50/month
 
 #### MSK Provisioned
 
-**Cost:** ~£250/month (3-broker cluster)
+**Cost:** ~$250/month (3-broker cluster)
 
 **Instance types:**
 - **kafka.t3.small** (2 vCPU, 2 GB RAM) — Dev/test only
@@ -233,11 +233,11 @@ Total: £21.50/month
 
 **Example configuration:**
 ```
-3 brokers × kafka.m5.large (£0.115/hour) × 730 hours/month = £252/month
-+ Storage: 100 GB EBS per broker × 3 × £0.08/GB = £24/month
+3 brokers × kafka.m5.large ($0.115/hour) × 730 hours/month = $252/month
++ Storage: 100 GB EBS per broker × 3 × $0.08/GB = $24/month
 + Data transfer: Minimal (same-AZ free)
 
-Total: £276/month
+Total: $276/month
 ```
 
 **Pros:**
@@ -259,15 +259,15 @@ Total: £276/month
 
 | Component | Monthly Cost |
 |-----------|-------------|
-| **MSK cluster** (3 × kafka.m5.large) | £252 |
-| **EBS storage** (3 × 100 GB × £0.08) | £24 |
-| **Schema Registry** (Confluent Cloud or Glue) | £20-50 |
-| **Kafka Connect** (ECS Fargate, 1 vCPU) | £30 |
-| **CloudWatch metrics** | £10 |
+| **MSK cluster** (3 × kafka.m5.large) | $252 |
+| **EBS storage** (3 × 100 GB × $0.08) | $24 |
+| **Schema Registry** (Confluent Cloud or Glue) | $20-50 |
+| **Kafka Connect** (ECS Fargate, 1 vCPU) | $30 |
+| **CloudWatch metrics** | $10 |
 | **Ops time** (monitoring, config, upgrades) | 4-8 hours/month |
-| **Total** | **~£336-366 + engineer time** |
+| **Total** | **~$336-366 + engineer time** |
 
-**Engineer cost:** At £60/hour, add £240-480/month = **£576-846 total**
+**Engineer cost:** At $60/hour, add $240-480/month = **$576-846 total**
 
 **Key trade-off:** MSK is cheaper on infrastructure but significantly higher on ops time compared to Confluent Cloud.
 
@@ -312,28 +312,28 @@ Total: £276/month
 
 | Component | Specification | Monthly Cost |
 |-----------|--------------|-------------|
-| **ECS Fargate** (3 nodes) | 0.5 vCPU, 1 GB RAM each, 24/7 | £54 |
-| **Application Load Balancer** | Basic usage | £16 |
-| **EBS volumes** (persistent storage) | 3 × 50 GB gp3 | £15 |
-| **CloudWatch Logs** | ~10 GB/month | £5 |
-| **VPC data transfer** (minimal) | Same-AZ | £0 |
-| **Total infrastructure** | | **£90/month** |
+| **ECS Fargate** (3 nodes) | 0.5 vCPU, 1 GB RAM each, 24/7 | $54 |
+| **Application Load Balancer** | Basic usage | $16 |
+| **EBS volumes** (persistent storage) | 3 × 50 GB gp3 | $15 |
+| **CloudWatch Logs** | ~10 GB/month | $5 |
+| **VPC data transfer** (minimal) | Same-AZ | $0 |
+| **Total infrastructure** | | **$90/month** |
 
 ### Total Cost of Ownership (Redpanda Self-Hosted)
 
 | Component | Monthly Cost |
 |-----------|-------------|
-| **Infrastructure** (as above) | £90 |
+| **Infrastructure** (as above) | $90 |
 | **Setup time** (initial Terraform, testing) | 20-40 hours (one-time) |
 | **Ops time** (monitoring, upgrades, debugging) | 8-16 hours/month |
-| **Total** | **£90 + engineer time** |
+| **Total** | **$90 + engineer time** |
 
-**Engineer cost:** At £60/hour, add £480-960/month = **£570-1,050 total**
+**Engineer cost:** At $60/hour, add $480-960/month = **$570-1,050 total**
 
 **Break-even analysis:**
-- Infrastructure saving vs Confluent Cloud: £157 - £90 = £67/month
+- Infrastructure saving vs Confluent Cloud: $157 - $90 = $67/month
 - Extra ops time: 6-14 hours/month more than Confluent Cloud
-- At £60/hour, extra ops cost: £360-840/month
+- At $60/hour, extra ops cost: $360-840/month
 
 **Conclusion:** Redpanda self-hosted is **more expensive overall** unless:
 - You already have DevOps engineers with spare capacity
@@ -343,7 +343,7 @@ Total: £276/month
 ### Pros and Cons
 
 **Pros:**
-- Lowest infrastructure cost (£90/month)
+- Lowest infrastructure cost ($90/month)
 - Full control over configuration
 - Kafka-compatible (easy migration to/from Kafka)
 - Built-in Schema Registry
@@ -377,10 +377,10 @@ Total: £276/month
 
 | Monthly Budget | Recommended Option | Notes |
 |----------------|-------------------|-------|
-| **< £100/month** | Reconsider if you need streaming | Streaming is fundamentally expensive |
-| **£100-300/month** | Confluent Cloud Basic | Best balance of cost and simplicity |
-| **£300-600/month** | Confluent Cloud Standard or MSK | HA requirements justify Standard |
-| **£600+/month** | Confluent Cloud Dedicated or MSK | Enterprise features, compliance, scale |
+| **< $100/month** | Reconsider if you need streaming | Streaming is fundamentally expensive |
+| **$100-300/month** | Confluent Cloud Basic | Best balance of cost and simplicity |
+| **$300-600/month** | Confluent Cloud Standard or MSK | HA requirements justify Standard |
+| **$600+/month** | Confluent Cloud Dedicated or MSK | Enterprise features, compliance, scale |
 
 ### By Workload
 
@@ -417,23 +417,23 @@ Total: £276/month
 
 **Phase 1: Development (Months 0-3)**
 - **Confluent Cloud Basic** — Learn streaming concepts, build initial pipelines
-- **Cost:** ~£160/month
+- **Cost:** ~$160/month
 - **Effort:** Focus on data, not infrastructure
 
 **Phase 2: Production (Months 3-12)**
 - **Upgrade to Standard** — Add HA for production workload
-- **Cost:** ~£310/month
+- **Cost:** ~$310/month
 - **Trigger:** Ready to deploy streaming to production
 
 **Phase 3: Scale (Months 12+)**
 - **Stay on Standard** if throughput < 50 GB/day
-- **Migrate to MSK** if infrastructure cost becomes significant (> £500/month)
+- **Migrate to MSK** if infrastructure cost becomes significant (> $500/month)
 - **Upgrade to Dedicated** if compliance/security requirements emerge
 
 ### Migration: Confluent Cloud → MSK
 
 **When to consider:**
-- Confluent Cloud cost > £500/month
+- Confluent Cloud cost > $500/month
 - Team has hired DevOps engineers with Kafka expertise
 - AWS-centric architecture benefits from native integration
 
@@ -458,26 +458,26 @@ Total: £276/month
 
 **Migration approach:** Same as above (MSK and Confluent are both Kafka)
 
-**Cost change:** +£150-300/month infrastructure, -£300-600/month ops time
+**Cost change:** +$150-300/month infrastructure, -$300-600/month ops time
 
 ## Cost Comparison: 12-Month Total
 
 ### Scenario: 5 GB/day workload, 2-person data team
 
-| Option | Infra Cost (12mo) | Ops Time (12mo) | Ops Cost @ £60/hr | Total Cost |
+| Option | Infra Cost (12mo) | Ops Time (12mo) | Ops Cost @ $60/hr | Total Cost |
 |--------|------------------|----------------|------------------|-----------|
-| **Confluent Cloud Basic** | £2,100 | 24 hours | £1,440 | **£3,540** |
-| **MSK Provisioned** | £4,032 | 96 hours | £5,760 | **£9,792** |
-| **Redpanda Self-Hosted** | £1,080 | 144 hours | £8,640 | **£9,720** |
+| **Confluent Cloud Basic** | $2,100 | 24 hours | $1,440 | **$3,540** |
+| **MSK Provisioned** | $4,032 | 96 hours | $5,760 | **$9,792** |
+| **Redpanda Self-Hosted** | $1,080 | 144 hours | $8,640 | **$9,720** |
 
 **Winner:** Confluent Cloud Basic (60% cheaper overall)
 
 ### Scenario: 50 GB/day workload, 5-person team with DevOps
 
-| Option | Infra Cost (12mo) | Ops Time (12mo) | Ops Cost @ £60/hr | Total Cost |
+| Option | Infra Cost (12mo) | Ops Time (12mo) | Ops Cost @ $60/hr | Total Cost |
 |--------|------------------|----------------|------------------|-----------|
-| **Confluent Cloud Standard** | £4,800 | 24 hours | £1,440 | **£6,240** |
-| **MSK Provisioned (larger)** | £6,000 | 60 hours | £3,600 | **£9,600** |
+| **Confluent Cloud Standard** | $4,800 | 24 hours | $1,440 | **$6,240** |
+| **MSK Provisioned (larger)** | $6,000 | 60 hours | $3,600 | **$9,600** |
 
 **Winner:** Still Confluent Cloud (35% cheaper)
 
@@ -490,12 +490,12 @@ Total: £276/month
 
 You've compared deployment options for Kafka:
 
-- [x] **Confluent Cloud Basic** — £160/month, zero ops, best for most teams
-- [x] **Confluent Cloud Standard** — £310/month, HA, 99.95% SLA, production workloads
-- [x] **Confluent Cloud Dedicated** — £500+/month, compliance, high throughput
-- [x] **AWS MSK Serverless** — £20-100/month, pay per usage, dev/test only
-- [x] **AWS MSK Provisioned** — £280-600/month, AWS-native, medium ops burden
-- [x] **Redpanda self-hosted** — £90/month infrastructure, high ops burden, rarely worth it
+- [x] **Confluent Cloud Basic** — $160/month, zero ops, best for most teams
+- [x] **Confluent Cloud Standard** — $310/month, HA, 99.95% SLA, production workloads
+- [x] **Confluent Cloud Dedicated** — $500+/month, compliance, high throughput
+- [x] **AWS MSK Serverless** — $20-100/month, pay per usage, dev/test only
+- [x] **AWS MSK Provisioned** — $280-600/month, AWS-native, medium ops burden
+- [x] **Redpanda self-hosted** — $90/month infrastructure, high ops burden, rarely worth it
 - [x] **Decision matrix** — Choose based on team size, budget, expertise, requirements
 - [x] **Migration paths** — Start small (Basic), scale up (Standard), migrate if needed (MSK)
 

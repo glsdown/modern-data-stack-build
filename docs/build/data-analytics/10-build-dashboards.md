@@ -81,7 +81,7 @@ This page walks through building two dashboards using the metrics you defined in
    - X-axis label: "Week"
    - Colour scheme: Assign distinct colours to each currency
 
-5. Click **Save** → Choose the dashboard you just created
+5. Click **Save** → Choose the dashboard you created above
 
 **Resize and position:**
 - Drag the tile to the top-left
@@ -212,7 +212,7 @@ This dashboard shows GBP (British Pound) exchange rates against major currencies
 
 1. **Explore** → **Products** (`dim_products`)
 2. **Dimensions**: `Category`
-3. **Metrics**: `count_current_products` (or just row count if metric not defined)
+3. **Metrics**: `count_current_products` (or row count if metric not defined)
 4. **Filters**:
    - `Current Version` = TRUE (to avoid counting historical Type 2 SCD versions)
    - `Active Product` = TRUE

@@ -321,7 +321,7 @@ resource "aws_instance" "prefect_server" {
 
 Create `terraform/prefect-server/files/user-data.sh`:
 
-```bash
+```sh
 #!/bin/bash
 set -e
 

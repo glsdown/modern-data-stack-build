@@ -32,7 +32,7 @@ On this page, you will:
 │  └──────────┘      └──────────┘      └──────────┘      └──────────┘   │
 │                                                                         │
 │  Total latency: ~5 minutes (sufficient for most use cases)             │
-│  Cost: £200/month (Confluent Cloud + Snowflake)                        │
+│  Cost: $200/month (Confluent Cloud + Snowflake)                        │
 │                                                                         │
 │  ─────────────────────────────────────────────────────────────────────  │
 │                                                                         │
@@ -50,7 +50,7 @@ On this page, you will:
 │                                       └──────────┘      └──────────┘   │
 │                                                                         │
 │  Total latency: ~3 seconds (real-time aggregations)                    │
-│  Cost: £400-600/month (+£200-400 for processing layer)                 │
+│  Cost: $400-600/month (+$200-400 for processing layer)                 │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -109,7 +109,7 @@ On this page, you will:
 
 ### Bad Reasons
 
-❌ **"We want real-time"** - without specific business value measured in £
+❌ **"We want real-time"** - without specific business value measured in $
 ❌ **Over-engineering** - Adding complexity before validating need
 ❌ **Resume building** - Using Flink because it's trendy, not because it's needed
 ❌ **Avoiding dbt** - Stream processing is harder to maintain than dbt
@@ -162,7 +162,7 @@ On this page, you will:
 │  │ (aggregated)       │                                                 │
 │  └────────────────────┘                                                 │
 │                                                                         │
-│  Cost: £30-60/month (ECS Fargate, 1-2 vCPU)                            │
+│  Cost: $30-60/month (ECS Fargate, 1-2 vCPU)                            │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -333,7 +333,7 @@ output "ksqldb_endpoint" {
 
 #### Deploy ksqlDB
 
-```bash
+```sh
 cd repositories/terraform/aws/ksqldb
 
 terraform init
@@ -347,7 +347,7 @@ Create a ksqlDB query to aggregate orders by customer in real-time.
 
 #### Connect to ksqlDB
 
-```bash
+```sh
 # Port-forward to ksqlDB server
 aws ecs execute-command \
     --cluster streaming-cluster \
@@ -448,11 +448,11 @@ CREATE TABLE user_sessions AS
 
 | Component | Monthly Cost | Notes |
 |-----------|-------------|-------|
-| **ECS Fargate** (1 vCPU, 2 GB) | £30 | 24/7 |
-| **CloudWatch Logs** | £5 | Processing logs |
-| **Additional Kafka storage** | £10 | Output topics |
+| **ECS Fargate** (1 vCPU, 2 GB) | $30 | 24/7 |
+| **CloudWatch Logs** | $5 | Processing logs |
+| **Additional Kafka storage** | $10 | Output topics |
 | **Ops time** | 2-4 hours/month | Query tuning, monitoring |
-| **Total** | **£45 + £120-240 ops** = **£165-285/month** | |
+| **Total** | **$45 + $120-240 ops** = **$165-285/month** | |
 
 ## Apache Flink for Complex Event Processing
 
@@ -498,7 +498,7 @@ CREATE TABLE user_sessions AS
 │  │ • Exactly-once processing guarantees                       │        │
 │  └────────────────────────────────────────────────────────────┘        │
 │                                                                         │
-│  Cost: £150-250/month (JobManager + 2 TaskManagers)                    │
+│  Cost: $150-250/month (JobManager + 2 TaskManagers)                    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -805,7 +805,7 @@ resource "aws_security_group" "flink" {
 
 #### Deploy Flink
 
-```bash
+```sh
 cd repositories/terraform/aws/flink
 
 terraform init
@@ -908,7 +908,7 @@ env.execute("Fraud Detection Job")
 
 #### Package and Deploy
 
-```bash
+```sh
 # Build Flink job JAR
 python -m PyFlinkJob fraud_detection_job.py
 
@@ -925,13 +925,13 @@ flink run -d \
 
 | Component | Monthly Cost | Notes |
 |-----------|-------------|-------|
-| **JobManager ECS** (1 vCPU, 2 GB) | £30 | 24/7 |
-| **TaskManager ECS** (2 × 2 vCPU, 4 GB) | £120 | 24/7 |
-| **S3 checkpoints** | £5 | State snapshots |
-| **CloudWatch Logs** | £10 | Processing logs |
-| **Development time** (one-time) | - | 40-80 hours @ £60 = £2,400-4,800 |
+| **JobManager ECS** (1 vCPU, 2 GB) | $30 | 24/7 |
+| **TaskManager ECS** (2 × 2 vCPU, 4 GB) | $120 | 24/7 |
+| **S3 checkpoints** | $5 | State snapshots |
+| **CloudWatch Logs** | $10 | Processing logs |
+| **Development time** (one-time) | - | 40-80 hours @ $60 = $2,400-4,800 |
 | **Ops time** (monthly) | 4-8 hours/month | Job monitoring, tuning |
-| **Total** | **£165 + £240-480 ops** = **£405-645/month** | |
+| **Total** | **$165 + $240-480 ops** = **$405-645/month** | |
 
 ## Stream Processing vs dbt
 
@@ -939,10 +939,10 @@ flink run -d \
 
 | Approach | Latency | Cost/Month | Complexity |
 |----------|---------|-----------|-----------|
-| **dbt hourly** | 30-60 min | £50 | Low |
-| **dbt every 5 min** | 5-10 min | £100 | Low |
-| **ksqlDB** | < 10 sec | £165-285 | Medium |
-| **Flink** | < 1 sec | £405-645 | High |
+| **dbt hourly** | 30-60 min | $50 | Low |
+| **dbt every 5 min** | 5-10 min | $100 | Low |
+| **ksqlDB** | < 10 sec | $165-285 | Medium |
+| **Flink** | < 1 sec | $405-645 | High |
 
 ### When to Use Each
 
@@ -963,13 +963,13 @@ flink run -d \
 You've learned when and how to add stream processing:
 
 - [x] **Decision framework** - Most teams don't need stream processing (dbt is sufficient)
-- [x] **ksqlDB** - SQL-based processing for real-time aggregations and joins (£165-285/month)
-- [x] **Apache Flink** - Complex event processing and pattern detection (£405-645/month)
+- [x] **ksqlDB** - SQL-based processing for real-time aggregations and joins ($165-285/month)
+- [x] **Apache Flink** - Complex event processing and pattern detection ($405-645/month)
 - [x] **Use cases** - Fraud detection, sessionisation, real-time dashboards
 - [x] **Cost trade-offs** - 2-4× cost increase for sub-second latency
 - [x] **Complexity** - Significant operational burden vs dbt
 
-**Key insight:** Stream processing adds cost and complexity. Only add it when **business value** (measured in £) exceeds the **£200-400/month premium**.
+**Key insight:** Stream processing adds cost and complexity. Only add it when **business value** (measured in $) exceeds the **$200-400/month premium**.
 
 ## What's Next
 

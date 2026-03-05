@@ -366,7 +366,7 @@ if __name__ == '__main__':
 
 ### Deploy Monitoring Flow
 
-```bash
+```sh
 # Deploy with 5-minute schedule
 prefect deploy flows/monitor_streaming_flow.py:monitor_streaming_flow \
     --name "Streaming Health Monitor" \
@@ -525,7 +525,7 @@ if __name__ == '__main__':
 
 ### Deploy Event-Driven Flow
 
-```bash
+```sh
 # Deploy with 5-minute schedule
 prefect deploy flows/streaming_dbt_flow.py:streaming_dbt_flow \
     --name "Streaming dbt Transformation" \

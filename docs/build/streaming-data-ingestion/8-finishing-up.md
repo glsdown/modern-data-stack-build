@@ -34,7 +34,7 @@ You've built a complete streaming data pipeline from Kafka to Snowflake. This fi
 │  └────────┘          └────────┘         └────────┘        └────────┘  │
 │                                                                         │
 │  Total Latency: ~8 seconds (producer → queryable in Snowflake)         │
-│  Cost: ~£200/month (Confluent Cloud Basic + Snowflake compute)         │
+│  Cost: ~$200/month (Confluent Cloud Basic + Snowflake compute)         │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
 ### Run Latency Test
 
-```bash
+```sh
 python test_latency.py
 ```
 
@@ -250,41 +250,41 @@ If latency is too high:
 
 ## Cost Summary
 
-### Confluent Cloud Approach (~£200/month)
+### Confluent Cloud Approach (~$200/month)
 
 | Component | Monthly Cost | Notes |
 |-----------|-------------|-------|
-| **Confluent Cloud Basic** | £150 | 1 CKU base cluster |
-| **Data ingress** | £2.50 | 1 GB/day × 30 days × £0.08/GB |
-| **Data egress** | £2.50 | Connector reads 1 GB/day |
-| **Storage** | £2.50 | 30 GB retained (7 days) × £0.08/GB |
+| **Confluent Cloud Basic** | $150 | 1 CKU base cluster |
+| **Data ingress** | $2.50 | 1 GB/day × 30 days × $0.08/GB |
+| **Data egress** | $2.50 | Connector reads 1 GB/day |
+| **Storage** | $2.50 | 30 GB retained (7 days) × $0.08/GB |
 | **Schema Registry** | Included | Part of Basic tier |
 | **Kafka Connect** | Included | Managed by Confluent |
-| **AWS Secrets Manager** | £1.50 | 3 secrets × £0.40/month + API calls |
-| **Snowflake compute** | £30-50 | INGEST_WH (XSMALL), ~2-4 hours/day active |
-| **Snowflake storage** | £5 | STREAMING database, compressed |
-| **Prefect Cloud** | £0 | Hobby tier (sufficient for monitoring) |
-| **Developer time** | £60-120 | 1-2 hours/month monitoring (@ £60/hour) |
-| **Total** | **£254-334/month** | |
+| **AWS Secrets Manager** | $1.50 | 3 secrets × $0.40/month + API calls |
+| **Snowflake compute** | $30-50 | INGEST_WH (XSMALL), ~2-4 hours/day active |
+| **Snowflake storage** | $5 | STREAMING database, compressed |
+| **Prefect Cloud** | $0 | Hobby tier (sufficient for monitoring) |
+| **Developer time** | $60-120 | 1-2 hours/month monitoring (@ $60/hour) |
+| **Total** | **$254-334/month** | |
 
 ### Cost Breakdown by Volume
 
 | Daily Ingress | Monthly Confluent Cost | Monthly Snowflake Cost | Total |
 |---------------|----------------------|----------------------|-------|
-| **1 GB/day** | £157 | £35 | **£192** |
-| **10 GB/day** | £174 | £50 | **£224** |
-| **50 GB/day** | £270 | £100 | **£370** |
-| **100 GB/day** | £390 | £150 | **£540** |
+| **1 GB/day** | $157 | $35 | **$192** |
+| **10 GB/day** | $174 | $50 | **$224** |
+| **50 GB/day** | $270 | $100 | **$370** |
+| **100 GB/day** | $390 | $150 | **$540** |
 
 ### Cost vs Batch Comparison
 
 | Workload | Streaming Cost | Batch Cost (dlt) | Premium |
 |----------|---------------|-----------------|---------|
-| **1 GB/day** | £192/month | £5/month | £187/month |
-| **10 GB/day** | £224/month | £10/month | £214/month |
+| **1 GB/day** | $192/month | $5/month | $187/month |
+| **10 GB/day** | $224/month | $10/month | $214/month |
 
 **When the premium is worth it:**
-- Latency reduction (hours → seconds) enables real-time decisions worth > £200/month
+- Latency reduction (hours → seconds) enables real-time decisions worth > $200/month
 - Fraud prevention, dynamic pricing, operational dashboards
 - Business value exceeds infrastructure cost
 
@@ -305,7 +305,7 @@ Use this decision tree to choose between streaming and batch ingestion:
 │  ├─ NO  → Use batch (streaming overhead not justified)                  │
 │  └─ YES → Continue                                                      │
 │                                                                         │
-│  Does business value exceed £200/month?                                 │
+│  Does business value exceed $200/month?                                 │
 │  ├─ NO  → Use batch (streaming too expensive)                           │
 │  └─ YES → Continue                                                      │
 │                                                                         │
@@ -356,7 +356,7 @@ Create `schemas/customer_events.avsc`:
 
 **Step 2: Create topic**
 
-```bash
+```sh
 confluent kafka topic create customer-events \
     --partitions 3 \
     --config retention.ms=604800000
@@ -364,7 +364,7 @@ confluent kafka topic create customer-events \
 
 **Step 3: Register schema**
 
-```bash
+```sh
 curl -X POST \
     -H "Content-Type: application/vnd.schemaregistry.v1+json" \
     -u "SR_API_KEY:SR_API_SECRET" \
@@ -477,7 +477,7 @@ See [Change Data Capture](11-change-data-capture.md) →
 You've completed the streaming data ingestion section:
 
 - [x] **End-to-end latency verified** — ~8 seconds from producer to Snowflake
-- [x] **Cost reviewed** — ~£200/month for Confluent Cloud Basic approach
+- [x] **Cost reviewed** — ~$200/month for Confluent Cloud Basic approach
 - [x] **Decision tree** — know when to use streaming vs batch
 - [x] **Pattern documented** — add new topics and connectors systematically
 - [x] **Monitoring checklist** — comprehensive health checks in place

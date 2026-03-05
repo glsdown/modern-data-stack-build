@@ -26,7 +26,7 @@ Prefect is a modern workflow orchestration platform that replaces traditional to
 | **Failure handling** | Automatic retries, caching, timeouts | Manual configuration |
 | **UI** | Modern, real-time | Functional but dated |
 
-Prefect's philosophy is "orchestration as code" - your workflows are just Python functions with decorators. This makes them easy to test, version, and debug.
+Prefect's philosophy is "orchestration as code" — your workflows are Python functions with decorators. This makes them straightforward to test, version, and debug.
 
 ## Role in the Stack
 

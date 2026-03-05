@@ -292,7 +292,7 @@ models:
             total_price_sum:
               type: sum
               label: "Total Price (Sum)"
-              description: "Sum of product prices (not revenue - just sum of prices)"
+              description: "Sum of product prices (not revenue - sum of prices only)"
               round: 2
               format: currency
               currency: GBP
@@ -560,7 +560,7 @@ git push origin main
 Lightdash automatically detects the push to `main` and recompiles the project. Check the Lightdash UI:
 
 1. Navigate to **Settings** → **Project**
-2. Look for "Last compiled" timestamp — should update within 1-2 minutes
+2. Look for "Last compiled" timestamp — should update shortly after the push
 3. If compilation succeeds, metrics are immediately available
 
 ### If Auto-Sync is Disabled

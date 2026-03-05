@@ -220,7 +220,7 @@ Use this matrix to guide your decision:
 
 | If you... | Choose |
 |-----------|--------|
-| Are just getting started | Prefect Cloud (Hobby) |
+| Are getting started | Prefect Cloud (Hobby) |
 | Have a small team (< 5) with basic needs | Prefect Cloud (Hobby or Starter) |
 | Need multiple workspaces or SSO | Prefect Cloud (Pro or Enterprise) |
 | Have strict data sovereignty requirements | Self-hosted |
@@ -247,7 +247,7 @@ For most teams, we recommend:
    - You have dedicated platform/infrastructure engineers
 
 !!! tip "Migration is Straightforward"
-    Prefect makes it relatively easy to migrate between deployment options. Your flows, tasks, and worker code remain the same - you just point to a different API endpoint.
+    Prefect makes it straightforward to migrate between deployment options. Your flows, tasks, and worker code remain the same — you point to a different API endpoint.
 
 ## Summary
 

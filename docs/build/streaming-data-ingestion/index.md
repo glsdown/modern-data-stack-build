@@ -132,7 +132,7 @@ Kafka is operationally complex to run (clusters, brokers, Zookeeper, monitoring)
 ✅ **Security** — Encryption, authentication, authorization out of the box
 ✅ **Schema Registry** — Managed schema versioning and validation
 
-**Trade-off:** Higher cost (~£150-200/month minimum) vs self-hosted (~£100/month for Redpanda on ECS).
+**Trade-off:** Higher cost (~$150-200/month minimum) vs self-hosted (~$100/month for Redpanda on ECS).
 
 ## Real-Time Use Cases
 
@@ -223,12 +223,12 @@ E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-
 **What you get:** Fully managed Kafka + Schema Registry + Kafka Connect
 
 **Pricing:**
-- **Basic cluster:** ~£150/month (1 CKU - Confluent Kafka Unit)
-- **Standard cluster:** ~£300/month (improved SLA, multi-AZ)
-- **Dedicated cluster:** £500+/month (isolated resources, private networking)
-- **Additional costs:** Data transfer (£0.08/GB), storage (£0.08/GB/month)
+- **Basic cluster:** ~$150/month (1 CKU - Confluent Kafka Unit)
+- **Standard cluster:** ~$300/month (improved SLA, multi-AZ)
+- **Dedicated cluster:** $500+/month (isolated resources, private networking)
+- **Additional costs:** Data transfer ($0.08/GB), storage ($0.08/GB/month)
 
-**Monthly estimate:** ~£150-200 for small workload (1 GB/day ingress, 30-day retention)
+**Monthly estimate:** ~$150-200 for small workload (1 GB/day ingress, 30-day retention)
 
 **Pros:**
 - Zero infrastructure management
@@ -248,10 +248,10 @@ E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-
 **What you get:** Managed Kafka cluster on AWS
 
 **Pricing:**
-- **Serverless:** Pay per GB ingested (~£0.08/GB) + storage
-- **Provisioned:** 3-broker cluster ~£250/month (kafka.m5.large)
+- **Serverless:** Pay per GB ingested (~$0.08/GB) + storage
+- **Provisioned:** 3-broker cluster ~$250/month (kafka.m5.large)
 
-**Monthly estimate:** ~£250-300 for provisioned cluster
+**Monthly estimate:** ~$250-300 for provisioned cluster
 
 **Pros:**
 - Integrated with AWS (VPC, IAM, CloudWatch)
@@ -274,7 +274,7 @@ E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-
 - No Zookeeper required (simpler than Kafka)
 - Built-in Schema Registry
 
-**Monthly cost:** ~£100 (3 × ECS tasks, ALB, storage)
+**Monthly cost:** ~$100 (3 × ECS tasks, ALB, storage)
 
 **Pros:**
 - Lowest cost option
@@ -293,7 +293,7 @@ E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-
 
 | Factor | Confluent Cloud | AWS MSK | Redpanda Self-Hosted |
 |--------|----------------|---------|---------------------|
-| **Cost** | £150-200/mo | £250-300/mo | £100/mo |
+| **Cost** | $150-200/mo | $250-300/mo | $100/mo |
 | **Operational burden** | Zero | Medium | High |
 | **AWS integration** | Via connectors | Native | Via connectors |
 | **Schema Registry** | Included | Separate (Glue) | Built-in |
@@ -383,35 +383,35 @@ You'll extend these foundations to handle real-time data.
 
 ## Cost Summary
 
-### Confluent Cloud Approach (~£200/month)
+### Confluent Cloud Approach (~$200/month)
 
 | Component | Monthly Cost |
 |-----------|-------------|
-| **Confluent Cloud Basic** (1 CKU) | £150 |
-| **Data transfer** (1 GB/day ingress) | £2.50 |
-| **Storage** (30-day retention, 30 GB) | £2.50 |
+| **Confluent Cloud Basic** (1 CKU) | $150 |
+| **Data transfer** (1 GB/day ingress) | $2.50 |
+| **Storage** (30-day retention, 30 GB) | $2.50 |
 | **Schema Registry** | Included |
 | **Kafka Connect** | Included |
-| **AWS Secrets Manager** (Confluent credentials) | £0.50 |
-| **Snowflake compute** (Snowpipe Streaming) | £20-50 |
-| **Total** | **~£175-205/month** |
+| **AWS Secrets Manager** (Confluent credentials) | $0.50 |
+| **Snowflake compute** (Snowpipe Streaming) | $20-50 |
+| **Total** | **~$175-205/month** |
 
-### Self-Hosted Redpanda Approach (~£100/month)
+### Self-Hosted Redpanda Approach (~$100/month)
 
 | Component | Monthly Cost |
 |-----------|-------------|
-| **ECS Fargate** (3 × Redpanda nodes) | £60 |
-| **ALB** | £20 |
-| **Storage** (EBS volumes) | £15 |
-| **CloudWatch Logs** | £5 |
-| **Total** | **~£100/month** |
+| **ECS Fargate** (3 × Redpanda nodes) | $60 |
+| **ALB** | $20 |
+| **Storage** (EBS volumes) | $15 |
+| **CloudWatch Logs** | $5 |
+| **Total** | **~$100/month** |
 
 ### Comparison to Batch
 
-**Batch ingestion (dlt):** £0/month (just compute)
-**Streaming ingestion (Confluent Cloud):** £200/month
+**Batch ingestion (dlt):** $0/month (just compute)
+**Streaming ingestion (Confluent Cloud):** $200/month
 
-**When streaming is worth it:** When latency reduction (hours → seconds) provides business value exceeding £200/month (e.g., fraud prevention, real-time personalisation).
+**When streaming is worth it:** When latency reduction (hours → seconds) provides business value exceeding $200/month (e.g., fraud prevention, real-time personalisation).
 
 ## Section Contents
 

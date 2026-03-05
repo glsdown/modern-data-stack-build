@@ -76,15 +76,15 @@ Confluent Cloud requires a payment method even for the free trial.
 
 1. Go to **Billing & payment**
 2. Add a credit/debit card
-3. Review pricing (Basic tier starts at ~£150/month after trial)
+3. Review pricing (Basic tier starts at ~$150/month after trial)
 
 !!! tip "Free Trial Credits"
     New accounts receive **$400 in free credits** valid for 30 days. This is enough to run a Basic cluster for the trial period.
 
 !!! warning "Set Up Billing Alerts"
     Navigate to **Billing → Notifications** and configure:
-    - Alert at 50% of monthly budget (£75 if budgeting £150/month)
-    - Alert at 80% of monthly budget (£120)
+    - Alert at 50% of monthly budget ($75 if budgeting $150/month)
+    - Alert at 80% of monthly budget ($120)
     - Email notifications to your team
 
 ## Create Environment
@@ -104,7 +104,7 @@ Environments organise clusters by purpose (dev, staging, production).
 
 Install Confluent CLI:
 
-```bash
+```sh
 # macOS
 brew install confluentinc/tap/cli
 
@@ -124,7 +124,7 @@ Go Version:  go1.21.5 (darwin/arm64)
 
 Create environment:
 
-```bash
+```sh
 # Login
 confluent login
 
@@ -154,17 +154,17 @@ confluent environment list
     - **Cloud provider:** AWS
     - **Region:** eu-west-2 (London) - choose region closest to your Snowflake
     - **Cluster name:** `streaming-cluster`
-5. Review pricing (~£150/month)
+5. Review pricing (~$150/month)
 6. Click **Launch cluster**
 
-Cluster provisioning takes **5-10 minutes**.
+Wait for cluster provisioning to complete.
 
 !!! info "Region Selection"
     Choose the same region as your Snowflake account to minimise latency and data transfer costs. If your Snowflake is in `eu-west-2`, deploy Confluent in `eu-west-2`.
 
 ### Via CLI
 
-```bash
+```sh
 # Use the production environment
 confluent environment use env-abc123
 
@@ -213,7 +213,7 @@ Schema Registry settings:
 
 You can change compatibility mode later:
 
-```bash
+```sh
 # Set compatibility for a specific subject
 confluent schema-registry compatibility set BACKWARD \
     --subject order-events-value
@@ -238,7 +238,7 @@ This key authenticates producers and consumers.
 
 **Via CLI:**
 
-```bash
+```sh
 # Use your cluster
 confluent kafka cluster use lkc-xyz789
 
@@ -268,7 +268,7 @@ This key authenticates schema operations (register, retrieve schemas).
 
 **Via CLI:**
 
-```bash
+```sh
 # Create Schema Registry API key
 confluent api-key create --resource lsrc-abc123 \
     --description "Schema Registry access"
@@ -288,7 +288,7 @@ Store Confluent credentials securely in AWS Secrets Manager for use in Prefect t
 
 Create secret for Kafka cluster API key:
 
-```bash
+```sh
 # Set AWS profile
 export AWS_PROFILE=data-engineer
 
@@ -318,7 +318,7 @@ aws secretsmanager create-secret \
 
 Create secret for Schema Registry API key:
 
-```bash
+```sh
 aws secretsmanager create-secret \
     --name confluent/schema-registry \
     --description "Confluent Schema Registry credentials" \
@@ -334,7 +334,7 @@ aws secretsmanager create-secret \
 
 Verify you can retrieve secrets:
 
-```bash
+```sh
 # Get Kafka credentials
 aws secretsmanager get-secret-value \
     --secret-id confluent/kafka-cluster \
@@ -359,7 +359,7 @@ Verify your Kafka cluster is accessible using a Python producer.
 
 ### Install Dependencies
 
-```bash
+```sh
 # Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
@@ -448,7 +448,7 @@ if __name__ == '__main__':
 
 ### Run Test
 
-```bash
+```sh
 python test_producer.py
 ```
 
@@ -490,7 +490,7 @@ Don't use global API keys for production. Create **service accounts** with scope
 
 **Example: Service account for producers only**
 
-```bash
+```sh
 # Create service account
 confluent iam service-account create producer-service-account \
     --description "Service account for event producers"
@@ -523,14 +523,14 @@ Set a reminder to rotate API keys every 90 days:
 
 Monitor which API keys are being used:
 
-```bash
+```sh
 # List all API keys
 confluent api-key list
 ```
 
 Delete unused keys:
 
-```bash
+```sh
 confluent api-key delete <key-id>
 ```
 

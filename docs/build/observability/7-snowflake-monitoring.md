@@ -232,11 +232,11 @@ Snowflake warehouses come in sizes from X-Small to 6X-Large. Choosing the right 
 | **X-Large** | 16 | 16x | Data science, ML workloads |
 | **2X-Large** | 32 | 32x | Rare, very large batch jobs |
 
-**Pricing:** ~£2.50 per credit (varies by region and Snowflake edition)
+**Pricing:** ~$2.50 per credit (varies by region and Snowflake edition)
 
 **Example monthly costs (assuming 8 hours/day, 22 days/month):**
-- X-Small: 1 credit/hr × 8 hrs/day × 22 days = 176 credits/month = ~£440/month
-- Medium: 4 credits/hr × 8 hrs/day × 22 days = 704 credits/month = ~£1,760/month
+- X-Small: 1 credit/hr × 8 hrs/day × 22 days = 176 credits/month = ~$440/month
+- Medium: 4 credits/hr × 8 hrs/day × 22 days = 704 credits/month = ~$1,760/month
 
 ### Monitor Warehouse Utilisation
 
@@ -246,7 +246,7 @@ Query warehouse credit usage:
 SELECT
     warehouse_name,
     SUM(credits_used) AS total_credits,
-    SUM(credits_used) * 2.5 AS estimated_cost_gbp,
+    SUM(credits_used) * 2.5 AS estimated_cost_usd,
     COUNT(DISTINCT DATE(start_time)) AS days_active,
     SUM(credits_used) / days_active AS avg_credits_per_day
 FROM snowflake.account_usage.warehouse_metering_history
@@ -257,11 +257,11 @@ ORDER BY total_credits DESC;
 
 **Example output:**
 
-| warehouse_name | total_credits | estimated_cost_gbp | days_active | avg_credits_per_day |
+| warehouse_name | total_credits | estimated_cost_usd | days_active | avg_credits_per_day |
 |----------------|---------------|-------------------|-------------|---------------------|
-| TRANSFORMING | 125.3 | £313.25 | 30 | 4.18 |
-| ANALYTICS_WH | 45.2 | £113.00 | 28 | 1.61 |
-| LOADING | 12.5 | £31.25 | 30 | 0.42 |
+| TRANSFORMING | 125.3 | $313.25 | 30 | 4.18 |
+| ANALYTICS_WH | 45.2 | $113.00 | 28 | 1.61 |
+| LOADING | 12.5 | $31.25 | 30 | 0.42 |
 
 ### Right-Sizing Strategies
 
@@ -356,7 +356,7 @@ Resource Monitors prevent budget overruns by setting credit limits and alerting 
 USE ROLE ACCOUNTADMIN;
 
 CREATE RESOURCE MONITOR monthly_budget
-WITH CREDIT_QUOTA = 500  -- 500 credits per month (~£1,250)
+WITH CREDIT_QUOTA = 500  -- 500 credits per month (~$1,250)
     FREQUENCY = MONTHLY
     START_TIMESTAMP = IMMEDIATELY
     TRIGGERS
@@ -470,7 +470,7 @@ SELECT
     warehouse_name,
     DATE(start_time) AS usage_date,
     SUM(credits_used) AS daily_credits,
-    SUM(credits_used) * 2.5 AS daily_cost_gbp
+    SUM(credits_used) * 2.5 AS daily_cost_usd
 FROM snowflake.account_usage.warehouse_metering_history
 WHERE start_time >= DATEADD(day, -30, CURRENT_TIMESTAMP())
 GROUP BY warehouse_name, usage_date

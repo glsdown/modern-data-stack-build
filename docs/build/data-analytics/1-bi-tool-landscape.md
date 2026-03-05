@@ -362,7 +362,7 @@ These are BI and dashboarding capabilities built into cloud data platforms. They
 
 **Strengths:**
 - **Free and open source** (self-hosted)
-- User-friendly interface (easy for non-technical users)
+- User-friendly interface (accessible for non-technical users)
 - Active community and extensive documentation
 - Mature product (been around since 2015)
 - Good mobile experience
@@ -423,7 +423,7 @@ These are BI and dashboarding capabilities built into cloud data platforms. They
 - Free and open source
 - SQL-first (good for technical teams)
 - Query scheduling and alerts
-- Easy to self-host
+- Straightforward to self-host
 
 **Weaknesses:**
 - Project less active (acquired by Databricks, future uncertain)
@@ -510,7 +510,7 @@ These are BI and dashboarding capabilities built into cloud data platforms. They
 
 **Strengths:**
 - Completely free
-- Easy to use (drag-and-drop)
+- Intuitive interface (drag-and-drop)
 - Integrates well with Google products (Sheets, Analytics, BigQuery)
 
 **Weaknesses:**

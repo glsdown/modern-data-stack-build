@@ -256,7 +256,7 @@ Impact analysis answers: **"If I change this, what breaks?"**
 
 ### Scenario: Dashboard Shows Wrong Data
 
-**Problem:** "The 'Revenue by Customer' dashboard shows £0 for all customers today, but yesterday it was fine."
+**Problem:** "The 'Revenue by Customer' dashboard shows $0 for all customers today, but yesterday it was fine."
 
 **Debugging process:**
 

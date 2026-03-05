@@ -602,7 +602,7 @@ terraform plan
 terraform apply
 ```
 
-After Terraform completes (~10 minutes for RDS to provision):
+After Terraform completes (RDS takes the longest to provision):
 
 ```sh
 # Get the Lightdash URL

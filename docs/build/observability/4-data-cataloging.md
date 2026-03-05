@@ -378,7 +378,7 @@ terraform plan
 terraform apply
 ```
 
-After 5-10 minutes, OpenMetadata is accessible at the ALB URL.
+Once provisioning completes, OpenMetadata is accessible at the ALB URL.
 
 Navigate to `https://openmetadata-alb-xxxxx.eu-west-2.elb.amazonaws.com` and log in with default credentials:
 - Username: `admin`

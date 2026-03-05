@@ -147,7 +147,7 @@ Your observability practice will evolve over time. Here's a maturity model to gu
 
 ## When to Upgrade Tools
 
-You've built the budget approach (~£80-100/month for observability). Here's when to upgrade to premium tools.
+You've built the budget approach (~$80-100/month for observability). Here's when to upgrade to premium tools.
 
 ### Elementary Cloud ($50+/month)
 
@@ -161,7 +161,7 @@ You've built the budget approach (~£80-100/month for observability). Here's whe
 - Automatic updates
 - Hosted at `https://your-org.elementary-data.com`
 
-**Budget impact:** ~+£50/month
+**Budget impact:** ~+$50/month
 
 ### Monte Carlo ($$$, quote-based)
 
@@ -177,7 +177,7 @@ You've built the budget approach (~£80-100/month for observability). Here's whe
 - Automated root cause analysis
 - Field-level lineage
 
-**Budget impact:** ~£1,000-5,000/month depending on data volume
+**Budget impact:** ~$1,000-5,000/month depending on data volume
 
 ### Datadog ($15+/host/month)
 
@@ -193,7 +193,7 @@ You've built the budget approach (~£80-100/month for observability). Here's whe
 - Advanced anomaly detection
 - Integrations with 500+ tools
 
-**Budget impact:** ~£200-500/month for data platform infrastructure
+**Budget impact:** ~$200-500/month for data platform infrastructure
 
 ### Great Expectations Cloud ($$$, quote-based)
 
@@ -209,7 +209,7 @@ You've built the budget approach (~£80-100/month for observability). Here's whe
 - Integration with data catalogs
 - Team collaboration features
 
-**Budget impact:** ~£500-2,000/month
+**Budget impact:** ~$500-2,000/month
 
 ### Stay on Budget Build If:
 
@@ -338,8 +338,6 @@ You've completed the Observability section. Here are logical next steps:
 
 **Tools:** Census, Hightouch, or Airbyte Reverse ETL
 
-**Estimated effort:** 2-3 weeks
-
 **Documentation:** Build: Reverse ETL (future section)
 
 ### Option 2: Implement Data Governance
@@ -349,8 +347,6 @@ You've completed the Observability section. Here are logical next steps:
 **Why:** Ensure compliance (GDPR, CCPA) and prevent unauthorized data access
 
 **Tools:** OpenMetadata (governance features), Snowflake tags, AWS IAM policies
-
-**Estimated effort:** 3-4 weeks
 
 **Documentation:** Build: Data Governance (future section)
 
@@ -362,8 +358,6 @@ You've completed the Observability section. Here are logical next steps:
 
 **Tools:** Snowflake Snowpark (Python in Snowflake), AWS SageMaker, dbt Python models
 
-**Estimated effort:** 4-6 weeks
-
 **Documentation:** Build: Machine Learning (future section)
 
 ### Option 4: Scale Infrastructure
@@ -371,8 +365,6 @@ You've completed the Observability section. Here are logical next steps:
 **What:** Multi-region deployment, disaster recovery, high availability
 
 **Why:** Production-grade reliability for mission-critical data
-
-**Estimated effort:** 2-3 weeks
 
 **Documentation:** Maintain: Disaster Recovery (future section)
 
@@ -475,11 +467,7 @@ You've completed the Observability section:
 - [x] **Logging and debugging** — CloudWatch Logs, query profiling, systematic troubleshooting
 - [x] **Anomaly detection** — Elementary automated detection, custom SQL checks, Great Expectations
 
-**Total monthly cost:** ~£80-100 (Elementary + OpenMetadata self-hosted + CloudWatch Logs)
-
-**Time to implement:** 3-4 weeks (if following this guide)
-
-**Ongoing maintenance:** ~2-4 hours/week (reviewing alerts, updating runbooks, optimising queries)
+**Total monthly cost:** ~$80-100 (Elementary + OpenMetadata self-hosted + CloudWatch Logs)
 
 You've built a production-grade observability stack that provides:
 - **Proactive issue detection** — catch problems before users notice
@@ -500,8 +488,6 @@ Your modern data stack is now observable, reliable, and cost-efficient.
 
 ---
 
-**Congratulations on completing the Observability section!** 🎉
+**Congratulations on completing the Observability section!**
 
 You've transformed a black-box data platform into an observable, debuggable, and reliable system. Your team can now detect issues early, debug problems quickly, and continuously improve data quality.
-
-Keep building! 🚀

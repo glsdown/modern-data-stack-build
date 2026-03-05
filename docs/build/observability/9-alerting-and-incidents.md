@@ -374,7 +374,7 @@ Runbooks are step-by-step guides for resolving common incidents. They reduce mea
 # Runbook: Dashboard Shows Wrong Data
 
 ## Symptoms
-- User reports: "Revenue dashboard shows £0 for all customers today"
+- User reports: "Revenue dashboard shows $0 for all customers today"
 - Lightdash dashboard: Values are unexpectedly low or zero
 - No pipeline failure alerts
 

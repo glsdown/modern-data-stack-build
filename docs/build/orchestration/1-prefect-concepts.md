@@ -140,7 +140,7 @@ if __name__ == "__main__":
 python my_flow.py
 ```
 
-This is one of Prefect's key advantages - your flows are just Python, so you can develop and test them locally before deploying.
+This is one of Prefect's key advantages — your flows are standard Python, so you can develop and test them locally before deploying.
 
 ## Deployments
 

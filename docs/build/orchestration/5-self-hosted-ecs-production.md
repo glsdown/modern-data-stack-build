@@ -630,7 +630,7 @@ terraform plan
 terraform apply
 ```
 
-This will take 10-15 minutes to provision all resources.
+Wait for Terraform to provision all resources.
 
 ## Connect to Prefect
 

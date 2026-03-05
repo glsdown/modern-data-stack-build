@@ -55,16 +55,16 @@ A modern data stack incurs costs across multiple services. Without visibility, c
 
 | Component | Service | Monthly Cost |
 |-----------|---------|--------------|
-| **Data Warehouse** | Snowflake (Standard Edition) | £500-1,000 |
-| **Orchestration** | Prefect Cloud (Free tier) | £0 |
-| **Batch Ingestion** | dlt (open source) | £0 |
-| **SaaS Ingestion** | Airbyte Cloud (5 sources) | £99-199 |
-| **BI Tool** | Lightdash (self-hosted) | £30 |
-| **Observability** | Elementary (self-hosted) | £30 |
-| **Data Catalog** | OpenMetadata (self-hosted) | £50 |
-| **AWS Infrastructure** | S3 + ECS + RDS + ALB | £200-300 |
-| **GitHub Actions** | CI/CD runners | £0 (free tier) |
-| **Total** | | **£900-1,700/month** |
+| **Data Warehouse** | Snowflake (Standard Edition) | $500-1,000 |
+| **Orchestration** | Prefect Cloud (Free tier) | $0 |
+| **Batch Ingestion** | dlt (open source) | $0 |
+| **SaaS Ingestion** | Airbyte Cloud (5 sources) | $99-199 |
+| **BI Tool** | Lightdash (self-hosted) | $30 |
+| **Observability** | Elementary (self-hosted) | $30 |
+| **Data Catalog** | OpenMetadata (self-hosted) | $50 |
+| **AWS Infrastructure** | S3 + ECS + RDS + ALB | $200-300 |
+| **GitHub Actions** | CI/CD runners | $0 (free tier) |
+| **Total** | | **$900-1,700/month** |
 
 ### Cost Drivers
 
@@ -100,7 +100,7 @@ SELECT
     DATE(start_time) AS usage_date,
     warehouse_name,
     SUM(credits_used) AS daily_credits,
-    SUM(credits_used) * 2.5 AS daily_cost_gbp  -- Adjust rate for your region
+    SUM(credits_used) * 2.5 AS daily_cost_usd  -- Adjust rate for your region
 FROM snowflake.account_usage.warehouse_metering_history
 WHERE start_time >= DATEADD(day, -30, CURRENT_TIMESTAMP())
 GROUP BY usage_date, warehouse_name
@@ -115,7 +115,7 @@ SELECT
     DATE(start_time) AS usage_date,
     warehouse_name,
     SUM(credits_used) AS daily_credits,
-    SUM(credits_used) * 2.5 AS daily_cost_gbp,
+    SUM(credits_used) * 2.5 AS daily_cost_usd,
     SUM(SUM(credits_used)) OVER (
         PARTITION BY DATE_TRUNC('month', start_time)
         ORDER BY DATE(start_time)
@@ -142,14 +142,14 @@ SELECT
     AVG(storage_bytes) / POW(1024, 4) AS avg_storage_tb,
     AVG(stage_bytes) / POW(1024, 4) AS avg_stage_tb,
     AVG(failsafe_bytes) / POW(1024, 4) AS avg_failsafe_tb,
-    (avg_storage_tb + avg_stage_tb + avg_failsafe_tb) * 23 AS estimated_monthly_cost_gbp
+    (avg_storage_tb + avg_stage_tb + avg_failsafe_tb) * 23 AS estimated_monthly_cost_usd
 FROM snowflake.account_usage.storage_usage
 WHERE usage_date >= DATEADD(month, -6, CURRENT_DATE())
 GROUP BY DATE_TRUNC('month', usage_date)
 ORDER BY month DESC;
 ```
 
-**Storage pricing:** ~$23/TB/month (~£18/TB/month) for on-demand storage.
+**Storage pricing:** ~$23/TB/month for on-demand storage.
 
 **Cost optimisation:**
 - Drop unused tables: `DROP TABLE IF EXISTS staging.temp_analysis_20250101;`
@@ -168,7 +168,7 @@ SELECT
     target_cloud,
     target_region,
     SUM(bytes_transferred) / POW(1024, 3) AS gb_transferred,
-    SUM(bytes_transferred) / POW(1024, 3) * 0.09 AS estimated_cost_gbp  -- ~$0.09/GB
+    SUM(bytes_transferred) / POW(1024, 3) * 0.09 AS estimated_cost_usd  -- ~$0.09/GB
 FROM snowflake.account_usage.data_transfer_history
 WHERE start_time >= DATEADD(month, -1, CURRENT_TIMESTAMP())
 GROUP BY transfer_date, source_cloud, source_region, target_cloud, target_region
@@ -244,10 +244,10 @@ In Cost Explorer:
 1. **Group by:** Tag → `Service`
 2. **Time range:** Last 30 days
 3. View breakdown:
-   - Lightdash: £30/month
-   - Airbyte: £45/month (if self-hosted)
-   - OpenMetadata: £50/month
-   - Data Lake (S3): £15/month
+   - Lightdash: $30/month
+   - Airbyte: $45/month (if self-hosted)
+   - OpenMetadata: $50/month
+   - Data Lake (S3): $15/month
 
 ### AWS Budgets
 
@@ -258,12 +258,12 @@ Set up budget alerts to prevent overspending.
 1. Navigate to **AWS Budgets** → **Create budget**
 2. Budget type: **Cost budget**
 3. Budget name: `DataPlatform-Monthly`
-4. Budgeted amount: £300/month
+4. Budgeted amount: $300/month
 5. Budget scope: Filter by tag `Project=DataPlatform`
 6. Alert thresholds:
-   - 80% of budgeted amount (£240)
-   - 100% of budgeted amount (£300)
-   - 120% of budgeted amount (£360)
+   - 80% of budgeted amount ($240)
+   - 100% of budgeted amount ($300)
+   - 120% of budgeted amount ($360)
 7. Alert recipients: `data-engineering@yourcompany.com`
 
 #### Create via Terraform
@@ -274,7 +274,7 @@ resource "aws_budgets_budget" "data_platform" {
   name              = "DataPlatform-Monthly"
   budget_type       = "COST"
   limit_amount      = "300"
-  limit_unit        = "GBP"
+  limit_unit        = "USD"
   time_unit         = "MONTHLY"
 
   cost_filter {
@@ -381,9 +381,9 @@ Prefect Cloud pricing:
 **Self-hosted dbt (with Prefect):**
 - dbt Core: Free
 - Orchestration: Prefect (free tier)
-- Total: £0/month
+- Total: $0/month
 
-**Budget build uses:** Self-hosted dbt + Prefect (£0)
+**Budget build uses:** Self-hosted dbt + Prefect ($0)
 
 ## Forecasting Costs
 
@@ -395,7 +395,7 @@ Query last 6 months of Snowflake costs:
 SELECT
     DATE_TRUNC('month', start_time) AS month,
     SUM(credits_used) AS monthly_credits,
-    SUM(credits_used) * 2.5 AS monthly_cost_gbp
+    SUM(credits_used) * 2.5 AS monthly_cost_usd
 FROM snowflake.account_usage.warehouse_metering_history
 WHERE start_time >= DATEADD(month, -6, CURRENT_TIMESTAMP())
 GROUP BY month
@@ -404,18 +404,18 @@ ORDER BY month;
 
 **Example output:**
 
-| month | monthly_credits | monthly_cost_gbp |
+| month | monthly_credits | monthly_cost_usd |
 |-------|-----------------|------------------|
-| 2025-09 | 180 | £450 |
-| 2025-10 | 195 | £488 |
-| 2025-11 | 210 | £525 |
-| 2025-12 | 225 | £563 |
-| 2026-01 | 245 | £613 |
-| 2026-02 | 265 | £663 |
+| 2025-09 | 180 | $450 |
+| 2025-10 | 195 | $488 |
+| 2025-11 | 210 | $525 |
+| 2025-12 | 225 | $563 |
+| 2026-01 | 245 | $613 |
+| 2026-02 | 265 | $663 |
 
 **Trend:** ~8% month-over-month growth
 
-**Forecast for March 2026:** 265 × 1.08 = 286 credits = £715
+**Forecast for March 2026:** 265 × 1.08 = 286 credits = $715
 
 ### Growth Drivers
 
@@ -469,33 +469,33 @@ model.fit(df[['month']], df['credits'])
 future_months = [[7], [8], [9]]  # Mar, Apr, May
 forecast = model.predict(future_months)
 
-print(f"March forecast: {forecast[0]:.0f} credits = £{forecast[0] * 2.5:.0f}")
-print(f"April forecast: {forecast[1]:.0f} credits = £{forecast[1] * 2.5:.0f}")
-print(f"May forecast: {forecast[2]:.0f} credits = £{forecast[2] * 2.5:.0f}")
+print(f"March forecast: {forecast[0]:.0f} credits = ${forecast[0] * 2.5:.0f}")
+print(f"April forecast: {forecast[1]:.0f} credits = ${forecast[1] * 2.5:.0f}")
+print(f"May forecast: {forecast[2]:.0f} credits = ${forecast[2] * 2.5:.0f}")
 ```
 
 **Output:**
 ```
-March forecast: 285 credits = £713
-April forecast: 300 credits = £750
-May forecast: 315 credits = £788
+March forecast: 285 credits = $713
+April forecast: 300 credits = $750
+May forecast: 315 credits = $788
 ```
 
 ### Scenario Planning
 
 **Scenario 1: Current trajectory**
-- Forecast: £715/month (March)
+- Forecast: $715/month (March)
 - No action needed if within budget
 
 **Scenario 2: New data sources added**
 - Adding 3 new Airbyte sources
 - Estimated: +50 credits/month
-- New forecast: £715 + £125 = £840/month
+- New forecast: $715 + $125 = $840/month
 
 **Scenario 3: Optimisation efforts**
 - Optimise slow dbt models (reduce runtime 20%)
 - Estimated: -50 credits/month
-- New forecast: £715 - £125 = £590/month
+- New forecast: $715 - $125 = $590/month
 
 ## Cost Optimisation Strategies
 
@@ -568,8 +568,8 @@ WHERE order_date < DATEADD(year, -2, CURRENT_DATE());
 ```
 
 **Cost impact:**
-- S3 storage: $0.023/GB/month (~£0.018/GB/month)
-- Snowflake storage: $0.04/GB/month (~£0.032/GB/month)
+- S3 storage: $0.023/GB/month (~$0.018/GB/month)
+- Snowflake storage: $0.04/GB/month (~$0.032/GB/month)
 - **Savings:** ~45% on storage for archived data
 
 ### 5. Use Cheaper AWS Regions
@@ -602,7 +602,7 @@ WITH snowflake_costs AS (
     SELECT
         'Snowflake Compute' AS cost_category,
         DATE_TRUNC('month', start_time) AS month,
-        SUM(credits_used) * 2.5 AS cost_gbp
+        SUM(credits_used) * 2.5 AS cost_usd
     FROM snowflake.account_usage.warehouse_metering_history
     GROUP BY month
 ),
@@ -610,7 +610,7 @@ snowflake_storage AS (
     SELECT
         'Snowflake Storage' AS cost_category,
         DATE_TRUNC('month', usage_date) AS month,
-        AVG(storage_bytes + stage_bytes) / POW(1024, 4) * 23 AS cost_gbp
+        AVG(storage_bytes + stage_bytes) / POW(1024, 4) * 23 AS cost_usd
     FROM snowflake.account_usage.storage_usage
     GROUP BY month
 ),
@@ -619,16 +619,16 @@ aws_costs AS (
     SELECT
         'AWS Infrastructure' AS cost_category,
         month,
-        cost_gbp
+        cost_usd
     FROM analytics.observability.aws_monthly_costs
 ),
 saas_costs AS (
-    SELECT cost_category, month, cost_gbp
+    SELECT cost_category, month, cost_usd
     FROM (
         VALUES
             ('Airbyte Cloud', '2026-02-01'::DATE, 139),
             ('Prefect Cloud', '2026-02-01'::DATE, 0)
-    ) AS t(cost_category, month, cost_gbp)
+    ) AS t(cost_category, month, cost_usd)
 )
 SELECT * FROM snowflake_costs
 UNION ALL SELECT * FROM snowflake_storage
@@ -641,7 +641,7 @@ Query total costs:
 ```sql
 SELECT
     month,
-    SUM(cost_gbp) AS total_monthly_cost
+    SUM(cost_usd) AS total_monthly_cost
 FROM analytics.observability.cost_summary
 GROUP BY month
 ORDER BY month DESC;

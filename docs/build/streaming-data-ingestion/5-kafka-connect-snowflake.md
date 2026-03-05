@@ -81,7 +81,7 @@ Kafka → Kafka Connect → Snowpipe Streaming API → Snowflake table
 | **Latency** | 1-2 minutes | < 10 seconds |
 | **Trigger** | File in S3 | Kafka Connect push |
 | **Buffer** | File size | Record count or time |
-| **Cost** | £0.06 per 1,000 files | Included in compute |
+| **Cost** | $0.06 per 1,000 files | Included in compute |
 | **Use case** | Batch (dlt, Airbyte) | Streaming (Kafka) |
 
 **Key difference:** Snowpipe Streaming bypasses file staging, reducing latency from minutes to seconds.
@@ -109,7 +109,7 @@ Kafka → Kafka Connect → Snowpipe Streaming API → Snowflake table
 
 Retrieve credentials from AWS Secrets Manager:
 
-```bash
+```sh
 aws secretsmanager get-secret-value \
     --secret-id snowflake/svc-kafka-connector \
     --region eu-west-2 \
@@ -203,7 +203,7 @@ Before testing, create the `order-events` topic.
 
 ### Via CLI
 
-```bash
+```sh
 # Use your cluster
 confluent kafka cluster use lkc-xyz789
 
@@ -220,7 +220,7 @@ Created topic "order-events".
 
 ### Verify Topic
 
-```bash
+```sh
 confluent kafka topic describe order-events
 ```
 
@@ -282,7 +282,7 @@ Create `order_events_schema.avsc`:
 
 Register the schema:
 
-```bash
+```sh
 # Get Schema Registry credentials
 aws secretsmanager get-secret-value \
     --secret-id confluent/schema-registry \
@@ -424,13 +424,13 @@ if __name__ == '__main__':
 
 ### Install Dependencies
 
-```bash
+```sh
 pip install confluent-kafka[avro] boto3
 ```
 
 ### Run Producer
 
-```bash
+```sh
 python produce_order_events.py
 ```
 
@@ -504,7 +504,7 @@ order-events | 2         | 0      | 2026-03-05 12:30:15.125 | 1003     | cust_gh
 
 ### Via CLI
 
-```bash
+```sh
 # List connectors
 confluent connect cluster list
 

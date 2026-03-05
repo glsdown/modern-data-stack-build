@@ -51,7 +51,7 @@ Budget determines whether enterprise, modern, open source, or free tools are rea
 
 ### 3. Can You Self-Host, or Do You Need Cloud SaaS?
 
-Self-hosting requires infrastructure knowledge and ongoing maintenance. Cloud SaaS is easier but more expensive and offers less control.
+Self-hosting requires infrastructure knowledge and ongoing maintenance. Cloud SaaS is more convenient but more expensive and offers less control.
 
 **Choose self-hosted if:**
 - You have DevOps/infrastructure expertise on your team
@@ -250,7 +250,7 @@ Why:
 
 **Alternative: Metabase Cloud**
 - If you don't use Microsoft ecosystem
-- Easier for non-technical users than Power BI
+- More accessible for non-technical users than Power BI
 
 ### Scenario 3: Enterprise, Budget $5000+/month, Complex Viz Needs
 

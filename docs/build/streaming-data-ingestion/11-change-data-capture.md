@@ -35,7 +35,7 @@ On this page, you will:
 │                                                                         │
 │  • Latency: 1-60 minutes (acceptable for most analytics)               │
 │  • Impact: Low (optimised queries with indexes)                        │
-│  • Cost: £10-50/month (dlt + Snowflake compute)                        │
+│  • Cost: $10-50/month (dlt + Snowflake compute)                        │
 │  • Complexity: Low (Python pipeline, standard SQL)                     │
 │  • Data: Current state only (snapshots)                                │
 │                                                                         │
@@ -57,7 +57,7 @@ On this page, you will:
 │                                                                         │
 │  • Latency: < 1 second (real-time replication)                         │
 │  • Impact: Minimal (reads WAL, not table queries)                      │
-│  • Cost: £300-500/month (Kafka + Debezium + Snowflake)                 │
+│  • Cost: $300-500/month (Kafka + Debezium + Snowflake)                 │
 │  • Complexity: High (Kafka, schema evolution, data modelling)          │
 │  • Data: Complete history (before/after values, all operations)        │
 │                                                                         │
@@ -251,7 +251,7 @@ max_wal_senders = 10
 
 Restart PostgreSQL:
 
-```bash
+```sh
 sudo systemctl restart postgresql
 ```
 
@@ -296,7 +296,7 @@ SELECT * FROM pg_publication;
 
 ### Store PostgreSQL Credentials
 
-```bash
+```sh
 # Set AWS profile
 export AWS_PROFILE=data-engineer
 
@@ -369,7 +369,7 @@ The connector will:
 
 ### Verify Topics Created
 
-```bash
+```sh
 # List topics
 confluent kafka topic list
 
@@ -382,7 +382,7 @@ confluent kafka topic list
 
 ### Check Connector Status
 
-```bash
+```sh
 # Via Confluent Cloud UI
 # Connectors → postgres-cdc-orders → Status: Running
 
@@ -698,7 +698,7 @@ WHERE slot_name = 'debezium_orders_slot';
 
 CDC increases WAL retention:
 
-```bash
+```sh
 # In PostgreSQL data directory
 du -sh pg_wal/
 
@@ -776,25 +776,25 @@ Schedule to run every 15 minutes.
 | Component | Batch (dlt) | CDC (Debezium) |
 |-----------|------------|---------------|
 | **Infrastructure** | | |
-| Kafka cluster | Not needed | £150/month (Confluent Cloud Basic) |
+| Kafka cluster | Not needed | $150/month (Confluent Cloud Basic) |
 | Kafka Connect | Not needed | Included |
-| Snowflake compute | £30/month (hourly dlt runs) | £50/month (continuous ingestion) |
-| Snowflake storage | £20/month (snapshots) | £80/month (full history) |
+| Snowflake compute | $30/month (hourly dlt runs) | $50/month (continuous ingestion) |
+| Snowflake storage | $20/month (snapshots) | $80/month (full history) |
 | Ops time | 2 hours/month | 6 hours/month |
-| **Total** | **£50 + £120 ops** = **£170/month** | **£280 + £360 ops** = **£640/month** |
+| **Total** | **$50 + $120 ops** = **$170/month** | **$280 + $360 ops** = **$640/month** |
 
-**CDC premium:** £470/month (276% more expensive)
+**CDC premium:** $470/month (276% more expensive)
 
 ### When CDC is Worth It
 
 | Business Value | Annual Value | CDC Annual Cost | ROI |
 |----------------|-------------|----------------|-----|
-| **Real-time fraud prevention** | £50,000 saved | £7,680 | 550% ROI ✅ |
-| **Operational dashboards** | £10,000 saved | £7,680 | 30% ROI ⚠️ |
-| **Compliance audit trails** | £20,000 (regulatory requirement) | £7,680 | 160% ROI ✅ |
-| **"Nice to have" real-time** | £0 | £7,680 | -100% ROI ❌ |
+| **Real-time fraud prevention** | $50,000 saved | $7,680 | 550% ROI ✅ |
+| **Operational dashboards** | $10,000 saved | $7,680 | 30% ROI ⚠️ |
+| **Compliance audit trails** | $20,000 (regulatory requirement) | $7,680 | 160% ROI ✅ |
+| **"Nice to have" real-time** | $0 | $7,680 | -100% ROI ❌ |
 
-**Rule of thumb:** CDC makes sense when business value exceeds £1,000/month.
+**Rule of thumb:** CDC makes sense when business value exceeds $1,000/month.
 
 ## Summary
 

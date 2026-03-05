@@ -136,6 +136,14 @@ For advanced configurations:
 - [Prefect Workers Documentation](https://docs.prefect.io/latest/concepts/workers/)
 - [ECS Worker Terraform Module](https://registry.terraform.io/modules/PrefectHQ/ecs-worker/prefect/latest)
 
+## Summary
+
+You've learned:
+
+- [x] Work pool types (`process`, `ecs`) and when to use each
+- [x] How workers poll work pools and execute flow runs
+- [x] Where to find resources for advanced configurations
+
 ## What's Next
 
 Continue to deploy your first flow.

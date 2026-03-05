@@ -57,8 +57,8 @@ AWS Managed Streaming for Kafka (MSK) is Amazon's Kafka service. Unlike Confluen
 │  │                                                                 │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│  Cost: £450/month infrastructure + £360-720/month ops time              │
-│  Total: £810-1,170/month (vs £217-277/month for Confluent Cloud)       │
+│  Cost: $450/month infrastructure + $360-720/month ops time              │
+│  Total: $810-1,170/month (vs $217-277/month for Confluent Cloud)       │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -84,9 +84,9 @@ AWS Managed Streaming for Kafka (MSK) is Amazon's Kafka service. Unlike Confluen
 
 | Workload | Confluent Cloud Total | MSK Total | Winner |
 |----------|---------------------|-----------|--------|
-| **5 GB/day** | £217/month | £810/month | Confluent Cloud (73% cheaper) |
-| **50 GB/day** | £310/month | £950/month | Confluent Cloud (67% cheaper) |
-| **200 GB/day** | £900/month | £1,400/month | Confluent Cloud (36% cheaper) |
+| **5 GB/day** | $217/month | $810/month | Confluent Cloud (73% cheaper) |
+| **50 GB/day** | $310/month | $950/month | Confluent Cloud (67% cheaper) |
+| **200 GB/day** | $900/month | $1,400/month | Confluent Cloud (36% cheaper) |
 
 MSK becomes competitive only at **very high scale** (> 500 GB/day) or when ops time is free (existing team).
 
@@ -319,7 +319,7 @@ output "msk_zookeeper_connect_string" {
 
 ### Deploy MSK Cluster
 
-```bash
+```sh
 cd repositories/terraform/aws/msk
 
 # Initialise
@@ -328,7 +328,7 @@ terraform init
 # Plan
 terraform plan -out=tfplan
 
-# Apply (takes 15-30 minutes to provision)
+# Apply (MSK cluster provisioning takes some time)
 terraform apply tfplan
 ```
 
@@ -347,7 +347,7 @@ msk_bootstrap_brokers_tls = "b-1.dataplatformcluster.abc123.kafka.eu-west-2.amaz
 
 ### Verify MSK Cluster
 
-```bash
+```sh
 # Get cluster ARN
 MSK_ARN=$(terraform output -raw msk_cluster_arn)
 
@@ -403,7 +403,7 @@ MSK doesn't include Schema Registry. Deploy Confluent Schema Registry on ECS Far
 │  │ • Backup: 7-day retention            │                              │
 │  └──────────────────────────────────────┘                              │
 │                                                                         │
-│  Cost: ~£50/month (ECS £15 + RDS £20 + ALB £15)                        │
+│  Cost: ~$50/month (ECS $15 + RDS $20 + ALB $15)                        │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -740,7 +740,7 @@ output "schema_registry_url" {
 
 ### Deploy Schema Registry
 
-```bash
+```sh
 terraform plan -out=tfplan
 terraform apply tfplan
 ```
@@ -756,7 +756,7 @@ schema_registry_url = "http://schema-registry-alb-123456789.eu-west-2.elb.amazon
 
 ### Test Schema Registry
 
-```bash
+```sh
 # Get Schema Registry URL
 SCHEMA_REGISTRY_URL=$(terraform output -raw schema_registry_url)
 
@@ -787,7 +787,7 @@ Deploy Kafka Connect workers using MSK Connect (AWS managed).
 
 MSK Connect requires custom connector plugins uploaded to S3.
 
-```bash
+```sh
 # Download Snowflake Kafka Connector
 wget https://repo1.maven.org/maven2/com/snowflake/snowflake-kafka-connector/1.9.3/snowflake-kafka-connector-1.9.3.jar
 
@@ -1055,7 +1055,7 @@ resource "aws_cloudwatch_log_group" "msk_connect" {
 
 ### Deploy MSK Connect
 
-```bash
+```sh
 terraform plan -out=tfplan
 terraform apply tfplan
 
@@ -1071,43 +1071,43 @@ aws kafkaconnect describe-connector \
 
 | Component | Monthly Cost | Notes |
 |-----------|-------------|-------|
-| **MSK cluster** (3 × kafka.m5.large) | £252 | 24/7 brokers |
-| **EBS storage** (3 × 100 GB) | £24 | gp3 volumes |
-| **Schema Registry ECS** (0.5 vCPU) | £15 | Fargate 24/7 |
-| **Schema Registry RDS** (db.t3.micro) | £20 | PostgreSQL |
-| **Schema Registry ALB** | £15 | Internal load balancer |
-| **MSK Connect** (1 MCU × 720 hours) | £86 | £0.12/MCU-hour |
-| **CloudWatch Logs** | £10 | Broker + connector logs |
-| **Data transfer** | £5 | Minimal within VPC |
-| **KMS** | £3 | Encryption keys |
-| **Setup time** (one-time) | - | 40 hours @ £60 = £2,400 |
-| **Ops time** (monthly) | - | 6-12 hours @ £60 = £360-720 |
-| **Total infrastructure** | **£430/month** | |
-| **Total with ops** | **£790-1,150/month** | |
+| **MSK cluster** (3 × kafka.m5.large) | $252 | 24/7 brokers |
+| **EBS storage** (3 × 100 GB) | $24 | gp3 volumes |
+| **Schema Registry ECS** (0.5 vCPU) | $15 | Fargate 24/7 |
+| **Schema Registry RDS** (db.t3.micro) | $20 | PostgreSQL |
+| **Schema Registry ALB** | $15 | Internal load balancer |
+| **MSK Connect** (1 MCU × 720 hours) | $86 | $0.12/MCU-hour |
+| **CloudWatch Logs** | $10 | Broker + connector logs |
+| **Data transfer** | $5 | Minimal within VPC |
+| **KMS** | $3 | Encryption keys |
+| **Setup time** (one-time) | - | 40 hours @ $60 = $2,400 |
+| **Ops time** (monthly) | - | 6-12 hours @ $60 = $360-720 |
+| **Total infrastructure** | **$430/month** | |
+| **Total with ops** | **$790-1,150/month** | |
 
 ### Confluent Cloud Total Cost (5 GB/day workload)
 
 | Component | Monthly Cost | Notes |
 |-----------|-------------|-------|
-| **Confluent Cloud Basic** | £150 | 1 CKU cluster |
-| **Data ingress** (1 GB/day) | £2.50 | £0.08/GB |
-| **Data egress** (1 GB/day) | £2.50 | Connector reads |
-| **Storage** (30 GB) | £2.50 | 7-day retention |
-| **Snowflake compute** | £35 | INGEST_WH (XSMALL) |
-| **Snowflake storage** | £5 | STREAMING database |
-| **AWS Secrets Manager** | £1.50 | Credentials |
-| **Setup time** (one-time) | - | 8 hours @ £60 = £480 |
-| **Ops time** (monthly) | - | 1-2 hours @ £60 = £60-120 |
-| **Total infrastructure** | **£199/month** | |
-| **Total with ops** | **£259-319/month** | |
+| **Confluent Cloud Basic** | $150 | 1 CKU cluster |
+| **Data ingress** (1 GB/day) | $2.50 | $0.08/GB |
+| **Data egress** (1 GB/day) | $2.50 | Connector reads |
+| **Storage** (30 GB) | $2.50 | 7-day retention |
+| **Snowflake compute** | $35 | INGEST_WH (XSMALL) |
+| **Snowflake storage** | $5 | STREAMING database |
+| **AWS Secrets Manager** | $1.50 | Credentials |
+| **Setup time** (one-time) | - | 8 hours @ $60 = $480 |
+| **Ops time** (monthly) | - | 1-2 hours @ $60 = $60-120 |
+| **Total infrastructure** | **$199/month** | |
+| **Total with ops** | **$259-319/month** | |
 
 ### Winner: Confluent Cloud (72% cheaper)
 
 | Metric | MSK | Confluent Cloud | Difference |
 |--------|-----|----------------|-----------|
-| **Infrastructure cost** | £430/month | £199/month | +116% |
+| **Infrastructure cost** | $430/month | $199/month | +116% |
 | **Ops time** | 6-12 hours/month | 1-2 hours/month | +400% |
-| **Total cost** | £790-1,150/month | £259-319/month | +205-260% |
+| **Total cost** | $790-1,150/month | $259-319/month | +205-260% |
 | **Setup time** | 40 hours | 8 hours | +400% |
 
 ## When MSK Makes Sense
@@ -1118,11 +1118,11 @@ MSK becomes cost-competitive at **very high scale:**
 
 | Daily Volume | Confluent Cloud Total | MSK Total | Cheaper Option |
 |--------------|---------------------|-----------|----------------|
-| **5 GB** | £259/month | £790/month | Confluent (67% cheaper) |
-| **50 GB** | £374/month | £950/month | Confluent (61% cheaper) |
-| **200 GB** | £900/month | £1,400/month | Confluent (36% cheaper) |
-| **500 GB** | £2,200/month | £2,400/month | Similar |
-| **1 TB** | £4,000/month | £3,200/month | MSK (20% cheaper) |
+| **5 GB** | $259/month | $790/month | Confluent (67% cheaper) |
+| **50 GB** | $374/month | $950/month | Confluent (61% cheaper) |
+| **200 GB** | $900/month | $1,400/month | Confluent (36% cheaper) |
+| **500 GB** | $2,200/month | $2,400/month | Similar |
+| **1 TB** | $4,000/month | $3,200/month | MSK (20% cheaper) |
 
 **Break-even:** ~500 GB/day (~15 TB/month)
 
@@ -1158,7 +1158,7 @@ You've learned when and how to self-host Kafka with MSK:
 - [x] **Schema Registry on ECS** - Self-hosted Confluent Schema Registry
 - [x] **MSK Connect** - Managed Kafka Connect for Snowflake Sink
 - [x] **VPC networking** - Security groups and private subnets
-- [x] **Cost comparison** - £790-1,150/month vs £259-319/month for Confluent Cloud
+- [x] **Cost comparison** - $790-1,150/month vs $259-319/month for Confluent Cloud
 - [x] **Break-even analysis** - MSK competitive at > 500 GB/day
 
 **Key insight:** MSK has lower infrastructure cost but **much higher** total cost due to operational burden. Start with Confluent Cloud for 99% of use cases.
