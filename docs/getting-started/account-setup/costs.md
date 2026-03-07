@@ -245,15 +245,104 @@ For the currencies pipeline (one file per week), expect < $1/month total.
 
 ### Streaming (Optional)
 
-| Tool | Free Tier | Paid Tier | Pricing Link |
-|------|-----------|-----------|--------------|
-| **Confluent Cloud** | $400 credit (limited time) | Pay-as-you-go | [confluent.io/pricing](https://www.confluent.io/confluent-cloud/pricing/) |
+Confluent Cloud provides managed Kafka with two main cluster types:
+
+#### Confluent Cloud
+
+| Cluster Type | Base Cost | Includes | SLA |
+|-------------|-----------|----------|-----|
+| **Basic** | ~$150/month | Schema Registry, Kafka Connect, 100 partitions | 99.5% |
+| **Standard** | ~$300/month | Multi-zone (3 AZs), 4,500 partitions | 99.95% |
+| **Dedicated** | $500+/month | Single-tenant, VPC peering, PrivateLink | 99.99% |
+
+Additional usage costs:
+
+| Component | Cost |
+|-----------|------|
+| Data ingress | $0.08/GB |
+| Data egress | $0.08/GB |
+| Storage | $0.08/GB/month |
+| Partition overage | $0.40/partition/month |
+
+$400 free credit for new accounts (30 days).
+
+[confluent.io/pricing](https://www.confluent.io/confluent-cloud/pricing/)
+
+!!! example "Example: 1 GB/day Workload"
+    For a typical small workload (1 GB/day on a Basic cluster):
+
+    - Base cluster: $150
+    - Ingress (30 GB): $2.50
+    - Egress (30 GB): $2.50
+    - Storage (30 GB): $2.50
+    - **Total: ~$158/month**
+
+#### AWS MSK (Self-Hosted Alternative)
+
+| Option | Monthly Cost | Best For |
+|--------|-------------|----------|
+| **MSK Serverless** | ~$22/month (1 GB/day) | Dev/test, low-volume |
+| **MSK Provisioned** (3 brokers) | ~$276/month (infrastructure only) | High-volume production |
+
+!!! warning "MSK Hidden Costs"
+    MSK Provisioned requires additional infrastructure (Schema Registry, Kafka Connect, monitoring) and 4-8 hours/month of operations work. For typical workloads (< 500 GB/day), Confluent Cloud is 60-70% cheaper when you factor in engineering time.
+
+See [Deployment Options](../../build/streaming-data-ingestion/2-deployment-options.md) for detailed comparison.
 
 ### Business Intelligence
 
+Lightdash is a dbt-native BI tool with two deployment options:
+
+#### Lightdash Cloud
+
+| Tier | Monthly Cost | Notes |
+|------|-------------|-------|
+| **Cloud** | $2,400/month (flat rate) | Unlimited users, zero infrastructure management |
+
+14-day free trial available (no credit card required).
+
+[lightdash.com](https://www.lightdash.com/)
+
+#### Lightdash Self-Hosted (ECS)
+
+| Component | Specification | Monthly Cost |
+|-----------|--------------|-------------|
+| ECS Fargate | 1-2 vCPU, 2-4GB RAM | ~$30 |
+| RDS PostgreSQL | db.t3.micro, 20GB | ~$15 |
+| Application Load Balancer | Basic usage | ~$20 |
+| **Total** | | **~$65/month** |
+
+!!! tip "Self-Hosting Recommended for Cost"
+    Lightdash Cloud is expensive at $2,400/month. Self-hosting costs ~$65/month in infrastructure plus 2-4 hours/month of maintenance. For most small teams, self-hosting is the clear winner.
+
+#### Snowflake Snowsight (Free)
+
+Snowsight is Snowflake's built-in dashboarding tool - no additional cost beyond your existing Snowflake compute. Good for quick ad-hoc dashboards but limited compared to a dedicated BI tool.
+
+See [Deployment Options](../../build/data-analytics/3-deployment-options.md) for detailed comparison.
+
+### Observability
+
 | Tool | Free Tier | Paid Tier | Pricing Link |
 |------|-----------|-----------|--------------|
-| **Metabase** | Open source (self-hosted) | Pro: $85/user/month | [metabase.com/pricing](https://www.metabase.com/pricing/) |
+| **Elementary** (open source) | Free (self-hosted) | N/A | [elementary-data.com](https://www.elementary-data.com/) |
+| **Elementary Cloud** | None | From $50/month | [elementary-data.com/cloud](https://www.elementary-data.com/cloud) |
+
+Elementary is a dbt-native data observability tool. The open-source version runs as a dbt package with a self-hosted dashboard:
+
+#### Elementary Self-Hosted (ECS)
+
+| Component | Specification | Monthly Cost |
+|-----------|--------------|-------------|
+| ECS Fargate | 0.5 vCPU, 1GB RAM | ~$15 |
+| RDS PostgreSQL | db.t3.micro, 20GB | ~$20 |
+| Application Load Balancer | Internal | ~$15 |
+| **Total** | | **~$50/month** |
+
+!!! tip "Start with Open Source"
+    The Elementary dbt package is free and gives you test monitoring, schema change tracking, and anomaly detection. You can run the dashboard locally or on ECS. Elementary Cloud adds a hosted dashboard and Slack integration for $50+/month.
+
+See [Elementary Setup](../../build/observability/3-elementary-setup.md) for installation guide.
 
 ## Cost Optimisation Tips
 
@@ -339,11 +428,16 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 |-------|----------------------|
 | **Getting Started** (GitHub, 1Password, minimal AWS) | $30-50 |
 | **Terraform Setup** (+ Snowflake dev usage) | $80-150 |
-| **Data Warehouse Build** (+ S3 data lake, storage integrations) | $100-400 |
+| **AWS Infrastructure** (S3 data lake, VPC) | $5-85 |
+| **Data Warehouse** (Snowflake compute + storage) | $50-300 |
 | **Orchestration** (Prefect Cloud free or self-hosted) | $0-100 |
 | **Batch Data Ingestion** (dlt, Snowpipe, minimal API costs) | $1-10 |
 | **SaaS Ingestion** (Airbyte Cloud Starter or self-hosted) | $81-99 |
-| **Full Stack** (orchestration, ingestion, BI) | $500-2,000+ |
+| **Data Transformation** (dbt Core free or dbt Cloud) | $0-100 |
+| **Data Analytics** (Lightdash self-hosted or Cloud) | $65-2,400 |
+| **Observability** (Elementary open source or Cloud) | $0-50 |
+| **Streaming** (Confluent Cloud Basic, optional) | $0-158 |
+| **Full Stack** (all sections running) | $500-3,500+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.
 

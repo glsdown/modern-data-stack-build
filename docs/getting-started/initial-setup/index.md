@@ -10,6 +10,7 @@ By the end of this section, you'll have:
 - [x] A fully configured local development environment (macOS)
 - [x] Understanding of the development workflow and best practices
 - [x] A secrets management strategy using 1Password and AWS Secrets Manager
+- [x] Claude Code configured with CLAUDE.md and skills for AI-assisted development
 - [x] All necessary tools installed and configured
 
 ## Prerequisites
@@ -59,5 +60,6 @@ Follow these guides in order:
 2. **[Local Development Environment](2-local-environment.md)** - Install and configure all necessary tools
 3. **[Development Workflow](3-development-workflow.md)** - Learn the branching strategy, PR process, and best practices
 4. **[Secrets Management](4-secrets-management.md)** - Set up 1Password and AWS Secrets Manager for secure credential handling
+5. **[Claude Code Setup](5-claude-code-setup.md)** - Configure CLAUDE.md and skills so Claude Code can work with your repositories
 
 Let's get started!

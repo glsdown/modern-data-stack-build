@@ -44,8 +44,9 @@ There is a skill available to help with building documentation pages - `generate
 
 ### Analytics / BI / ML
 
-* **BI Tools**: Metabase
-* **Advanced analytics**: Python notebooks (Jupyter)
+* **BI Tools**: Lightdash (dbt-native, Cloud or self-hosted)
+* **Built-in**: Snowflake Snowsight for quick dashboards
+* **Advanced analytics**: Python notebooks (Jupyter, Snowflake Notebooks, Hex)
 * **ML Workflows**: Prefect orchestrates preprocessing pipelines
 
 ### Secrets & Security
@@ -165,8 +166,8 @@ def etl_flow():
 The documentation follows an incremental learning path:
 
 ### Getting Started (`docs/getting-started/`)
-- **Initial Setup** - GitHub organisation, local dev environment, development workflow, secrets management
-- **Account Setup** - AWS account (with AdminRole, DataEngineerRole, InfrastructureAdminRole), Snowflake account, cost overview
+- **Initial Setup** - GitHub organisation, local dev environment, development workflow, secrets management, Claude Code setup
+- **Account Setup** - AWS account (with AdminRole, DataEngineerRole, InfrastructureAdminRole), Snowflake account, Prefect account, cost overview
 - **Terraform Setup** - Remote state, local setup, repository structure, GitHub provider, CI/CD deployment
 
 #### Terraform Setup Subfolders
@@ -176,82 +177,63 @@ The documentation follows an incremental learning path:
 
 **Key pattern**: All Terraform operations during initial import use the `infrastructure-admin` AWS profile. After CI/CD is configured, the TerraformGitHubActionsRole handles all infrastructure changes through GitHub Actions.
 
-### Infrastructure as Code (`docs/build/infrastructure-as-code/`)
-- **Terraform fundamentals** - Installation, configuration, basic concepts
-- **Remote state management** - S3 backend, DynamoDB locking, workspace management
-- **AWS setup for Terraform** - Creating state buckets, IAM policies, authentication
-- **Deployment workflows** - CI/CD with GitHub Actions, terraform plan/apply
-- **Best practices** - Module structure, naming conventions, documentation
+### Build Sections (`docs/build/`)
 
-### Data Warehouse (`docs/build/data-warehouse/`)
-- **0-create-snowflake-account.md** - Manual account creation, initial admin user
-- **1-terraform-setup.md** - Snowflake Terraform provider, authentication, project structure
-- **2-warehouses-resource-monitors.md** - Compute resources and cost controls
-- **3-databases.md** - Storage setup for dev/test/prod environments
-- **4-roles-rbac.md** - Functional roles and RBAC (ANALYTICS_DEVELOPER, etc.)
-- **5-users.md** - Admin users, developer users, service accounts
-- **6-network-policies.md** - IP allowlisting for security
-- **7-sso-setup.md** - SSO integration with GSuite, Okta, Azure AD
-- **8-storage-integrations.md** - S3 storage integrations for data loading
+| Section | Directory | Pages | Description |
+|---------|-----------|-------|-------------|
+| AWS Infrastructure | `aws/` | 2 | S3 data lake, VPC networking |
+| Data Warehouse | `data-warehouse/` | 10 | Snowflake setup via Terraform (warehouses, databases, roles, users, SSO) |
+| Orchestration | `orchestration/` | 11 | Prefect Cloud + self-hosted, work pools, flows, CI/CD, alerting |
+| Batch Data Ingestion | `batch-data-ingestion/` | 10 | dlt pipelines + Snowpipe + HubSpot |
+| SaaS Ingestion | `saas-ingestion/` | 9 | Airbyte Cloud + self-hosted + reverse ETL |
+| Data Transformation | `data-transformation/` | 12 | dbt Core + dbt Cloud, staging/intermediate/mart models |
+| Data Analytics | `data-analytics/` | 12 | Lightdash + Snowsight + notebooks |
+| Observability | `observability/` | 12 | Elementary, data cataloging, lineage, monitoring, alerting |
+| Streaming Data Ingestion | `streaming-data-ingestion/` | 11 | Confluent Cloud Kafka, Connect, MSK, CDC |
 
-Each data warehouse guide includes:
+Each build guide includes:
 - Concept explanation (what and why)
-- **Terraform code** (primary method, production-ready)
-- **SQL reference** (in tabs, for understanding what Terraform creates)
-- Working examples from `repositories/terraform/snowflake/`
+- **Terraform code** where applicable (production-ready)
+- **SQL reference** in tabs for Snowflake sections (for understanding what Terraform creates)
+- Working examples from `repositories/`
 
-### Other Build Sections (Future)
-- API Ingestion (dlt pipelines)
-- SaaS Ingestion (Airbyte)
-- Data Transformation (dbt)
-- Streaming (Kafka/Confluent)
-- etc.
+### Maintain (`docs/maintain/`)
+- Day-to-day operations, adding resources, using AI agents
+- Template CLAUDE.md files and skills for the three repositories
 
 ---
 
 ## 6. Repository Structure
 
-The project includes ready-to-use Terraform configurations:
+The documentation project and its example repositories:
 
 ```
 documentation/
 ├── repositories/
-│   ├── terraform/
-│   │   ├── snowflake/
-│   │   │   ├── config/              # Terraform configuration files
-│   │   │   │   ├── backend.tf       # S3 remote state
-│   │   │   │   ├── main.tf          # Terraform & provider versions
-│   │   │   │   ├── providers.tf     # Snowflake providers (per admin role)
-│   │   │   │   ├── variables.tf     # Input variable definitions
-│   │   │   │   ├── terraform.tfvars # Variable values (customise for your org)
-│   │   │   │   ├── warehouses.tf    # Warehouse resources
-│   │   │   │   ├── databases.tf     # Database resources
-│   │   │   │   ├── functional_roles.tf      # ANALYTICS_* roles
-│   │   │   │   ├── users.tf                 # All user resources
-│   │   │   │   ├── network_policies.tf      # IP allowlisting
-│   │   │   │   ├── sso_integrations.tf      # SAML2 integrations
-│   │   │   │   ├── storage_integrations.tf  # S3 access
-│   │   │   │   └── resource_monitor.tf      # Cost controls
-│   │   │   └── modules/             # Reusable modules
-│   │   │       ├── snowflake_database/
-│   │   │       ├── snowflake_user/
-│   │   │       ├── snowflake_warehouse/
-│   │   │       ├── snowflake_role/
-│   │   │       ├── snowflake_database_role/
-│   │   │       ├── snowflake_schema/
-│   │   │       ├── snowflake_storage_integration/
-│   │   │       └── snowflake_saml2_integration/
-│   │   ├── aws/                     # Future: S3 buckets, IAM, etc.
-│   │   └── confluent/               # Future: Kafka configuration
-│   └── setup_script/
+│   ├── terraform/               # Git submodule - example Terraform repo
+│   │   ├── CLAUDE.md            # Agent reference for Terraform repo
+│   │   ├── .claude/skills/      # Agent skills (add-snowflake-user, add-data-source)
+│   │   ├── github/              # GitHub provider config
+│   │   └── terraform.tf         # Root config
+│   └── setup_script/            # Setup utilities
 └── docs/
     ├── getting-started/
+    │   ├── initial-setup/       # GitHub, local env, workflow, secrets, Claude Code
+    │   ├── account-setup/       # AWS, Snowflake, Prefect accounts, costs
+    │   └── terraform-setup/     # Remote state, GitHub/AWS/Snowflake providers
     ├── build/
-    │   ├── infrastructure-as-code/
-    │   ├── data-warehouse/
-    │   ├── api-ingestion/
-    │   └── ...
+    │   ├── aws/                 # S3 data lake, VPC networking
+    │   ├── data-warehouse/      # Snowflake via Terraform (10 pages)
+    │   ├── orchestration/       # Prefect Cloud + self-hosted (11 pages)
+    │   ├── batch-data-ingestion/ # dlt + Snowpipe (10 pages)
+    │   ├── saas-ingestion/      # Airbyte Cloud + self-hosted (9 pages)
+    │   ├── data-transformation/ # dbt Core + Cloud (12 pages)
+    │   ├── data-analytics/      # Lightdash + Snowsight (12 pages)
+    │   ├── observability/       # Elementary, monitoring (12 pages)
+    │   └── streaming-data-ingestion/ # Confluent Kafka (11 pages)
     └── maintain/
+        ├── index.md             # Section overview
+        └── templates/           # CLAUDE.md and skill templates for dbt/Prefect repos
 ```
 
 ---

@@ -223,6 +223,6 @@ You'll create these after completing the AWS account setup:
 
 ## Next Steps
 
-With your secrets management strategy in place, you're ready to set up your cloud accounts and begin building infrastructure.
+With your secrets management strategy in place, you can set up Claude Code to work with your repositories - or skip ahead to cloud account setup.
 
-Continue to [Account Setup](../account-setup/index.md) →
+Continue to [Claude Code Setup](5-claude-code-setup.md) →
