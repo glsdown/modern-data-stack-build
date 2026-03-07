@@ -437,6 +437,7 @@ ALTER WAREHOUSE ANALYTICS_WH SET RESOURCE_MONITOR = monthly_limit;
 | **Data Analytics** (Lightdash self-hosted or Cloud) | $65-2,400 |
 | **Observability** (Elementary open source or Cloud) | $0-50 |
 | **Streaming** (Confluent Cloud Basic, optional) | $0-158 |
+| **Documentation** (MkDocs, GitHub Pages) | $0 |
 | **Full Stack** (all sections running) | $500-3,500+ |
 
 The incremental approach means you can pause at any phase and control costs. Start small, monitor usage, and scale as your data needs grow.

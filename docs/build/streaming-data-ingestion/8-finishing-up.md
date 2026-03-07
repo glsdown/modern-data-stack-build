@@ -506,6 +506,7 @@ Explore optional advanced topics:
 ### Other Sections
 
 Continue building your modern data stack:
+- **[Documentation](../documentation/index.md)** — build a unified docs site across all repositories with runbooks, CI/CD, and Claude skills
 - **Data Transformation** — process streaming and batch data with dbt
 - **Business Intelligence** — build real-time dashboards with Metabase
 - **Data Quality** — implement tests and monitoring with Great Expectations
