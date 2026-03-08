@@ -93,7 +93,7 @@ Before deploying, ensure you have:
 
 - [x] Completed [Snowflake Infrastructure](5-snowflake-infrastructure.md) — `SVC_LIGHTDASH` service account created
 - [x] Terraform configured for AWS (from [AWS Infrastructure](../../getting-started/terraform-setup/aws/index.md))
-- [x] VPC with public and private subnets (from [VPC Setup](../aws-infrastructure/2-vpc.md))
+- [x] VPC with public and private subnets (from [VPC Setup](../aws/2-vpc-networking.md))
 - [x] Domain name (optional, for custom HTTPS) or use ALB default DNS
 
 !!! tip "VPC Requirements"

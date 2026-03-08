@@ -418,4 +418,4 @@ You've learned how to manage secrets and configuration with Prefect Blocks:
 
 You've completed the core Prefect setup. The final page summarises what you've built and outlines next steps.
 
-Continue to [Finishing Up](9-finishing-up.md) →
+Continue to [Finishing Up](11-finishing-up.md) →

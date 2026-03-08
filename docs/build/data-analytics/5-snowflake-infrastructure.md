@@ -18,7 +18,7 @@ This ensures Lightdash cannot:
 - Query staging or source data
 - Create or drop tables
 
-The `SVC_LIGHTDASH` account uses key-pair authentication (no password) and is granted the `ANALYTICS_REPORTER` role, which you created in the [Data Warehouse section](../data-warehouse/7-roles-and-access-control.md).
+The `SVC_LIGHTDASH` account uses key-pair authentication (no password) and is granted the `ANALYTICS_REPORTER` role, which you created in the [Data Warehouse section](../data-warehouse/4-functional-roles.md).
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -47,7 +47,7 @@ Before proceeding, ensure you have:
 
 - [x] Completed [Data Warehouse](../data-warehouse/index.md) — `ANALYTICS` database, `REPORTING` schema, `ANALYTICS_REPORTER` role exist
 - [x] Completed [Data Transformation](../data-transformation/index.md) — dbt models published to `REPORTING` schema
-- [x] Terraform configured for Snowflake (from [Snowflake Infrastructure](../data-warehouse/3-terraform-setup.md))
+- [x] Terraform configured for Snowflake (from [Snowflake Infrastructure](../data-warehouse/1-project-structure.md))
 - [x] AWS CLI configured with `infrastructure-admin` profile
 
 ## Generate Key Pair

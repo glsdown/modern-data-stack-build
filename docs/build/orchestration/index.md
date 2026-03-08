@@ -141,7 +141,7 @@ If using Prefect Cloud:
 | [6. Work Pools & Workers](6-work-pools-and-workers.md) | Reference for work pool types and configuration |
 | [7. Your First Flow](7-first-flow.md) | Create a repository and deploy your first flow |
 | [8. Secrets & Blocks](8-secrets-and-blocks.md) | Integrate with AWS Secrets Manager and S3 |
-| [9. Finishing Up](9-finishing-up.md) | Summary and next steps |
+| [11. Finishing Up](11-finishing-up.md) | Summary and next steps |
 
 **Self-hosted options (advanced - requires VPC):**
 

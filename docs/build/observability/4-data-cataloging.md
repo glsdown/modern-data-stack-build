@@ -126,7 +126,7 @@ A **data catalog** is a centralized metadata repository that helps users discove
 
 Before deploying OpenMetadata:
 
-- [x] VPC with public and private subnets (from [VPC Setup](../aws-infrastructure/2-vpc.md))
+- [x] VPC with public and private subnets (from [VPC Setup](../aws/2-vpc-networking.md))
 - [x] dbt project with models and tests (from [Data Transformation](../data-transformation/index.md))
 - [x] Snowflake with data (from [Data Warehouse](../data-warehouse/index.md))
 - [x] Prefect running pipelines (from [Orchestration](../orchestration/index.md))

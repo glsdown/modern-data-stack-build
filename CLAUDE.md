@@ -190,6 +190,7 @@ The documentation follows an incremental learning path:
 | Data Analytics | `data-analytics/` | 12 | Lightdash + Snowsight + notebooks |
 | Observability | `observability/` | 12 | Elementary, data cataloging, lineage, monitoring, alerting |
 | Streaming Data Ingestion | `streaming-data-ingestion/` | 11 | Confluent Cloud Kafka, Connect, MSK, CDC |
+| Documentation | `documentation/` | 7 | Unified MkDocs site, multirepo plugin, runbooks, CI/CD |
 
 Each build guide includes:
 - Concept explanation (what and why)
@@ -200,6 +201,7 @@ Each build guide includes:
 ### Maintain (`docs/maintain/`)
 - Day-to-day operations, adding resources, using AI agents
 - Template CLAUDE.md files and skills for the three repositories
+- Maintain pages should follow the **runbook structure** defined in `docs/build/documentation/4-writing-runbooks.md` (Summary → When to Use → Prerequisites → Steps → Verification → Rollback → Escalation)
 
 ---
 
@@ -230,7 +232,8 @@ documentation/
     │   ├── data-transformation/ # dbt Core + Cloud (12 pages)
     │   ├── data-analytics/      # Lightdash + Snowsight (12 pages)
     │   ├── observability/       # Elementary, monitoring (12 pages)
-    │   └── streaming-data-ingestion/ # Confluent Kafka (11 pages)
+    │   ├── streaming-data-ingestion/ # Confluent Kafka (11 pages)
+    │   └── documentation/       # Unified docs site, runbooks (7 pages)
     └── maintain/
         ├── index.md             # Section overview
         └── templates/           # CLAUDE.md and skill templates for dbt/Prefect repos

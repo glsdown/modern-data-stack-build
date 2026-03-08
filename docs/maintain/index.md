@@ -40,10 +40,20 @@ GitHub Organisation
 
 Each repository has its own conventions, module patterns, and safety rules. Maintaining them means understanding these patterns - or having an AI agent that already does.
 
-## Section Overview
+## Runbooks
 
-!!! note "Coming Soon"
-    This section is being built. Future pages will cover adding users, adding data sources, backfill strategies, performance optimisation, disaster recovery, security hardening, and troubleshooting.
+These pages follow the [runbook structure](../build/documentation/4-writing-runbooks.md) - each one is a step-by-step operational procedure with verification, rollback, and escalation paths.
+
+| Runbook | When to Use |
+|---------|------------|
+| [Adding Users](1-adding-users.md) | New team member or service account needs access |
+| [Adding Data Sources](2-adding-data-sources.md) | New API, database, or SaaS tool to ingest |
+| [Backfills](3-backfills.md) | Historical data needs reprocessing |
+| [Performance Optimisation](4-performance-optimization.md) | Slow queries, long dbt runs, or credit spikes |
+| [Disaster Recovery](5-disaster-recovery.md) | Data loss, state corruption, or service outages |
+| [Security Hardening](6-security-hardening.md) | Key rotation, access reviews, or audit |
+| [Upgrades](7-upgrades.md) | Snowflake, dbt, Prefect, or provider version updates |
+| [Troubleshooting](8-troubleshooting.md) | Something is broken and the cause is unclear |
 
 ## Prerequisites
 
