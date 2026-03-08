@@ -271,6 +271,9 @@ See [Writing Runbooks](../../../../build/documentation/4-writing-runbooks.md) in
 the platform guide for the runbook template and structure.
 ```
 
+!!! tip "Auto-Generated Module Documentation"
+    The pre-commit hook `terraform_docs` generates a `README.md` in each module directory with inputs, outputs, and resources tables. Configure formatting in `.terraform-docs.yml` at the repository root. These READMEs complement the `docs/modules.md` page — the READMEs provide raw reference alongside the code, the docs page provides context and usage guidance for the unified site.
+
 ## Data Pipelines Repository
 
 ### Add the Documentation Directory

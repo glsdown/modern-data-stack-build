@@ -306,7 +306,7 @@ These concepts overlap but have distinct purposes.
 
 **Examples:**
 - "Why did revenue drop 20% last Tuesday?" → Use lineage to trace upstream
-- "Which dashboard queries are slowest?" → Analyze query logs + BI tool metadata
+- "Which dashboard queries are slowest?" → Analyse query logs + BI tool metadata
 - "What broke when we changed this dbt model?" → Impact analysis via lineage
 
 **When to use:** Debugging complex issues, root cause analysis, understanding cascading failures.

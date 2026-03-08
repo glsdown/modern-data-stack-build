@@ -271,7 +271,7 @@ The flows should run in sequence:
 ## Deploy
 
 ```sh
-uv run prefect deploy --all
+prefect deploy --all
 ```
 
 ## Test
@@ -280,17 +280,17 @@ uv run prefect deploy --all
 
 ```sh
 # Test HubSpot forward sync
-uv run prefect deployment run hubspot-airbyte-daily/production
+prefect deployment run hubspot-airbyte-daily/production
 
 # Test reverse ETL
-uv run prefect deployment run retl-contacts-daily/production
+prefect deployment run retl-contacts-daily/production
 ```
 
 ### Check Status
 
 ```sh
-uv run prefect flow-run ls --limit 5
-uv run prefect flow-run logs <run-id>
+prefect flow-run ls --limit 5
+prefect flow-run logs <run-id>
 ```
 
 ## Failure Alerting

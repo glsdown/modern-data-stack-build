@@ -236,10 +236,10 @@ Deploy your flow to Prefect Cloud:
 
 ```sh
 # Deploy all flows defined in prefect.yaml
-uv run prefect deploy --all
+prefect deploy --all
 
 # Or deploy a specific deployment
-uv run prefect deploy --name hello-world
+prefect deploy --name hello-world
 ```
 
 Expected output:
@@ -262,7 +262,7 @@ In a separate terminal, start a worker:
 
 ```sh
 cd ~/projects/data/data-pipelines
-uv run prefect worker start --pool development
+prefect worker start --pool development
 ```
 
 ### Trigger a Run
@@ -271,10 +271,10 @@ From CLI:
 
 ```sh
 # Run with default parameters
-uv run prefect deployment run hello-world/hello-world
+prefect deployment run hello-world/hello-world
 
 # Run with custom parameters
-uv run prefect deployment run hello-world/hello-world --param name=Prefect
+prefect deployment run hello-world/hello-world --param name=Prefect
 ```
 
 From the Prefect UI:
@@ -299,13 +299,13 @@ The Prefect UI provides:
 
 ```sh
 # List recent flow runs
-uv run prefect flow-run ls
+prefect flow-run ls
 
 # Get details of a specific run
-uv run prefect flow-run inspect <flow-run-id>
+prefect flow-run inspect <flow-run-id>
 
 # View logs
-uv run prefect flow-run logs <flow-run-id>
+prefect flow-run logs <flow-run-id>
 ```
 
 ## Commit the Project

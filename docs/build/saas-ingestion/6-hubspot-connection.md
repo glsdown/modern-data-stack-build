@@ -166,7 +166,7 @@ curl -X POST "https://api.airbyte.com/v1/destinations" \
 
 7. Click **Set up connection**
 
-!!! important "Manual Schedule"
+!!! warning "Manual Schedule"
     Set the schedule to **Manual** because Prefect will trigger syncs via the Airbyte API. This avoids double-scheduling and gives Prefect full control over orchestration.
 
 ### Via Airbyte API

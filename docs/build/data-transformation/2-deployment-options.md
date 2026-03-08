@@ -103,7 +103,7 @@ dbt Core v1.6+ supports the `--defer` flag natively. When you run with `--defer 
 The `manifest.json` (the production state file) is stored in S3 and fetched before each dev/CI run:
 
 ```sh
-aws s3 cp s3://your-bucket/dbt-artifacts/manifest.json .artifacts/manifest.json
+aws s3 cp --profile data-engineer s3://your-bucket/dbt-artifacts/manifest.json .artifacts/manifest.json
 dbt build --select state:modified+ --defer --state .artifacts/
 ```
 
@@ -113,7 +113,7 @@ After a production run, `dbt docs generate` produces static HTML. A GitHub Actio
 
 ```sh
 dbt docs generate
-aws s3 sync ./target/ s3://your-bucket/dbt-docs/ --delete
+aws s3 sync --profile data-engineer ./target/ s3://your-bucket/dbt-docs/ --delete
 ```
 
 ### Advantages

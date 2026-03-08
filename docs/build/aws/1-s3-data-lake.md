@@ -457,15 +457,15 @@ After deployment, verify the buckets:
 
 ```sh
 # List buckets
-aws s3 ls | grep data-lake
+aws s3 ls --profile data-engineer | grep data-lake
 
 # Check bucket configuration
-aws s3api get-bucket-versioning --bucket mycompany-data-lake-dev
-aws s3api get-bucket-encryption --bucket mycompany-data-lake-dev
-aws s3api get-public-access-block --bucket mycompany-data-lake-dev
+aws s3api get-bucket-versioning --profile data-engineer --bucket mycompany-data-lake-dev
+aws s3api get-bucket-encryption --profile data-engineer --bucket mycompany-data-lake-dev
+aws s3api get-public-access-block --profile data-engineer --bucket mycompany-data-lake-dev
 
 # List IAM policies
-aws iam list-policies --scope Local | grep data-lake
+aws iam list-policies --profile data-engineer --scope Local | grep data-lake
 ```
 
 ## Summary

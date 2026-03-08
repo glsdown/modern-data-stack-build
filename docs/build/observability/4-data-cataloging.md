@@ -639,7 +639,7 @@ Run OpenMetadata ingestion from the command line (for CI/CD integration).
 ### Install OpenMetadata CLI
 
 ```sh
-pip install openmetadata-ingestion[snowflake,dbt]
+uv add "openmetadata-ingestion[snowflake,dbt]"
 ```
 
 ### Create Ingestion Config

@@ -8,7 +8,7 @@ On this page, you will:
 - [x] Explore next steps beyond observability
 - [x] Access additional resources and community support
 
-## What You've Built
+## Summary
 
 Congratulations! You've implemented a comprehensive observability stack for your modern data platform.
 

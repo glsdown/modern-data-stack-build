@@ -18,7 +18,7 @@ dlt is a Python library that simplifies data pipeline development. It handles th
 
 | Feature | dlt | Custom Python | Fivetran/Airbyte |
 |---------|-----|---------------|------------------|
-| **Setup** | `pip install dlt` | Write from scratch | SaaS signup or self-host |
+| **Setup** | `uv add dlt` | Write from scratch | SaaS signup or self-host |
 | **Schema handling** | Automatic inference and evolution | Manual DDL | Automatic |
 | **Incremental loading** | Built-in with state management | Manual implementation | Built-in |
 | **Cost** | Free (open source) | Engineering time | $1+ per MAR or hosting costs |

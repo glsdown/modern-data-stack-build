@@ -605,17 +605,20 @@ After deployment, verify the VPC:
 
 ```sh
 # List VPCs
-aws ec2 describe-vpcs --filters "Name=tag:Name,Values=*data-platform*" \
+aws ec2 describe-vpcs --profile data-engineer \
+    --filters "Name=tag:Name,Values=*data-platform*" \
     --query 'Vpcs[*].[VpcId,CidrBlock,Tags[?Key==`Name`].Value|[0]]' \
     --output table
 
 # List subnets
-aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-xxxxxxxxx" \
+aws ec2 describe-subnets --profile data-engineer \
+    --filters "Name=vpc-id,Values=vpc-xxxxxxxxx" \
     --query 'Subnets[*].[SubnetId,CidrBlock,AvailabilityZone,Tags[?Key==`Name`].Value|[0]]' \
     --output table
 
 # Check NAT Gateway
-aws ec2 describe-nat-gateways --filter "Name=vpc-id,Values=vpc-xxxxxxxxx" \
+aws ec2 describe-nat-gateways --profile data-engineer \
+    --filter "Name=vpc-id,Values=vpc-xxxxxxxxx" \
     --query 'NatGateways[*].[NatGatewayId,State,NatGatewayAddresses[0].PublicIp]' \
     --output table
 ```

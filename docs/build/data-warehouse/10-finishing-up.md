@@ -143,7 +143,7 @@ terraform/snowflake/
 └── warehouses.tf
 ```
 
-## What You've Built
+## Summary
 
 Here's a summary of your Snowflake infrastructure:
 

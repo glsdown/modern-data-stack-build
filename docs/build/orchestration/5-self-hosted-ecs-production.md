@@ -670,7 +670,7 @@ ECS automatically publishes metrics to CloudWatch:
 View logs in the AWS Console or via CLI:
 
 ```sh
-aws logs tail /ecs/prefect-production --follow
+aws logs tail --profile data-engineer /ecs/prefect-production --follow
 ```
 
 ### Alarms (Optional)

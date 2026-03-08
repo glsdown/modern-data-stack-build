@@ -425,7 +425,7 @@ if __name__ == '__main__':
 ### Install Dependencies
 
 ```sh
-pip install confluent-kafka[avro] boto3
+uv add "confluent-kafka[avro]" boto3
 ```
 
 ### Run Producer

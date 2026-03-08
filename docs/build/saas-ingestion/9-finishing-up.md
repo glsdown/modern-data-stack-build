@@ -261,7 +261,7 @@ prefect deployment resume hubspot-airbyte-daily/production
 
 **Solution**: Upgrade your Airbyte Cloud tier or remove unused connections.
 
-## What You've Built
+## Summary
 
 You've set up a complete SaaS data ingestion system:
 

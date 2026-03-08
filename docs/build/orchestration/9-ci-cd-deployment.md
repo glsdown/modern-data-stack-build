@@ -132,7 +132,7 @@ The Prefect API key is fetched from AWS Secrets Manager at runtime (not stored a
             env:
               PREFECT_API_KEY: ${{ steps.prefect-key.outputs.key }}
               PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-            run: uv run prefect deploy --all
+            run: prefect deploy --all
     ```
 
 === "Local"
@@ -143,16 +143,16 @@ The Prefect API key is fetched from AWS Secrets Manager at runtime (not stored a
     cd ~/projects/data/data-pipelines
 
     # Ensure you're authenticated
-    uv run prefect cloud login
+    prefect cloud login
 
     # Deploy all flows
-    uv run prefect deploy --all
+    prefect deploy --all
     ```
 
     Or deploy a specific flow:
 
     ```sh
-    uv run prefect deploy --name exchange-rates-daily
+    prefect deploy --name exchange-rates-daily
     ```
 
 ### How It Works
@@ -189,7 +189,7 @@ Then set the environment variable in the workflow:
     PREFECT_API_KEY: ${{ steps.prefect-key.outputs.key }}
     PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
     PREFECT_WORK_POOL: production
-  run: uv run prefect deploy --all
+  run: prefect deploy --all
 ```
 
 This allows the same `prefect.yaml` to target different work pools depending on the deployment context.
@@ -222,8 +222,8 @@ An error occurred (AccessDeniedException) when calling the GetSecretValue operat
 **Solution**: Check the work pool name in `prefect.yaml` matches an existing work pool, and that a worker is connected to that pool:
 
 ```sh
-uv run prefect work-pool ls
-uv run prefect worker ls --pool production
+prefect work-pool ls
+prefect worker ls --pool production
 ```
 
 ### "No module named" Errors
@@ -237,7 +237,7 @@ You've set up automated flow deployment:
 - [x] Created a GitHub Actions workflow triggered on push to `main`
 - [x] Configured AWS OIDC authentication for Secrets Manager access
 - [x] Fetched the Prefect API key securely at runtime
-- [x] Deployed flows using `uv run prefect deploy --all`
+- [x] Deployed flows using `prefect deploy --all`
 
 ## What's Next
 

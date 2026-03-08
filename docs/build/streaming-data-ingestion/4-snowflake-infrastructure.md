@@ -513,7 +513,7 @@ if __name__ == '__main__':
 ### Install Dependencies
 
 ```sh
-pip install snowflake-connector-python cryptography boto3
+uv add snowflake-connector-python cryptography boto3
 ```
 
 ### Run Test

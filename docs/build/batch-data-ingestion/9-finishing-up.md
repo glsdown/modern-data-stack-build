@@ -61,10 +61,10 @@ Verify deployments are active:
 
 ```sh
 # List deployments
-uv run prefect deployment ls
+prefect deployment ls
 
 # Check schedules
-uv run prefect deployment inspect exchange-rates-daily/production
+prefect deployment inspect exchange-rates-daily/production
 ```
 
 Should show:
@@ -78,7 +78,7 @@ Should show:
 Check recent runs completed successfully:
 
 ```sh
-uv run prefect flow-run ls --limit 10
+prefect flow-run ls --limit 10
 ```
 
 ## Architecture Summary
@@ -176,10 +176,10 @@ FROM TABLE(INFORMATION_SCHEMA.COPY_HISTORY(
 
 ```sh
 # Run immediately
-uv run prefect deployment run exchange-rates-daily/production
+prefect deployment run exchange-rates-daily/production
 
 # Run with custom parameters
-uv run prefect deployment run exchange-rates-backfill/production \
+prefect deployment run exchange-rates-backfill/production \
     --param start_date=2026-02-01 \
     --param end_date=2026-02-07
 ```
@@ -188,20 +188,20 @@ uv run prefect deployment run exchange-rates-backfill/production \
 
 ```sh
 # Pause
-uv run prefect deployment pause exchange-rates-daily/production
+prefect deployment pause exchange-rates-daily/production
 
 # Resume
-uv run prefect deployment resume exchange-rates-daily/production
+prefect deployment resume exchange-rates-daily/production
 ```
 
 ### View Logs
 
 ```sh
 # Get run ID from recent runs
-uv run prefect flow-run ls --limit 5
+prefect flow-run ls --limit 5
 
 # View logs
-uv run prefect flow-run logs <run-id>
+prefect flow-run logs <run-id>
 ```
 
 ## Troubleshooting
@@ -237,8 +237,8 @@ SELECT SYSTEM$PIPE_STATUS('SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_PIPE');
 2. Work pool has capacity
 
 ```sh
-uv run prefect worker ls
-uv run prefect work-pool ls
+prefect worker ls
+prefect work-pool ls
 ```
 
 ## Cost Summary
@@ -255,7 +255,7 @@ uv run prefect work-pool ls
 
 Total incremental cost for these pipelines: **< $1/month** (assuming Prefect Cloud free tier)
 
-## What You've Built
+## Summary
 
 Congratulations! You've built a complete batch data ingestion system:
 

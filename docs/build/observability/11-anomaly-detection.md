@@ -342,7 +342,7 @@ Great Expectations is a Python library for data validation with extensive statis
 
 ```sh
 cd ~/projects/dbt/dbt-transform
-pip install great_expectations
+uv add great_expectations
 ```
 
 ### Initialise Great Expectations

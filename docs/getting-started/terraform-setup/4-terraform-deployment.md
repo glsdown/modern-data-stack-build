@@ -540,10 +540,10 @@ Create a file called `terraform-policy.json`. Replace the placeholder values wit
 
     ```sh
     # List S3 buckets
-    aws s3 ls | grep terraform
+    aws s3 ls --profile infrastructure-admin | grep terraform
 
     # List DynamoDB tables
-    aws dynamodb list-tables
+    aws dynamodb list-tables --profile infrastructure-admin
     ```
 
 ```json

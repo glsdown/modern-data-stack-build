@@ -142,14 +142,11 @@ This provides historical tracking of all dbt runs and tests.
 
 The Elementary CLI runs anomaly detection and generates reports.
 
-### Install via pip
+### Install Elementary
 
 ```sh
-# Install in dbt-transform venv
 cd ~/projects/dbt/dbt-transform
-source .venv/bin/activate
-
-pip install elementary-data[snowflake]
+uv add "elementary-data[snowflake]"
 ```
 
 ### Verify installation
@@ -317,7 +314,7 @@ Timestamp: 2026-02-20 08:15:00 UTC
 View in Elementary: https://your-elementary-ui.com/models/fct_exchange_rates
 ```
 
-### Customize alert format
+### Customise alert format
 
 ```yaml
 # dbt_project.yml

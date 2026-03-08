@@ -6,7 +6,7 @@ On this page, you will:
 - [x] Verify your orchestration setup
 - [x] Understand next steps
 
-## What You've Built
+## Summary
 
 You now have a production-ready orchestration layer for your data platform.
 
@@ -94,8 +94,8 @@ Run through this checklist to verify your setup:
 ### Control Plane
 
 - [ ] Prefect UI is accessible
-- [ ] Can authenticate with CLI (`uv run prefect version`)
-- [ ] Work pools are visible (`uv run prefect work-pool ls`)
+- [ ] Can authenticate with CLI (`prefect version`)
+- [ ] Work pools are visible (`prefect work-pool ls`)
 
 ### Workers
 
@@ -105,7 +105,7 @@ Run through this checklist to verify your setup:
 
 ### Deployments
 
-- [ ] Test deployment exists (`uv run prefect deployment ls`)
+- [ ] Test deployment exists (`prefect deployment ls`)
 - [ ] Can trigger a flow run manually
 - [ ] Flow completes successfully
 - [ ] Logs are visible in UI
@@ -183,7 +183,7 @@ terraform/
 
 ```sh
 # Check worker is running
-uv run prefect worker ls --pool your-pool
+prefect worker ls --pool your-pool
 
 # Verify API URL
 echo $PREFECT_API_URL
@@ -196,10 +196,10 @@ journalctl -u prefect-worker -f
 
 ```sh
 # Verify deployment config
-uv run prefect deployment inspect flow-name/deployment-name
+prefect deployment inspect flow-name/deployment-name
 
 # Check for syntax errors in prefect.yaml
-uv run prefect deploy --dry-run
+prefect deploy --dry-run
 ```
 
 ### Secrets Not Found

@@ -276,7 +276,7 @@ This is more mechanical than Tableau (UI-based metrics).
 
 **Trade-off**: Requires SQL knowledge. Not self-service for business users. Basic visualisations only.
 
-## What You've Built: Architecture Summary
+## Summary
 
 Across this documentation, you've built a complete modern data stack:
 

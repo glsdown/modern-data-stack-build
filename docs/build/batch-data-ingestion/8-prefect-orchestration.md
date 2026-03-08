@@ -375,7 +375,7 @@ git commit -m "Add Prefect flows for dlt pipelines"
 git push
 
 # Deploy all flows
-uv run prefect deploy --all
+prefect deploy --all
 ```
 
 For automated deployment via CI/CD (recommended for production), see [CI/CD Deployment](../orchestration/9-ci-cd-deployment.md).
@@ -386,28 +386,28 @@ For automated deployment via CI/CD (recommended for production), see [CI/CD Depl
 
 ```sh
 # Test exchange rates
-uv run prefect deployment run exchange-rates-daily/production
+prefect deployment run exchange-rates-daily/production
 
 # Test with parameters
-uv run prefect deployment run exchange-rates-backfill/production \
+prefect deployment run exchange-rates-backfill/production \
     --param start_date=2026-01-01 \
     --param end_date=2026-01-07
 
 # Test currencies
-uv run prefect deployment run currencies-weekly/production
+prefect deployment run currencies-weekly/production
 
 # Test products
-uv run prefect deployment run products-daily/production
+prefect deployment run products-daily/production
 ```
 
 ### Check Status
 
 ```sh
 # List recent runs
-uv run prefect flow-run ls --limit 5
+prefect flow-run ls --limit 5
 
 # View specific run logs
-uv run prefect flow-run logs <run-id>
+prefect flow-run logs <run-id>
 ```
 
 ## Schedule Summary

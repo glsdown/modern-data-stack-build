@@ -219,7 +219,7 @@ Snowpipe auto-ingestion has minimal costs for low-volume pipelines:
 | S3 PUT requests | ~$0.005 per 1,000 requests |
 | SQS notifications | Free tier (1 million requests/month) |
 
-For the currencies pipeline (one file per week), expect < $1/month total.
+For the currencies pipeline (one file per week), expect < $1/month total. See [Snowpipe pricing](https://www.snowflake.com/en/data-cloud/pricing-options/) (under Serverless Features).
 
 ### Alerting (Optional)
 
@@ -268,7 +268,7 @@ $400 free credit for new accounts (30 days).
 
 [confluent.io/pricing](https://www.confluent.io/confluent-cloud/pricing/)
 
-!!! example "Example: 1 GB/day Workload"
+!!! note "Example: 1 GB/day Workload"
     For a typical small workload (1 GB/day on a Basic cluster):
 
     - Base cluster: $150
@@ -283,6 +283,8 @@ $400 free credit for new accounts (30 days).
 |--------|-------------|----------|
 | **MSK Serverless** | ~$22/month (1 GB/day) | Dev/test, low-volume |
 | **MSK Provisioned** (3 brokers) | ~$276/month (infrastructure only) | High-volume production |
+
+[AWS MSK pricing](https://aws.amazon.com/msk/pricing/)
 
 !!! warning "MSK Hidden Costs"
     MSK Provisioned requires additional infrastructure (Schema Registry, Kafka Connect, monitoring) and 4-8 hours/month of operations work. For typical workloads (< 500 GB/day), Confluent Cloud is 60-70% cheaper when you factor in engineering time.
@@ -374,7 +376,7 @@ See [Elementary Setup](../../build/observability/3-elementary-setup.md) for inst
 Create a budget alert in AWS:
 
 ```sh
-aws budgets create-budget \
+aws budgets create-budget --profile admin \
     --account-id YOUR_ACCOUNT_ID \
     --budget '{
         "BudgetName": "Monthly-Spend-Alert",

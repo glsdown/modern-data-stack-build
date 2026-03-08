@@ -179,7 +179,7 @@ The pattern established here scales to any number of repositories. For example, 
 3. Add CI and dispatch workflows
 4. The Claude skill already handles arbitrary repositories - update its write location list
 
-## What You've Built
+## Summary
 
 - [x] **Unified documentation site** — Single searchable site covering all platform repositories
 - [x] **Documentation alongside code** — Source files live in each repository, reviewed in PRs

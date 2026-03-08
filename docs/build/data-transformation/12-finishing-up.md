@@ -254,7 +254,7 @@ SHOW GRANTS TO ROLE ANALYTICS_TRANSFORMER;
 
 The GitHub token stored in `terraform/github-token` in Secrets Manager may have expired or have insufficient permissions. The token needs `repo` scope (read access) to clone `dbt-transform`.
 
-## What You've Built
+## Summary
 
 - [x] **`SVC_DBT` service account** with dedicated role and `ANALYTICS_TRANSFORMER` access
 - [x] **Staging models** — clean views over DLT, Snowpipe, and Airbyte raw tables

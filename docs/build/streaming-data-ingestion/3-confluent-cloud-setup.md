@@ -361,11 +361,8 @@ Verify your Kafka cluster is accessible using a Python producer.
 
 ```sh
 # Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Install confluent-kafka client
-pip install confluent-kafka boto3
+uv init
+uv add confluent-kafka boto3
 ```
 
 ### Python Producer Test

@@ -101,7 +101,7 @@ Install and configure the Prefect CLI on your local machine:
 
 ```sh
 # Install Prefect
-pip install prefect
+uv add prefect
 
 # Login to Prefect Cloud
 prefect cloud login

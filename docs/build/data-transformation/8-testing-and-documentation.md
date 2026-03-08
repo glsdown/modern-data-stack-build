@@ -525,7 +525,7 @@ models:
 3. **Reusability**: Common columns (timestamps, IDs, flags) documented once
 4. **Documentation as code**: Doc blocks are versioned with your dbt project
 
-!!! tip "Organize doc blocks by domain"
+!!! tip "Organise doc blocks by domain"
     Create separate doc files for different domains:
     - `docs/common_columns.md` — timestamps, IDs, metadata columns
     - `docs/business_terms.md` — domain-specific terminology

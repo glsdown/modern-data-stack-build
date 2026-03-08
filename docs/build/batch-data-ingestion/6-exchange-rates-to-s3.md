@@ -487,13 +487,13 @@ uv run python -m pipelines.exchange_rates --backfill --start-date 2026-01-01 --e
 Check that files were written to S3:
 
 ```sh
-aws s3 ls s3://your-data-lake-bucket/exchange-rates/ --recursive
+aws s3 ls --profile data-engineer s3://your-data-lake-bucket/exchange-rates/ --recursive
 ```
 
 View the contents of a file:
 
 ```sh
-aws s3 cp s3://your-data-lake-bucket/exchange-rates/exchange_rates/exchange_rates/1704067200.json - | head -20
+aws s3 cp --profile data-engineer s3://your-data-lake-bucket/exchange-rates/exchange_rates/exchange_rates/1704067200.json - | head -20
 ```
 
 ## Verify Snowpipe Ingestion

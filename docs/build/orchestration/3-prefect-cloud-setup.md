@@ -132,10 +132,10 @@ uv add prefect prefect-aws prefect-snowflake
 
 ```sh
 # Login to Prefect Cloud (opens browser)
-uv run prefect cloud login
+prefect cloud login
 
 # Or use API key directly
-uv run prefect cloud login --key YOUR_API_KEY
+prefect cloud login --key YOUR_API_KEY
 ```
 
 ### Verify Connection and Get IDs
@@ -144,11 +144,11 @@ Once logged in, retrieve your account and workspace IDs:
 
 ```sh
 # Verify connection
-uv run prefect version
-uv run prefect cloud workspace ls
+prefect version
+prefect cloud workspace ls
 
 # Get account and workspace IDs from the API URL
-uv run prefect config view --show-sources | grep PREFECT_API_URL
+prefect config view --show-sources | grep PREFECT_API_URL
 # The URL format is: .../accounts/{account_id}/workspaces/{workspace_id}
 ```
 
@@ -456,7 +456,7 @@ After CI/CD completes, verify the work pools were created:
 
 ```sh
 # List work pools
-uv run prefect work-pool ls
+prefect work-pool ls
 ```
 
 Expected output:
@@ -479,7 +479,7 @@ Start a worker locally to test flow execution:
 cd ~/projects/data/data-pipelines
 
 # Start a worker for the development pool
-uv run prefect worker start --pool development
+prefect worker start --pool development
 ```
 
 Keep this running in a terminal while developing flows.

@@ -172,11 +172,8 @@ cd ~
 mkdir notebooks
 cd notebooks
 
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install JupyterLab and Snowflake connector
-pip install jupyterlab snowflake-connector-python pandas matplotlib seaborn scikit-learn
+uv init
+uv add jupyterlab snowflake-connector-python pandas matplotlib seaborn scikit-learn
 
 # Start JupyterLab
 jupyter lab
@@ -254,7 +251,7 @@ Jupyter notebooks (`.ipynb` files) are JSON and difficult to review in Git. Use 
 
 ```sh
 # Install jupytext
-pip install jupytext
+uv add jupytext
 
 # Convert notebook to Python script
 jupytext --to py exchange_rate_analysis.ipynb

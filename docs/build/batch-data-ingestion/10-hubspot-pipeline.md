@@ -318,17 +318,17 @@ Add to `prefect.yaml`:
 ### Deploy
 
 ```sh
-uv run prefect deploy --all
+prefect deploy --all
 ```
 
 ### Test
 
 ```sh
 # Trigger manual run
-uv run prefect deployment run hubspot-daily/production
+prefect deployment run hubspot-daily/production
 
 # Check status
-uv run prefect flow-run ls --limit 5
+prefect flow-run ls --limit 5
 ```
 
 ## HubSpot API Rate Limits
