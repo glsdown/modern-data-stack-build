@@ -102,7 +102,7 @@ You need:
 
 ### Terraform Configuration
 
-Create `repositories/terraform/aws/msk/main.tf`:
+Create `~/src/terraform/aws/msk/main.tf`:
 
 ```hcl
 terraform {
@@ -320,7 +320,7 @@ output "msk_zookeeper_connect_string" {
 ### Deploy MSK Cluster
 
 ```sh
-cd repositories/terraform/aws/msk
+cd ~/src/terraform/aws/msk
 
 # Initialise
 terraform init
@@ -410,7 +410,7 @@ MSK doesn't include Schema Registry. Deploy Confluent Schema Registry on ECS Far
 
 ### Terraform Configuration
 
-Create `repositories/terraform/aws/msk/schema_registry.tf`:
+Create `~/src/terraform/aws/msk/schema_registry.tf`:
 
 ```hcl
 # RDS PostgreSQL for Schema Registry metadata
@@ -802,7 +802,7 @@ aws s3 cp snowflake-connector.zip s3://your-kafka-connect-plugins-bucket/snowfla
 
 ### Terraform Configuration for MSK Connect
 
-Add to `repositories/terraform/aws/msk/msk_connect.tf`:
+Add to `~/src/terraform/aws/msk/msk_connect.tf`:
 
 ```hcl
 # S3 bucket for connector plugins

@@ -1,6 +1,10 @@
 # Production-Grade Data Stack Reference Summary
 
-This document summarizes the recommended architecture, tools, and orchestration strategies for a modern, production-grade data stack for a small company. It is designed to be **pragmatic, incremental, and AI-friendly** for project documentation. It should be written in British English with a focus on clarity and learning.
+**This repository is a documentation project.** It teaches people *how* to build a modern data stack - it does not contain the stack itself. The pages under `documentation/docs/` are educational guides that explain what each component is, why it matters, and how to build it step by step. Code examples in the documentation (Terraform modules, dbt models, Python pipelines) are illustrative - readers create the actual resources in their own repositories by following the guides.
+
+The `documentation/repositories/` directory contains supporting code used by the documentation build process (e.g. for the multirepo plugin) - it is not intended as a source of templates for readers to copy.
+
+This document summarises the recommended architecture, tools, and orchestration strategies for a modern, production-grade data stack for a small company. It is designed to be **pragmatic, incremental, and AI-friendly** for project documentation. It should be written in British English with a focus on clarity and learning.
 
 There is a skill available to help with building documentation pages - `generate-docs`
 

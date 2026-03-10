@@ -171,7 +171,7 @@ On this page, you will:
 
 #### Terraform Configuration
 
-Create `repositories/terraform/aws/ksqldb/main.tf`:
+Create `~/src/terraform/aws/ksqldb/main.tf`:
 
 ```hcl
 # ECS task definition for ksqlDB
@@ -334,7 +334,7 @@ output "ksqldb_endpoint" {
 #### Deploy ksqlDB
 
 ```sh
-cd repositories/terraform/aws/ksqldb
+cd ~/src/terraform/aws/ksqldb
 
 terraform init
 terraform plan -out=tfplan
@@ -507,7 +507,7 @@ CREATE TABLE user_sessions AS
 
 #### Terraform Configuration
 
-Create `repositories/terraform/aws/flink/main.tf`:
+Create `~/src/terraform/aws/flink/main.tf`:
 
 ```hcl
 # S3 bucket for Flink checkpoints
@@ -806,7 +806,7 @@ resource "aws_security_group" "flink" {
 #### Deploy Flink
 
 ```sh
-cd repositories/terraform/aws/flink
+cd ~/src/terraform/aws/flink
 
 terraform init
 terraform plan -out=tfplan

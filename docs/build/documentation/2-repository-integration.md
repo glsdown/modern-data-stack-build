@@ -21,8 +21,9 @@ terraform/                          data-pipelines/
 │   ├── index.md                    │   ├── index.md
 │   ├── getting-started.md          │   ├── getting-started.md
 │   ├── conventions.md              │   ├── conventions.md
-│   └── runbooks/                   │   └── runbooks/
-│       └── index.md                │       └── index.md
+│   ├── modules.md                  │   └── runbooks/
+│   └── runbooks/                   │       └── index.md
+│       └── index.md
 └── ...                             └── ...
 
 dbt-transform/
@@ -75,6 +76,7 @@ nav:
   - Overview: index.md
   - Getting Started: getting-started.md
   - Conventions: conventions.md
+  - Modules: modules.md
   - Runbooks:
       - runbooks/index.md
 theme:
@@ -183,14 +185,22 @@ repository.
 - AWS CLI configured with `infrastructure-admin` and `data-engineer` profiles
 - Snowflake account with admin access (for initial setup)
 - 1Password CLI for secrets management
+- pre-commit installed (`brew install pre-commit`)
+- terraform-docs installed (`brew install terraform-docs`)
 
 ## Local Setup
 
 1. Clone the repository
-2. Navigate to the provider directory you need to work with (e.g. `snowflake/config/`)
-3. Run `terraform init` to initialise the backend and download providers
-4. Run `terraform plan` to preview changes
-5. Create a pull request — CI/CD handles `terraform apply`
+2. Install pre-commit hooks:
+
+    ` ``sh
+    pre-commit install --hook-type pre-push
+    ` ``
+
+3. Navigate to the provider directory you need to work with (e.g. `snowflake/config/`)
+4. Run `terraform init` to initialise the backend and download providers
+5. Run `terraform plan` to preview changes
+6. Create a pull request — CI/CD handles `terraform apply`
 
 ## Development Workflow
 
@@ -200,8 +210,31 @@ All Terraform changes follow the same process:
 2. Make changes to `.tf` and `.auto.tfvars` files
 3. Run `terraform plan` locally to verify
 4. Open a pull request
-5. CI validates the plan
+5. CI validates the plan (and pre-commit hooks run terraform-docs to update module READMEs)
 6. After approval and merge, CD runs `terraform apply`
+
+!!! warning "Never Apply Locally"
+    All `terraform apply` operations run through CI/CD. Local `terraform plan`
+    is safe and encouraged for validation, but applying changes locally risks
+    state corruption and bypasses the review process.
+
+## Pre-commit Hooks
+
+The repository uses pre-commit hooks that run on `git push`:
+
+| Hook | Purpose |
+|------|---------|
+| `terraform_fmt` | Auto-format Terraform code |
+| `terraform_validate` | Validate syntax |
+| `terraform_docs` | Generate module documentation |
+| `terraform_tflint` | Lint Terraform code |
+| `terraform_checkov` | Security scanning |
+
+Run hooks manually at any time:
+
+` ``sh
+pre-commit run --all-files
+` ``
 ```
 
 Create `docs/conventions.md`:
@@ -211,6 +244,16 @@ Create `docs/conventions.md`:
 
 Naming patterns, module standards, and configuration approach used across this
 repository.
+
+## Naming Conventions
+
+| Resource Type | Convention | Example |
+|---------------|-----------|---------|
+| Snowflake objects | `UPPER_CASE` | `ANALYTICS`, `SVC_DLT`, `DEVELOPER` |
+| Terraform resources | `snake_case` | `snowflake_warehouse.loading` |
+| Terraform modules | `snake_case` | `module "database_dlt"` |
+| Service accounts | `SVC_` prefix | `SVC_TERRAFORM`, `SVC_DBT` |
+| Variable files | `*.auto.tfvars` | `users.auto.tfvars` |
 
 ## Service Account Naming
 
@@ -234,12 +277,31 @@ Databases are named after the loader tool that writes to them:
 - `AIRBYTE` — Airbyte connections
 - `STREAMING` — Kafka Connect
 - `ANALYTICS` — dbt transformations
+- `ANALYTICS_DEV` — dbt development
+- `ADMIN` — Administrative objects (resource monitors, tasks)
 
 ## Module Patterns
 
 Each Terraform module creates a complete resource with all associated permissions.
 For example, `snowflake_database` creates the database plus `DB_READER` and
 `DB_WRITER` database roles with appropriate grants.
+
+Modules accept multiple Snowflake provider aliases:
+
+` ``hcl
+module "database_dlt" {
+  source = "./modules/snowflake_database"
+
+  providers = {
+    snowflake.sys_admin      = snowflake.sys_admin
+    snowflake.security_admin = snowflake.security_admin
+  }
+
+  database_name    = "DLT"
+  database_comment = "Data loaded by dlt pipelines."
+  # ...
+}
+` ``
 
 ## Variable Files
 
@@ -249,6 +311,66 @@ automatically. Use descriptive filenames:
 - `users.auto.tfvars` — User definitions
 - `network_policies.auto.tfvars` — IP allowlists
 - `warehouses.auto.tfvars` — Warehouse configurations
+
+## Documentation Generation
+
+Module documentation is auto-generated using [terraform-docs](https://terraform-docs.io/).
+
+### How It Works
+
+The pre-commit hook `terraform_docs` runs on every `git push` and generates a
+`README.md` in each module directory containing:
+
+- **Inputs** — All variables with type, description, default, and whether required
+- **Outputs** — All outputs with description
+- **Resources** — Terraform resources managed by the module
+- **Providers** — Required provider versions
+
+### README Markers
+
+Each module's `README.md` must include injection markers. terraform-docs inserts
+generated content between these markers, preserving any hand-written content above
+or below:
+
+` ``markdown
+# Module: Snowflake Database
+
+Creates a Snowflake database with DB_READER and DB_WRITER database roles.
+
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
+` ``
+
+### Variable and Output Descriptions
+
+All variables and outputs **must** include a `description` field. terraform-docs
+uses these to generate the documentation:
+
+` ``hcl
+variable "database_name" {
+  description = "Name of the Snowflake database to create."
+  type        = string
+}
+
+output "database_name" {
+  description = "The name of the created database."
+  value       = snowflake_database.this.name
+}
+` ``
+
+### Configuration
+
+The `.terraform-docs.yml` file at the repository root controls formatting:
+
+- **Formatter**: `markdown table` — clean table layout
+- **Sort**: By `required` — required variables appear first
+- **Mode**: `inject` — inserts between markers rather than replacing the whole file
+
+Run terraform-docs manually for a specific module:
+
+` ``sh
+terraform-docs markdown table snowflake/modules/snowflake_database/
+` ``
 ```
 
 Create `docs/runbooks/index.md`:
@@ -260,16 +382,29 @@ Operational procedures for common tasks and incident response.
 
 ## Available Runbooks
 
-Runbooks will be added as the platform matures. Planned runbooks include:
+| Runbook | When to Use |
+|---------|------------|
+| Adding a new Snowflake user | New team member needs access |
+| Rotating service account credentials | Scheduled rotation or key compromise |
+| Responding to a failed Terraform deployment | CI/CD `terraform apply` fails |
+| Adding a new data source | New ingestion source needs database, service account, and schemas |
 
-- Adding a new Snowflake user
-- Rotating service account credentials
-- Responding to a failed Terraform deployment
-- Adding a new data source
+!!! info "Platform-Level Runbooks"
+    For comprehensive runbooks covering the full data stack (not just Terraform), see the Maintain section on the platform documentation site. These runbooks cover end-to-end procedures including pipeline setup, dbt configuration, and cross-tool coordination.
 
 See [Writing Runbooks](../../../../build/documentation/4-writing-runbooks.md) in
 the platform guide for the runbook template and structure.
 ```
+
+### Create the Module Reference Page
+
+Create `docs/modules.md` to document all Terraform modules. This page lists each module with its purpose, key inputs, and shows how modules relate to each other.
+
+??? example "docs/modules.md (click to expand)"
+
+    ```markdown
+    --8<-- "build/documentation/examples/terraform-modules.md"
+    ```
 
 !!! tip "Auto-Generated Module Documentation"
     The pre-commit hook `terraform_docs` generates a `README.md` in each module directory with inputs, outputs, and resources tables. Configure formatting in `.terraform-docs.yml` at the repository root. These READMEs complement the `docs/modules.md` page — the READMEs provide raw reference alongside the code, the docs page provides context and usage guidance for the unified site.

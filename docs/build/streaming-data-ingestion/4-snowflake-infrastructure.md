@@ -67,7 +67,7 @@ Use the existing `snowflake_database` Terraform module to create the STREAMING d
 
 ### Add to databases.tf
 
-Edit `repositories/terraform/snowflake/config/databases.tf` and add:
+Edit `~/src/terraform/snowflake/config/databases.tf` and add:
 
 ```hcl
 # -----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ Adjust based on your requirements:
 ### Apply Terraform
 
 ```sh
-cd repositories/terraform/snowflake/config
+cd ~/src/terraform/snowflake/config
 
 # Set AWS profile for Secrets Manager access
 export AWS_PROFILE=infrastructure-admin
@@ -194,7 +194,7 @@ MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1234567890abcdef...
 
 ### Add Service Account to users.tf
 
-Edit `repositories/terraform/snowflake/config/users.tf` and add:
+Edit `~/src/terraform/snowflake/config/users.tf` and add:
 
 ```hcl
 # -----------------------------------------------------------------------------
@@ -292,7 +292,7 @@ Analysts need read-only access to streaming data. Grant `STREAMING_DB_READER` to
 
 ### Update functional_roles.tf
 
-Edit `repositories/terraform/snowflake/config/functional_roles.tf`:
+Edit `~/src/terraform/snowflake/config/functional_roles.tf`:
 
 ```hcl
 # ANALYTICS_SOURCES_READER - Read access to all data sources

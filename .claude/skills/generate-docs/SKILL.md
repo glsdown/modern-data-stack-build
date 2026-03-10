@@ -565,10 +565,10 @@ Always use descriptive link text, never "here" or "click here":
 
 ### Code References
 
-When referencing files in the repository:
+When referencing files in a repository, use descriptive inline references rather than linking to external files:
 
 ```markdown
-See the working example in [repositories/terraform/snowflake/config/warehouses.tf](../../../repositories/terraform/snowflake/config/warehouses.tf)
+See the working example in `snowflake/config/warehouses.tf` in the terraform repository.
 ```
 
 ## Page-Specific Patterns

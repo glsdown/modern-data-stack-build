@@ -80,7 +80,7 @@ Quick reference for documentation style decisions in the modern data stack proje
 | Internal | Relative path | `[Terraform Setup](../../build/infrastructure-as-code/terraform.md)` |
 | Next steps | Relative path with arrow | `Continue to [Next Page](./next.md) →` |
 | External | Full URL with descriptive text | `[AWS IAM best practices](https://docs.aws.amazon.com/iam/best-practices)` |
-| Code reference | Relative path to repo file | `[warehouses.tf](../../../repositories/terraform/snowflake/config/warehouses.tf)` |
+| Code reference | Descriptive inline reference | `the `warehouses.tf` file in `snowflake/config/`` |
 
 ## List Types
 

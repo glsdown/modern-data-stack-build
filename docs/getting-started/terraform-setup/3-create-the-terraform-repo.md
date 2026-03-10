@@ -297,6 +297,75 @@ skip-check:
   # Example: CKV_AWS_18 - S3 bucket logging
 ```
 
+### terraform-docs Configuration
+
+Create `.terraform-docs.yml` in the repository root to control how module documentation is generated:
+
+```yaml
+formatter: markdown table
+
+output:
+  file: README.md
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+sort:
+  enabled: true
+  by: required
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  hide-empty: false
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: true
+  type: true
+```
+
+This configuration:
+
+- Uses `inject` mode so terraform-docs inserts between `<!-- BEGIN_TF_DOCS -->` and `<!-- END_TF_DOCS -->` markers, preserving any hand-written content in module READMEs
+- Sorts variables by `required` so required inputs appear first
+- Generates a `markdown table` format for clean, readable output
+
+### EditorConfig
+
+Create `.editorconfig` in the repository root to ensure consistent formatting across editors:
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{tf,tfvars}]
+indent_style = space
+indent_size = 2
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.py]
+indent_style = space
+indent_size = 4
+```
+
 ## Install Pre-commit Hooks
 
 Install the pre-commit hooks for this repository:
@@ -405,9 +474,11 @@ Repository root should contain:
 
 ```
 .checkov.yaml             # Checkov configuration
+.editorconfig             # Editor formatting rules
 .github/                  # GitHub configuration
 .gitignore                # Git ignore rules
 .pre-commit-config.yaml   # Pre-commit hooks
+.terraform-docs.yml       # terraform-docs configuration
 .tflint.hcl               # TFLint configuration
 LICENSE                   # Repository license
 README.md                 # Repository README

@@ -36,7 +36,7 @@ The Terraform repository has the most complex conventions - multiple Snowflake p
 
 ### CLAUDE.md
 
-The CLAUDE.md for your Terraform repository covers:
+Create a `CLAUDE.md` at the root of your `terraform` repository. The CLAUDE.md covers:
 
 - **Repository structure** - the `github/`, `aws/`, and `snowflake/` directories with their `config/` and `modules/` subdirectories
 - **Module patterns** - how each module creates a complete resource (e.g. `snowflake_database` creates the database plus `DB_READER` and `DB_WRITER` roles and all grants)
@@ -45,27 +45,35 @@ The CLAUDE.md for your Terraform repository covers:
 - **Reader access chain** - `{DB}_DB_READER` → `ANALYTICS_SOURCES_READER` → analyst roles
 - **Safety rules** - never apply locally, always plan first, no hard-coded ARNs
 
-If you built the Terraform repository following the documentation, the CLAUDE.md is already included. You can find it at the repository root:
-
 ```
 terraform/
-├── CLAUDE.md                    ← Already included
+├── CLAUDE.md
 ├── .claude/
 │   └── skills/
 │       ├── add-snowflake-user/
-│       │   └── SKILL.md         ← Already included
+│       │   └── SKILL.md
 │       └── add-data-source/
-│           └── SKILL.md         ← Already included
+│           └── SKILL.md
 ├── github/
 ├── aws/
 └── snowflake/
 ```
 
+!!! tip "Full Template"
+    The complete CLAUDE.md template with all sections and detailed conventions is available in the [Terraform CLAUDE.md template](../../maintain/templates/terraform-claude.md).
+
 ### Skills
 
-Two maintenance skills are included:
+Create the skills directory structure in your `terraform` repository:
+
+```sh
+mkdir -p .claude/skills/add-snowflake-user
+mkdir -p .claude/skills/add-data-source
+```
 
 **`add-snowflake-user`** - Adds a new Snowflake user (admin, developer, or service account) using the `snowflake_user` module. It determines the correct user category, adds the entry to the right configuration file, sets the appropriate role and warehouse, and validates with `terraform plan`.
+
+Copy the [add-snowflake-user skill template](../../maintain/templates/add-snowflake-user.md) to `.claude/skills/add-snowflake-user/SKILL.md`.
 
 Invoke with:
 
@@ -74,6 +82,8 @@ Invoke with:
 ```
 
 **`add-data-source`** - Adds complete infrastructure for a new data source: database (named after the loader tool), service account with dedicated role, schemas, reader grants to `ANALYTICS_SOURCES_READER`, and an AWS Secrets Manager container for credentials.
+
+Copy the [add-data-source skill template](../../maintain/templates/add-data-source.md) to `.claude/skills/add-data-source/SKILL.md`.
 
 Invoke with:
 
