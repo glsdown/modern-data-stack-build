@@ -208,7 +208,7 @@ if __name__ == "__main__":
 Test the pipeline locally:
 
 ```sh
-uv run python -m pipelines.hubspot
+python -m pipelines.hubspot
 ```
 
 Expected output:

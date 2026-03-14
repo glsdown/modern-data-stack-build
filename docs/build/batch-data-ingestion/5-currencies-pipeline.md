@@ -184,7 +184,7 @@ Test the pipeline locally:
 cd ~/projects/data/data-pipelines
 
 # Run the pipeline
-uv run python -m pipelines.currencies
+python -m pipelines.currencies
 ```
 
 Expected output:
@@ -229,7 +229,7 @@ During development, you can use DuckDB to test without connecting to Snowflake:
 
 ```sh
 # Override destination via environment variable
-DESTINATION__NAME=duckdb uv run python -m pipelines.currencies
+DESTINATION__NAME=duckdb python -m pipelines.currencies
 ```
 
 This creates a local `currencies.duckdb` file. You can query it:
@@ -243,7 +243,7 @@ print(conn.sql("SELECT * FROM OPEN_EXCHANGE_RATES.currencies LIMIT 5").df())
 ```
 
 ```sh
-uv run python test_duckdb.py
+python test_duckdb.py
 rm test_duckdb.py currencies.duckdb
 ```
 
@@ -280,7 +280,7 @@ def test_currency_list_returns_rows():
 ```
 
 ```sh
-uv run pytest tests/test_currencies.py -v
+pytest tests/test_currencies.py -v
 ```
 
 ## Summary

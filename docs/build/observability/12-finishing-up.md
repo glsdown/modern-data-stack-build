@@ -326,7 +326,7 @@ ORDER BY month DESC;
 - If stable: Monitor for unexpected spikes
 - If decreasing: Continue current optimisation efforts
 
-## Next Steps
+## What's Next
 
 You've completed the Observability section. Here are logical next steps:
 
@@ -344,7 +344,7 @@ You've completed the Observability section. Here are logical next steps:
 
 **What:** Define ownership, access policies, and data classification
 
-**Why:** Ensure compliance (GDPR, CCPA) and prevent unauthorized data access
+**Why:** Ensure compliance (GDPR, CCPA) and prevent unauthorised data access
 
 **Tools:** OpenMetadata (governance features), Snowflake tags, AWS IAM policies
 

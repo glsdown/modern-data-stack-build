@@ -221,7 +221,7 @@ You'll create these after completing the AWS account setup:
     - [x] Know when to use each tool
     - [x] Understand rotation and access control best practices
 
-## Next Steps
+## What's Next
 
 With your secrets management strategy in place, you can set up Claude Code to work with your repositories - or skip ahead to cloud account setup.
 

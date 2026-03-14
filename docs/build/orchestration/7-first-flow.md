@@ -178,7 +178,7 @@ if __name__ == "__main__":
 Run the flow locally to verify it works:
 
 ```sh
-uv run python flows/hello_world.py
+python flows/hello_world.py
 ```
 
 Expected output:

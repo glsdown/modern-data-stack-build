@@ -107,20 +107,17 @@ The Prefect API key is fetched from AWS Secrets Manager at runtime (not stored a
               role-to-assume: ${{ vars.TERRAFORM_ROLE_ARN }}
               aws-region: ${{ env.AWS_REGION }}
 
-          - name: Fetch Prefect API key from Secrets Manager
-            id: prefect-key
-            run: |
-              PREFECT_API_KEY=$(aws secretsmanager get-secret-value \
-                --secret-id "prefect/api-key" \
-                --query SecretString \
-                --output text)
-              echo "::add-mask::$PREFECT_API_KEY"
-              echo "key=$PREFECT_API_KEY" >> "$GITHUB_OUTPUT"
+          - name: Get Prefect API key from Secrets Manager
+            uses: aws-actions/aws-secretsmanager-get-secrets@v2
+            with:
+              secret-ids: |
+                PREFECT_API_KEY, prefect/api-key
+              parse-json-secrets: false
 
           - name: Install uv
             uses: astral-sh/setup-uv@v4
             with:
-              version: "latest"
+              enable-cache: true
 
           - name: Set up Python
             run: uv python install ${{ env.PYTHON_VERSION }}
@@ -128,9 +125,11 @@ The Prefect API key is fetched from AWS Secrets Manager at runtime (not stored a
           - name: Install dependencies
             run: uv sync
 
+          - name: Add venv to PATH
+            run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
+
           - name: Deploy all flows
             env:
-              PREFECT_API_KEY: ${{ steps.prefect-key.outputs.key }}
               PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
             run: prefect deploy --all
     ```
@@ -159,7 +158,7 @@ The Prefect API key is fetched from AWS Secrets Manager at runtime (not stored a
 
 1. **Trigger**: The workflow runs when files in `flows/`, `pipelines/`, `sources/`, `utils/`, or `prefect.yaml` change on `main`
 2. **AWS Authentication**: Uses OIDC to assume the Terraform GitHub Actions role (no long-lived credentials)
-3. **Prefect API Key**: Fetched from AWS Secrets Manager at runtime, masked in logs
+3. **Prefect API Key**: Fetched from AWS Secrets Manager using the `aws-secretsmanager-get-secrets` action, automatically masked in logs
 4. **Dependencies**: Installed via `uv sync` from `pyproject.toml` and `uv.lock`
 5. **Deployment**: `prefect deploy --all` reads `prefect.yaml` and creates/updates all deployments in Prefect Cloud
 

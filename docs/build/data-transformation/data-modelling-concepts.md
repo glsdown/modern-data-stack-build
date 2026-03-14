@@ -320,3 +320,17 @@ consistent results.
 - [dbt Best Practices: How we structure our dbt projects](https://docs.getdbt.com/best-practices/how-we-structure/1-guide-overview) — dbt Labs' guide to project structure
 - [Mart Models](7-mart-models.md) — the practical implementation of facts and dimensions in this project
 - [Intermediate Models](6-intermediate-models.md) — how SCD Type 2 extraction works in the intermediate layer
+
+## Summary
+
+!!! success "What You've Learned"
+    - [x] Star schema organises data into **fact tables** (events, measurements) and **dimension tables** (entities, descriptors)
+    - [x] **Grain** defines what one row represents — always define it before writing SQL
+    - [x] **Slowly changing dimensions** (Types 1, 2, 3) handle attribute changes over time
+    - [x] dbt layers map to dimensional concepts: staging → source-conformed, intermediate → business logic, marts → facts and dimensions
+
+## What's Next
+
+With these concepts in mind, continue building your dbt models.
+
+Continue to [Sources and Staging](5-sources-and-staging.md) →

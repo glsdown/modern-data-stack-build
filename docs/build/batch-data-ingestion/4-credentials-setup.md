@@ -262,7 +262,7 @@ print("Credentials loaded successfully!")
 ```
 
 ```sh
-uv run python test_credentials.py
+python test_credentials.py
 rm test_credentials.py
 ```
 
@@ -288,7 +288,7 @@ print("Provider registered successfully.")
 ```
 
 ```sh
-uv run python test_vault_provider.py
+python test_vault_provider.py
 rm test_vault_provider.py
 ```
 

@@ -78,7 +78,7 @@ Pipeline health monitors data ingestion, transformation, and orchestration. When
 
 **Tools covered:**
 - **Prefect monitoring** — Flow run states, task retries, error tracking
-- **Snowflake query monitoring** — Query performance, warehouse utilization
+- **Snowflake query monitoring** — Query performance, warehouse utilisation
 - **CloudWatch Logs** — Centralized logging for ECS services (Airbyte, Lightdash)
 - **Alerting** — Slack, PagerDuty, email notifications for failures
 

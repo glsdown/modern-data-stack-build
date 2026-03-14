@@ -592,7 +592,7 @@ The multirepo plugin clones each source repository and imports its `docs/` direc
     - [x] Configured each repository for independent local preview
     - [x] Verified the unified site builds with all repositories imported
 
-## Next Steps
+## What's Next
 
 Your repositories now have documentation directories with initial structure. The next step is to understand what makes effective repository documentation and how to write content that stays useful over time.
 

@@ -321,7 +321,7 @@ Because the skill lives in the central repository, updating it once applies ever
     - [x] Configured the skill to write docs in the correct repository's `docs/` directory
     - [x] Tested the skill by generating documentation pages
 
-## Next Steps
+## What's Next
 
 All the pieces are in place: documentation directories in each repository, a unified site with CI/CD, and a Claude skill for consistent page creation. The final page wraps up with a verification checklist and next steps.
 

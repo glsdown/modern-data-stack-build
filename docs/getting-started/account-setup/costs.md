@@ -2,6 +2,12 @@
 
 This page provides an overview of the costs associated with the tools and services used in this data stack. Understanding costs upfront helps with budgeting and avoiding surprises.
 
+On this page, you will:
+
+- [x] Review costs for every tool and service in the stack
+- [x] Understand the incremental cost model (start small, scale up)
+- [x] Set up billing alerts for AWS and Snowflake
+
 ## Cost Philosophy
 
 This stack follows a pragmatic approach to costs:
@@ -449,3 +455,9 @@ The incremental approach means you can pause at any phase and control costs. Sta
     - [x] Set up billing alerts immediately
     - [x] Start with free tiers and minimal configurations
     - [x] Monitor costs monthly and optimise regularly
+
+## What's Next
+
+With costs understood, set up your first cloud account.
+
+Continue to [AWS Account Setup](aws.md) →

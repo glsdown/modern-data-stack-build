@@ -146,7 +146,7 @@ ALTER USER username
 !!! warning
     Do **not** set your admin users (those with `ACCOUNTADMIN` or `ORGADMIN` roles) to use SSO. Keep them as separate, password-based accounts for emergency access and security separation.
 
-## Next Steps
+## What's Next
 
 !!! success
     You now have a Snowflake data warehouse with a properly secured super-admin user!

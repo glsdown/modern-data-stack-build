@@ -431,7 +431,7 @@ Ensure you have monitoring for all components:
 - [ ] **Kafka topic retention** — ensure old data is deleted per policy
 - [ ] **AWS Secrets Manager access** — audit who accessed streaming credentials
 
-## Next Steps
+## What's Next
 
 ### Production Hardening
 

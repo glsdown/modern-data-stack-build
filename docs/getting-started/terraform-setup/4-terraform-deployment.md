@@ -863,7 +863,7 @@ Your Terraform deployment pipeline now enforces:
 | Audit trail | Git history + GitHub Actions logs |
 | No local applies | Role only assumable from GitHub Actions |
 
-## Next Steps
+## What's Next
 
 !!! success
     You've established a production-grade CI/CD pipeline for Terraform. All infrastructure changes now flow through code review with full auditability.

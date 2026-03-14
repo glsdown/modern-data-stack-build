@@ -129,7 +129,7 @@ Kafka is operationally complex to run (clusters, brokers, Zookeeper, monitoring)
 ✅ **Fully managed** — No cluster management, automatic upgrades
 ✅ **Elastic scaling** — Scale up/down automatically based on load
 ✅ **Global availability** — Multi-region replication built-in
-✅ **Security** — Encryption, authentication, authorization out of the box
+✅ **Security** — Encryption, authentication, authorisation out of the box
 ✅ **Schema Registry** — Managed schema versioning and validation
 
 **Trade-off:** Higher cost (~$150-200/month minimum) vs self-hosted (~$100/month for Redpanda on ECS).

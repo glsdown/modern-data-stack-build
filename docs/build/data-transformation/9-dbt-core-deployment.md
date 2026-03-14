@@ -127,14 +127,16 @@ jobs:
           role-to-assume: arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole
           aws-region: eu-west-1
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.11"
-          cache: pip
+          enable-cache: true
 
-      - name: Install dbt
-        run: uv add dbt-snowflake
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync
 
       - name: Add venv to PATH
         run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
@@ -142,19 +144,16 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Fetch Snowflake credentials from Secrets Manager
-        id: secrets
+      - name: Get Snowflake credentials from Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            SNOWFLAKE, dbt/snowflake-credentials
+          parse-json-secrets: true
+
+      - name: Write Snowflake private key
         run: |
-          SECRET=$(aws secretsmanager get-secret-value \
-            --secret-id "dbt/snowflake-credentials" \
-            --query SecretString \
-            --output text)
-          echo "SNOWFLAKE_ACCOUNT=$(echo $SECRET | jq -r '.account')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_USER=$(echo $SECRET | jq -r '.user')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_ROLE=$(echo $SECRET | jq -r '.role')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_WAREHOUSE=$(echo $SECRET | jq -r '.warehouse')" >> $GITHUB_ENV
-          # Write private key to file (avoid env var issues with multiline)
-          echo $SECRET | jq -r '.private_key' > /tmp/snowflake_key.pem
+          echo "$SNOWFLAKE_PRIVATE_KEY" > /tmp/snowflake_key.pem
           chmod 600 /tmp/snowflake_key.pem
 
       - name: Write profiles.yml
@@ -260,14 +259,16 @@ jobs:
           role-to-assume: arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole
           aws-region: eu-west-1
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.11"
-          cache: pip
+          enable-cache: true
 
-      - name: Install dbt
-        run: uv add dbt-snowflake
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync
 
       - name: Add venv to PATH
         run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
@@ -275,17 +276,16 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Fetch Snowflake credentials
+      - name: Get Snowflake credentials from Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            SNOWFLAKE, dbt/snowflake-credentials
+          parse-json-secrets: true
+
+      - name: Write Snowflake private key
         run: |
-          SECRET=$(aws secretsmanager get-secret-value \
-            --secret-id "dbt/snowflake-credentials" \
-            --query SecretString \
-            --output text)
-          echo "SNOWFLAKE_ACCOUNT=$(echo $SECRET | jq -r '.account')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_USER=$(echo $SECRET | jq -r '.user')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_ROLE=$(echo $SECRET | jq -r '.role')" >> $GITHUB_ENV
-          echo "SNOWFLAKE_WAREHOUSE=$(echo $SECRET | jq -r '.warehouse')" >> $GITHUB_ENV
-          echo $SECRET | jq -r '.private_key' > /tmp/snowflake_key.pem
+          echo "$SNOWFLAKE_PRIVATE_KEY" > /tmp/snowflake_key.pem
           chmod 600 /tmp/snowflake_key.pem
 
       - name: Write profiles.yml

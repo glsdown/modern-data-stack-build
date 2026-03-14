@@ -257,7 +257,7 @@ The `--strict` flag treats warnings as errors, catching broken links, missing pa
     - [x] Created the landing page for the unified site
     - [x] Verified local development workflow
 
-## Next Steps
+## What's Next
 
 The central repository is ready, but the imported repositories do not have `docs/` directories yet. The next step is to add documentation directories and initial content to each of your source repositories.
 

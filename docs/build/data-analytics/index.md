@@ -238,7 +238,7 @@ A key decision is whether you need **native dbt integration**:
 
 **Cons:**
 - Smaller ecosystem than general-purpose tools
-- Fewer visualization options
+- Fewer visualisation options
 - Requires dbt knowledge
 
 **Best for**: Teams that have built a dbt transformation layer and want metrics as code.
@@ -287,7 +287,7 @@ Two distinct paradigms serve different analytics needs:
 
 **Purpose**: Monitoring and reporting on known questions
 
-- Pre-built visualizations that update automatically
+- Pre-built visualisations that update automatically
 - Business users can filter and drill down without code
 - Answers "How is the business performing?" (known KPIs)
 - Static structure, dynamic data

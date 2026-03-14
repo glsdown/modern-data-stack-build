@@ -246,13 +246,13 @@ Test the pipeline locally (dependencies were installed in [Project Setup](2-proj
 cd ~/projects/data/data-pipelines
 
 # Run incremental load
-uv run python -m pipelines.products
+python -m pipelines.products
 
 # Run full refresh (reload all data)
-uv run python -m pipelines.products --full-refresh
+python -m pipelines.products --full-refresh
 
 # Run from specific date
-uv run python -m pipelines.products --start-date 2026-02-01
+python -m pipelines.products --start-date 2026-02-01
 ```
 
 ## Verify in Snowflake

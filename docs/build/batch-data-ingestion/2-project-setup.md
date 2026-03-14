@@ -490,7 +490,7 @@ print("dlt is working!")
 ```
 
 ```sh
-uv run python test_dlt.py
+python test_dlt.py
 ```
 
 Expected output:

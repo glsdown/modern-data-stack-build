@@ -92,9 +92,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
+      - name: Add venv to PATH
+        run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
+
       - name: Build documentation (strict)
         working-directory: ${{ inputs.docs_dir }}
-        run: uv run mkdocs build --strict
+        run: mkdocs build --strict
 ```
 
 This workflow:
@@ -193,8 +196,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
+      - name: Add venv to PATH
+        run: echo "$GITHUB_WORKSPACE/.venv/bin" >> $GITHUB_PATH
+
       - name: Build unified documentation
-        run: uv run mkdocs build --strict
+        run: mkdocs build --strict
         env:
           GithubAccessToken: ${{ secrets.DOCS_GITHUB_TOKEN }}
 
@@ -324,7 +330,7 @@ After setup, the documentation lifecycle works as follows:
     - [x] Configured cross-repo triggers so the site stays current
     - [x] Created GitHub tokens for cross-repo access
 
-## Next Steps
+## What's Next
 
 The CI/CD pipeline keeps your documentation site building and deploying automatically. The next step is to set up a Claude skill that helps your team write documentation consistently across all repositories.
 

@@ -407,7 +407,7 @@ Update the runbook in the same PR as any code fixes from the incident.
     - [x] Have example runbooks for Terraform, data pipelines, and dbt
     - [x] Know how to organise and maintain runbooks
 
-## Next Steps
+## What's Next
 
 With documentation content in place, the next step is to set up CI/CD - validating documentation builds on pull requests and deploying the unified site to GitHub Pages automatically.
 

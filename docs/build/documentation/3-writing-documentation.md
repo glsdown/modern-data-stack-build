@@ -299,7 +299,7 @@ Set a recurring calendar event (monthly or quarterly) to review the docs site. C
     - [x] Can write architecture decision records to capture design rationale
     - [x] Have a process for keeping documentation current
 
-## Next Steps
+## What's Next
 
 The docs site also needs runbooks - operational procedures that on-call engineers follow when responding to incidents or performing routine maintenance tasks.
 

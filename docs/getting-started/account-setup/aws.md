@@ -689,7 +689,7 @@ aws-vault exec infrastructure-admin -- aws sts get-caller-identity
     - [x] `AdminRole` only used when necessary
     - [x] `InfrastructureAdminRole` used for Terraform state operations
 
-## Next Steps
+## What's Next
 
 !!! success
     You now have a secure AWS account with proper IAM configuration and CLI access!

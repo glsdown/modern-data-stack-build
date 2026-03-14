@@ -119,7 +119,7 @@ prefect version
 prefect cloud workspace ls
 ```
 
-## Next Steps
+## What's Next
 
 !!! success
     You now have a Prefect Cloud account with a workspace and API key ready for use!

@@ -476,10 +476,10 @@ Test the pipeline locally:
 cd ~/projects/data/data-pipelines
 
 # Run latest rates (writes one file to S3)
-uv run python -m pipelines.exchange_rates
+python -m pipelines.exchange_rates
 
 # Run backfill for a week (writes one file per day)
-uv run python -m pipelines.exchange_rates --backfill --start-date 2026-01-01 --end-date 2026-01-07
+python -m pipelines.exchange_rates --backfill --start-date 2026-01-01 --end-date 2026-01-07
 ```
 
 ## Verify S3 Files

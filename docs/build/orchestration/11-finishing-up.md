@@ -239,3 +239,7 @@ Your data platform now has a central orchestration layer ready to coordinate all
 
 !!! success "Orchestration Complete"
     You have a production-ready orchestration layer with automated deployment and alerting. Next, you'll build the data pipelines that Prefect will orchestrate — starting with dlt for batch ingestion.
+
+## What's Next
+
+Continue to [Batch Data Ingestion](../batch-data-ingestion/index.md) →

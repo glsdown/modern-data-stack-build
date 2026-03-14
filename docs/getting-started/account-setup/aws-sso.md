@@ -394,6 +394,12 @@ If you started with IAM users and want to migrate to IAM Identity Centre:
     - [x] CI/CD is unaffected — continue using OIDC with `TerraformGitHubActionsRole`
     - [x] You can migrate incrementally from IAM users to SSO
 
+## What's Next
+
+This page is a standalone optional guide. Return to the main setup path:
+
+Continue to [Snowflake Account Setup](snowflake.md) →
+
 ## See Also
 
 - [AWS Account Setup](aws.md) — the IAM user approach used in the main documentation

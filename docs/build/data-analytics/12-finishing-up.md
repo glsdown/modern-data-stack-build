@@ -322,7 +322,7 @@ Across this documentation, you've built a complete modern data stack:
 - **Snowflake query history**: Audit all data access
 - **Role-based access control**: Least privilege for all service accounts
 
-## Next Steps: Scaling the Data Platform
+## What's Next: Scaling the Data Platform
 
 You've built the foundation. Here's what comes next as you scale:
 

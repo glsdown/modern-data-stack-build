@@ -4,7 +4,7 @@ On this page, you will:
 
 - [x] Understand Airbyte's architecture and components
 - [x] Learn about sources, destinations, and connections
-- [x] Understand sync modes and normalization
+- [x] Understand sync modes and normalisation
 
 ## Overview
 
@@ -154,11 +154,11 @@ Sync 2: B modified, D added      → Destination: [A, B', C, D]
 | `deals` | Incremental \| Append + Dedup | Deals progress through stages |
 | `products` | Full Refresh \| Overwrite | Small, infrequently changing |
 
-## Normalization
+## Normalisation
 
-When Airbyte loads data into Snowflake, it can apply different levels of normalization.
+When Airbyte loads data into Snowflake, it can apply different levels of normalisation.
 
-### Raw JSON (No Normalization)
+### Raw JSON (No Normalisation)
 
 Airbyte writes a single `_airbyte_raw_*` table per stream with columns:
 
@@ -239,7 +239,7 @@ You now understand Airbyte's core concepts:
 - [x] Destinations load data into warehouses like Snowflake
 - [x] Connections define which streams to sync and how
 - [x] Sync modes control full refresh vs incremental and append vs dedup
-- [x] Normalization creates typed tables from raw JSON
+- [x] Normalisation creates typed tables from raw JSON
 
 ## What's Next
 

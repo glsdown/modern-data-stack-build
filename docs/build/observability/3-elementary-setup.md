@@ -20,7 +20,7 @@ On this page, you will:
 Elementary integrates with dbt by:
 - Adding models to your dbt project (Elementary dbt package)
 - Running CLI commands after `dbt run` (Elementary CLI)
-- Visualizing results in a web UI (Elementary UI or Elementary Cloud)
+- Visualising results in a web UI (Elementary UI or Elementary Cloud)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐

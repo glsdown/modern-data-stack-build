@@ -344,7 +344,7 @@ Consumer Group: snowflake-sink (5 consumers)
 
 **Result:** Consumers 4 and 5 are idle. You can't have more active consumers than partitions.
 
-**Best practice:** Number of consumers ≤ number of partitions for optimal utilization.
+**Best practice:** Number of consumers ≤ number of partitions for optimal utilisation.
 
 ### Multiple Consumer Groups
 

@@ -348,7 +348,7 @@ git checkout -b feature/part-2
     - [x] Understand the pull request and code review process
     - [x] Can handle common Git scenarios
 
-## Next Steps
+## What's Next
 
 Before moving on to building infrastructure, let's establish a proper secrets management strategy. This ensures credentials are handled securely from day one.
 

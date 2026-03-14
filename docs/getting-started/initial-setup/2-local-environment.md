@@ -534,7 +534,7 @@ cd data-stack-infrastructure
     - [x] Code quality tools installed (pre-commit)
     - [x] Password manager available (1Password)
 
-## Next Steps
+## What's Next
 
 Now that your development environment is ready, learn about the development workflow and best practices.
 
