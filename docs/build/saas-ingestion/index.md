@@ -10,7 +10,7 @@ On this page, you will:
 
 This section covers setting up [Airbyte](https://airbyte.com/) for SaaS data ingestion. Airbyte provides 600+ pre-built connectors, a UI for non-engineers, and reverse ETL capabilities.
 
-If you only need one or two simple SaaS sources, you may not need Airbyte at all. The [HubSpot Pipeline](../batch-data-ingestion/10-hubspot-pipeline.md) page shows how to add a SaaS connector using dlt's verified sources within your existing batch pipeline infrastructure.
+If you only need one or two simple SaaS sources, you may not need Airbyte at all. The [HubSpot Pipeline](../batch-data-ingestion/9-hubspot-pipeline.md) page shows how to add a SaaS connector using dlt's verified sources within your existing batch pipeline infrastructure.
 
 This section is for when you outgrow that approach.
 

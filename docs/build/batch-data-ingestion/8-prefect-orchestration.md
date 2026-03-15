@@ -438,4 +438,4 @@ You've configured Prefect orchestration for dlt pipelines:
 
 With orchestration complete, verify everything works end-to-end and review monitoring options.
 
-Continue to [Finishing Up](9-finishing-up.md) →
+Continue to [Finishing Up](10-finishing-up.md) →

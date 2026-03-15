@@ -19,7 +19,7 @@ The stack has several distinct layers. Data is collected from sources, ingested 
 │  │  (Kafka)    │  │ (PostgreSQL)│  │  (REST)     │  │  (HubSpot)  │             │
 │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
 │         │                │                │                │                    │
-│  INGESTION                                                                      │
+│  INGESTION               │                │                │                    │
 │         │          ┌─────┴───────────┐    │         ┌──────┴──────┐             │
 │         │          │   dlt           │◀───┘         │   Airbyte   │             │
 │         │          │ (APIs, DBs)     │              │ (SaaS)      │             │
@@ -34,7 +34,7 @@ The stack has several distinct layers. Data is collected from sources, ingested 
 │         │          ┌─────────────────────────────────────────────────┐          │
 │         ├─────────▶│                  SNOWFLAKE                      │          │
 │         │          │  STREAMING │ DLT │ SNOWPIPE │ AIRBYTE databases │          │
-│         │          └───────────────────────┬────────────────────────┘           │
+│         │          └───────────────────────┬─────────────────────────┘          │
 │         │                                  │                                    │
 │  ┌──────▼──────┐                           │  TRANSFORMATION                    │
 │  │    S3       │                           ▼                                    │

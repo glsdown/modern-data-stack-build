@@ -390,7 +390,7 @@ You now have the following in Terraform state:
 ## What About Other Users?
 
 !!! info "Regular Users"
-    In this section, we only manage the admin user and service account - the minimum needed for Terraform to work. You'll create additional users (developers, service accounts for dbt, Airbyte, etc.) in the [Data Warehouse](../../../build/data-warehouse/) section.
+    In this section, we only manage the admin user and service account - the minimum needed for Terraform to work. You'll create additional users (developers, service accounts for dbt, Airbyte, etc.) in the [Data Warehouse](../../../build/data-warehouse/index.md) section.
 
     The guidance about having separate admin and regular accounts for the same person (e.g. `JBLOGGS_ADMIN` and `JBLOGGS`) will be addressed when setting up the full user management in the Data Warehouse section.
 

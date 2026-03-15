@@ -212,7 +212,7 @@ Airbyte is used for complex SaaS connectors and reverse ETL. Two deployment opti
 | **Total** | | **~$81/month** |
 
 !!! tip "dlt Alternative"
-    For 1-2 SaaS sources with dlt verified sources (e.g., HubSpot contacts), you can use dlt instead of Airbyte at no extra cost. See [HubSpot Pipeline](../../build/batch-data-ingestion/10-hubspot-pipeline.md) for this approach.
+    For 1-2 SaaS sources with dlt verified sources (e.g., HubSpot contacts), you can use dlt instead of Airbyte at no extra cost. See [HubSpot Pipeline](../../build/batch-data-ingestion/9-hubspot-pipeline.md) for this approach.
 
 #### Snowpipe Costs
 
