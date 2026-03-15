@@ -33,7 +33,7 @@ Database data - `dim_products`
 | --- | --- | --- |
 | bigint | string | float |
 
-API data - `dim_currency`
+API data - `fct_exchange_rates`
 
 | id | base_currency | currency | rate | exchange_ts |
 | --- |--- | --- | --- | --- |

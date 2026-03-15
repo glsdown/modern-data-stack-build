@@ -8,9 +8,9 @@ On this page, you will:
 
 ## Overview
 
-This section covers building the transformation layer using [dbt](https://www.getdbt.com/) (data build tool). dbt transforms the raw data loaded by dlt, Snowpipe, and Airbyte into clean, tested, analytics-ready models.
+This section covers building the transformation layer using [dbt](https://www.getdbt.com/) (data build tool). dbt transforms the raw data loaded by Kafka Connect, dlt, Snowpipe, and Airbyte into clean, tested, analytics-ready models.
 
-The transformation layer lives in its own repository — separate from your Prefect pipelines. This separation reflects the different ownership and release cadence of analytics engineering work (iterative model development, schema changes) versus data engineering work (pipeline reliability, infrastructure).
+The transformation layer lives in its own repository - separate from your Prefect pipelines. This separation reflects the different ownership and release cadence of analytics engineering work (iterative model development, schema changes) versus data engineering work (pipeline reliability, infrastructure).
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────┐
@@ -21,22 +21,26 @@ The transformation layer lives in its own repository — separate from your Pref
 │  ────────────────────          ──────────────────           ─────────          │
 │                                                                                │
 │  ┌──────────────────┐          ┌──────────────────┐                            │
-│  │ DLT database     │          │ Staging models   │                            │
-│  │ • currencies     │─────────▶│ stg_dlt__*       │                            │
-│  │ • exchange_rates │          │ stg_airbyte__*   │         ┌────────────────┐ │
-│  │ • products       │          └──────────────────┘         │  ANALYTICS     │ │
-│  └──────────────────┘                   │                   │  database      │ │
-│                                         ▼                   │                │ │
-│  ┌──────────────────┐          ┌──────────────────┐         │  STAGING       │ │
-│  │ SNOWPIPE database│          │ Intermediate     │────────▶│  INTERMEDIATE  │ │
-│  │ • exchange_rates │─────────▶│ int_*            │         │  MARTS         │ │
-│  └──────────────────┘          └──────────────────┘         │  REPORTING     │ │
-│                                         │                   └────────────────┘ │
-│  ┌──────────────────┐                   ▼                                      │
-│  │ AIRBYTE database │          ┌──────────────────┐                            │
-│  │ • hubspot        │─────────▶│ Mart models      │                            │
-│  └──────────────────┘          │ fct_*, dim_*     │                            │
-│                                └──────────────────┘                            │
+│  │ STREAMING database          │ Staging models   │                            │
+│  │ • purchases      │─────────▶│ stg_streaming__* │                            │
+│  └──────────────────┘          │ stg_dlt__*       │         ┌────────────────┐ │
+│                                │ stg_airbyte__*   │         │  ANALYTICS     │ │
+│  ┌──────────────────┐          └──────────────────┘         │  database      │ │
+│  │ DLT database     │                   │                   │                │ │
+│  │ • currencies     │─────────▶         ▼                   │  STAGING       │ │
+│  │ • exchange_rates │          ┌──────────────────┐         │  INTERMEDIATE  │ │
+│  │ • products       │          │ Intermediate     │────────▶│  MARTS         │ │
+│  └──────────────────┘          │ int_*            │         │  REPORTING     │ │
+│                                └──────────────────┘         └────────────────┘ │
+│  ┌──────────────────┐                   │                                      │
+│  │ SNOWPIPE database│─────────▶         ▼                                      │
+│  │ • exchange_rates │          ┌──────────────────┐                            │
+│  └──────────────────┘          │ Mart models      │                            │
+│                                │ fct_*, dim_*     │                            │
+│  ┌──────────────────┐          └──────────────────┘                            │
+│  │ AIRBYTE database │─────────▶                                                │
+│  │ • hubspot        │                                                          │
+│  └──────────────────┘                                                          │
 │                                                                                │
 │  Orchestration                                                                 │
 │  ─────────────                                                                 │
@@ -78,7 +82,7 @@ The transformation layer writes to four schemas in the `ANALYTICS` database (and
 | `MARTS` | dbt | Final analytics tables (fct/dim) | `ANALYTICS_DEVELOPER` |
 | `REPORTING` | Terraform (already exists) | Curated subset for BI tools | `ANALYTICS_REPORTER` |
 
-The `STAGING`, `INTERMEDIATE`, and `MARTS` schemas are created automatically by dbt when models run. Terraform's database-level future grants on `ANALYTICS` already cover permissions for these schemas — no additional Terraform configuration is needed.
+The `STAGING`, `INTERMEDIATE`, and `MARTS` schemas are created automatically by dbt when models run. Terraform's database-level future grants on `ANALYTICS` already cover permissions for these schemas - no additional Terraform configuration is needed.
 
 The `REPORTING` schema was created in the [Schemas](../data-warehouse/6-schemas.md) page and has schema-level grants that restrict `ANALYTICS_REPORTER` to just this schema. dbt publishes final BI-ready models here.
 
@@ -90,6 +94,8 @@ By the end of this section:
 dbt-transform repository
 ├── models/
 │   ├── staging/
+│   │   ├── streaming/
+│   │   │   └── stg_streaming__purchases.sql
 │   │   ├── dlt/
 │   │   │   ├── stg_dlt__currencies.sql
 │   │   │   ├── stg_dlt__exchange_rates.sql
@@ -100,10 +106,13 @@ dbt-transform repository
 │   │   └── int_exchange_rates__unioned.sql
 │   └── marts/
 │       ├── core/
+│       │   ├── fct_purchases.sql
 │       │   ├── fct_exchange_rates.sql
 │       │   └── dim_products.sql
-│       └── crm/
-│           └── fct_contacts.sql
+│       ├── crm/
+│       │   └── dim_customers.sql
+│       └── sales/
+│           └── sales.sql
 ├── tests/
 ├── macros/
 ├── seeds/
@@ -163,10 +172,11 @@ Both options are covered in full. Start with [dbt Core vs dbt Cloud](2-deploymen
 
 Before starting this section, ensure you have completed:
 
-- [x] [Data Warehouse](../data-warehouse/index.md) — ANALYTICS and ANALYTICS_DEV databases, ANALYTICS_TRANSFORMER role, TRANSFORMING warehouse, REPORTING schema
-- [x] [Batch Data Ingestion](../batch-data-ingestion/index.md) — DLT and SNOWPIPE databases with raw data
-- [x] [SaaS Ingestion](../saas-ingestion/index.md) — AIRBYTE database with HubSpot data
-- [x] [Orchestration](../orchestration/index.md) — Prefect for triggering dbt runs
+- [x] [Data Warehouse](../data-warehouse/index.md) - ANALYTICS and ANALYTICS_DEV databases, ANALYTICS_TRANSFORMER role, TRANSFORMING warehouse, REPORTING schema
+- [x] [Batch Data Ingestion](../batch-data-ingestion/index.md) - DLT and SNOWPIPE databases with raw data
+- [x] [SaaS Ingestion](../saas-ingestion/index.md) - AIRBYTE database with HubSpot data
+- [x] [Streaming Data Ingestion](../streaming-data-ingestion/index.md) - STREAMING database with purchase events
+- [x] [Orchestration](../orchestration/index.md) - Prefect for triggering dbt runs
 
 ## Cost Summary
 

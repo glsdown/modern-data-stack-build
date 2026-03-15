@@ -26,6 +26,11 @@ The HubSpot pipeline extracts CRM contacts from the [HubSpot API](https://develo
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+!!! warning "This page covers an alternative approach - not the canonical pipeline for this guide"
+    The complete guide includes a dedicated [SaaS Ingestion](../saas-ingestion/index.md) section that uses Airbyte to load HubSpot contacts into the `AIRBYTE` database. The dbt `dim_customers` mart model reads from that Airbyte source. **If you are following the full guide, skip this page** - your canonical HubSpot pipeline is in the SaaS Ingestion section.
+
+    This page is for teams that want to ingest HubSpot contacts via dlt instead of Airbyte - for example, if you are not setting up Airbyte at all. Do not run both in the same environment, as you would have the same CRM data duplicated across two databases with no single source of truth.
+
 ## Why dlt for HubSpot?
 
 dlt has a [verified HubSpot source](https://dlthub.com/docs/dlt-ecosystem/verified-sources/hubspot) that handles authentication, pagination, and incremental loading out of the box. For a single SaaS source like HubSpot contacts, dlt is the right choice because it uses the existing infrastructure and costs nothing extra.

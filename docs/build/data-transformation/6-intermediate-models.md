@@ -232,7 +232,10 @@ models:
 
 ### Optional: `int_exchange_rates__pivoted`
 
-Some downstream consumers want exchange rates in wide format — one row per date with columns for each currency. This is optional but demonstrates `dbt_utils.pivot`:
+Some downstream consumers want exchange rates in wide format — one row per date with columns for each currency. This is optional but demonstrates `dbt_utils.pivot`.
+
+!!! note "Why exchange rates come from two sources"
+    In this guide, exchange rates are ingested via two separate paths: the dlt pipeline (direct API → `DLT` database) and S3 → Snowpipe (`SNOWPIPE` database). This is intentional - it demonstrates both batch ingestion patterns using a single real-world dataset. In a production system you would pick one ingestion method. The `stg_dlt__exchange_rates` and `stg_snowpipe__exchange_rates` staging models cover the same data; an `int_exchange_rates__unioned` model (shown in the section overview) would union both before marts consume them. The pivoted model below reads only from the Snowpipe source for simplicity.
 
 Create `models/intermediate/int_exchange_rates__pivoted.sql`:
 
