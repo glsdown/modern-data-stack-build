@@ -31,10 +31,10 @@ After clicking 'Get Started', you'll receive an email asking you to create a use
 
 !!! warning "Separate Admin Users from Regular Users"
     It's critical to have separate users for admin privileges versus regular work. For example, Jane Bloggs should have:
-    
+
     - **Regular user**: `jbloggs` (for day-to-day work, connected to SSO)
     - **Admin user**: `jbloggs_admin` (with `ORGADMIN`/`ACCOUNTADMIN` access, NOT connected to SSO)
-    
+
     This separation provides better security and audit trails.
 
 ### Password Requirements
@@ -43,16 +43,33 @@ Create a secure password. Snowflake's [default password policy](https://docs.sno
 
 - 8-256 characters
 - At least 1 uppercase letter
-- At least 1 lowercase letter  
+- At least 1 lowercase letter
 - At least 1 number
 
-Consider using a password manager to generate and store a strong password.
+!!! tip "Store in 1Password"
+    Create a new entry in 1Password for "Snowflake Admin User" in the appropriate vault - only limited users should have access to this, so don't add to a more general "data engineer" type vault. Use 1Password to generate a strong password and store:
+
+    - Account URL (you'll get this after sign-up)
+    - Username
+    - Password
+    - You'll add MFA codes to this entry next
 
 ## Secure Your Admin User
 
 ### Enable MFA
 
 As soon as you create the admin user, [enable MFA](https://docs.snowflake.com/en/user-guide/security-mfa.html) immediately. This is especially critical for accounts with admin privileges.
+
+To enable MFA:
+
+1. Click your username in the bottom-left corner
+2. Select **My Profile**
+3. Click **Enroll** next to Multi-factor authentication
+4. Scan the QR code with 1Password (or your authenticator app)
+5. Enter the verification code to confirm
+
+!!! tip "Using 1Password for MFA"
+    Add a one-time password field to your "Snowflake Admin User" entry in 1Password and scan the QR code. This keeps your password and MFA codes together securely.
 
 !!! warning
     MFA cannot be set at an account level in Snowflake - it must be enabled for individual users. This is a manual step you should complete immediately after account creation.
@@ -70,12 +87,12 @@ ALTER USER username SET DEFAULT_ROLE = 'PUBLIC';
 
 !!! tip "Running Queries in Snowflake"
     By default, Snowflake runs the **currently selected** query:
-    
+
     - If text is highlighted, only that portion runs
     - Otherwise, it runs the statement between semicolons containing your cursor
     - To run all text, select everything with ++cmd+a++ (Mac) or ++ctrl+a++ (Windows)
     - Use ++cmd+return++ (Mac) or ++ctrl+return++ (Windows) as a keyboard shortcut to execute
-    
+
     Learn more about [executing queries here](https://docs.snowflake.com/en/user-guide/ui-worksheet#executing-queries).
 
 This ensures the admin user starts with minimal permissions and must explicitly elevate privileges when needed - a security best practice.
@@ -94,6 +111,9 @@ In the results, look for the `ACCOUNT_URL` field. It follows the format:
 ```
 https://organizationName-accountName.snowflakecomputing.com/
 ```
+
+!!! tip "Update 1Password"
+    Add the account URL to your "Snowflake Admin User" entry in 1Password. This makes it easy to find the correct login URL later.
 
 ### Update Organization Name
 
@@ -118,15 +138,15 @@ To allow a user to authenticate via SSO in the future, set their `LOGIN_NAME` to
 
 ```sql
 USE ROLE ACCOUNTADMIN;
-ALTER USER username 
-    SET LOGIN_NAME = 'first.last@email.com', 
+ALTER USER username
+    SET LOGIN_NAME = 'first.last@email.com',
         DISPLAY_NAME = 'Firstname Lastname';
 ```
 
 !!! warning
     Do **not** set your admin users (those with `ACCOUNTADMIN` or `ORGADMIN` roles) to use SSO. Keep them as separate, password-based accounts for emergency access and security separation.
 
-## Next Steps
+## What's Next
 
 !!! success
     You now have a Snowflake data warehouse with a properly secured super-admin user!
@@ -138,4 +158,4 @@ Before creating any resources in Snowflake, you'll set up Terraform to manage yo
 - Documented
 - Reviewed by your team
 
-Continue to [Set Up Terraform](1-terraform-setup.md) →
+Continue to [Set Up Terraform](../terraform-setup/index.md) →

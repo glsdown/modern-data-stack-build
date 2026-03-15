@@ -5,7 +5,7 @@ On this page, you will:
 - [x] Create a new AWS account
 - [x] Secure the root user with MFA
 - [x] Create your personal IAM user
-- [x] Create `AdminRole` and `DataEngineerRole` for permissions
+- [x] Create `AdminRole`, `DataEngineerRole`, and `InfrastructureAdminRole` for permissions
 - [x] Set up cost-based alerts
 - [x] Configure AWS CLI for local development
 
@@ -27,6 +27,9 @@ Visit the [AWS sign-up page](https://portal.aws.amazon.com/billing/signup) and c
 
 !!! info "About the Root User"
     The email you provide creates the **root user** - the most powerful account in AWS with unrestricted access to all services and billing. You should rarely use this account for day-to-day operations.
+
+!!! tip "Store Credentials in 1Password"
+    As you complete sign-up, immediately create a new entry in your 1Password vault for "AWS Root User". Store the email address and password securely. You'll add MFA details to this entry shortly. Make sure to store this in a Vault that has locked down access - you should only give root user access to a small handful of people.
 
 ### Selecting Your Home Region
 
@@ -50,10 +53,6 @@ AWS offers two account types:
 
 For a data stack project, either works. Business accounts provide some additional support options but aren't required to access any AWS services.
 
-### Account name
-
-Your account can be referenced by both an ID and a name. The name should be something human-readable and memorable, for example `my-company-name`. You can change the account name when logged in as the root user, by clicking on your profile in the top right, choosing Account. Then under "Account Details", choose "Actions" and "Update Account Name".
-
 ## Secure the Root User
 
 After creating your account, your first priority is securing the root user. You should **never** use the root account for daily operations.
@@ -75,12 +74,24 @@ Multi-factor authentication (MFA) is critical for the root account. Enable it im
 3. Scroll to "Multi-factor authentication (MFA)"
 4. Click "Assign MFA device"
 5. Choose your MFA type:
-    - **Authenticator app** (recommended) - Google Authenticator, Authy, 1Password, etc.
+    - **1Password** (recommended) - stores both password and TOTP codes together
+    - **Authenticator app** - Google Authenticator, Authy, etc.
     - **Security key** - hardware key like YubiKey
     - **Hardware TOTP token** - physical device that generates codes
 
+!!! tip "Using 1Password for MFA"
+    1Password can generate TOTP codes directly. When setting up MFA:
+
+    1. Select "Authenticator app" in AWS
+    2. In 1Password, edit your "AWS Root User" entry
+    3. Add a new field: **One-time password**
+    4. Scan the QR code or enter the secret key
+    5. 1Password will now generate codes for this account
+
+    This keeps your password and MFA codes together securely.
+
 !!! warning "Store Recovery Codes"
-    When setting up MFA, AWS provides recovery codes. Store these securely (password manager, encrypted document). If you lose your MFA device and recovery codes, you cannot access your account.
+    When setting up MFA, AWS provides recovery codes. Add these to your 1Password entry as a secure note or attachment. If you lose your MFA device and recovery codes, you cannot access your account.
 
 ### When to Use the Root User
 
@@ -92,6 +103,12 @@ Only use the root account for tasks that [specifically require it](https://docs.
 - Closing the account
 
 For all other tasks, use IAM users or roles (which we'll create next).
+
+## Account alias
+
+Your account can be referenced by both an ID and [an alias](https://docs.aws.amazon.com/IAM/latest/UserGuide/console-account-alias.html). The name should be something human-readable and memorable, for example `my-company-name`.
+
+To change the account alias, when logged in as the root user, open the IAM console at https://console.aws.amazon.com/iam/. In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.
 
 ## Enable IAM Access to Billing
 
@@ -112,10 +129,11 @@ This allows IAM users with appropriate permissions to view and manage billing.
 
 AWS uses role-based access control (RBAC). Rather than granting permissions directly to users, you create roles with specific permissions and assign roles to users.
 
-We'll create two roles:
+We'll create three roles:
 
 - **AdminRole** - full administrative access (use sparingly)
 - **DataEngineerRole** - permissions needed for data platform work
+- **InfrastructureAdminRole** - permissions needed for managing infrastructure (use only for terraform apply)
 
 !!! note "Additional Roles"
     You will find that you may need to introduce new roles as you scale. We'll talk about better ways of managing roles in the terraform setup. This is just to get you started.
@@ -146,6 +164,7 @@ For the data engineer role, we'll use a managed policy that provides permissions
 5. Click "Next"
 6. Search for and select the following managed policies:
     - `AmazonS3FullAccess` - for data lake storage
+    - `AmazonDynamoDBFullAccess` - for Terraform state locking
     - `SecretsManagerReadWrite` - for managing credentials
     - `CloudWatchFullAccess` - for logging and monitoring
     - `IAMReadOnlyAccess` - to view users and roles
@@ -156,6 +175,34 @@ For the data engineer role, we'll use a managed policy that provides permissions
 
 !!! tip "Refining Permissions"
     These permissions are a starting point. As you build your data platform, you'll likely need to add more specific permissions for services. We'll address these as they become relevant in later sections.
+
+### Create the InfrastructureAdminRole
+
+This role is specifically for Terraform and infrastructure operations. It has write access to Terraform state files, which DataEngineerRole intentionally lacks.
+
+1. Return to IAM → Roles
+2. Click "Create role"
+3. Select **"AWS account"** as the trusted entity type
+4. Select **"This account"**
+5. Click "Next"
+6. Search for and select the following managed policies:
+    - `AmazonS3FullAccess` - for Terraform state and infrastructure
+    - `AmazonDynamoDBFullAccess` - for Terraform state locking
+    - `SecretsManagerReadWrite` - for managing infrastructure secrets
+    - `IAMFullAccess` - for managing IAM resources
+    - `CloudWatchFullAccess` - for logging and monitoring
+7. Click "Next"
+8. For role name, enter: `InfrastructureAdminRole`
+9. For description, enter: `Role for Terraform infrastructure management`
+10. Click "Create role"
+
+!!! warning "Why a Separate Infrastructure Role?"
+    You might wonder why we need InfrastructureAdminRole when DataEngineerRole has similar permissions. The key difference is **state file access**:
+
+    - **InfrastructureAdminRole**: Full read/write to Terraform state files
+    - **DataEngineerRole**: Read-only access to state files (we'll configure this in Terraform setup)
+
+    This separation ensures data engineers can't accidentally run `terraform apply` locally - only the InfrastructureAdminRole (and later, the CI/CD pipeline) can modify infrastructure.
 
 ### Configure Role Trust Relationships
 
@@ -183,7 +230,7 @@ Roles need to specify who can assume them. We'll configure both roles to allow u
 
 5. Replace `ACCOUNT_ID` with your actual AWS account ID (visible in the top-right corner)
 6. Click "Update policy"
-7. Repeat these steps for **DataEngineerRole**
+7. Repeat these steps for **DataEngineerRole** and **InfrastructureAdminRole**
 
 ## Create Your Personal IAM User
 
@@ -217,14 +264,23 @@ Now create an IAM user for yourself. This user will be able to assume both roles
 5. **Uncheck** "Users must create a new password at next sign-in" (optional)
 6. Click "Apply"
 
+!!! tip "Store in 1Password"
+    Create a new 1Password entry for "AWS IAM User - [your name]" in your personal Vault. Store:
+
+    - Account ID (for sign-in)
+    - Username
+    - Password
+    - You'll add MFA codes to this entry next
+
 ### Enable MFA for Your User
 
 1. Still in Security credentials, scroll to "Multi-factor authentication (MFA)"
 2. Click "Assign MFA device"
 3. Choose device name (e.g., `jbloggs-phone`)
-4. Select your MFA type (authenticator app recommended)
-5. Follow the setup wizard
-6. Click "Add MFA"
+4. Select your MFA type (1Password or authenticator app)
+5. If using 1Password, add a one-time password field to your IAM user entry and scan the QR code
+6. Follow the setup wizard
+7. Click "Add MFA"
 
 !!! warning "MFA is Essential"
     Every IAM user should have MFA enabled, especially those with role assumption permissions. This is a critical security control.
@@ -247,7 +303,8 @@ We need to grant your user permission to assume the roles we created:
       "Action": "sts:AssumeRole",
       "Resource": [
         "arn:aws:iam::ACCOUNT_ID:role/AdminRole",
-        "arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole"
+        "arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole",
+        "arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole"
       ]
     }
   ]
@@ -257,6 +314,11 @@ We need to grant your user permission to assume the roles we created:
 5. Click "Next"
 6. For policy name, enter: `AssumeRolesPolicy`
 7. Click "Create policy"
+
+!!! info "Role Usage Guidelines"
+    - **DataEngineerRole**: Use for day-to-day data platform work (queries, pipelines, monitoring)
+    - **InfrastructureAdminRole**: Use only when running Terraform locally during initial setup
+    - **AdminRole**: Use sparingly for account-level administration tasks
 
 ### Test Console Access with Roles
 
@@ -367,8 +429,16 @@ You need programmatic access credentials for the CLI:
 10. Click "Create access key"
 11. **Important**: Copy the Access Key ID and Secret Access Key - you won't see the secret again
 
+!!! tip "Store Access Keys in 1Password"
+    Add the access keys to your "AWS IAM User" entry in 1Password:
+
+    - Add a field for "Access Key ID"
+    - Add a field for "Secret Access Key"
+
+    This provides a secure backup if you need to reconfigure the CLI later.
+
 !!! warning "Protect Your Access Keys"
-    Access keys are like passwords. Never commit them to Git, share them in Slack, or store them unencrypted. Consider using a password manager or AWS credentials encryption.
+    Access keys are like passwords. Never commit them to Git, share them in Slack, or store them unencrypted.
 
 ### Configure AWS CLI
 
@@ -394,7 +464,7 @@ This creates `~/.aws/credentials` and `~/.aws/config` files with your configurat
 To easily switch between roles, add profiles to your AWS config. Edit `~/.aws/config`:
 
 ```sh
-vim ~/.aws/config  # or use your preferred editor
+code ~/.aws/config  # or use your preferred editor
 ```
 
 Add the following configurations (replace `ACCOUNT_ID` with your account ID):
@@ -410,6 +480,12 @@ source_profile = default
 region = eu-west-2
 output = json
 
+[profile infrastructure-admin]
+role_arn = arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole
+source_profile = default
+region = eu-west-2
+output = json
+
 [profile admin]
 role_arn = arn:aws:iam::ACCOUNT_ID:role/AdminRole
 source_profile = default
@@ -420,9 +496,10 @@ output = json
 This configuration:
 
 - Uses your IAM user credentials as the base (`default` profile)
-- Defines `data-engineer` profile that assumes the DataEngineerRole
-- Defines `admin` profile that assumes the AdminRole
-- Both role profiles use the default credentials to assume their respective roles
+- Defines `data-engineer` profile that assumes the DataEngineerRole (day-to-day work)
+- Defines `infrastructure-admin` profile that assumes the InfrastructureAdminRole (Terraform operations)
+- Defines `admin` profile that assumes the AdminRole (account administration)
+- All role profiles use the default credentials to assume their respective roles
 
 ### Test Your Configuration
 
@@ -592,6 +669,9 @@ aws-vault exec data-engineer -- aws sts get-caller-identity
 
 # Verify admin role
 aws-vault exec admin -- aws sts get-caller-identity
+
+# Verify infrastructure admin role
+aws-vault exec infrastructure-admin -- aws sts get-caller-identity
 ```
 
 ## Best Practices Summary
@@ -607,8 +687,9 @@ aws-vault exec admin -- aws sts get-caller-identity
     - [x] Cost alerts configured to prevent surprise bills
     - [x] IAM user uses `DataEngineerRole` by default
     - [x] `AdminRole` only used when necessary
+    - [x] `InfrastructureAdminRole` used for Terraform state operations
 
-## Next Steps
+## What's Next
 
 !!! success
     You now have a secure AWS account with proper IAM configuration and CLI access!
@@ -620,4 +701,4 @@ Your next step is to configure Terraform to manage AWS infrastructure as code. T
 - Peer reviewed
 - Documented
 
-Continue to [Set Up Terraform for AWS](../../build/infrastructure-as-code/terraform-fundamentals.md) →
+Continue to [Set Up Terraform](../terraform-setup/index.md) →

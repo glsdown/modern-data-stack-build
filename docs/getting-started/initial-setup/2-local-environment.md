@@ -171,6 +171,9 @@ Take a look at the [themes](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes) avai
 ZSH_THEME="themename"
 ```
 
+!!! tip "git branch"
+  I strongly recommend choosing a theme that includes your git branch in the prompt. This is incredibly useful for development. You can see the themes that include it in the docs, as they will contain `master` or `main`. If you get stuck with the wide range of choice, the default `robbyrussell` is a good one.
+
 Additionally, oh-my-zsh has a number of [plugins](https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins) available to improve the functionality. To use a plugin, often you first have to install it, then you have to add it to the plugins list in your `~/zshrc` file.
 
 Here are some recommended ones:
@@ -422,6 +425,38 @@ brew install pre-commit
 
 We'll configure pre-commit hooks when we set up the Terraform project.
 
+## Install direnv
+
+[direnv](https://direnv.net/) is a very useful tool to allow you to automatically set up a project environment when you `cd` into the project folder. For example, set environment variables.
+
+```sh
+brew install direnv
+```
+
+Add direnv hook to your shell profile:
+
+```sh
+echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+## Install 1Password
+
+[1Password](https://1password.com/) is a password manager that securely stores credentials, API keys, and other secrets. For team environments, shared vaults allow secure credential sharing without sending passwords through insecure channels.
+
+### Download 1Password
+
+Download and install 1Password from [1password.com/downloads](https://1password.com/downloads/mac/).
+
+!!! tip "1Password CLI"
+    1Password also offers a CLI tool that integrates with your terminal and can inject secrets into commands. Install it with:
+
+    ```sh
+    brew install 1password-cli
+    ```
+
+    We'll cover secrets management in detail in [Secrets Management](4-secrets-management.md), including how 1Password works alongside AWS Secrets Manager for a complete secrets strategy.
+
 ## Verify Your Setup
 
 Run these commands to ensure everything is installed correctly:
@@ -490,10 +525,16 @@ git clone git@github.com:YOUR-ORG/data-stack-infrastructure.git
 cd data-stack-infrastructure
 ```
 
-!!! success
-    Your local development environment is now fully configured and ready for building infrastructure!
+!!! success "What You've Accomplished"
+    - [x] Terminal and shell configured (iTerm2 + Oh My Zsh)
+    - [x] Package manager installed (Homebrew)
+    - [x] Code editor set up (VS Code with extensions)
+    - [x] Version control configured (Git + SSH keys)
+    - [x] Infrastructure tools ready (Terraform, AWS CLI)
+    - [x] Code quality tools installed (pre-commit)
+    - [x] Password manager available (1Password)
 
-## Next Steps
+## What's Next
 
 Now that your development environment is ready, learn about the development workflow and best practices.
 

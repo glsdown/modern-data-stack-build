@@ -309,6 +309,65 @@ Use when:
 - Providing supplementary information
 - Explaining limitations
 
+### Danger Boxes - Severe Risks
+
+```markdown
+!!! danger "Use With Caution"
+    Account-level policies affect all users. Ensure you have at least one
+    admin account that can connect before setting this, or you risk locking
+    yourself out.
+```
+
+Use when:
+- Warning about potential lockouts
+- Highlighting destructive or irreversible actions
+- Emphasising severe security risks
+- Noting actions that could break access
+
+## Tabbed Content
+
+Use Material for MkDocs tabbed content when instructions differ by platform or tool:
+
+```markdown
+=== "AWS S3"
+
+    ### Step 1: Create the IAM Role
+
+    First, create an IAM role in AWS that Snowflake will assume.
+
+    \`\`\`hcl
+    resource "aws_iam_role" "snowflake_storage" {
+      name = "snowflake-storage-access"
+      # ...
+    }
+    \`\`\`
+
+=== "Google Cloud Storage"
+
+    ### Step 1: Create the Snowflake Integration
+
+    For GCS, you create the integration first, then grant access.
+
+    \`\`\`hcl
+    module "integration_data_lake" {
+      source = "./modules/snowflake_storage_integration"
+      # ...
+    }
+    \`\`\`
+```
+
+Use tabs when:
+- Instructions differ significantly between cloud providers (AWS, GCP, Azure)
+- Steps vary by operating system (macOS, Linux, Windows)
+- Configuration differs by identity provider (Okta, Azure AD, Google Workspace)
+- Multiple tool options exist for the same task
+
+Guidelines:
+- Keep tab names short and descriptive
+- Ensure equivalent content coverage across all tabs
+- Indent all content within tabs with 4 spaces
+- Don't use tabs for minor differences - use inline notes instead
+
 ## Code and Commands
 
 ### Bash/Shell Commands
@@ -506,10 +565,10 @@ Always use descriptive link text, never "here" or "click here":
 
 ### Code References
 
-When referencing files in the repository:
+When referencing files in a repository, use descriptive inline references rather than linking to external files:
 
 ```markdown
-See the working example in [repositories/terraform/snowflake/config/warehouses.tf](../../../repositories/terraform/snowflake/config/warehouses.tf)
+See the working example in `snowflake/config/warehouses.tf` in the terraform repository.
 ```
 
 ## Page-Specific Patterns
@@ -589,7 +648,7 @@ Before finalizing any documentation, verify:
 
 **Admonitions:**
 - [ ] Used appropriately (not overused)
-- [ ] Correct type for content (info, tip, warning, success)
+- [ ] Correct type for content (info, tip, warning, danger, success, note)
 - [ ] Meaningful titles when needed
 
 **Content Quality:**

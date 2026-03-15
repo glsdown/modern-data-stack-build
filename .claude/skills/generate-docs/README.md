@@ -130,8 +130,13 @@ The skill adapts structure based on content type:
 - `info` - Background and context
 - `tip` - Best practices and recommendations
 - `warning` - Critical information and risks
+- `danger` - Severe risks, potential lockouts
 - `success` - Achievements and checklists
 - `note` - Additional information
+
+### Tabbed Content
+- Use `=== "Tab Name"` syntax for platform-specific instructions
+- Common uses: cloud providers, operating systems, identity providers
 
 ## Examples
 

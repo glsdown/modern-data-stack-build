@@ -342,11 +342,14 @@ git checkout -b feature/part-2
 # Remove unwanted changes from this too
 ```
 
-!!! success
-    You now understand the complete development workflow for building infrastructure with your team!
+!!! success "What You've Accomplished"
+    - [x] Understand the Git branching strategy
+    - [x] Know how to create feature, fix, and documentation branches
+    - [x] Understand the pull request and code review process
+    - [x] Can handle common Git scenarios
 
-## Next Steps
+## What's Next
 
-With your GitHub organisation, local environment, and workflow knowledge in place, you're ready to start building infrastructure with Terraform.
+Before moving on to building infrastructure, let's establish a proper secrets management strategy. This ensures credentials are handled securely from day one.
 
-Continue to [Infrastructure as Code](../build/infrastructure-as-code/index.md) →
+Continue to [Secrets Management](4-secrets-management.md) →

@@ -1,6 +1,12 @@
 # Production-Grade Data Stack Reference Summary
 
-This document summarizes the recommended architecture, tools, and orchestration strategies for a modern, production-grade data stack for a small company. It is designed to be **pragmatic, incremental, and AI-friendly** for project documentation. It should be written in British English with a focus on clarity and learning.
+**This repository is a documentation project.** It teaches people *how* to build a modern data stack - it does not contain the stack itself. The pages under `documentation/docs/` are educational guides that explain what each component is, why it matters, and how to build it step by step. Code examples in the documentation (Terraform modules, dbt models, Python pipelines) are illustrative - readers create the actual resources in their own repositories by following the guides.
+
+The `documentation/repositories/` directory contains supporting reference code - example applications (e.g. a Kafka producer), working Terraform configurations, and other files that accompany the guides. These exist as a separate reference point alongside the documentation, not as templates for readers to copy.
+
+This document summarises the recommended architecture, tools, and orchestration strategies for a modern, production-grade data stack for a small company. It is designed to be **pragmatic, incremental, and AI-friendly** for project documentation. It should be written in British English with a focus on clarity and learning.
+
+There is a skill available to help with building documentation pages - `generate-docs`
 
 ---
 
@@ -42,14 +48,62 @@ This document summarizes the recommended architecture, tools, and orchestration 
 
 ### Analytics / BI / ML
 
-* **BI Tools**: Metabase
-* **Advanced analytics**: Python notebooks (Jupyter)
+* **BI Tools**: Lightdash (dbt-native, Cloud or self-hosted)
+* **Built-in**: Snowflake Snowsight for quick dashboards
+* **Advanced analytics**: Python notebooks (Jupyter, Snowflake Notebooks, Hex)
 * **ML Workflows**: Prefect orchestrates preprocessing pipelines
 
 ### Secrets & Security
 
 * **AWS Secrets Manager**: Store credentials for Snowflake, Kafka, dlt, dbt, Airbyte
 * **RBAC**: Snowflake roles, Kafka service accounts, GitHub CODEOWNERS
+
+### AWS IAM Role Model
+
+The project uses a three-role model for AWS access:
+
+| Role | State File Access | Purpose |
+|------|------------------|---------|
+| **DataEngineerRole** | Read-only | Day-to-day data platform work (queries, pipelines, monitoring) |
+| **InfrastructureAdminRole** | Read/Write | Local Terraform operations during setup/debugging |
+| **TerraformGitHubActionsRole** | Read/Write | CI/CD pipeline (primary method for infrastructure changes) |
+
+**Key principles**:
+- DataEngineerRole has explicit **Deny** policies preventing writes to Terraform state files (S3) and lock table (DynamoDB)
+- InfrastructureAdminRole is only used during initial import of existing resources
+- After CI/CD is configured, all infrastructure changes go through pull requests and the TerraformGitHubActionsRole
+- OIDC authentication eliminates long-lived credentials for GitHub Actions
+
+**AWS CLI profiles**:
+- `data-engineer` - assumes DataEngineerRole (default for data work)
+- `infrastructure-admin` - assumes InfrastructureAdminRole (Terraform operations)
+- `admin` - assumes AdminRole (account administration)
+
+### AWS IAM Policy Patterns
+
+**Use `aws_iam_policy_document` for all policies** - this is the Terraform-native approach:
+- Validates at plan time, catching errors early
+- References variables and resources directly (no hard-coded ARNs)
+- No separate JSON template files - all policies inline
+- Type-safe Terraform syntax
+
+**Single-role assume policies** - one policy per role for flexible user assignment:
+- `AssumeAdminRolePolicy`, `AssumeDataEngineerRolePolicy`, `AssumeInfrastructureAdminRolePolicy`
+- Users get multiple policies attached based on needs (configured in `iam_users.auto.tfvars`)
+- Policies reference actual IAM role resources (e.g. `aws_iam_role.admin.arn`)
+
+**Secrets Manager** - containers managed by Terraform, values set via CLI:
+- AWS section only imports existing `terraform/github-token` secret
+- Snowflake credentials secret created in the Snowflake section (not prematurely in AWS)
+- Pattern documented for adding new secrets without creating them before they're needed
+
+### Snowflake Patterns
+
+**Service account naming**: Use `SVC_` prefix for service accounts (e.g. `SVC_TERRAFORM`, `SVC_DBT`, `SVC_AIRBYTE`)
+
+**Terraform authentication**: Key-pair authentication (not password) for service accounts - more secure and required for CI/CD
+
+**Credentials storage**: Snowflake service account credentials stored in AWS Secrets Manager (`terraform/snowflake-credentials`)
 
 ### Metadata & Governance
 
@@ -116,86 +170,77 @@ def etl_flow():
 The documentation follows an incremental learning path:
 
 ### Getting Started (`docs/getting-started/`)
-- **GitHub organisation setup** - Repository structure, team access, branch protection
-- **Local developer environment** - VS Code, iTerm, Homebrew, Git configuration (macOS focus)
-- **Development workflow** - Branching strategy, PR process, code review
+- **Initial Setup** - GitHub organisation, local dev environment, development workflow, secrets management, Claude Code setup
+- **Account Setup** - AWS account (with AdminRole, DataEngineerRole, InfrastructureAdminRole), Snowflake account, Prefect account, cost overview
+- **Terraform Setup** - Remote state, local setup, repository structure, GitHub provider, CI/CD deployment
 
-### Infrastructure as Code (`docs/build/infrastructure-as-code/`)
-- **Terraform fundamentals** - Installation, configuration, basic concepts
-- **Remote state management** - S3 backend, DynamoDB locking, workspace management
-- **AWS setup for Terraform** - Creating state buckets, IAM policies, authentication
-- **Deployment workflows** - CI/CD with GitHub Actions, terraform plan/apply
-- **Best practices** - Module structure, naming conventions, documentation
+#### Terraform Setup Subfolders
+- **terraform-setup/github/** - Import GitHub organisation, teams, users into Terraform
+- **terraform-setup/aws/** - Import IAM roles, state infrastructure, users, budgets, Secrets Manager
+- **terraform-setup/snowflake/** - Import admin user, configure Snowflake provider
 
-### Data Warehouse (`docs/build/data-warehouse/`)
-- **0-create-snowflake-account.md** - Manual account creation, initial admin user
-- **1-terraform-setup.md** - Snowflake Terraform provider, authentication, project structure
-- **2-warehouses-resource-monitors.md** - Compute resources and cost controls
-- **3-databases.md** - Storage setup for dev/test/prod environments
-- **4-roles-rbac.md** - Functional roles and RBAC (ANALYTICS_DEVELOPER, etc.)
-- **5-users.md** - Admin users, developer users, service accounts
-- **6-network-policies.md** - IP allowlisting for security
-- **7-sso-setup.md** - SSO integration with GSuite, Okta, Azure AD
-- **8-storage-integrations.md** - S3 storage integrations for data loading
+**Key pattern**: All Terraform operations during initial import use the `infrastructure-admin` AWS profile. After CI/CD is configured, the TerraformGitHubActionsRole handles all infrastructure changes through GitHub Actions.
 
-Each data warehouse guide includes:
+### Build Sections (`docs/build/`)
+
+| Section | Directory | Pages | Description |
+|---------|-----------|-------|-------------|
+| AWS Infrastructure | `aws/` | 2 | S3 data lake, VPC networking |
+| Data Warehouse | `data-warehouse/` | 10 | Snowflake setup via Terraform (warehouses, databases, roles, users, SSO) |
+| Orchestration | `orchestration/` | 11 | Prefect Cloud + self-hosted, work pools, flows, CI/CD, alerting |
+| Batch Data Ingestion | `batch-data-ingestion/` | 10 | dlt pipelines + Snowpipe + HubSpot |
+| SaaS Ingestion | `saas-ingestion/` | 9 | Airbyte Cloud + self-hosted + reverse ETL |
+| Data Transformation | `data-transformation/` | 12 | dbt Core + dbt Cloud, staging/intermediate/mart models |
+| Data Analytics | `data-analytics/` | 12 | Lightdash + Snowsight + notebooks |
+| Observability | `observability/` | 12 | Elementary, data cataloging, lineage, monitoring, alerting |
+| Streaming Data Ingestion | `streaming-data-ingestion/` | 11 | Confluent Cloud Kafka, Connect, MSK, CDC |
+| Documentation | `documentation/` | 7 | Unified MkDocs site, multirepo plugin, runbooks, CI/CD |
+
+Each build guide includes:
 - Concept explanation (what and why)
-- **Terraform code** (primary method, production-ready)
-- **SQL reference** (in tabs, for understanding what Terraform creates)
-- Working examples from `repositories/terraform/snowflake/`
+- **Terraform code** where applicable (production-ready)
+- **SQL reference** in tabs for Snowflake sections (for understanding what Terraform creates)
+- Working examples from `repositories/`
 
-### Other Build Sections (Future)
-- API Ingestion (dlt pipelines)
-- SaaS Ingestion (Airbyte)
-- Data Transformation (dbt)
-- Streaming (Kafka/Confluent)
-- etc.
+### Maintain (`docs/maintain/`)
+- Day-to-day operations, adding resources, using AI agents
+- Template CLAUDE.md files and skills for the three repositories
+- Maintain pages should follow the **runbook structure** defined in `docs/build/documentation/4-writing-runbooks.md` (Summary → When to Use → Prerequisites → Steps → Verification → Rollback → Escalation)
 
 ---
 
 ## 6. Repository Structure
 
-The project includes ready-to-use Terraform configurations:
+The documentation project and its example repositories:
 
 ```
 documentation/
 ├── repositories/
-│   ├── terraform/
-│   │   ├── snowflake/
-│   │   │   ├── config/              # Terraform configuration files
-│   │   │   │   ├── backend.tf       # S3 remote state
-│   │   │   │   ├── main.tf          # Terraform & provider versions
-│   │   │   │   ├── providers.tf     # Snowflake providers (per admin role)
-│   │   │   │   ├── variables.tf     # Input variable definitions
-│   │   │   │   ├── terraform.tfvars # Variable values (customise for your org)
-│   │   │   │   ├── warehouses.tf    # Warehouse resources
-│   │   │   │   ├── databases.tf     # Database resources
-│   │   │   │   ├── functional_roles.tf      # ANALYTICS_* roles
-│   │   │   │   ├── users.tf                 # All user resources
-│   │   │   │   ├── network_policies.tf      # IP allowlisting
-│   │   │   │   ├── sso_integrations.tf      # SAML2 integrations
-│   │   │   │   ├── storage_integrations.tf  # S3 access
-│   │   │   │   └── resource_monitor.tf      # Cost controls
-│   │   │   └── modules/             # Reusable modules
-│   │   │       ├── snowflake_database/
-│   │   │       ├── snowflake_user/
-│   │   │       ├── snowflake_warehouse/
-│   │   │       ├── snowflake_role/
-│   │   │       ├── snowflake_database_role/
-│   │   │       ├── snowflake_schema/
-│   │   │       ├── snowflake_storage_integration/
-│   │   │       └── snowflake_saml2_integration/
-│   │   ├── aws/                     # Future: S3 buckets, IAM, etc.
-│   │   └── confluent/               # Future: Kafka configuration
-│   └── setup_script/
+│   ├── terraform/               # Git submodule - example Terraform repo
+│   │   ├── CLAUDE.md            # Agent reference for Terraform repo
+│   │   ├── .claude/skills/      # Agent skills (add-snowflake-user, add-data-source)
+│   │   ├── github/              # GitHub provider config
+│   │   └── terraform.tf         # Root config
+│   └── setup_script/            # Setup utilities
 └── docs/
     ├── getting-started/
+    │   ├── initial-setup/       # GitHub, local env, workflow, secrets, Claude Code
+    │   ├── account-setup/       # AWS, Snowflake, Prefect accounts, costs
+    │   └── terraform-setup/     # Remote state, GitHub/AWS/Snowflake providers
     ├── build/
-    │   ├── infrastructure-as-code/
-    │   ├── data-warehouse/
-    │   ├── api-ingestion/
-    │   └── ...
+    │   ├── aws/                 # S3 data lake, VPC networking
+    │   ├── data-warehouse/      # Snowflake via Terraform (10 pages)
+    │   ├── orchestration/       # Prefect Cloud + self-hosted (11 pages)
+    │   ├── batch-data-ingestion/ # dlt + Snowpipe (10 pages)
+    │   ├── saas-ingestion/      # Airbyte Cloud + self-hosted (9 pages)
+    │   ├── data-transformation/ # dbt Core + Cloud (12 pages)
+    │   ├── data-analytics/      # Lightdash + Snowsight (12 pages)
+    │   ├── observability/       # Elementary, monitoring (12 pages)
+    │   ├── streaming-data-ingestion/ # Confluent Kafka (11 pages)
+    │   └── documentation/       # Unified docs site, runbooks (7 pages)
     └── maintain/
+        ├── index.md             # Section overview
+        └── templates/           # CLAUDE.md and skill templates for dbt/Prefect repos
 ```
 
 ---
@@ -243,6 +288,15 @@ documentation/
 * Advanced monitoring via Datadog/Grafana
 * Multi-cloud deployments
 * Additional environments (staging, QA)
+
+---
+
+## 10. Style
+
+* Should be written in British English
+* Should be conversational in tone
+* Use spaced hyphens ( - ) for parenthetical statements, not em dashes (—): "you'll need this - it's required" **NOT** "you'll need this—it's required"
+* When writing e.g. don't include a following comma: "e.g." **NOT** "e.g.,"
 
 ---
 
