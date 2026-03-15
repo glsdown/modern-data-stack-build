@@ -1,55 +1,90 @@
-# Modern Data Stack Build
+# Build Your First Modern Data Stack
 
-This repo is designed to hold code for building a production-grade Modern Data Stack to support both batch and streaming data ingestion. It will be created with pragmatism in mind with both self-hosted and managed services included as reference points where possible.
+A step-by-step guide to building a production-grade data platform from scratch - the kind of architecture that handles real business data reliably, at scale, and without requiring a large team to maintain it.
 
-## The datasets
+By the end of this guide, you will have a fully working data stack: streaming events landing in your warehouse within seconds, batch pipelines running on a schedule, dbt models transforming raw data into clean analytics tables, and dashboards your team can actually use. Every piece of infrastructure is version-controlled, every pipeline is monitored, and every decision is explained.
 
-The project is relatively contrived in order to simplify the requirements of the data stack. It will very simply mimic a sales functionality, where sales can be recorded in an app for products. Supporting data about the customers, products and exchanges rates are also retrieved.
+---
 
-### Source data -> Bronze
+## What You'll Build
 
-There will be 4 sources of ingestion:
+The guide uses a sales analytics use case to make the stack concrete. You will build a platform that:
 
-- A simple local React app which will be used to send event data simulating product purchases to a Kafka topic
-- A free PostgreSQL database holding product details hosted on [Clever Cloud](https://www.clever.cloud/) and mocked via [Mockaroo](https://mockaroo.com/)
-- API endpoint for [exchange rate data](https://docs.openexchangerates.org/reference/historical-json)
-- Customer data held in [HubSpot](https://www.hubspot.com/products/crm) as example SaaS data extraction
+- Streams **purchase events** from a web app into Snowflake in real time via Kafka
+- Loads **product catalogue data** from a PostgreSQL database on a schedule with dlt
+- Fetches **exchange rate data** from a public API and stages it through S3
+- Syncs **customer records** from HubSpot via Airbyte
+- Transforms all four sources into clean dbt models - `fact_purchases`, `dim_products`, `fct_exchange_rates`, `dim_customers`
+- Joins everything into a `sales` mart with per-customer revenue in GBP and USD
+- Surfaces the results in a Lightdash dashboard with metrics defined in code
 
-Data will be ingested into Snowflake via Kafka Connect (Streaming), dlt running in Prefect (Database / API) and Airbyte.
+The use case is intentionally simple. The stack is not. You are building the real thing.
 
-### Silver
+---
 
-dbt will be responsible for loading the data from bronze and into silver.
+## The Stack
 
-Streamed data - `fact_purchases`
+| Layer | Tool | Why |
+|---|---|---|
+| Streaming ingestion | Confluent Cloud (Kafka) | Managed Kafka with Schema Registry and Connect included |
+| Batch ingestion - APIs and databases | dlt | Free, Python-native, handles schema inference automatically |
+| Batch ingestion - SaaS | Airbyte | Hundreds of pre-built connectors, low-code configuration |
+| Data warehouse | Snowflake | Separates compute from storage, excellent Terraform support |
+| Transformation | dbt | SQL-native, version-controlled, tested models |
+| BI and dashboards | Lightdash | Metrics defined in dbt YAML, not duplicated in the tool |
+| Orchestration | Prefect | Modern Python-native replacement for Airflow |
+| Observability | Elementary + OpenMetadata | dbt-native testing plus a full data catalogue |
+| Infrastructure | Terraform | Everything as code - nothing created by hand |
+| CI/CD | GitHub Actions | Terraform plans, dbt tests, and Prefect deployments |
+| Secrets | AWS Secrets Manager | Centralised credential storage for all services |
 
-| customer_id | product_id | quantity | purchase_ts |
-| --- | --- | --- | --- |
-| bigint | bigint | int | timestamp |
+Where a tool has a self-hosted alternative, both options are covered. You can choose based on your budget and how much infrastructure you want to manage.
 
-Database data - `dim_products`
+---
 
-| product_id | product_name | price_usd |
-| --- | --- | --- |
-| bigint | string | float |
+## How This Guide Is Structured
 
-API data - `fct_exchange_rates`
+```
+Getting Started  →  Build  →  Maintain
+```
 
-| id | base_currency | currency | rate | exchange_ts |
-| --- |--- | --- | --- | --- |
-| string | string | string | float | timestamp |
+**[Getting Started](getting-started/index.md)** covers everything you need before writing any infrastructure code. You will set up your GitHub organisation, configure your local development environment, create accounts with AWS, Snowflake, and Prefect, and get Terraform running with remote state and CI/CD. This section is a prerequisite for everything that follows.
 
-SaaS data - `dim_customers`
+**[Build](build/index.md)** walks through each layer of the stack in dependency order - from the data warehouse and object storage up through ingestion, transformation, analytics, observability, streaming, and documentation. Each section explains the concepts, guides you through the Terraform and configuration, and ends with a summary of what you have built.
 
-| customer_id | first_name | last_name | email | created_ts |
-| --- | --- | --- | --- | --- |
-| bigint | string | string | string | timestamp |
+**[Maintain](maintain/index.md)** covers day-to-day operations: adding users, adding data sources, handling backfills, responding to incidents, and keeping the stack up to date.
 
-### Gold
+---
 
-Finally they will be joined in Gold to create the following sales report - `sales`
+## What Makes This Guide Different
 
-| customer_id | first_name | last_name | total_transactions | total_items | total_usd | total_gbp |
-| --- | --- | --- | --- | --- | --- | --- |
-| string | string | string | int | int | float | float |
+**It is production-grade from the start.** Infrastructure is managed with Terraform from day one. There are no "and now you would add monitoring in production" caveats - monitoring is built in as you go.
 
+**It is opinionated, but explains why.** Every tool choice has a rationale. Where there are trade-offs between managed and self-hosted options, both are covered honestly.
+
+**It is incremental.** Each section builds on the last. You end every section with something working, not a half-built system waiting for later chapters to make sense.
+
+**It uses real patterns.** The Terraform modules and pipeline patterns in this guide are based on real client deployments, not toy examples. You can take them and adapt them directly.
+
+**It includes AI-assisted workflows.** The [Maintain](maintain/index.md) section includes CLAUDE.md templates and Claude Code skills for your Terraform, dbt, and Prefect repositories - so an AI assistant can help with routine tasks like adding users or creating new data sources.
+
+---
+
+## Before You Start
+
+This guide assumes you are comfortable with:
+
+- Python (you will write dlt pipelines and Prefect flows)
+- SQL (you will write dbt models)
+- The command line
+- Git and GitHub
+
+You do not need prior experience with any of the specific tools. Each section introduces concepts before diving into implementation.
+
+You will need accounts with GitHub, AWS, Snowflake, Prefect, and Confluent Cloud - we will cover how to set these up in the getting started section. The [Costs](getting-started/account-setup/costs.md) page breaks down what each service costs at the scale used in this guide.
+
+---
+
+## Get Started
+
+[Begin with the Initial Setup →](getting-started/index.md)
