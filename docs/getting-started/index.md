@@ -94,10 +94,14 @@ Raw data from each ingestion tool lands in its own database:
 dbt models follow a layered pattern:
 
 ```
-Raw databases  →  Staging (stg_*)  →  Intermediate (int_*)  →  Marts (fct_*, dim_*)  →  Reporting
+Raw databases
+    └>  Staging (stg_*)
+        └>  Intermediate (int_*)
+            └>  Marts (fct_*, dim_*)
+                └>  Reporting
 ```
 
-The output is a clean `ANALYTICS` database with `MARTS` and `REPORTING` schemas that BI tools query directly.
+The output is a clean `ANALYTICS` database with `MARTS` and `REPORTING` schemas that BI tools and analysts query directly.
 
 ### Analytics
 
@@ -109,7 +113,7 @@ The output is a clean `ANALYTICS` database with `MARTS` and `REPORTING` schemas 
 
 ### Orchestration
 
-**Prefect** coordinates everything. It schedules and monitors all ingestion pipelines, triggers dbt runs after ingestion completes, and handles retries, alerting, and logging. Every pipeline in this stack - dlt, Airbyte, dbt - runs inside a Prefect flow.
+**Prefect** coordinates everything. It schedules and monitors all ingestion pipelines, triggers dbt runs after ingestion completes, and handles retries, alerting, and logging. Every batch pipeline in this stack - dlt, Airbyte, dbt - runs inside a Prefect flow.
 
 ### Observability
 
@@ -119,7 +123,7 @@ The output is a clean `ANALYTICS` database with `MARTS` and `REPORTING` schemas 
 
 ### DevOps
 
-**Terraform** manages all infrastructure as code: Snowflake warehouses, databases, roles, and users; AWS S3 buckets, IAM roles, and Secrets Manager; Confluent Cloud topics; and GitHub repository settings. Nothing is created manually.
+**Terraform** manages all infrastructure as code: Snowflake warehouses, databases, roles, and users; AWS S3 buckets, IAM roles, and Secrets Manager; Confluent Cloud topics; and GitHub repository settings.
 
 **GitHub Actions** runs CI/CD pipelines: validating Terraform plans, running dbt tests, deploying Prefect flows, and publishing this documentation site.
 
@@ -155,11 +159,11 @@ This guide uses a sales analytics use case to make the stack concrete. By the en
 
 The guide is split into three parts:
 
-**Getting Started** (you are here) - sets up the foundations: your development environment, cloud accounts, and Terraform infrastructure. Everything here is a prerequisite for the Build section.
+**[Getting Started](index.md)** (you are here) - sets up the foundations: your development environment, cloud accounts, and Terraform infrastructure. Everything here is a prerequisite for the Build section.
 
 **[Build](../build/index.md)** - walks through each component of the stack in dependency order. Each section explains the concepts, guides you through the Terraform and configuration, and ends with a summary of what you've built.
 
-**Maintain** - day-to-day operations: adding users, adding data sources, handling incidents, and keeping the stack up to date.
+**[Maintain](../maintain/index.md)** - day-to-day operations: adding users, adding data sources, handling incidents, and keeping the stack up to date.
 
 Follow these sections in order for the smoothest experience.
 
