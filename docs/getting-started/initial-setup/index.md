@@ -18,9 +18,9 @@ By the end of this section, you'll have:
 Before starting, you should have:
 
 - A GitHub account (free tier is fine to start)
-- A Mac running macOS (these guides are macOS-focused)
+- A Mac running macOS (Optional - these guides are macOS-focused, but you should still be able to build this stack in Windows, just some of the local development will be different)
 - Basic familiarity with the command line
-- Willingness to learn Git and infrastructure-as-code concepts
+- Willingness to learn
 
 ## Why This Matters
 
@@ -29,6 +29,7 @@ Building a data stack isn't just about writing code - it's about creating a **su
 - **Version control**: Track every change, enable collaboration, enable rollback
 - **Consistent environments**: Everyone on your team uses the same tools and configurations
 - **Code review**: Catch issues before they reach production
+- **Testing**: Have confidence in the code being shipped
 - **Automation**: Reduce manual errors and increase deployment speed
 
 Starting with proper foundations saves countless hours of debugging and refactoring later.

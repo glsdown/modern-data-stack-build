@@ -19,7 +19,7 @@ The stack has several distinct layers. Data is collected from sources, ingested 
 │  │  (Kafka)    │  │ (PostgreSQL)│  │  (REST)     │  │  (HubSpot)  │             │
 │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
 │         │                │                │                │                    │
-│  INGESTION               │                │                │                    │
+│     INGESTION            │                │                │                    │
 │         │          ┌─────┴───────────┐    │         ┌──────┴──────┐             │
 │         │          │   dlt           │◀───┘         │   Airbyte   │             │
 │         │          │ (APIs, DBs)     │              │ (SaaS)      │             │
@@ -30,7 +30,7 @@ The stack has several distinct layers. Data is collected from sources, ingested 
 │  │ Connect     │             │                             │                    │
 │  └──────┬──────┘             │                             │                    │
 │         │                    │                             │                    │
-│  STORAGE                     ▼                             ▼                    │
+│       STORAGE                ▼                             ▼                    │
 │         │          ┌─────────────────────────────────────────────────┐          │
 │         ├─────────▶│                  SNOWFLAKE                      │          │
 │         │          │  STREAMING │ DLT │ SNOWPIPE │ AIRBYTE databases │          │
@@ -142,6 +142,9 @@ This stack is opinionated. Here is why each tool was chosen:
 | Orchestration | Prefect | Modern Python-native replacement for Airflow |
 | Observability | Elementary + OpenMetadata | dbt-native testing + full catalogue |
 | Infrastructure | Terraform | Everything as code, reproducible, auditable |
+| Secrets (local) | 1Password | Secure local credential storage, CLI integration for injecting secrets into shell sessions |
+| Secrets (CI/CD + services) | AWS Secrets Manager | Centralised secrets for all services and GitHub Actions pipelines |
+| AI assistant | Claude Code | Understands the full stack context, automates repetitive tasks, writes and reviews infrastructure code |
 
 Where possible, managed cloud options are covered alongside self-hosted alternatives, so you can choose based on your budget and operational preferences.
 
@@ -151,7 +154,7 @@ This guide uses a sales analytics use case to make the stack concrete. By the en
 
 - **Four data sources**: purchase events (streaming), product catalogue (PostgreSQL), exchange rates (API), and customer data (HubSpot CRM)
 - **Three ingestion pipelines**: Kafka Connect for streaming purchases, dlt for products and exchange rates, and Airbyte for HubSpot
-- **Four dbt models**: `fact_purchases`, `dim_products`, `fct_exchange_rates`, `dim_customers`
+- **Four dbt models**: `fct_purchases`, `dim_products`, `fct_exchange_rates`, `dim_customers`
 - **One sales report**: joining all four dimensions and fact tables into a `sales` mart with customer-level aggregations in GBP and USD
 - **Full observability**: data quality tests, anomaly detection, a data catalogue, and pipeline monitoring
 

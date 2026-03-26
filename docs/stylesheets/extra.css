@@ -1,3 +1,15 @@
+/* Google Fonts' JetBrains Mono WOFF2 subset omits box-drawing characters
+   (U+2500-U+257F). Without this override the browser falls back to a
+   different system font for those glyphs, causing inconsistent weight and
+   size. This @font-face rule intercepts that range and routes it to local
+   monospace fonts (JetBrains Mono if installed, then Menlo on macOS,
+   Consolas on Windows) which carry full box-drawing coverage. */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: local("JetBrains Mono"), local("Menlo"), local("Consolas"), local("Courier New");
+  unicode-range: U+2500-U+257F, U+2580-U+259F, U+25A0-U+25FF;
+}
+
 /* Disable ligatures and contextual alternates in code blocks.
    JetBrains Mono enables these by default, which causes box-drawing
    characters to render at inconsistent widths. */
