@@ -564,7 +564,7 @@ cd ~/src/dbt-transform/docs && uv run mkdocs build --strict
 
     ```sh
     cd ~/src/terraform/docs
-    uv run mkdocs serve
+    uv run mkdocs serve --livereload
     ```
 
     This is faster than building the unified site and does not require network access.
