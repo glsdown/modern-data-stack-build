@@ -123,7 +123,9 @@ Add these recommended settings:
 
 ### Optional - Setup Claude Code
 
-Claude is an AI agent that can help you with coding. You can set it up using the docs [here](https://code.claude.com/docs/en/vs-code). It is optional to use, but can be very helpful when programming.
+Claude is an AI agent that can help you with coding. You can set it up using the docs [here](https://code.claude.com/docs/en/vs-code). It is optional to use, but can be very helpful when programming. Make sure to install the Claude Code extension in VS Code to allow you to interact with Claude Code easily from there.
+
+You can also set Claude up with a variety of different connections, including things like the GitHub MCP server or Jira if you use that. This will allow Claude to access systems that you can access, and be able to do that much more.
 
 ## Install iTerm2
 

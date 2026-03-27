@@ -375,6 +375,27 @@ You've completed the Snowflake data warehouse setup:
 - [x] Understood the access control model
 - [x] Identified common next steps
 
+## Claude Code Setup
+
+Now that your Terraform repository has established conventions - module patterns, provider aliases, service account naming, the reader access chain - add a CLAUDE.md so Claude Code can follow them when helping with maintenance tasks.
+
+Create the skills directory structure in your `terraform` repository:
+
+```sh
+mkdir -p .claude/skills/add-snowflake-user
+mkdir -p .claude/skills/add-data-source
+```
+
+Copy the templates from the Maintain section:
+
+- [Terraform CLAUDE.md template](../../maintain/templates/terraform-claude.md) → `CLAUDE.md` at the repository root
+- [add-snowflake-user skill](../../maintain/templates/add-snowflake-user.md) → `.claude/skills/add-snowflake-user/SKILL.md`
+- [add-data-source skill](../../maintain/templates/add-data-source.md) → `.claude/skills/add-data-source/SKILL.md`
+
+Verify by opening the repository in Claude Code and asking it to describe the module patterns - it should reference the CLAUDE.md conventions. Invoke `/add-snowflake-user` to test the skill.
+
+You can add many more skills here, and even ask Claude to write its own skills. The ones above are just examples - add as many as you need.
+
 ## What's Next
 
 With your data warehouse infrastructure in place, you're ready to:

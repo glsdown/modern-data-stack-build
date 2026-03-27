@@ -240,6 +240,23 @@ Your data platform now has a central orchestration layer ready to coordinate all
 !!! success "Orchestration Complete"
     You have a production-ready orchestration layer with automated deployment and alerting. Next, you'll build the data pipelines that Prefect will orchestrate — starting with dlt for batch ingestion.
 
+## Claude Code Setup
+
+Now that your `data-pipelines` repository has its three-layer architecture in place, add a CLAUDE.md and skill so Claude Code knows the conventions when you add pipelines later.
+
+Create the skills directory in your `data-pipelines` repository:
+
+```sh
+mkdir -p .claude/skills/add-dlt-pipeline
+```
+
+Copy the templates from the Maintain section:
+
+- [Prefect CLAUDE.md template](../../maintain/templates/prefect-claude.md) → `CLAUDE.md` at the repository root
+- [add-dlt-pipeline skill](../../maintain/templates/add-dlt-pipeline.md) → `.claude/skills/add-dlt-pipeline/SKILL.md`
+
+Verify by opening the repository in Claude Code and asking it to describe the pipeline architecture - it should reference the three-layer structure and safety rules from the CLAUDE.md.
+
 ## What's Next
 
 Continue to [Batch Data Ingestion](../batch-data-ingestion/index.md) →

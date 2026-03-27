@@ -235,3 +235,4 @@ You'll create these after completing the AWS account setup:
 With your secrets management strategy in place, you can set up Claude Code to work with your repositories - or skip ahead to cloud account setup.
 
 Continue to [Claude Code Setup](5-claude-code-setup.md) →
+or skip ahead to [Hosted Account Setup](../account-setup/index.md) →
