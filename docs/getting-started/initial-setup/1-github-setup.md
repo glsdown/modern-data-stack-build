@@ -31,7 +31,7 @@ A GitHub organisation (rather than a personal account) provides:
 8. Complete the setup
 
 !!! tip "Organisation Naming"
-    Choose a name that clearly indicates this is for your company's data infrastructure. Avoid names that are too specific to one project, as you'll likely add more repositories over time.
+    Choose a unique name that clearly indicates this is your company, and is easy to remember. Avoid names that are too specific to one project, as you'll likely add more repositories over time. If you find another organisation has taken your name, consider adding something else descriptive to it, rather than random numbers.
 
 ## Create the Infrastructure Repository
 
@@ -45,6 +45,9 @@ A repository (or repo) in git is the name given for what many people would call 
 6. Add `.gitignore` template: Select **Terraform**
 7. Choose a licence: **MIT License** (or your preference)
 8. Click **Create repository**
+
+!!! note "Naming conventions"
+    It's good practice to set naming conventions for repos across the organisation. For example, `lower-kebab-case`, or `lower_snake_case`. This helps things to look consistent and professional. Examples in this repo will use `lower-kebab-case` for repository names.
 
 ## Set Up Team Access
 
@@ -63,13 +66,13 @@ Configure who can access your repository and what they can do.
 - **Team name**: `data-platform-admins`
 - **Description**: "Full access to data infrastructure"
 - **Visibility**: Visible (team members can see who else is on the team)
-- **Add members**: Add yourself and other infrastructure owners
+- **Add members**: Add yourself and other infrastructure owners. Set yourself as a maintainer so you have the ability to add people to the team.
 
 #### Data Engineers
 - **Team name**: `data-engineers`
 - **Description**: "Data Engineers"
 - **Visibility**: Visible (team members can see who else is on the team)
-- **Add members**: Add your data engineering team
+- **Add members**: Add your data engineering team.  Set yourself as a maintainer so you have the ability to add people to the team.
 
 ### Assign Repository Permissions
 
@@ -112,20 +115,23 @@ Protect your main branch from accidental changes and enforce code review.
 3. Set **Branch name pattern**: `main`
 4. Enable these settings:
 
-#### Required Settings
+    #### Required Settings
 
-✅ **Require a pull request before merging**
-- Require approvals: **1** (increase for larger teams)
-- Require review from Code Owners
-- Dismiss stale pull request approvals when new commits are pushed
+    ✅ **Require a pull request before merging**
 
-✅ **Require status checks to pass before merging**
-- Require branches to be up to date before merging
+    - Require approvals: **1** (increase for larger teams)
+    - Require review from Code Owners
+    - Dismiss stale pull request approvals when new commits are pushed
 
-✅ **Require conversation resolution before merging**
+    ✅ **Require status checks to pass before merging**
 
-✅ **Do not allow bypassing the above settings**
-- Even admins must follow the rules (recommended)
+    - Require branches to be up to date before merging
+
+    ✅ **Require conversation resolution before merging**
+
+    ✅ **Do not allow bypassing the above settings**
+
+    - Even admins must follow the rules (recommended)
 
 5. Click **Create** to save the rule
 
@@ -136,22 +142,30 @@ Now configure which merge methods are allowed and how PRs behave. A merge is how
 1. Go to repository **Settings** → **General**
 2. Scroll down to **Pull Requests** section
 3. Configure merge options:
-   - ❌ **Uncheck** "Allow merge commits"
-   - ❌ **Uncheck** "Allow rebase merging"
-   - ✅ **Check** "Allow squash merging" (keep this enabled)
+
+      - ❌ **Uncheck** "Allow merge commits"
+      - ❌ **Uncheck** "Allow rebase merging"
+      - ✅ **Check** "Allow squash merging" (keep this enabled)
+
 4. ✅ Enable **"Always suggest updating pull request branches"**
-   - Whenever there are new changes available in the base branch, present an "update branch" option in the pull request
+
+      - Whenever there are new changes available in the base branch, present an "update branch" option in the pull request
+
 5. ✅ Enable **"Automatically delete head branches"**
-   - Deleted branches will still be able to be restored
+
+      - Deleted branches will still be able to be restored
+
 6. Click **Save changes**
 
 !!! info "Why Squash Merging Only?"
-    - **Clean history**: Each feature becomes one commit on main
-    - **Easy rollback**: Can revert (undo) entire features with one command
-    - **Better readability**: Main branch shows what changed, not how, and link to the PR that changed them for more details.
-    - **Consistent**: All PRs merged the same way
+    Squash merging means that all commits in a branch are squashed together into a single commit on the `main` branch, rather than adding all the individual commits.
 
-    Individual commits are still visible in the PR for review, but main stays clean.
+       - **Clean history**: Each feature becomes one commit on `main`
+       - **Easy rollback**: Can revert (undo) entire features with one command
+       - **Better readability**: Main branch shows what changed, not how, and link to the PR that changed them for more details.
+       - **Consistent**: All PRs merged the same way
+
+    Individual commits are still visible in the PR for review, but `main` stays clean.
 
 ### Why These Rules Matter
 

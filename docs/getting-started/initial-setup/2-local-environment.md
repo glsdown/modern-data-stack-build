@@ -14,8 +14,8 @@ On this page, you will:
 Setting up a consistent development environment ensures you have all the necessary tools and can follow along with the rest of the documentation smoothly. This is a highly opinionated set of tools that you could make use of.
 
 !!! info "macOS Focus"
-    These instructions are specific to macOS. If you're using Linux or Windows, you'll need to adapt the installation commands, though the concepts remain the same. 
-    
+    These instructions are specific to macOS. If you're using Linux or Windows, you'll need to adapt the installation commands, though the concepts remain the same.
+
     If you are using Windows, it's strongly recommended to make use of the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/about). This is because Unix based Operating Systems like Linux and macOS are much better adapted for the development we'll talk about here. Trying to build on Windows can be painful at best.
 
 ## Install VS Code
@@ -38,7 +38,7 @@ code .  # Opens current directory in VS Code
 
 ### Recommended VS Code Extensions
 
-These are some excellent extensions to improve your experience. You can download them by clicking on the Extensions button in the side bar on the left. 
+These are some excellent extensions to improve your experience. You can download them by clicking on the Extensions button in the side bar on the left.
 
 #### Language Support
 
@@ -127,9 +127,12 @@ Claude is an AI agent that can help you with coding. You can set it up using the
 
 ## Install iTerm2
 
-[iTerm2](https://iterm2.com/) is a powerful terminal emulator for macOS with better features than the default Terminal app. A terminal (or shell) is a way of interacting with your computer programmatically. 
+[iTerm2](https://iterm2.com/) is a powerful terminal emulator for macOS with better features than the default Terminal app. A terminal (or shell) is a way of interacting with your computer programmatically.
 
 You can get the installation instructions [here](https://iterm2.com/).
+
+!!! note "Shell commands"
+    You'll notice that there are times when the instructions will say "run this command" and provide you with text to run. This is to be done in your terminal. You can run these in your iTerm instance, or in the VS Code terminal.
 
 ### Configure iTerm2 (Optional)
 
@@ -139,7 +142,7 @@ You can get the installation instructions [here](https://iterm2.com/).
 
 ## Install XCode Command Line Tools
 
-If you haven't done development before, you'll need to install Xcode Command Line Tools. Run:
+If you haven't done development before, you'll need to install Xcode Command Line Tools. in iTerm 2, run:
 
 ```sh
 xcode-select --install
@@ -172,7 +175,7 @@ ZSH_THEME="themename"
 ```
 
 !!! tip "git branch"
-  I strongly recommend choosing a theme that includes your git branch in the prompt. This is incredibly useful for development. You can see the themes that include it in the docs, as they will contain `master` or `main`. If you get stuck with the wide range of choice, the default `robbyrussell` is a good one.
+    I strongly recommend choosing a theme that includes your git branch in the prompt. This is incredibly useful for development. You can see the themes that include it in the docs, as they will contain `main` or `master`. If you get stuck with the wide range of choice, the default `robbyrussell` is a good one.
 
 Additionally, oh-my-zsh has a number of [plugins](https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins) available to improve the functionality. To use a plugin, often you first have to install it, then you have to add it to the plugins list in your `~/zshrc` file.
 
@@ -317,7 +320,7 @@ Add the key to GitHub:
 3. Title: "MacBook Pro" (or your device name)
 4. Paste your key and click **Add SSH key**
 
-Test the connection:
+In iTerm2, test the connection:
 
 ```sh
 ssh -T git@github.com
@@ -345,7 +348,7 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting you-should-use)
 To test them, restart your shell by typing:
 
 ```sh
-exec $SHELL 
+exec $SHELL
 ```
 
 ## Install uv (Python package manager)

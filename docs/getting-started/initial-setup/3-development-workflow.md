@@ -24,6 +24,7 @@ We use a simplified Git Flow strategy optimised for infrastructure work.
 ### Branch Types
 
 #### `main` Branch
+
 - **Purpose**: Production-ready code
 - **Protection**: Protected, requires PR and approvals
 - **Deployment**: Automatically deployed to production (via CI/CD)
@@ -31,111 +32,146 @@ We use a simplified Git Flow strategy optimised for infrastructure work.
 - **Lifespan**: Protected - never deleted
 
 #### Feature Branches
+
 - **Purpose**: Develop new features or resources
-- **Naming**: `feature/ticket-id/short-description`
-- **Example**: `feature/jira-123/add-analytics-warehouse`
+- **Naming**: `feature/short-description` or `feature/ticket-id/short-description`
+- **Example**: `feature/add-analytics-warehouse` or `feature/jira-123/add-analytics-warehouse`
 - **Lifespan**: Delete after merging
 
 #### Fix Branches
+
 - **Purpose**: Bug fixes and corrections
-- **Naming**: `fix/ticket-id/short-description`
-- **Example**: `fix/jira-123/resource-monitor-threshold`
+- **Naming**: `fix/short-description` or `fix/ticket-id/short-description`
+- **Example**: `fix/resource-monitor-threshold` or `fix/jira-123/resource-monitor-threshold`
 - **Lifespan**: Delete after merging
 
 #### Documentation Branches
+
 - **Purpose**: Documentation updates
-- **Naming**: `docs/ticket-id/short-description`
-- **Example**: `docs/jira-123/update-terraform-setup`
+- **Naming**: `docs/short-description` or `docs/ticket-id/short-description`
+- **Example**: `docs/update-terraform-setup` or `docs/jira-123/update-terraform-setup`
 - **Lifespan**: Delete after merging
 
 #### Refactor Branches
+
 - **Purpose**: Code restructuring without changing functionality
-- **Naming**: `refactor/ticket-id/short-description`
-- **Example**: `refactor/jira-123/database-module-structure`
+- **Naming**: `refactor/short-description` or `refactor/ticket-id/short-description`
+- **Example**: `refactor/database-module-structure` or `refactor/jira-123/database-module-structure`
 - **Lifespan**: Delete after merging
 
 ### Why This Strategy?
 
-- **Simple**: Only two long-lived branches (main)
+- **Simple**: Only one long-lived branch (main)
 - **Clear**: Branch names indicate purpose
 - **Safe**: Protected main branch prevents accidents
 - **Traceable**: All changes go through pull requests
-- **Ticketed**: All branches are linked to specific ticketed work (if used)
+- **Flexible**: Ticket IDs are optional - include them if you use a ticket tracker
+
+!!! note "Ticket IDs"
+    If you use a ticket tracker, including the ticket ID in the branch name is good practice. It links the branch to the work that motivated it, makes changes easier to trace, and gives you a quick reference when revisiting old branches.
 
 
 ## Feature Development Workflow
 
-=== "Terminal (CLI)"
+=== "Terminal"
+
+
     **Step 1: Start from Main**
+
     ```sh
     git checkout main
     git pull origin main
     ```
 
     **Step 2: Create a Feature Branch**
+
     ```sh
     git checkout -b feature/add-analytics-warehouse
-    git branch
     ```
 
     **Step 3: Make Your Changes**
+    You should regularly commit your changes to provide a good history. Every time you reach a checkpoint, commit the changes.
+
     ```sh
-    # Edit files, then:
-    git status
-    git diff
-    git add path/to/file
-    git commit -m "Clear description of change made"
+    git status # See which files have changed
+    git diff # See what has changed
+    git add path/to/file # Stage files for commit
+    git commit -m "Clear description of change made" # Commit
     ```
 
     **Step 4: Keep Your Branch Updated**
+    Make sure to regularly pull any changes on the `main` branch into your feature branch to minimise divergence. If there are conflicts, resolve them and commit.
+
     ```sh
-    # Regularly pull main:
     git pull origin main
-    # If there are conflicts, resolve them and commit
     ```
 
     **Step 5: Run Local Checks**
     *(Run tests, lint, etc. as appropriate)*
 
     **Step 6: Push Your Branch**
+
     ```sh
     git push origin feature/add-analytics-warehouse
     ```
 
+    !!! note "Using the git plugin"
+        If you followed along with the local environment setup, you'll have installed the git plugin for Oh-My-Zsh. This comes with a number of shortcuts for these commands. You can see them all [here](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh).
+
+        ```sh
+        gcm # git checkout main
+        gl origin main # git pull origin main
+        gcb! feature/add-analytics-warehouse # git checkout -b feature/add-analytics-warehouse
+        gst # git status
+        gd # git diff
+        ga path/to/file # git add path/to/file
+        gcmsg "Clear description of change made" # git commit -m "Clear description of change made"
+        gl origin main # git pull origin main
+        ggpush # git push origin feature/add-analytics-warehouse
+        ```
+
+
 === "VS Code Source Control Panel"
     **Step 1: Start from Main**
+
     - Open the Source Control panel (⌃⇧G or click the branch icon)
     - Switch to `main` branch
     - Click the "…" menu > Pull (or use the pull button)
 
     **Step 2: Create a Feature Branch**
+
     - Click the branch name in the status bar
     - Select "Create new branch"
     - Name it (e.g. `feature/add-analytics-warehouse`)
 
     **Step 3: Make Your Changes**
+
     - Edit files as needed
     - The Source Control panel will show changed files
     - Stage files (with the + button)
     - Write a clear commit message and commit
 
     **Step 4: Keep Your Branch Updated**
+
     - Click the "…" menu > Pull (with branch selected)
 
     **Step 5: Run Local Checks**
+
     - Use the built-in Problems panel, linters, and test runners
     - Ask Claude to do a review (if appropriate)
 
     **Step 6: Push Your Branch**
+
     - Click the "…" menu > Push, or use the push button
 
 === "Autofetch in VS Code"
     To keep your repo up to date automatically:
+
     1. Open Command Palette (Cmd+Shift+P)
     2. Search for `settings` and open `Preferences: Open Settings (UI)`
     3. Search for `git autofetch`
     4. Enable **Git: Autofetch**
-    
+
     VS Code will now regularly fetch updates from the remote.
 
 ### Good Commit Messages
@@ -180,6 +216,40 @@ Fix bug
 
 All repos should have a Pull Request template included to help developers structure their Pull Requests in `.github/pull_request_template.md` - you'll see this in use later. This is automatically populated when you go to create the PR. This should be properly populated with details of the changes and tests to provide the reviewer with as much information as possible.
 
+### Using Claude Code to Create Pull Requests
+
+If you have Claude Code installed and `gh` CLI authenticated, you can automate PR creation with a Claude skill. The skill reads your PR template, inspects the diff and commit history, and creates a fully populated PR on your behalf.
+
+Create the file `.claude/skills/create-pr.md` in your repository:
+
+```markdown
+Create a pull request for the current branch using the repository's PR template.
+
+Steps:
+1. Read `.github/pull_request_template.md` to understand the required sections
+2. Run `git log main..HEAD --oneline` to see the commits on this branch
+3. Run `git diff main...HEAD --stat` to understand which files changed
+4. Infer the PR title from the branch name and commit messages
+5. Populate the template:
+   - **Description**: summarise what changed and why, based on the diff and commits
+   - **Checklist**: leave all items unchecked for the author to review
+   - **Screenshots**: omit this section if not applicable
+   - **Additional context**: include the ticket ID from the branch name if present
+6. Run `gh pr create --base main --title "<title>" --body "<populated template>"`
+7. Output the PR URL
+```
+
+Once the file is in place, invoke it from Claude Code:
+
+```
+/create-pr
+```
+
+Claude will inspect your branch, populate the template, and open the PR - leaving the checklist for you to tick off before requesting review.
+
+!!! tip
+    You can customise the skill for each repository. For example, a dbt repository might prompt Claude to list which models were added or modified, and a Terraform repository might ask it to summarise the resources being created or changed.
+
 ### Request Reviewers
 
 Add at least one reviewer from your team:
@@ -196,12 +266,14 @@ Add at least one reviewer from your team:
 ### For Authors
 
 **Before requesting review:**
+
 - ✅ Self-review your own changes first
 - ✅ Ensure CI checks pass
 - ✅ Write clear PR description
 - ✅ Keep changes focused and small
 
 **During review:**
+
 - ✅ Respond to all comments
 - ✅ Ask for clarification if needed
 - ✅ Mark conversations as resolved when addressed
@@ -210,6 +282,7 @@ Add at least one reviewer from your team:
 ### For Reviewers
 
 **What to look for:**
+
 - ✅ Does the code do what the PR says?
 - ✅ Are there any security issues?
 - ✅ Is the code well-structured and maintainable?
@@ -217,6 +290,7 @@ Add at least one reviewer from your team:
 - ✅ Could this break existing infrastructure?
 
 **How to give feedback:**
+
 - ✅ Be specific and constructive
 - ✅ Explain the "why" behind suggestions
 - ✅ Distinguish between "must fix" and "nice to have"
@@ -233,7 +307,7 @@ This would allow different environments to use different sizes.
 This could be better.
 
 # Good: Asks questions
-Why is auto_suspend set to 300 seconds here? Is this based on expected 
+Why is auto_suspend set to 300 seconds here? Is this based on expected
 usage patterns? Could we document the reasoning?
 
 # Bad: Demands without context
@@ -255,6 +329,7 @@ Merging is when the code is pushed to the another branch - in this flow, we are 
 ### When to Merge
 
 Only merge when:
+
 - ✅ All required approvals received
 - ✅ All CI checks pass
 - ✅ All conversations resolved
@@ -322,7 +397,7 @@ git commit -m "[your changes]"
 
 ### Scenario: Accidentally pushed secrets to GitHub
 
-Firstly, we've all been there, or know someone that has. Sometimes, secrets get out. You are working on a tight deadline and realise you've accidentally committed a file that contains secrets. It's about being open about the leak *internally* and mitigating it as quickly as possible. 
+Firstly, we've all been there, or know someone that has. Sometimes, secrets get out. You are working on a tight deadline and realise you've accidentally committed a file that contains secrets. It's about being open about the leak *internally* and mitigating it as quickly as possible.
 
 1. Let your security team know - you should be working in private repos as best practice, but let them know anyway.
 2. Follow the docs [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository) on how to remove the file from your local and GitHub histories.
