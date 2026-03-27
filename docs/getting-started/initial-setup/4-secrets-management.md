@@ -135,22 +135,31 @@ AWS Secrets Manager is the second half of your secrets strategy. While 1Password
 
 ### How It Will Be Organised
 
-When you set up Secrets Manager, you'll use a prefix-based naming convention:
+When you set up Secrets Manager, you'll use a prefix-based naming convention that groups secrets by the tool or purpose they serve. By the end of Getting Started, you'll have:
 
 ```
-terraform/              # Secrets used by Terraform
+terraform/                    # Secrets used by Terraform
+  github-token                # GitHub PAT for the Terraform GitHub provider
+  snowflake-credentials       # Snowflake service account key pair
+```
+
+As you work through the Build sections, each tool adds its own secrets under a matching prefix. For example, after completing the Batch Data Ingestion and SaaS Ingestion sections:
+
+```
+terraform/                    # Secrets used by Terraform
   github-token
   snowflake-credentials
 
-applications/           # Secrets used by applications
-  api-keys
-  database-connections
+dlt/                          # Secrets for dlt pipelines
+  hubspot-api-key
+  postgres-connection
 
-cicd/                   # Secrets specific to CI/CD
-  deploy-keys
+airbyte/                      # Secrets for Airbyte connectors
+  hubspot-api-key
+  snowflake-credentials
 ```
 
-This structure makes it easy to apply IAM policies to groups of secrets, granting access only to the secrets each service needs.
+This structure makes it easy to apply IAM policies to groups of secrets, granting each service access only to the secrets it needs.
 
 ### GitHub Actions Integration
 
@@ -165,12 +174,12 @@ Once configured, GitHub Actions can retrieve secrets from Secrets Manager using 
 
 Plan for regular rotation of sensitive credentials:
 
-| Secret Type | Rotation Frequency | Method |
-|-------------|-------------------|--------|
-| Database passwords | 90 days | Secrets Manager automatic rotation |
-| API keys | 180 days | Manual with planned cutover |
-| Service account passwords | 90 days | Coordinated with Terraform |
-| Personal access tokens | 365 days | Individual responsibility |
+| Secret | Location | Rotation Frequency | Method |
+|--------|----------|--------------------|--------|
+| GitHub PAT (`terraform/github-token`) | AWS Secrets Manager | 365 days | Regenerate in GitHub, update in Secrets Manager |
+| Snowflake service account key pair (`terraform/snowflake-credentials`) | AWS Secrets Manager | 180 days | Generate new key pair, update in Secrets Manager |
+| AWS root account password | 1Password | 180 days | Rotate in AWS console, update in 1Password |
+| Shared vault credentials | 1Password | On team member departure | Rotate any shared secrets they had access to |
 
 ### Access Control Principles
 
