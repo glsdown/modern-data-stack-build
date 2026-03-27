@@ -4,7 +4,7 @@ On this page, you will:
 
 - [x] Install Elementary dbt package to track test results
 - [x] Configure Elementary CLI for anomaly detection
-- [x] Deploy Elementary UI (self-hosted or Elementary Cloud)
+- [x] Generate and host the Elementary report (self-hosted or Elementary Cloud)
 - [x] Set up Slack alerts for test failures and anomalies
 - [x] Understand Elementary's anomaly detection capabilities
 
@@ -311,7 +311,7 @@ Details: Row count is 2,350 (expected ~3,500 based on 7-day average)
 Severity: Warning
 Timestamp: 2026-02-20 08:15:00 UTC
 
-View in Elementary: https://your-elementary-ui.com/models/fct_exchange_rates
+View report: https://your-docs.cloudfront.net/elementary/
 ```
 
 ### Customise alert format
@@ -324,16 +324,16 @@ vars:
     slack_group_alerts_by: "model"  # or "test", "severity"
 ```
 
-## Step 6: Deploy Elementary UI
+## Step 6: Host the Elementary Report
 
-The Elementary UI provides a dashboard for data quality metrics, test results, and lineage.
+`edr report` generates a static HTML file containing all test results, anomaly trends, and lineage — no server required. Data is read from the `ELEMENTARY` schema in Snowflake at generation time.
 
 ### Option A: Elementary Cloud (Managed, $50+/month)
 
 1. Sign up at [elementary-data.com/cloud](https://www.elementary-data.com/cloud)
 2. Connect to Snowflake:
    - Account: `your-account.snowflakecomputing.com`
-   - User: `SVC_ELEMENTARY` (create this service account, see below)
+   - User: `SVC_DBT` (or a dedicated read-only service account)
    - Database: `ANALYTICS`
    - Schema: `ELEMENTARY`
 3. Elementary Cloud queries the `ELEMENTARY` schema and displays results
@@ -344,87 +344,47 @@ The Elementary UI provides a dashboard for data quality metrics, test results, a
 - Hosted at `https://your-org.elementary-data.com`
 
 **Cons:**
-- $50+/month (unlimited users)
+- $50+/month
 - Requires cloud access to Snowflake
 
-### Option B: Self-Hosted (Free, ~$30/month infrastructure)
+### Option B: Self-Hosted Static Report (~$1-5/month)
 
-Deploy Elementary UI to ECS (similar to Lightdash self-hosted).
+Generate the report with `edr report` and host it on S3 + CloudFront — the same pattern used for dbt docs.
 
-#### Create SVC_ELEMENTARY Service Account
-
-```hcl
-# terraform/snowflake/service-accounts/elementary.tf
-module "service_user_elementary" {
-  source = "../modules/snowflake_service_user"
-
-  username    = "SVC_ELEMENTARY"
-  comment     = "Service account for Elementary data observability"
-  email       = "data-platform@yourcompany.com"
-  rsa_public_key = var.svc_elementary_public_key
-
-  user_create_dedicated_role = true
-  dedicated_role_grants = [
-    "ANALYTICS_DEVELOPER"  # Read ELEMENTARY schema + write anomalies
-  ]
-
-  default_warehouse = "TRANSFORMING"
-  default_namespace = "ANALYTICS.ELEMENTARY"
-  default_role      = "SVC_ELEMENTARY"
-
-  tags = {
-    Service   = "elementary"
-    ManagedBy = "terraform"
-  }
-}
-```
-
-#### Deploy Elementary UI with Docker
-
-```yaml
-# docker-compose.yml (for local testing)
-version: '3.8'
-
-services:
-  elementary-ui:
-    image: elementarydata/elementary:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - SNOWFLAKE_ACCOUNT=your-account.snowflakecomputing.com
-      - SNOWFLAKE_USER=SVC_ELEMENTARY
-      - SNOWFLAKE_DATABASE=ANALYTICS
-      - SNOWFLAKE_SCHEMA=ELEMENTARY
-      - SNOWFLAKE_WAREHOUSE=TRANSFORMING
-      - SNOWFLAKE_ROLE=SVC_ELEMENTARY
-      - SNOWFLAKE_PRIVATE_KEY_PATH=/keys/svc_elementary_rsa_key.pem
-    volumes:
-      - ./keys:/keys:ro
-```
-
-Run:
+#### Generate the report locally
 
 ```sh
-docker-compose up
+cd ~/projects/dbt/dbt-transform
+edr report --profiles-dir ~/.dbt
 ```
 
-Navigate to `http://localhost:8080` to view Elementary UI.
+This creates `edr_target/elementary_report.html`. Open it in your browser to view test results, anomalies, and lineage.
 
-#### Deploy to ECS (Production)
+#### Host on S3 + CloudFront (Production)
 
-Follow the same pattern as [Lightdash self-hosted](../data-analytics/7-self-hosted-lightdash.md):
+Create an S3 bucket for the Elementary report (reuse the same setup as your dbt docs bucket if you have one):
 
-- ECS Fargate service (~$15/month)
-- RDS PostgreSQL for Elementary metadata (~$15/month)
-- ALB for HTTPS (~$20/month)
-- **Total: ~$50/month**
+```sh
+# Upload report to S3
+aws s3 cp edr_target/elementary_report.html \
+    s3://your-docs-bucket/elementary/index.html \
+    --profile data-engineer
 
-!!! tip "Reuse Infrastructure Modules"
-    Use the same Terraform modules created for Lightdash (ECS service, RDS, ALB) to deploy Elementary UI.
+# Invalidate CloudFront cache
+aws cloudfront create-invalidation \
+    --distribution-id YOUR_DISTRIBUTION_ID \
+    --paths "/elementary/*" \
+    --profile data-engineer
+```
+
+The report is then available at `https://your-docs.cloudfront.net/elementary/`.
+
+!!! tip "Reuse dbt Docs Infrastructure"
+    If you've already set up S3 + CloudFront for dbt docs, host the Elementary report in a subdirectory of the same bucket. No additional infrastructure needed.
 
 ## Step 7: Automate Elementary in Prefect
 
-Run Elementary anomaly detection after every dbt run.
+Run Elementary anomaly detection and report generation after every dbt run.
 
 ### Prefect Flow
 
@@ -457,11 +417,30 @@ def run_elementary_monitor():
         return_all=True
     )
 
+@task
+def generate_and_upload_report():
+    """Generate Elementary report and upload to S3"""
+    shell_run_command(
+        command="""
+        cd ~/projects/dbt/dbt-transform &&
+        edr report --profiles-dir ~/.dbt &&
+        aws s3 cp edr_target/elementary_report.html \
+            s3://your-docs-bucket/elementary/index.html \
+            --profile data-engineer &&
+        aws cloudfront create-invalidation \
+            --distribution-id YOUR_DISTRIBUTION_ID \
+            --paths '/elementary/*' \
+            --profile data-engineer
+        """,
+        return_all=True
+    )
+
 @flow(name="dbt-with-elementary")
 def dbt_with_elementary_flow():
-    """Run dbt and Elementary anomaly detection"""
+    """Run dbt, Elementary anomaly detection, and refresh report"""
     run_dbt()
-    run_elementary_monitor()  # Runs after dbt completes
+    run_elementary_monitor()
+    generate_and_upload_report()
 
 if __name__ == "__main__":
     dbt_with_elementary_flow()
@@ -478,7 +457,7 @@ prefect deployment build flows/dbt_with_elementary.py:dbt_with_elementary_flow \
 prefect deployment apply dbt_with_elementary_flow-deployment.yaml
 ```
 
-Now Elementary runs automatically after every dbt run, detecting anomalies and sending Slack alerts.
+Now Elementary runs automatically after every dbt run, detecting anomalies, sending Slack alerts, and refreshing the hosted report.
 
 ## Elementary Features Overview
 
@@ -543,7 +522,7 @@ You've set up Elementary for dbt observability:
 - [x] **Elementary dbt package** installed and running on every `dbt build`
 - [x] **Elementary CLI** configured for anomaly detection
 - [x] **Slack integration** sending alerts to `#data-alerts`
-- [x] **Elementary UI** deployed (self-hosted or Elementary Cloud)
+- [x] **Elementary report** hosted on S3 + CloudFront (or Elementary Cloud)
 - [x] **Prefect automation** running Elementary after dbt daily runs
 - [x] **Anomaly detection** configured for volume, freshness, and schema changes
 
