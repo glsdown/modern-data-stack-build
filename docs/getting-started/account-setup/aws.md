@@ -26,7 +26,7 @@ Visit the [AWS sign-up page](https://portal.aws.amazon.com/billing/signup) and c
 - Phone verification
 
 !!! info "About the Root User"
-    The email you provide creates the **root user** - the most powerful account in AWS with unrestricted access to all services and billing. You should rarely use this account for day-to-day operations.
+    The email you provide creates the **root user** - the most powerful account in AWS with unrestricted access to all services and billing. You should not use this account for day-to-day operations.
 
 !!! tip "Store Credentials in 1Password"
     As you complete sign-up, immediately create a new entry in your 1Password vault for "AWS Root User". Store the email address and password securely. You'll add MFA details to this entry shortly. Make sure to store this in a Vault that has locked down access - you should only give root user access to a small handful of people.
@@ -108,7 +108,7 @@ For all other tasks, use IAM users or roles (which we'll create next).
 
 Your account can be referenced by both an ID and [an alias](https://docs.aws.amazon.com/IAM/latest/UserGuide/console-account-alias.html). The name should be something human-readable and memorable, for example `my-company-name`.
 
-To change the account alias, when logged in as the root user, open the IAM console at https://console.aws.amazon.com/iam/. In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.
+To change the account alias, when logged in as the root user, open the IAM console at [console.aws.amazon.com/iam](https://console.aws.amazon.com/iam/). In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.
 
 ## Enable IAM Access to Billing
 
@@ -274,7 +274,9 @@ Now create an IAM user for yourself. This user will be able to assume both roles
 
 ### Enable MFA for Your User
 
-1. Still in Security credentials, scroll to "Multi-factor authentication (MFA)"
+You're still signed in as root and viewing the IAM user you just created — root can assign MFA to any IAM user directly from the user's profile page, without needing to sign in as that user first.
+
+1. Still on the IAM user's "Security credentials" tab, scroll to "Multi-factor authentication (MFA)"
 2. Click "Assign MFA device"
 3. Choose device name (e.g., `jbloggs-phone`)
 4. Select your MFA type (1Password or authenticator app)
@@ -287,7 +289,7 @@ Now create an IAM user for yourself. This user will be able to assume both roles
 
 ### Allow User to Assume Roles
 
-We need to grant your user permission to assume the roles we created:
+We need to grant your user permission to assume the roles we created. In the later terraform section, we'll set this up programmatically, but for now, we'll simply add an in-line policy
 
 1. While viewing your user, click the "Permissions" tab
 2. Click "Add permissions" → "Create inline policy"
@@ -349,6 +351,9 @@ The console now shows you're using the DataEngineerRole with the permissions att
 ## Set Up Cost-Based Alerts
 
 AWS can notify you when spending exceeds thresholds. This is critical to avoid unexpected bills.
+
+!!! note "Switch to AdminRole first"
+    Budgets and billing preferences require billing permissions. Switch to `AdminRole` before continuing: click your username (top-right) → "Switch role" → enter `AdminRole`.
 
 ### Create a Budget
 

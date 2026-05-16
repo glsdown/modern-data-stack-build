@@ -144,8 +144,8 @@ You'll also need:
 | [6. Exchange Rates to S3](6-exchange-rates-to-s3.md) | Historical data via S3 staging and Snowpipe auto-ingestion |
 | [7. Products Pipeline](7-products-pipeline.md) | Database extraction with incremental loading |
 | [8. Prefect Orchestration](8-prefect-orchestration.md) | Wrap pipelines in Prefect flows with schedules and alerting |
-| [9. Finishing Up](9-finishing-up.md) | Verification and next steps |
-| [10. HubSpot Pipeline](10-hubspot-pipeline.md) | CRM data ingestion with the dlt HubSpot connector |
+| [9. HubSpot Pipeline](9-hubspot-pipeline.md) | CRM data ingestion with the dlt HubSpot connector |
+| [10. Finishing Up](10-finishing-up.md) | Verification and next steps |
 
 ## Cost Considerations
 

@@ -92,7 +92,7 @@ aws secretsmanager put-secret-value \
 
 ### HubSpot API Key (Optional)
 
-If you plan to use dlt for HubSpot ingestion (covered in [HubSpot Pipeline](10-hubspot-pipeline.md)):
+If you plan to use dlt for HubSpot ingestion (covered in [HubSpot Pipeline](9-hubspot-pipeline.md)):
 
 ```sh
 aws secretsmanager put-secret-value \

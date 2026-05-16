@@ -272,4 +272,4 @@ Congratulations! You've built a complete batch data ingestion system:
 
 The next page demonstrates adding a SaaS connector (HubSpot) using dlt's verified source — a pattern for when you need one or two SaaS sources without the overhead of Airbyte.
 
-Continue to [HubSpot Pipeline](10-hubspot-pipeline.md) →
+Continue to [HubSpot Pipeline](9-hubspot-pipeline.md) →

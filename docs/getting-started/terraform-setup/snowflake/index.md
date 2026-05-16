@@ -40,7 +40,7 @@ For now, we won't manage:
 - **Network policies**: Add these when you have specific security requirements
 
 !!! note "Incremental Approach"
-    We're starting with the minimum needed to get Terraform working with Snowflake. You'll add warehouses, databases, and roles in the [Data Warehouse](../../../build/data-warehouse/) section.
+    We're starting with the minimum needed to get Terraform working with Snowflake. You'll add warehouses, databases, and roles in the [Data Warehouse](../../../build/data-warehouse/index.md) section.
 
 ## Authentication Approach
 

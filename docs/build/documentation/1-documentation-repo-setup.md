@@ -216,7 +216,7 @@ mkdir -p docs/images
 Start the local development server:
 
 ```sh
-uv run mkdocs serve
+uv run mkdocs serve --livereload
 ```
 
 This clones each imported repository into a temporary directory and builds the unified site. The first run takes longer as it clones the repositories. Subsequent rebuilds are faster because `cleanup: false` preserves the cloned content.
@@ -233,7 +233,7 @@ Each repository also has its own minimal `mkdocs.yml` for independent preview. W
 ```sh
 # From within the terraform repository
 cd ~/src/terraform
-uv run mkdocs serve
+uv run mkdocs serve --livereload
 ```
 
 This is faster and does not require network access to clone other repositories.

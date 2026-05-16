@@ -282,6 +282,25 @@ With clean, tested, analytics-ready data in Snowflake, the next steps are:
 - `build/data-analytics/` — BI tool setup and dashboard development
 - `build/observability/` — Data quality monitoring and alerting
 
+## Claude Code Setup
+
+Now that your `dbt-transform` repository has its model layers, naming conventions, and testing patterns established, add a CLAUDE.md and skills so Claude Code can help add sources and models correctly.
+
+Create the skills directory structure in your `dbt-transform` repository:
+
+```sh
+mkdir -p .claude/skills/add-source-and-staging
+mkdir -p .claude/skills/add-mart-model
+```
+
+Copy the templates from the Maintain section:
+
+- [dbt CLAUDE.md template](../../maintain/templates/dbt-claude.md) → `CLAUDE.md` at the repository root
+- [add-source-and-staging skill](../../maintain/templates/add-source-and-staging.md) → `.claude/skills/add-source-and-staging/SKILL.md`
+- [add-mart-model skill](../../maintain/templates/add-mart-model.md) → `.claude/skills/add-mart-model/SKILL.md`
+
+Verify by opening the repository in Claude Code and asking it to describe the model layer conventions - it should reference double underscores, materialisation rules, and the one-YAML-per-model pattern.
+
 ## Feedback
 
 Found an issue or have suggestions? Open an issue in the repository.
