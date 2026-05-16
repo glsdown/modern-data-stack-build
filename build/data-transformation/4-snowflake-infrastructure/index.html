@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6132,19 +6134,19 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>dbt needs a Snowflake service account to run transformations in production and CI/CD. The required database, warehouse, and role hierarchy are already in place from the <a href="../../data-warehouse/">Data Warehouse</a> section — this page adds only the service account.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Existing Snowflake Infrastructure (already built)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── TRANSFORMING warehouse       ← dbt will use this
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── ANALYTICS database           ← dbt writes here (production)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── REPORTING schema         ← Terraform-managed; BI tool access
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   └── (staging, intermediate, marts created by dbt)
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── ANALYTICS_DEV database       ← dbt writes here (development)
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── ANALYTICS_TRANSFORMER role   ← has write access to ANALYTICS
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└── ANALYTICS_DEVELOPER role     ← has read access to ANALYTICS
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>New (this page)
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>└── SVC_DBT service account
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    └── SVC_DBT role (dedicated, auto-created)
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        └── Granted ANALYTICS_TRANSFORMER
+<div class="highlight"><pre><span></span><code>Existing Snowflake Infrastructure (already built)
+├── TRANSFORMING warehouse       ← dbt will use this
+├── ANALYTICS database           ← dbt writes here (production)
+│   ├── REPORTING schema         ← Terraform-managed; BI tool access
+│   └── (staging, intermediate, marts created by dbt)
+├── ANALYTICS_DEV database       ← dbt writes here (development)
+├── ANALYTICS_TRANSFORMER role   ← has write access to ANALYTICS
+└── ANALYTICS_DEVELOPER role     ← has read access to ANALYTICS
+
+New (this page)
+└── SVC_DBT service account
+    └── SVC_DBT role (dedicated, auto-created)
+        └── Granted ANALYTICS_TRANSFORMER
 </code></pre></div>
 <h2 id="how-existing-grants-cover-dbt-schemas">How Existing Grants Cover dbt Schemas</h2>
 <p>dbt creates schemas dynamically when it runs (<code>STAGING</code>, <code>INTERMEDIATE</code>, <code>MARTS</code>). These schemas do not need to be pre-created in Terraform.</p>
@@ -6162,84 +6164,84 @@
 <h2 id="create-the-service-account">Create the Service Account</h2>
 <p>Open the <code>terraform/snowflake/</code> repository and add <code>SVC_DBT</code> to <code>users.tf</code>.</p>
 <p>Following the same pattern as <code>SVC_DLT</code> and <code>SVC_AIRBYTE</code>, use <code>user_create_dedicated_role = true</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># users.tf — add to data_loaders or create a data_transformers section</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Data Transformers</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_dbt"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">user_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="na">user_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for dbt transformation runs."</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_transforming.warehouse_name</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span><span class="c1">  # set after role is created by module</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1">  # Creates a SVC_DBT role and grants it to this user</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">  # Key-pair authentication — set manually after Terraform apply</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="err">rsa_public_key</span><span class="p">,</span><span class="w"> </span><span class="err">rsa_public_key_</span><span class="m">2</span><span class="p">]</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># users.tf — add to data_loaders or create a data_transformers section</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Data Transformers</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_dbt"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for dbt transformation runs."</span>
+
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_transforming.warehouse_name</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span><span class="c1">  # set after role is created by module</span>
+
+<span class="c1">  # Creates a SVC_DBT role and grants it to this user</span>
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="c1">  # Key-pair authentication — set manually after Terraform apply</span>
+<span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="err">rsa_public_key</span><span class="p">,</span><span class="w"> </span><span class="err">rsa_public_key_</span><span class="m">2</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="grant-analytics_transformer-to-svc_dbt">Grant ANALYTICS_TRANSFORMER to SVC_DBT</h3>
 <p>The dedicated <code>SVC_DBT</code> role needs the <code>ANALYTICS_TRANSFORMER</code> functional role so it inherits all transformation permissions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># users.tf — below the user module</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_account_role"</span><span class="w"> </span><span class="nv">"svc_dbt_gets_analytics_transformer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="na">provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="na">role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_transformer.role_name</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="na">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_dbt.user_name</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># users.tf — below the user module</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_account_role"</span><span class="w"> </span><span class="nv">"svc_dbt_gets_analytics_transformer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_transformer.role_name</span>
+<span class="w">  </span><span class="na">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_dbt.user_name</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Why grant to the user, not the role?</p>
 <p>The <code>SVC_DBT</code> dedicated role is used as the <code>default_role</code> so dbt connects with a predictable role. Granting <code>ANALYTICS_TRANSFORMER</code> directly to the <code>SVC_DBT</code> user means the user inherits those permissions regardless of which role is active. Either approach works — granting to the role is equally valid if you prefer the role inheritance model.</p>
 </div>
 <h3 id="deploy-the-changes">Deploy the Changes</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>add-svc-dbt-user
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>add<span class="w"> </span>users.tf
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add SVC_DBT service account for dbt transformations"</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>add-svc-dbt-user
+git<span class="w"> </span>add<span class="w"> </span>users.tf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add SVC_DBT service account for dbt transformations"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <p>Open a pull request, review the plan, and merge to trigger the CI/CD pipeline.</p>
 <p>After the pipeline completes, verify the user was created:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_DBT'</span><span class="p">;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1">-- default_warehouse should be TRANSFORMING</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- default_role should be SVC_DBT</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_DBT'</span><span class="p">;</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="c1">-- default_warehouse should be TRANSFORMING</span>
+<span class="c1">-- default_role should be SVC_DBT</span>
 </code></pre></div>
 <h2 id="set-up-key-pair-authentication">Set Up Key-Pair Authentication</h2>
 <p>dbt uses key-pair authentication for <code>SVC_DBT</code>. Follow the same process as for other service accounts:</p>
 <h3 id="generate-the-key-pair">Generate the Key Pair</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Generate private key</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span><span class="m">2048</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Generate public key</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_dbt_rsa_key.pub
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Display public key (without header/footer lines)</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"PUBLIC KEY"</span><span class="w"> </span>svc_dbt_rsa_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate private key</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span><span class="m">2048</span>
+
+<span class="c1"># Generate public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_dbt_rsa_key.pub
+
+<span class="c1"># Display public key (without header/footer lines)</span>
+grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"PUBLIC KEY"</span><span class="w"> </span>svc_dbt_rsa_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
 </code></pre></div>
 <h3 id="assign-the-public-key-in-snowflake">Assign the Public Key in Snowflake</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">USERADMIN</span><span class="p">;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="o">=</span><span class="s1">'&lt;paste-public-key-here&gt;'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">USERADMIN</span><span class="p">;</span>
+
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="o">=</span><span class="s1">'&lt;paste-public-key-here&gt;'</span><span class="p">;</span>
 </code></pre></div>
 <p>Verify:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">-- RSA_PUBLIC_KEY_FP should now be populated</span>
+<div class="highlight"><pre><span></span><code><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="c1">-- RSA_PUBLIC_KEY_FP should now be populated</span>
 </code></pre></div>
 <h3 id="store-the-private-key-in-1password">Store the Private Key in 1Password</h3>
 <p>Store the private key file in the <code>Service Accounts</code> vault in 1Password:</p>
@@ -6249,101 +6251,101 @@
 <li><strong>Private key</strong>: contents of <code>svc_dbt_rsa_key.pem</code></li>
 </ul>
 <p>Delete the local key files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>rm<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span>svc_dbt_rsa_key.pub
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>svc_dbt_rsa_key.pem<span class="w"> </span>svc_dbt_rsa_key.pub
 </code></pre></div>
 <h2 id="store-credentials-in-aws-secrets-manager">Store Credentials in AWS Secrets Manager</h2>
 <p>dbt CI/CD retrieves credentials from AWS Secrets Manager at runtime. Add the dbt credentials to Terraform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># terraform/aws/secrets.tf — add alongside existing secrets</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"dbt_snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt/snowflake-credentials"</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for SVC_DBT (dbt transformation service account)"</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="na">Project</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="na">ServiceName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt"</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/secrets.tf — add alongside existing secrets</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"dbt_snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt/snowflake-credentials"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for SVC_DBT (dbt transformation service account)"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Project</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">    </span><span class="na">ServiceName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Secret value set manually</p>
 <p>The secret resource is created by Terraform but the value is set manually (following the same pattern as other service account credentials). This avoids storing the private key in Terraform state.</p>
 </div>
 <p>After <code>terraform apply</code>, set the secret value in the AWS console or CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dbt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="s1">        "account": "your-account.snowflakecomputing.com",</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="s1">        "user": "SVC_DBT",</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s1">        "private_key": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s1">        "role": "SVC_DBT",</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s1">        "warehouse": "TRANSFORMING",</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="s1">        "database": "ANALYTICS",</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="s1">        "schema": "ANALYTICS"</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dbt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "account": "your-account.snowflakecomputing.com",</span>
+<span class="s1">        "user": "SVC_DBT",</span>
+<span class="s1">        "private_key": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",</span>
+<span class="s1">        "role": "SVC_DBT",</span>
+<span class="s1">        "warehouse": "TRANSFORMING",</span>
+<span class="s1">        "database": "ANALYTICS",</span>
+<span class="s1">        "schema": "ANALYTICS"</span>
+<span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Retrieve the private key from 1Password when running this command, then clear your terminal history.</p>
 <h2 id="update-profilesyml-for-local-development">Update <code>profiles.yml</code> for Local Development</h2>
 <p>With the service account created, update the <code>prod</code> target in your local <code>profiles.yml</code> (not committed):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># ~/.dbt/profiles.yml</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nt">dev</span><span class="p">:</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">YOUR_PERSONAL_USERNAME</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">      </span><span class="nt">authenticator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">externalbrowser</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEVELOPER</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEVELOPER</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span><span class="nt">prod</span><span class="p">:</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">      </span><span class="nt">private_key_path</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PATH')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">      </span><span class="nt">private_key_passphrase</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE',</span><span class="nv"> </span><span class="s">'')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRANSFORMING</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># ~/.dbt/profiles.yml</span>
+<span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
+<span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">YOUR_PERSONAL_USERNAME</span>
+<span class="w">      </span><span class="nt">authenticator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">externalbrowser</span>
+<span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEVELOPER</span>
+<span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEVELOPER</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
+<span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
+<span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+
+<span class="w">    </span><span class="nt">prod</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
+<span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
+<span class="w">      </span><span class="nt">private_key_path</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PATH')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">private_key_passphrase</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE',</span><span class="nv"> </span><span class="s">'')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
+<span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRANSFORMING</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
+<span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
+<span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 </code></pre></div>
 <p>Test the production profile locally (optional — only needed for debugging):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_ACCOUNT</span><span class="o">=</span><span class="s2">"your-account.snowflakecomputing.com"</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_PRIVATE_KEY_PATH</span><span class="o">=</span><span class="s2">"/path/to/svc_dbt_rsa_key.pem"</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>dbt<span class="w"> </span>debug<span class="w"> </span>--target<span class="w"> </span>prod
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_ACCOUNT</span><span class="o">=</span><span class="s2">"your-account.snowflakecomputing.com"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_PRIVATE_KEY_PATH</span><span class="o">=</span><span class="s2">"/path/to/svc_dbt_rsa_key.pem"</span>
+
+dbt<span class="w"> </span>debug<span class="w"> </span>--target<span class="w"> </span>prod
 </code></pre></div>
 <h2 id="verify-access">Verify Access</h2>
 <p>Confirm <code>SVC_DBT</code> has the correct permissions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- Connect as SVC_DBT</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1">-- Can use the TRANSFORMING warehouse</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1">-- Can create schemas in ANALYTICS (needed for dbt to create STAGING etc.)</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">STAGING</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should succeed</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">DROP</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">STAGING</span><span class="p">;</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="c1">-- Can write to the REPORTING schema (Terraform-managed)</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">REPORTING</span><span class="p">;</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">test_table</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="p">);</span><span class="w">  </span><span class="c1">-- should succeed</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">test_table</span><span class="p">;</span>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
-<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="c1">-- Can read from raw source databases</span>
-<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">DLT</span><span class="p">;</span>
-<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should show OPEN_EXCHANGE_RATES</span>
-<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>
-<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should show HUBSPOT</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Connect as SVC_DBT</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+
+<span class="c1">-- Can use the TRANSFORMING warehouse</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
+
+<span class="c1">-- Can create schemas in ANALYTICS (needed for dbt to create STAGING etc.)</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">STAGING</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should succeed</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">STAGING</span><span class="p">;</span>
+
+<span class="c1">-- Can write to the REPORTING schema (Terraform-managed)</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">REPORTING</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">test_table</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="p">);</span><span class="w">  </span><span class="c1">-- should succeed</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">test_table</span><span class="p">;</span>
+
+<span class="c1">-- Can read from raw source databases</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">DLT</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should show OPEN_EXCHANGE_RATES</span>
+
+<span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span><span class="w">  </span><span class="c1">-- should show HUBSPOT</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've set up the Snowflake infrastructure for dbt:</p>
@@ -6406,6 +6408,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6449,7 +6453,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

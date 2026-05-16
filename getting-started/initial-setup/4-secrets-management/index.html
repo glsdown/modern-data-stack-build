@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6342,17 +6344,17 @@
 </tbody>
 </table>
 <p>This separation follows the principle of least privilege: humans access secrets through 1Password, while automated systems access secrets through AWS Secrets Manager.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                     Secrets Management                          │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────┬───────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│         1Password           │       AWS Secrets Manager         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├─────────────────────────────┼───────────────────────────────────┤
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│ • Team member passwords     │ • Database connection strings     │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│ • Personal API tokens       │ • Service account credentials     │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│ • SSH keys                  │ • API keys for applications       │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│ • MFA recovery codes        │ • CI/CD pipeline secrets          │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│ • Shared service logins     │ • Terraform provider credentials  │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>└─────────────────────────────┴───────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────┐
+│                     Secrets Management                          │
+├─────────────────────────────┬───────────────────────────────────┤
+│         1Password           │       AWS Secrets Manager         │
+├─────────────────────────────┼───────────────────────────────────┤
+│ • Team member passwords     │ • Database connection strings     │
+│ • Personal API tokens       │ • Service account credentials     │
+│ • SSH keys                  │ • API keys for applications       │
+│ • MFA recovery codes        │ • CI/CD pipeline secrets          │
+│ • Shared service logins     │ • Terraform provider credentials  │
+└─────────────────────────────┴───────────────────────────────────┘
 </code></pre></div>
 <h2 id="setting-up-1password-for-teams">Setting Up 1Password for Teams</h2>
 <p>1Password provides secure credential storage with sharing capabilities through vaults.</p>
@@ -6423,21 +6425,21 @@
 </ul>
 <h3 id="1password-cli-integration">1Password CLI Integration</h3>
 <p>The 1Password CLI allows you to inject secrets into terminal commands without exposing them:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Install the CLI (if not already done)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>brew<span class="w"> </span>install<span class="w"> </span>1password-cli
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Sign in</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>op<span class="w"> </span>signin
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># List vaults you have access to</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>op<span class="w"> </span>vault<span class="w"> </span>list
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Get a specific secret</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s2">"Snowflake Admin"</span><span class="w"> </span>--fields<span class="w"> </span>password
+<div class="highlight"><pre><span></span><code><span class="c1"># Install the CLI (if not already done)</span>
+brew<span class="w"> </span>install<span class="w"> </span>1password-cli
+
+<span class="c1"># Sign in</span>
+op<span class="w"> </span>signin
+
+<span class="c1"># List vaults you have access to</span>
+op<span class="w"> </span>vault<span class="w"> </span>list
+
+<span class="c1"># Get a specific secret</span>
+op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s2">"Snowflake Admin"</span><span class="w"> </span>--fields<span class="w"> </span>password
 </code></pre></div>
 <p>You can also use secret references in scripts:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Instead of hardcoding credentials</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s2">"Snowflake Admin"</span><span class="w"> </span>--fields<span class="w"> </span>password<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Instead of hardcoding credentials</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s2">"Snowflake Admin"</span><span class="w"> </span>--fields<span class="w"> </span>password<span class="k">)</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Don't Commit CLI Commands with Secret References</p>
@@ -6458,19 +6460,25 @@
 <li><strong>Encryption</strong>: Secrets encrypted at rest with KMS</li>
 </ul>
 <h3 id="how-it-will-be-organised">How It Will Be Organised</h3>
-<p>When you set up Secrets Manager, you'll use a prefix-based naming convention:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform/              # Secrets used by Terraform
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  github-token
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  snowflake-credentials
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>applications/           # Secrets used by applications
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  api-keys
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  database-connections
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>cicd/                   # Secrets specific to CI/CD
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>  deploy-keys
+<p>When you set up Secrets Manager, you'll use a prefix-based naming convention that groups secrets by the tool or purpose they serve. By the end of Getting Started, you'll have:</p>
+<div class="highlight"><pre><span></span><code>terraform/                    # Secrets used by Terraform
+  github-token                # GitHub PAT for the Terraform GitHub provider
+  snowflake-credentials       # Snowflake service account key pair
 </code></pre></div>
-<p>This structure makes it easy to apply IAM policies to groups of secrets, granting access only to the secrets each service needs.</p>
+<p>As you work through the Build sections, each tool adds its own secrets under a matching prefix. For example, after completing the Batch Data Ingestion and SaaS Ingestion sections:</p>
+<div class="highlight"><pre><span></span><code>terraform/                    # Secrets used by Terraform
+  github-token
+  snowflake-credentials
+
+dlt/                          # Secrets for dlt pipelines
+  hubspot-api-key
+  postgres-connection
+
+airbyte/                      # Secrets for Airbyte connectors
+  hubspot-api-key
+  snowflake-credentials
+</code></pre></div>
+<p>This structure makes it easy to apply IAM policies to groups of secrets, granting each service access only to the secrets it needs.</p>
 <h3 id="github-actions-integration">GitHub Actions Integration</h3>
 <p>Once configured, GitHub Actions can retrieve secrets from Secrets Manager using OIDC authentication. This eliminates the need to store application secrets directly in GitHub - you'll only need bootstrap secrets like <code>AWS_ACCOUNT_ID</code> in GitHub to establish the initial AWS connection.</p>
 <div class="admonition tip">
@@ -6483,31 +6491,36 @@
 <table>
 <thead>
 <tr>
-<th>Secret Type</th>
+<th>Secret</th>
+<th>Location</th>
 <th>Rotation Frequency</th>
 <th>Method</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Database passwords</td>
-<td>90 days</td>
-<td>Secrets Manager automatic rotation</td>
-</tr>
-<tr>
-<td>API keys</td>
-<td>180 days</td>
-<td>Manual with planned cutover</td>
-</tr>
-<tr>
-<td>Service account passwords</td>
-<td>90 days</td>
-<td>Coordinated with Terraform</td>
-</tr>
-<tr>
-<td>Personal access tokens</td>
+<td>GitHub PAT (<code>terraform/github-token</code>)</td>
+<td>AWS Secrets Manager</td>
 <td>365 days</td>
-<td>Individual responsibility</td>
+<td>Regenerate in GitHub, update in Secrets Manager</td>
+</tr>
+<tr>
+<td>Snowflake service account key pair (<code>terraform/snowflake-credentials</code>)</td>
+<td>AWS Secrets Manager</td>
+<td>180 days</td>
+<td>Generate new key pair, update in Secrets Manager</td>
+</tr>
+<tr>
+<td>AWS root account password</td>
+<td>1Password</td>
+<td>180 days</td>
+<td>Rotate in AWS console, update in 1Password</td>
+</tr>
+<tr>
+<td>Shared vault credentials</td>
+<td>1Password</td>
+<td>On team member departure</td>
+<td>Rotate any shared secrets they had access to</td>
 </tr>
 </tbody>
 </table>
@@ -6561,7 +6574,8 @@
 </div>
 <h2 id="whats-next">What's Next</h2>
 <p>With your secrets management strategy in place, you can set up Claude Code to work with your repositories - or skip ahead to cloud account setup.</p>
-<p>Continue to <a href="../5-claude-code-setup/">Claude Code Setup</a> →</p>
+<p>Continue to <a href="../5-claude-code-setup/">Claude Code Setup</a> →
+or skip ahead to <a href="../../account-setup/">Hosted Account Setup</a> →</p>
 
 
 
@@ -6584,7 +6598,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6611,6 +6625,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6654,7 +6670,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

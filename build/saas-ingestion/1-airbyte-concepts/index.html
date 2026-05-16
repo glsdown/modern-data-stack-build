@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6276,28 +6278,28 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Airbyte is an open-source data integration platform. It provides pre-built connectors for extracting data from SaaS tools and loading it into data warehouses. Think of it as a managed ELT pipeline specifically designed for SaaS-to-warehouse syncs.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                         AIRBYTE ARCHITECTURE                                │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌──────────────┐     ┌──────────────────────────────┐     ┌─────────────┐  │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │              │     │         Airbyte              │     │             │  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │    Source    │────▶│  ┌────────────────────────┐  │────▶│ Destination │  │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │  (HubSpot)   │     │  │     Connection         │  │     │ (Snowflake) │  │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │              │     │  │  • Sync mode           │  │     │             │  │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  └──────────────┘     │  │  • Schedule            │  │     └─────────────┘  │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│                       │  │  • Selected streams    │  │                      │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                       │  └────────────────────────┘  │                      │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                       │                              │                      │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                       │  ┌────────────────────────┐  │                      │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                       │  │     Orchestrator       │  │                      │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                       │  │  • Job scheduling      │  │                      │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                       │  │  • State management    │  │                      │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                       │  │  • Error handling      │  │                      │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                       │  └────────────────────────┘  │                      │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                       └──────────────────────────────┘                      │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                                                             │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AIRBYTE ARCHITECTURE                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌──────────────┐     ┌──────────────────────────────┐     ┌─────────────┐  │
+│  │              │     │         Airbyte              │     │             │  │
+│  │    Source    │────▶│  ┌────────────────────────┐  │────▶│ Destination │  │
+│  │  (HubSpot)   │     │  │     Connection         │  │     │ (Snowflake) │  │
+│  │              │     │  │  • Sync mode           │  │     │             │  │
+│  └──────────────┘     │  │  • Schedule            │  │     └─────────────┘  │
+│                       │  │  • Selected streams    │  │                      │
+│                       │  └────────────────────────┘  │                      │
+│                       │                              │                      │
+│                       │  ┌────────────────────────┐  │                      │
+│                       │  │     Orchestrator       │  │                      │
+│                       │  │  • Job scheduling      │  │                      │
+│                       │  │  • State management    │  │                      │
+│                       │  │  • Error handling      │  │                      │
+│                       │  └────────────────────────┘  │                      │
+│                       └──────────────────────────────┘                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="core-concepts">Core Concepts</h2>
 <h3 id="sources">Sources</h3>
@@ -6354,13 +6356,13 @@
 <li><strong>Schedule</strong> (how often to sync)</li>
 <li><strong>Namespace</strong> (which Snowflake schema to write to)</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌──────────────┐         Connection          ┌──────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│              │  ┌──────────────────────┐   │              │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│   HubSpot    │──│ Streams: contacts    │──▶│  Snowflake   │
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   Source     │  │ Mode: incremental    │   │  Destination │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│              │  │ Schedule: daily      │   │              │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>└──────────────┘  │ Namespace: HUBSPOT   │   └──────────────┘
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>                  └──────────────────────┘
+<div class="highlight"><pre><span></span><code>┌──────────────┐         Connection          ┌──────────────┐
+│              │  ┌──────────────────────┐   │              │
+│   HubSpot    │──│ Streams: contacts    │──▶│  Snowflake   │
+│   Source     │  │ Mode: incremental    │   │  Destination │
+│              │  │ Schedule: daily      │   │              │
+└──────────────┘  │ Namespace: HUBSPOT   │   └──────────────┘
+                  └──────────────────────┘
 </code></pre></div>
 <h3 id="streams">Streams</h3>
 <p>A <strong>stream</strong> is a single data entity from a source — roughly equivalent to a table. The HubSpot source exposes these streams:</p>
@@ -6410,27 +6412,27 @@
 <p>Airbyte supports several sync modes that control how data is extracted and loaded.</p>
 <h3 id="full-refresh-overwrite">Full Refresh | Overwrite</h3>
 <p>The source extracts <strong>all</strong> records every sync. The destination <strong>replaces</strong> the entire table.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Sync 2: Source has [A, B, C, D]  → Destination: [A, B, C, D]
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Sync 3: Source has [A, B, D]     → Destination: [A, B, D]  (C removed)
+<div class="highlight"><pre><span></span><code>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
+Sync 2: Source has [A, B, C, D]  → Destination: [A, B, C, D]
+Sync 3: Source has [A, B, D]     → Destination: [A, B, D]  (C removed)
 </code></pre></div>
 <p><strong>Use when</strong>: Reference data that changes infrequently (e.g., product catalogue, currency codes).</p>
 <h3 id="full-refresh-append">Full Refresh | Append</h3>
 <p>The source extracts <strong>all</strong> records every sync. The destination <strong>appends</strong> to the existing table.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Sync 2: Source has [A, B, C, D]  → Destination: [A, B, C, A, B, C, D]
+<div class="highlight"><pre><span></span><code>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
+Sync 2: Source has [A, B, C, D]  → Destination: [A, B, C, A, B, C, D]
 </code></pre></div>
 <p><strong>Use when</strong>: You want to track snapshots over time. Requires deduplication in dbt.</p>
 <h3 id="incremental-append">Incremental | Append</h3>
 <p>The source extracts only <strong>new or modified</strong> records since the last sync. The destination <strong>appends</strong> them.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Sync 2: B modified, D added      → Destination: [A, B, C, B', D]
+<div class="highlight"><pre><span></span><code>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
+Sync 2: B modified, D added      → Destination: [A, B, C, B', D]
 </code></pre></div>
 <p><strong>Use when</strong>: High-volume tables where full refresh is too slow. Handle deduplication in dbt.</p>
 <h3 id="incremental-append-dedup">Incremental | Append + Dedup</h3>
 <p>The source extracts only <strong>new or modified</strong> records. The destination <strong>upserts</strong> — updates existing rows and appends new ones.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Sync 2: B modified, D added      → Destination: [A, B', C, D]
+<div class="highlight"><pre><span></span><code>Sync 1: Source has [A, B, C]     → Destination: [A, B, C]
+Sync 2: B modified, D added      → Destination: [A, B', C, D]
 </code></pre></div>
 <p><strong>Use when</strong>: You want the destination to always reflect the current state. This is the most common mode for CRM data.</p>
 <h3 id="recommended-modes-for-hubspot">Recommended Modes for HubSpot</h3>
@@ -6498,16 +6500,16 @@
 <p>This is fast to load but requires parsing JSON in dbt.</p>
 <h3 id="typing-and-deduplication-recommended">Typing and Deduplication (Recommended)</h3>
 <p>Airbyte creates typed tables with proper columns alongside the raw tables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Typed table (created by Airbyte)</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">id</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">firstname</span><span class="p">,</span><span class="w">      </span><span class="c1">-- VARCHAR</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">lastname</span><span class="p">,</span><span class="w">       </span><span class="c1">-- VARCHAR</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">email</span><span class="p">,</span><span class="w">          </span><span class="c1">-- VARCHAR</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="n">createdate</span><span class="p">,</span><span class="w">     </span><span class="c1">-- TIMESTAMP</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="n">_airbyte_raw_id</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="n">_airbyte_extracted_at</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Typed table (created by Airbyte)</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">firstname</span><span class="p">,</span><span class="w">      </span><span class="c1">-- VARCHAR</span>
+<span class="w">    </span><span class="n">lastname</span><span class="p">,</span><span class="w">       </span><span class="c1">-- VARCHAR</span>
+<span class="w">    </span><span class="n">email</span><span class="p">,</span><span class="w">          </span><span class="c1">-- VARCHAR</span>
+<span class="w">    </span><span class="n">createdate</span><span class="p">,</span><span class="w">     </span><span class="c1">-- TIMESTAMP</span>
+<span class="w">    </span><span class="n">_airbyte_raw_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_airbyte_extracted_at</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
 </code></pre></div>
 <p>This is the default in Airbyte Cloud and is recommended for most use cases.</p>
 <h2 id="state-management">State Management</h2>
@@ -6688,6 +6690,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6731,7 +6735,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

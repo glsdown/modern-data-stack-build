@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6144,7 +6146,7 @@
 </ul>
 <h2 id="navigate-to-your-terraform-directory">Navigate to Your Terraform Directory</h2>
 <p>First, create the Snowflake directory if it doesn't exist:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>take<span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
+<div class="highlight"><pre><span></span><code>take<span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Working Directory</p>
@@ -6153,15 +6155,15 @@
 <h2 id="configure-the-remote-state-backend">Configure the Remote State Backend</h2>
 <p>The remote state backend stores Terraform's view of your Snowflake infrastructure. You set it up as part of the <a href="../../1-set-up-terraform-remote-state/">Terraform Remote State setup steps</a>. Now configure Terraform to use it for Snowflake resources.</p>
 <p>Create <code>backend.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="kr">backend</span><span class="w"> </span><span class="nv">"s3"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="na">bucket</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-123456789012"</span><span class="c1">  # Replace with your bucket name</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="na">key</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"snowflake/terraform.tfstate"</span><span class="c1">   # Snowflake-specific state file</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="na">region</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span><span class="c1">                     # Replace with your region</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">encrypt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">backend</span><span class="w"> </span><span class="nv">"s3"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">bucket</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-123456789012"</span><span class="c1">  # Replace with your bucket name</span>
+<span class="w">    </span><span class="na">key</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"snowflake/terraform.tfstate"</span><span class="c1">   # Snowflake-specific state file</span>
+<span class="w">    </span><span class="na">region</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span><span class="c1">                     # Replace with your region</span>
+<span class="w">    </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span>
+<span class="w">    </span><span class="na">encrypt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Replace:</p>
 <ul>
@@ -6171,7 +6173,7 @@
 <div class="admonition warning">
 <p class="admonition-title">Bucket Name Must Match</p>
 <p>Use the exact bucket name you created in <a href="../../1-set-up-terraform-remote-state/">Set Up Terraform Remote State</a>. You can verify it with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>terraform-state
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>terraform-state
 </code></pre></div>
 </div>
 <div class="admonition tip">
@@ -6180,16 +6182,16 @@
 </div>
 <h2 id="configure-terraform-and-provider-versions">Configure Terraform and Provider Versions</h2>
 <p>Create <code>main.tf</code> to specify Terraform version requirements and the Snowflake provider:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;= 1.14.0"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;= 1.14.0"</span>
+
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
+<span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This configuration:</p>
 <ul>
@@ -6207,41 +6209,41 @@
 </div>
 <h2 id="create-variables">Create Variables</h2>
 <p>Create <code>variables.tf</code> to define the variables needed for Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Snowflake Variables</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_username"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake username"</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Snowflake Variables</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_username"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake username"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-variable-values">Create Variable Values</h2>
 <p>Create <code>terraform.tfvars</code> to provide your specific values:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Snowflake Configuration</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="na">snowflake_organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MYORG"</span><span class="c1">     # Replace with your organization name</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="na">snowflake_account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"MYACCOUNT"</span><span class="c1"> # Replace with your account name</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="na">snowflake_username</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-admin-username"</span><span class="c1"> # Temporary - will be SVC_TERRAFORM once setup</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Snowflake Configuration</span>
+<span class="na">snowflake_organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MYORG"</span><span class="c1">     # Replace with your organization name</span>
+<span class="na">snowflake_account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"MYACCOUNT"</span><span class="c1"> # Replace with your account name</span>
+<span class="na">snowflake_username</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-admin-username"</span><span class="c1"> # Temporary - will be SVC_TERRAFORM once setup</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Finding Your Organization and Account Names</p>
 <p>You can find these values in several ways:</p>
 <p><strong>From the URL</strong>: Your login URL follows <code>https://ORG-ACCOUNT.snowflakecomputing.com</code></p>
 <p><strong>From SQL</strong>:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ORGANIZATION_NAME</span><span class="p">();</span><span class="w">  </span><span class="c1">-- Returns: MYORG</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ACCOUNT_NAME</span><span class="p">();</span><span class="w">       </span><span class="c1">-- Returns: MYACCOUNT</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ORGANIZATION_NAME</span><span class="p">();</span><span class="w">  </span><span class="c1">-- Returns: MYORG</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ACCOUNT_NAME</span><span class="p">();</span><span class="w">       </span><span class="c1">-- Returns: MYACCOUNT</span>
 </code></pre></div><p></p>
 <p><strong>From organization accounts</strong> (if you have ORGADMIN):
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ORGADMIN</span><span class="p">;</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">ORGANIZATION</span><span class="w"> </span><span class="n">ACCOUNTS</span><span class="p">;</span>
+</p><div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ORGADMIN</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">ORGANIZATION</span><span class="w"> </span><span class="n">ACCOUNTS</span><span class="p">;</span>
 </code></pre></div><p></p>
 </div>
 <h2 id="configure-the-snowflake-providers">Configure the Snowflake Providers</h2>
@@ -6273,51 +6275,51 @@
 </tbody>
 </table>
 <p>Create <code>providers.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Snowflake Providers</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Each provider uses a different Snowflake role for least-privilege access.</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># Modules specify which provider they need via configuration_aliases.</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Account Admin - for account-level settings (rarely needed)</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"account_admin"</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="p">}</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="c1"># System Admin - for creating warehouses, databases, schemas</span>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"sys_admin"</span>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="p">}</span>
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="c1"># Security Admin - for managing grants and privileges</span>
-<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"security_admin"</span>
-<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a><span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a><span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a><span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
-<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
-<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a><span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SECURITYADMIN"</span>
-<a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a><span class="p">}</span>
-<a id="__codelineno-8-36" name="__codelineno-8-36" href="#__codelineno-8-36"></a>
-<a id="__codelineno-8-37" name="__codelineno-8-37" href="#__codelineno-8-37"></a><span class="c1"># User Admin - for creating users and roles</span>
-<a id="__codelineno-8-38" name="__codelineno-8-38" href="#__codelineno-8-38"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-39" name="__codelineno-8-39" href="#__codelineno-8-39"></a><span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"user_admin"</span>
-<a id="__codelineno-8-40" name="__codelineno-8-40" href="#__codelineno-8-40"></a><span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-8-41" name="__codelineno-8-41" href="#__codelineno-8-41"></a><span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-8-42" name="__codelineno-8-42" href="#__codelineno-8-42"></a><span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
-<a id="__codelineno-8-43" name="__codelineno-8-43" href="#__codelineno-8-43"></a><span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
-<a id="__codelineno-8-44" name="__codelineno-8-44" href="#__codelineno-8-44"></a><span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"USERADMIN"</span>
-<a id="__codelineno-8-45" name="__codelineno-8-45" href="#__codelineno-8-45"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Snowflake Providers</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Each provider uses a different Snowflake role for least-privilege access.</span>
+<span class="c1"># Modules specify which provider they need via configuration_aliases.</span>
+
+<span class="c1"># Account Admin - for account-level settings (rarely needed)</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"account_admin"</span>
+<span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
+<span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
+<span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
+<span class="p">}</span>
+
+<span class="c1"># System Admin - for creating warehouses, databases, schemas</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"sys_admin"</span>
+<span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
+<span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
+<span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
+<span class="p">}</span>
+
+<span class="c1"># Security Admin - for managing grants and privileges</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"security_admin"</span>
+<span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
+<span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
+<span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SECURITYADMIN"</span>
+<span class="p">}</span>
+
+<span class="c1"># User Admin - for creating users and roles</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">alias</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"user_admin"</span>
+<span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_username</span>
+<span class="w">  </span><span class="na">password</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PASSWORD</span>
+<span class="w">  </span><span class="na">role</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"USERADMIN"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Authentication Methods</p>
@@ -6333,12 +6335,12 @@
 <h2 id="set-up-authentication">Set Up Authentication</h2>
 <p>Before you can initialise Terraform, you need to set up authentication. For the initial setup, you'll use your admin user with password authentication.</p>
 <p>Add the password variable to <code>variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"SNOWFLAKE_PASSWORD"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake password for initial setup (temporary)"</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"SNOWFLAKE_PASSWORD"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake password for initial setup (temporary)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Temporary Only</p>
@@ -6352,52 +6354,52 @@
 </div>
 <h3 id="set-the-password-environment-variable">Set the Password Environment Variable</h3>
 <p>Export the password as an environment variable. Add this to your .envrc and reload the variables using <code>direnv allow .</code></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="s2">"your-admin-password"</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="s2">"your-admin-password"</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">1Password CLI</p>
 <p>If you use 1Password, you can retrieve the password directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake Admin User/password"</span><span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PASSWORD</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake Admin User/password"</span><span class="k">)</span>
 </code></pre></div>
 <p>This avoids typing or storing the password in your shell history.</p>
 </div>
 <h2 id="create-outputs">Create Outputs</h2>
 <p>Create <code>outputs.tf</code> as a placeholder for future outputs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Outputs for Snowflake resources</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Add outputs here as you create resources</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_account_identifier"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account identifier (ORG-ACCOUNT format)"</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"${var.snowflake_organization_name}-${var.snowflake_account_name}"</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="p">}</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">}</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Outputs for Snowflake resources</span>
+<span class="c1"># Add outputs here as you create resources</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_account_identifier"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account identifier (ORG-ACCOUNT format)"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"${var.snowflake_organization_name}-${var.snowflake_account_name}"</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="initialise-terraform">Initialise Terraform</h2>
 <p>Now that everything is configured, initialise Terraform for the Snowflake provider:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>terraform<span class="w"> </span>init
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
+terraform<span class="w"> </span>init
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Initializing the backend...
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>Successfully configured the backend "s3"! Terraform will automatically
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>use this backend unless the backend configuration changes.
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>Initializing provider plugins...
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>- Finding snowflake-labs/snowflake versions matching "~&gt; 0.99"...
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>- Installing snowflake-labs/snowflake v0.99.x...
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>- Installed snowflake-labs/snowflake v0.99.x
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>Terraform has been successfully initialized!
+<div class="highlight"><pre><span></span><code>Initializing the backend...
+
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+- Finding snowflake-labs/snowflake versions matching "~&gt; 0.99"...
+- Installing snowflake-labs/snowflake v0.99.x...
+- Installed snowflake-labs/snowflake v0.99.x
+
+Terraform has been successfully initialized!
 </code></pre></div>
 <p>This command:</p>
 <ul>
@@ -6408,10 +6410,10 @@
 </ul>
 <h2 id="verify-backend-configuration">Verify Backend Configuration</h2>
 <p>Check that Terraform created the state file in S3:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://terraform-state-123456789012/snowflake/<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://terraform-state-123456789012/snowflake/<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>You should see an empty state file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>2026-01-30 10:00:00         0 terraform.tfstate
+<div class="highlight"><pre><span></span><code>2026-01-30 10:00:00         0 terraform.tfstate
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Empty State is Normal</p>
@@ -6419,13 +6421,13 @@
 </div>
 <h2 id="test-the-provider">Test the Provider</h2>
 <p>Verify the provider can communicate with Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>No changes. Your infrastructure matches the configuration.
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>Terraform has compared your real infrastructure against your configuration
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>and found no differences, so no changes are needed.
+<div class="highlight"><pre><span></span><code>No changes. Your infrastructure matches the configuration.
+
+Terraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
 </code></pre></div>
 <p>This confirms:</p>
 <ul>
@@ -6444,8 +6446,8 @@
 </div>
 <h2 id="commit-your-work">Commit Your Work</h2>
 <p>Commit your progress, but be careful not to commit sensitive information:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Snowflake Terraform provider configuration"</span>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Snowflake Terraform provider configuration"</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Don't Commit Passwords</p>
@@ -6453,13 +6455,13 @@
 </div>
 <h2 id="current-file-structure">Current File Structure</h2>
 <p>You should now have:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>terraform/snowflake/
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>├── backend.tf        # S3 backend configuration
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>├── main.tf           # Terraform and provider versions
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>├── providers.tf      # Snowflake provider configuration
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>├── variables.tf      # Variable definitions
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>├── terraform.tfvars  # Variable values (no secrets!)
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>└── outputs.tf        # Output definitions
+<div class="highlight"><pre><span></span><code>terraform/snowflake/
+├── backend.tf        # S3 backend configuration
+├── main.tf           # Terraform and provider versions
+├── providers.tf      # Snowflake provider configuration
+├── variables.tf      # Variable definitions
+├── terraform.tfvars  # Variable values (no secrets!)
+└── outputs.tf        # Output definitions
 </code></pre></div>
 <h2 id="whats-next">What's Next</h2>
 <p>You've successfully configured the Snowflake provider and backend. The current authentication uses your admin user with password - this is temporary.</p>
@@ -6514,6 +6516,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6557,7 +6561,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

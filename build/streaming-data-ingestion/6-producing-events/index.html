@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6254,209 +6256,209 @@
 <li>Handles errors and retries</li>
 <li>Integrates with Prefect for orchestration</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    PRODUCER ARCHITECTURE                                │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Application              Producer                   Kafka              │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ───────────              ────────                   ─────              │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌────────────┐         ┌────────────┐           ┌────────────┐        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Prefect    │────────▶│ Python     │──────────▶│ order-     │        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ Task       │         │ Producer   │           │ events     │        │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │            │         │            │           │ topic      │        │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ Scheduled  │         │ • Get      │           │            │        │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │ or event-  │         │   creds    │           │ Partition  │        │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │ driven     │         │ • Register │           │ by order_id│        │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  └────────────┘         │   schema   │           └────────────┘        │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                         │ • Serialise│                  │              │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                         │ • Retry    │                  ▼              │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                         └────────────┘           ┌────────────┐        │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                                  │ Schema     │        │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                                  │ Registry   │        │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                                  │ (Avro)     │        │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                  └────────────┘        │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                                                         │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  Pattern: Task → Producer → Schema validation → Kafka → Connector      │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                         │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    PRODUCER ARCHITECTURE                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Application              Producer                   Kafka              │
+│  ───────────              ────────                   ─────              │
+│                                                                         │
+│  ┌────────────┐         ┌────────────┐           ┌────────────┐        │
+│  │ Prefect    │────────▶│ Python     │──────────▶│ order-     │        │
+│  │ Task       │         │ Producer   │           │ events     │        │
+│  │            │         │            │           │ topic      │        │
+│  │ Scheduled  │         │ • Get      │           │            │        │
+│  │ or event-  │         │   creds    │           │ Partition  │        │
+│  │ driven     │         │ • Register │           │ by order_id│        │
+│  └────────────┘         │   schema   │           └────────────┘        │
+│                         │ • Serialise│                  │              │
+│                         │ • Retry    │                  ▼              │
+│                         └────────────┘           ┌────────────┐        │
+│                                                  │ Schema     │        │
+│                                                  │ Registry   │        │
+│                                                  │ (Avro)     │        │
+│                                                  └────────────┘        │
+│                                                                         │
+│  Pattern: Task → Producer → Schema validation → Kafka → Connector      │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="python-producer-class">Python Producer Class</h2>
 <p>Create a reusable producer class with schema management, error handling, and retries.</p>
 <h3 id="producer-module">Producer Module</h3>
 <p>Create <code>kafka_producer.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="sd">"""</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="sd">Production-grade Kafka producer with Avro schema support.</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="sd">"""</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">KafkaException</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.schema_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaRegistryClient</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.schema_registry.avro</span><span class="w"> </span><span class="kn">import</span> <span class="n">AvroSerializer</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.serialization</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerializationContext</span><span class="p">,</span> <span class="n">MessageField</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="k">class</span><span class="w"> </span><span class="nc">KafkaProducer</span><span class="p">:</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="sd">    Kafka producer with Schema Registry integration.</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="sd">    Features:</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="sd">    - Retrieves credentials from AWS Secrets Manager</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="sd">    - Registers Avro schemas</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="sd">    - Handles serialisation and delivery</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="sd">    - Retries on transient failures</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="sd">    """</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="bp">self</span><span class="p">,</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="n">aws_region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'eu-west-2'</span><span class="p">,</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>        <span class="n">kafka_secret_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'confluent/kafka-cluster'</span><span class="p">,</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        <span class="n">schema_registry_secret_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'confluent/schema-registry'</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>    <span class="p">):</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">        </span><span class="sd">"""</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="sd">        Initialise Kafka producer.</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="sd">        Args:</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="sd">            topic: Kafka topic name</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="sd">            schema: Avro schema as dict</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="sd">            aws_region: AWS region for Secrets Manager</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="sd">            kafka_secret_name: Secret name for Kafka credentials</span>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="sd">            schema_registry_secret_name: Secret name for Schema Registry credentials</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="sd">        """</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="n">topic</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>        <span class="c1"># Retrieve credentials</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kafka_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_kafka_config</span><span class="p">(</span><span class="n">aws_region</span><span class="p">,</span> <span class="n">kafka_secret_name</span><span class="p">)</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_schema_registry_config</span><span class="p">(</span>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>            <span class="n">aws_region</span><span class="p">,</span> <span class="n">schema_registry_secret_name</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>        <span class="p">)</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>        <span class="c1"># Initialise producer and schema registry client</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kafka_config</span><span class="p">)</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_client</span> <span class="o">=</span> <span class="n">SchemaRegistryClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_config</span><span class="p">)</span>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>        <span class="c1"># Create Avro serialiser</span>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">avro_serialiser</span> <span class="o">=</span> <span class="n">AvroSerializer</span><span class="p">(</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_client</span><span class="p">,</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">schema</span><span class="p">),</span>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>            <span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">obj</span>  <span class="c1"># Object is already a dict</span>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a>        <span class="p">)</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a>
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kafka producer initialised for topic: </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_kafka_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">        </span><span class="sd">"""Retrieve Kafka credentials from AWS Secrets Manager."""</span>
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a>        <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'secretsmanager'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>        <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>        <span class="k">return</span> <span class="p">{</span>
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>            <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'bootstrap_servers'</span><span class="p">],</span>
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a>            <span class="s1">'security.protocol'</span><span class="p">:</span> <span class="s1">'SASL_SSL'</span><span class="p">,</span>
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a>            <span class="s1">'sasl.mechanisms'</span><span class="p">:</span> <span class="s1">'PLAIN'</span><span class="p">,</span>
-<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a>            <span class="s1">'sasl.username'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">],</span>
-<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a>            <span class="s1">'sasl.password'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'api_secret'</span><span class="p">],</span>
-<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a>            <span class="c1"># Production settings</span>
-<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a>            <span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas</span>
-<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a>            <span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry up to 10 times</span>
-<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a>            <span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Exactly-once semantics</span>
-<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a>            <span class="s1">'compression.type'</span><span class="p">:</span> <span class="s1">'snappy'</span><span class="p">,</span>  <span class="c1"># Compress messages</span>
-<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a>            <span class="s1">'linger.ms'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Batch messages for 100ms</span>
-<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a>            <span class="s1">'batch.size'</span><span class="p">:</span> <span class="mi">16384</span>  <span class="c1"># Batch up to 16KB</span>
-<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a>        <span class="p">}</span>
-<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a>
-<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_schema_registry_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="w">        </span><span class="sd">"""Retrieve Schema Registry credentials from AWS Secrets Manager."""</span>
-<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a>        <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'secretsmanager'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
-<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
-<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a>        <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
-<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a>
-<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a>        <span class="k">return</span> <span class="p">{</span>
-<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a>            <span class="s1">'url'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'url'</span><span class="p">],</span>
-<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a>            <span class="s1">'basic.auth.user.info'</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">secret</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">secret</span><span class="p">[</span><span class="s1">'api_secret'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a>        <span class="p">}</span>
-<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a>
-<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">produce</span><span class="p">(</span>
-<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a>        <span class="bp">self</span><span class="p">,</span>
-<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a>        <span class="n">event</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a>        <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a>        <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-1-106" name="__codelineno-1-106" href="#__codelineno-1-106"></a><span class="w">        </span><span class="sd">"""</span>
-<a id="__codelineno-1-107" name="__codelineno-1-107" href="#__codelineno-1-107"></a><span class="sd">        Produce an event to Kafka.</span>
-<a id="__codelineno-1-108" name="__codelineno-1-108" href="#__codelineno-1-108"></a>
-<a id="__codelineno-1-109" name="__codelineno-1-109" href="#__codelineno-1-109"></a><span class="sd">        Args:</span>
-<a id="__codelineno-1-110" name="__codelineno-1-110" href="#__codelineno-1-110"></a><span class="sd">            event: Event data as dict (must match Avro schema)</span>
-<a id="__codelineno-1-111" name="__codelineno-1-111" href="#__codelineno-1-111"></a><span class="sd">            key: Partition key (optional)</span>
-<a id="__codelineno-1-112" name="__codelineno-1-112" href="#__codelineno-1-112"></a><span class="sd">            callback: Delivery callback (optional)</span>
-<a id="__codelineno-1-113" name="__codelineno-1-113" href="#__codelineno-1-113"></a><span class="sd">        """</span>
-<a id="__codelineno-1-114" name="__codelineno-1-114" href="#__codelineno-1-114"></a>        <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-1-115" name="__codelineno-1-115" href="#__codelineno-1-115"></a>            <span class="c1"># Serialise event</span>
-<a id="__codelineno-1-116" name="__codelineno-1-116" href="#__codelineno-1-116"></a>            <span class="n">serialised_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">avro_serialiser</span><span class="p">(</span>
-<a id="__codelineno-1-117" name="__codelineno-1-117" href="#__codelineno-1-117"></a>                <span class="n">event</span><span class="p">,</span>
-<a id="__codelineno-1-118" name="__codelineno-1-118" href="#__codelineno-1-118"></a>                <span class="n">SerializationContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span> <span class="n">MessageField</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span>
-<a id="__codelineno-1-119" name="__codelineno-1-119" href="#__codelineno-1-119"></a>            <span class="p">)</span>
-<a id="__codelineno-1-120" name="__codelineno-1-120" href="#__codelineno-1-120"></a>
-<a id="__codelineno-1-121" name="__codelineno-1-121" href="#__codelineno-1-121"></a>            <span class="c1"># Produce to Kafka</span>
-<a id="__codelineno-1-122" name="__codelineno-1-122" href="#__codelineno-1-122"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
-<a id="__codelineno-1-123" name="__codelineno-1-123" href="#__codelineno-1-123"></a>                <span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span>
-<a id="__codelineno-1-124" name="__codelineno-1-124" href="#__codelineno-1-124"></a>                <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-1-125" name="__codelineno-1-125" href="#__codelineno-1-125"></a>                <span class="n">value</span><span class="o">=</span><span class="n">serialised_value</span><span class="p">,</span>
-<a id="__codelineno-1-126" name="__codelineno-1-126" href="#__codelineno-1-126"></a>                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_delivery_callback</span>
-<a id="__codelineno-1-127" name="__codelineno-1-127" href="#__codelineno-1-127"></a>            <span class="p">)</span>
-<a id="__codelineno-1-128" name="__codelineno-1-128" href="#__codelineno-1-128"></a>
-<a id="__codelineno-1-129" name="__codelineno-1-129" href="#__codelineno-1-129"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event produced to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="si">}</span><span class="s2">: key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-130" name="__codelineno-1-130" href="#__codelineno-1-130"></a>
-<a id="__codelineno-1-131" name="__codelineno-1-131" href="#__codelineno-1-131"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-1-132" name="__codelineno-1-132" href="#__codelineno-1-132"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to produce event: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-133" name="__codelineno-1-133" href="#__codelineno-1-133"></a>            <span class="k">raise</span>
-<a id="__codelineno-1-134" name="__codelineno-1-134" href="#__codelineno-1-134"></a>
-<a id="__codelineno-1-135" name="__codelineno-1-135" href="#__codelineno-1-135"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_default_delivery_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-<a id="__codelineno-1-136" name="__codelineno-1-136" href="#__codelineno-1-136"></a><span class="w">        </span><span class="sd">"""Default callback for delivery confirmation."""</span>
-<a id="__codelineno-1-137" name="__codelineno-1-137" href="#__codelineno-1-137"></a>        <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
-<a id="__codelineno-1-138" name="__codelineno-1-138" href="#__codelineno-1-138"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Message delivery failed: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-139" name="__codelineno-1-139" href="#__codelineno-1-139"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-1-140" name="__codelineno-1-140" href="#__codelineno-1-140"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-<a id="__codelineno-1-141" name="__codelineno-1-141" href="#__codelineno-1-141"></a>                <span class="sa">f</span><span class="s2">"Message delivered to </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="p">()</span><span class="si">}</span><span class="s2"> "</span>
-<a id="__codelineno-1-142" name="__codelineno-1-142" href="#__codelineno-1-142"></a>                <span class="sa">f</span><span class="s2">"[partition </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">partition</span><span class="p">()</span><span class="si">}</span><span class="s2">] at offset </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-1-143" name="__codelineno-1-143" href="#__codelineno-1-143"></a>            <span class="p">)</span>
-<a id="__codelineno-1-144" name="__codelineno-1-144" href="#__codelineno-1-144"></a>
-<a id="__codelineno-1-145" name="__codelineno-1-145" href="#__codelineno-1-145"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-1-146" name="__codelineno-1-146" href="#__codelineno-1-146"></a><span class="w">        </span><span class="sd">"""</span>
-<a id="__codelineno-1-147" name="__codelineno-1-147" href="#__codelineno-1-147"></a><span class="sd">        Wait for all messages to be delivered.</span>
-<a id="__codelineno-1-148" name="__codelineno-1-148" href="#__codelineno-1-148"></a>
-<a id="__codelineno-1-149" name="__codelineno-1-149" href="#__codelineno-1-149"></a><span class="sd">        Args:</span>
-<a id="__codelineno-1-150" name="__codelineno-1-150" href="#__codelineno-1-150"></a><span class="sd">            timeout: Maximum time to wait (seconds)</span>
-<a id="__codelineno-1-151" name="__codelineno-1-151" href="#__codelineno-1-151"></a>
-<a id="__codelineno-1-152" name="__codelineno-1-152" href="#__codelineno-1-152"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-1-153" name="__codelineno-1-153" href="#__codelineno-1-153"></a><span class="sd">            Number of messages still in queue</span>
-<a id="__codelineno-1-154" name="__codelineno-1-154" href="#__codelineno-1-154"></a><span class="sd">        """</span>
-<a id="__codelineno-1-155" name="__codelineno-1-155" href="#__codelineno-1-155"></a>        <span class="n">remaining</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-<a id="__codelineno-1-156" name="__codelineno-1-156" href="#__codelineno-1-156"></a>        <span class="k">if</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-1-157" name="__codelineno-1-157" href="#__codelineno-1-157"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> messages still in queue after flush"</span><span class="p">)</span>
-<a id="__codelineno-1-158" name="__codelineno-1-158" href="#__codelineno-1-158"></a>        <span class="k">return</span> <span class="n">remaining</span>
-<a id="__codelineno-1-159" name="__codelineno-1-159" href="#__codelineno-1-159"></a>
-<a id="__codelineno-1-160" name="__codelineno-1-160" href="#__codelineno-1-160"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-1-161" name="__codelineno-1-161" href="#__codelineno-1-161"></a><span class="w">        </span><span class="sd">"""Close the producer and clean up resources."""</span>
-<a id="__codelineno-1-162" name="__codelineno-1-162" href="#__codelineno-1-162"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-<a id="__codelineno-1-163" name="__codelineno-1-163" href="#__codelineno-1-163"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Kafka producer closed"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""</span>
+<span class="sd">Production-grade Kafka producer with Avro schema support.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">KafkaException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.schema_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaRegistryClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.schema_registry.avro</span><span class="w"> </span><span class="kn">import</span> <span class="n">AvroSerializer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka.serialization</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerializationContext</span><span class="p">,</span> <span class="n">MessageField</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">KafkaProducer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Kafka producer with Schema Registry integration.</span>
+
+<span class="sd">    Features:</span>
+<span class="sd">    - Retrieves credentials from AWS Secrets Manager</span>
+<span class="sd">    - Registers Avro schemas</span>
+<span class="sd">    - Handles serialisation and delivery</span>
+<span class="sd">    - Retries on transient failures</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">aws_region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'eu-west-2'</span><span class="p">,</span>
+        <span class="n">kafka_secret_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'confluent/kafka-cluster'</span><span class="p">,</span>
+        <span class="n">schema_registry_secret_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'confluent/schema-registry'</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Initialise Kafka producer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            topic: Kafka topic name</span>
+<span class="sd">            schema: Avro schema as dict</span>
+<span class="sd">            aws_region: AWS region for Secrets Manager</span>
+<span class="sd">            kafka_secret_name: Secret name for Kafka credentials</span>
+<span class="sd">            schema_registry_secret_name: Secret name for Schema Registry credentials</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="n">topic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
+
+        <span class="c1"># Retrieve credentials</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kafka_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_kafka_config</span><span class="p">(</span><span class="n">aws_region</span><span class="p">,</span> <span class="n">kafka_secret_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_schema_registry_config</span><span class="p">(</span>
+            <span class="n">aws_region</span><span class="p">,</span> <span class="n">schema_registry_secret_name</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Initialise producer and schema registry client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kafka_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_client</span> <span class="o">=</span> <span class="n">SchemaRegistryClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_config</span><span class="p">)</span>
+
+        <span class="c1"># Create Avro serialiser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avro_serialiser</span> <span class="o">=</span> <span class="n">AvroSerializer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema_registry_client</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">schema</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">obj</span>  <span class="c1"># Object is already a dict</span>
+        <span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kafka producer initialised for topic: </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_kafka_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Retrieve Kafka credentials from AWS Secrets Manager."""</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'secretsmanager'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
+        <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'bootstrap_servers'</span><span class="p">],</span>
+            <span class="s1">'security.protocol'</span><span class="p">:</span> <span class="s1">'SASL_SSL'</span><span class="p">,</span>
+            <span class="s1">'sasl.mechanisms'</span><span class="p">:</span> <span class="s1">'PLAIN'</span><span class="p">,</span>
+            <span class="s1">'sasl.username'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">],</span>
+            <span class="s1">'sasl.password'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'api_secret'</span><span class="p">],</span>
+            <span class="c1"># Production settings</span>
+            <span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas</span>
+            <span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry up to 10 times</span>
+            <span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Exactly-once semantics</span>
+            <span class="s1">'compression.type'</span><span class="p">:</span> <span class="s1">'snappy'</span><span class="p">,</span>  <span class="c1"># Compress messages</span>
+            <span class="s1">'linger.ms'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Batch messages for 100ms</span>
+            <span class="s1">'batch.size'</span><span class="p">:</span> <span class="mi">16384</span>  <span class="c1"># Batch up to 16KB</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_schema_registry_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Retrieve Schema Registry credentials from AWS Secrets Manager."""</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'secretsmanager'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
+        <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'url'</span><span class="p">:</span> <span class="n">secret</span><span class="p">[</span><span class="s1">'url'</span><span class="p">],</span>
+            <span class="s1">'basic.auth.user.info'</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">secret</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">secret</span><span class="p">[</span><span class="s1">'api_secret'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Produce an event to Kafka.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Event data as dict (must match Avro schema)</span>
+<span class="sd">            key: Partition key (optional)</span>
+<span class="sd">            callback: Delivery callback (optional)</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Serialise event</span>
+            <span class="n">serialised_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">avro_serialiser</span><span class="p">(</span>
+                <span class="n">event</span><span class="p">,</span>
+                <span class="n">SerializationContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span> <span class="n">MessageField</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Produce to Kafka</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+                <span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">serialised_value</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_delivery_callback</span>
+            <span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event produced to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">topic</span><span class="si">}</span><span class="s2">: key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to produce event: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_default_delivery_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Default callback for delivery confirmation."""</span>
+        <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Message delivery failed: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Message delivered to </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="p">()</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"[partition </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">partition</span><span class="p">()</span><span class="si">}</span><span class="s2">] at offset </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Wait for all messages to be delivered.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timeout: Maximum time to wait (seconds)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Number of messages still in queue</span>
+<span class="sd">        """</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> messages still in queue after flush"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">remaining</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Close the producer and clean up resources."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Kafka producer closed"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="configuration-explanation">Configuration Explanation</h3>
 <p><strong>Producer settings:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas to acknowledge (durability)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry failed sends up to 10 times</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Exactly-once delivery (no duplicates)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s1">'compression.type'</span><span class="p">:</span> <span class="s1">'snappy'</span><span class="p">,</span>  <span class="c1"># Compress messages (reduce bandwidth)</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s1">'linger.ms'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Wait 100ms to batch messages (throughput)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s1">'batch.size'</span><span class="p">:</span> <span class="mi">16384</span>  <span class="c1"># Batch up to 16KB before sending</span>
+<div class="highlight"><pre><span></span><code><span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas to acknowledge (durability)</span>
+<span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry failed sends up to 10 times</span>
+<span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Exactly-once delivery (no duplicates)</span>
+<span class="s1">'compression.type'</span><span class="p">:</span> <span class="s1">'snappy'</span><span class="p">,</span>  <span class="c1"># Compress messages (reduce bandwidth)</span>
+<span class="s1">'linger.ms'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Wait 100ms to batch messages (throughput)</span>
+<span class="s1">'batch.size'</span><span class="p">:</span> <span class="mi">16384</span>  <span class="c1"># Batch up to 16KB before sending</span>
 </code></pre></div>
 <p><strong>Trade-offs:</strong></p>
 <table>
@@ -6495,222 +6497,222 @@
 <p>Create a script to produce sample order events.</p>
 <h3 id="order-events-producer">Order Events Producer</h3>
 <p>Create <code>produce_orders.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="ch">#!/usr/bin/env python3</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="sd">"""</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="sd">Produce sample order events to Kafka.</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">"""</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">kafka_producer</span><span class="w"> </span><span class="kn">import</span> <span class="n">KafkaProducer</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># Configure logging</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="p">)</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="c1"># Avro schema for order events</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="n">ORDER_EVENTS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"record"</span><span class="p">,</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderEvent"</span><span class="p">,</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="s2">"namespace"</span><span class="p">:</span> <span class="s2">"com.company.streaming"</span><span class="p">,</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">},</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"customer_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="p">{</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderStatus"</span><span class="p">,</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>                <span class="s2">"symbols"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"CREATED"</span><span class="p">,</span> <span class="s2">"CONFIRMED"</span><span class="p">,</span> <span class="s2">"SHIPPED"</span><span class="p">,</span> <span class="s2">"DELIVERED"</span><span class="p">,</span> <span class="s2">"CANCELLED"</span><span class="p">]</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>            <span class="p">}</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>        <span class="p">},</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"double"</span><span class="p">},</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">,</span> <span class="s2">"logicalType"</span><span class="p">:</span> <span class="s2">"timestamp-millis"</span><span class="p">}</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>    <span class="p">]</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="p">}</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="k">def</span><span class="w"> </span><span class="nf">generate_order_events</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span><span class="sd">"""Generate sample order events."""</span>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>        <span class="k">yield</span> <span class="p">{</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>            <span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">1000</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>            <span class="s1">'customer_id'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'cust_</span><span class="si">{</span><span class="mi">1000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>            <span class="s1">'order_status'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CREATED'</span><span class="p">,</span> <span class="s1">'CONFIRMED'</span><span class="p">,</span> <span class="s1">'SHIPPED'</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>            <span class="s1">'order_total'</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="mf">50.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">10.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
-<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>            <span class="s1">'created_at'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>        <span class="p">}</span>
-<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a>
-<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>
-<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"🚀 Starting order events producer..."</span><span class="p">)</span>
-<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a>
-<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>    <span class="c1"># Initialise producer</span>
-<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>    <span class="n">producer</span> <span class="o">=</span> <span class="n">KafkaProducer</span><span class="p">(</span>
-<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>        <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
-<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>        <span class="n">schema</span><span class="o">=</span><span class="n">ORDER_EVENTS_SCHEMA</span>
-<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a>    <span class="p">)</span>
-<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a>
-<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a>    <span class="c1"># Produce events</span>
-<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>    <span class="n">event_count</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a>    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">generate_order_events</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>        <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
-<a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a>            <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
-<a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a>            <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">])</span>  <span class="c1"># Partition by order_id</span>
-<a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a>        <span class="p">)</span>
-<a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a>        <span class="n">event_count</span> <span class="o">+=</span> <span class="mi">1</span>
-<a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a>
-<a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a>    <span class="c1"># Wait for delivery</span>
-<a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>    <span class="n">remaining</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>
-<a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a>    <span class="k">if</span> <span class="n">remaining</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Successfully produced </span><span class="si">{</span><span class="n">event_count</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
-<a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"❌ </span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> events failed to deliver"</span><span class="p">)</span>
-<a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a>
-<a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a>    <span class="n">producer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a>
-<a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a>
-<a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-<a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a>    <span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">Produce sample order events to Kafka.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kafka_producer</span><span class="w"> </span><span class="kn">import</span> <span class="n">KafkaProducer</span>
+
+
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span>
+<span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># Avro schema for order events</span>
+<span class="n">ORDER_EVENTS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"record"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderEvent"</span><span class="p">,</span>
+    <span class="s2">"namespace"</span><span class="p">:</span> <span class="s2">"com.company.streaming"</span><span class="p">,</span>
+    <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"customer_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderStatus"</span><span class="p">,</span>
+                <span class="s2">"symbols"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"CREATED"</span><span class="p">,</span> <span class="s2">"CONFIRMED"</span><span class="p">,</span> <span class="s2">"SHIPPED"</span><span class="p">,</span> <span class="s2">"DELIVERED"</span><span class="p">,</span> <span class="s2">"CANCELLED"</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"double"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">,</span> <span class="s2">"logicalType"</span><span class="p">:</span> <span class="s2">"timestamp-millis"</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_order_events</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Generate sample order events."""</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="p">{</span>
+            <span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">1000</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span>
+            <span class="s1">'customer_id'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'cust_</span><span class="si">{</span><span class="mi">1000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="s1">'order_status'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CREATED'</span><span class="p">,</span> <span class="s1">'CONFIRMED'</span><span class="p">,</span> <span class="s1">'SHIPPED'</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s1">'order_total'</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="mf">50.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">10.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s1">'created_at'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"🚀 Starting order events producer..."</span><span class="p">)</span>
+
+    <span class="c1"># Initialise producer</span>
+    <span class="n">producer</span> <span class="o">=</span> <span class="n">KafkaProducer</span><span class="p">(</span>
+        <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
+        <span class="n">schema</span><span class="o">=</span><span class="n">ORDER_EVENTS_SCHEMA</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Produce events</span>
+    <span class="n">event_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">generate_order_events</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+            <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">])</span>  <span class="c1"># Partition by order_id</span>
+        <span class="p">)</span>
+        <span class="n">event_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Wait for delivery</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">remaining</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Successfully produced </span><span class="si">{</span><span class="n">event_count</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"❌ </span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> events failed to deliver"</span><span class="p">)</span>
+
+    <span class="n">producer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="run-producer">Run Producer</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>produce_orders.py
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>produce_orders.py
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>2026-03-05 12:00:00 - __main__ - INFO - 🚀 Starting order events producer...
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>2026-03-05 12:00:00 - kafka_producer - INFO - Kafka producer initialised for topic: order-events
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>2026-03-05 12:00:01 - kafka_producer - INFO - Message delivered to order-events [0] at offset 10
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>2026-03-05 12:00:01 - kafka_producer - INFO - Message delivered to order-events [1] at offset 8
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>...
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>2026-03-05 12:00:02 - __main__ - INFO - ✅ Successfully produced 10 events
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>2026-03-05 12:00:02 - kafka_producer - INFO - Kafka producer closed
+</p><div class="highlight"><pre><span></span><code>2026-03-05 12:00:00 - __main__ - INFO - 🚀 Starting order events producer...
+2026-03-05 12:00:00 - kafka_producer - INFO - Kafka producer initialised for topic: order-events
+2026-03-05 12:00:01 - kafka_producer - INFO - Message delivered to order-events [0] at offset 10
+2026-03-05 12:00:01 - kafka_producer - INFO - Message delivered to order-events [1] at offset 8
+...
+2026-03-05 12:00:02 - __main__ - INFO - ✅ Successfully produced 10 events
+2026-03-05 12:00:02 - kafka_producer - INFO - Kafka producer closed
 </code></pre></div><p></p>
 <h3 id="verify-in-snowflake">Verify in Snowflake</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_id</span><span class="p">::</span><span class="nb">INT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">customer_id</span><span class="p">::</span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_status</span><span class="p">::</span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_status</span><span class="p">,</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_total</span><span class="p">::</span><span class="nb">FLOAT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_total</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">RECORD_METADATA</span><span class="p">:</span><span class="k">timestamp</span><span class="p">::</span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">kafka_timestamp</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">.</span><span class="k">PUBLIC</span><span class="p">.</span><span class="n">ORDER_EVENTS</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">RECORD_METADATA</span><span class="p">:</span><span class="k">timestamp</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">minute</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">kafka_timestamp</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_id</span><span class="p">::</span><span class="nb">INT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">customer_id</span><span class="p">::</span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_status</span><span class="p">::</span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RECORD_CONTENT</span><span class="p">:</span><span class="n">order_total</span><span class="p">::</span><span class="nb">FLOAT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_total</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RECORD_METADATA</span><span class="p">:</span><span class="k">timestamp</span><span class="p">::</span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">kafka_timestamp</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">.</span><span class="k">PUBLIC</span><span class="p">.</span><span class="n">ORDER_EVENTS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">RECORD_METADATA</span><span class="p">:</span><span class="k">timestamp</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">minute</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">kafka_timestamp</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="integrate-with-prefect">Integrate with Prefect</h2>
 <p>Wrap the producer in a Prefect task for orchestration.</p>
 <h3 id="prefect-flow">Prefect Flow</h3>
 <p>Create <code>flows/produce_order_events_flow.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="sd">"""</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="sd">Prefect flow to produce order events on a schedule.</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="sd">"""</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">kafka_producer</span><span class="w"> </span><span class="kn">import</span> <span class="n">KafkaProducer</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="n">ORDER_EVENTS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"record"</span><span class="p">,</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderEvent"</span><span class="p">,</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>    <span class="s2">"namespace"</span><span class="p">:</span> <span class="s2">"com.company.streaming"</span><span class="p">,</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">},</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"customer_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="p">{</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderStatus"</span><span class="p">,</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>                <span class="s2">"symbols"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"CREATED"</span><span class="p">,</span> <span class="s2">"CONFIRMED"</span><span class="p">,</span> <span class="s2">"SHIPPED"</span><span class="p">,</span> <span class="s2">"DELIVERED"</span><span class="p">,</span> <span class="s2">"CANCELLED"</span><span class="p">]</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>            <span class="p">}</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>        <span class="p">},</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"double"</span><span class="p">},</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">,</span> <span class="s2">"logicalType"</span><span class="p">:</span> <span class="s2">"timestamp-millis"</span><span class="p">}</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>    <span class="p">]</span>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="p">}</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="k">def</span><span class="w"> </span><span class="nf">produce_events</span><span class="p">(</span><span class="n">event_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="sd">    Produce order events to Kafka.</span>
-<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a>
-<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="sd">    Args:</span>
-<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="sd">        event_count: Number of events to produce</span>
-<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a>
-<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="sd">        Number of successfully produced events</span>
-<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="sd">    """</span>
-<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Producing </span><span class="si">{</span><span class="n">event_count</span><span class="si">}</span><span class="s2"> order events..."</span><span class="p">)</span>
-<a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a>
-<a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a>    <span class="n">producer</span> <span class="o">=</span> <span class="n">KafkaProducer</span><span class="p">(</span>
-<a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a>        <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
-<a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a>        <span class="n">schema</span><span class="o">=</span><span class="n">ORDER_EVENTS_SCHEMA</span>
-<a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a>    <span class="p">)</span>
-<a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a>
-<a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a>    <span class="n">produced</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-7-53" name="__codelineno-7-53" href="#__codelineno-7-53"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_count</span><span class="p">):</span>
-<a id="__codelineno-7-54" name="__codelineno-7-54" href="#__codelineno-7-54"></a>        <span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-7-55" name="__codelineno-7-55" href="#__codelineno-7-55"></a>            <span class="s1">'order_id'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span>  <span class="c1"># Unique ID</span>
-<a id="__codelineno-7-56" name="__codelineno-7-56" href="#__codelineno-7-56"></a>            <span class="s1">'customer_id'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'cust_</span><span class="si">{</span><span class="mi">1000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-<a id="__codelineno-7-57" name="__codelineno-7-57" href="#__codelineno-7-57"></a>            <span class="s1">'order_status'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CREATED'</span><span class="p">,</span> <span class="s1">'CONFIRMED'</span><span class="p">,</span> <span class="s1">'SHIPPED'</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span>
-<a id="__codelineno-7-58" name="__codelineno-7-58" href="#__codelineno-7-58"></a>            <span class="s1">'order_total'</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="mf">50.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">10.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
-<a id="__codelineno-7-59" name="__codelineno-7-59" href="#__codelineno-7-59"></a>            <span class="s1">'created_at'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-<a id="__codelineno-7-60" name="__codelineno-7-60" href="#__codelineno-7-60"></a>        <span class="p">}</span>
-<a id="__codelineno-7-61" name="__codelineno-7-61" href="#__codelineno-7-61"></a>
-<a id="__codelineno-7-62" name="__codelineno-7-62" href="#__codelineno-7-62"></a>        <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">]))</span>
-<a id="__codelineno-7-63" name="__codelineno-7-63" href="#__codelineno-7-63"></a>        <span class="n">produced</span> <span class="o">+=</span> <span class="mi">1</span>
-<a id="__codelineno-7-64" name="__codelineno-7-64" href="#__codelineno-7-64"></a>
-<a id="__codelineno-7-65" name="__codelineno-7-65" href="#__codelineno-7-65"></a>    <span class="c1"># Flush and close</span>
-<a id="__codelineno-7-66" name="__codelineno-7-66" href="#__codelineno-7-66"></a>    <span class="n">remaining</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<a id="__codelineno-7-67" name="__codelineno-7-67" href="#__codelineno-7-67"></a>    <span class="n">producer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<a id="__codelineno-7-68" name="__codelineno-7-68" href="#__codelineno-7-68"></a>
-<a id="__codelineno-7-69" name="__codelineno-7-69" href="#__codelineno-7-69"></a>    <span class="k">if</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-7-70" name="__codelineno-7-70" href="#__codelineno-7-70"></a>        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> events failed to deliver"</span><span class="p">)</span>
-<a id="__codelineno-7-71" name="__codelineno-7-71" href="#__codelineno-7-71"></a>
-<a id="__codelineno-7-72" name="__codelineno-7-72" href="#__codelineno-7-72"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Successfully produced </span><span class="si">{</span><span class="n">produced</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
-<a id="__codelineno-7-73" name="__codelineno-7-73" href="#__codelineno-7-73"></a>    <span class="k">return</span> <span class="n">produced</span>
-<a id="__codelineno-7-74" name="__codelineno-7-74" href="#__codelineno-7-74"></a>
-<a id="__codelineno-7-75" name="__codelineno-7-75" href="#__codelineno-7-75"></a>
-<a id="__codelineno-7-76" name="__codelineno-7-76" href="#__codelineno-7-76"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"produce-order-events"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-7-77" name="__codelineno-7-77" href="#__codelineno-7-77"></a><span class="k">def</span><span class="w"> </span><span class="nf">produce_order_events_flow</span><span class="p">(</span><span class="n">event_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
-<a id="__codelineno-7-78" name="__codelineno-7-78" href="#__codelineno-7-78"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-7-79" name="__codelineno-7-79" href="#__codelineno-7-79"></a><span class="sd">    Flow to produce order events on a schedule.</span>
-<a id="__codelineno-7-80" name="__codelineno-7-80" href="#__codelineno-7-80"></a>
-<a id="__codelineno-7-81" name="__codelineno-7-81" href="#__codelineno-7-81"></a><span class="sd">    Args:</span>
-<a id="__codelineno-7-82" name="__codelineno-7-82" href="#__codelineno-7-82"></a><span class="sd">        event_count: Number of events to produce per run</span>
-<a id="__codelineno-7-83" name="__codelineno-7-83" href="#__codelineno-7-83"></a><span class="sd">    """</span>
-<a id="__codelineno-7-84" name="__codelineno-7-84" href="#__codelineno-7-84"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"🚀 Starting order events production flow..."</span><span class="p">)</span>
-<a id="__codelineno-7-85" name="__codelineno-7-85" href="#__codelineno-7-85"></a>
-<a id="__codelineno-7-86" name="__codelineno-7-86" href="#__codelineno-7-86"></a>    <span class="c1"># Produce events</span>
-<a id="__codelineno-7-87" name="__codelineno-7-87" href="#__codelineno-7-87"></a>    <span class="n">produced</span> <span class="o">=</span> <span class="n">produce_events</span><span class="p">(</span><span class="n">event_count</span><span class="o">=</span><span class="n">event_count</span><span class="p">)</span>
-<a id="__codelineno-7-88" name="__codelineno-7-88" href="#__codelineno-7-88"></a>
-<a id="__codelineno-7-89" name="__codelineno-7-89" href="#__codelineno-7-89"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Flow complete! Produced </span><span class="si">{</span><span class="n">produced</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
-<a id="__codelineno-7-90" name="__codelineno-7-90" href="#__codelineno-7-90"></a>    <span class="k">return</span> <span class="n">produced</span>
-<a id="__codelineno-7-91" name="__codelineno-7-91" href="#__codelineno-7-91"></a>
-<a id="__codelineno-7-92" name="__codelineno-7-92" href="#__codelineno-7-92"></a>
-<a id="__codelineno-7-93" name="__codelineno-7-93" href="#__codelineno-7-93"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-<a id="__codelineno-7-94" name="__codelineno-7-94" href="#__codelineno-7-94"></a>    <span class="c1"># Run locally for testing</span>
-<a id="__codelineno-7-95" name="__codelineno-7-95" href="#__codelineno-7-95"></a>    <span class="n">produce_order_events_flow</span><span class="p">(</span><span class="n">event_count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""</span>
+<span class="sd">Prefect flow to produce order events on a schedule.</span>
+<span class="sd">"""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kafka_producer</span><span class="w"> </span><span class="kn">import</span> <span class="n">KafkaProducer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">ORDER_EVENTS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"record"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderEvent"</span><span class="p">,</span>
+    <span class="s2">"namespace"</span><span class="p">:</span> <span class="s2">"com.company.streaming"</span><span class="p">,</span>
+    <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"customer_id"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"OrderStatus"</span><span class="p">,</span>
+                <span class="s2">"symbols"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"CREATED"</span><span class="p">,</span> <span class="s2">"CONFIRMED"</span><span class="p">,</span> <span class="s2">"SHIPPED"</span><span class="p">,</span> <span class="s2">"DELIVERED"</span><span class="p">,</span> <span class="s2">"CANCELLED"</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"double"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"long"</span><span class="p">,</span> <span class="s2">"logicalType"</span><span class="p">:</span> <span class="s2">"timestamp-millis"</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">produce_events</span><span class="p">(</span><span class="n">event_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Produce order events to Kafka.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event_count: Number of events to produce</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Number of successfully produced events</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Producing </span><span class="si">{</span><span class="n">event_count</span><span class="si">}</span><span class="s2"> order events..."</span><span class="p">)</span>
+
+    <span class="n">producer</span> <span class="o">=</span> <span class="n">KafkaProducer</span><span class="p">(</span>
+        <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
+        <span class="n">schema</span><span class="o">=</span><span class="n">ORDER_EVENTS_SCHEMA</span>
+    <span class="p">)</span>
+
+    <span class="n">produced</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_count</span><span class="p">):</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'order_id'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span>  <span class="c1"># Unique ID</span>
+            <span class="s1">'customer_id'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'cust_</span><span class="si">{</span><span class="mi">1000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="s1">'order_status'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CREATED'</span><span class="p">,</span> <span class="s1">'CONFIRMED'</span><span class="p">,</span> <span class="s1">'SHIPPED'</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s1">'order_total'</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="mf">50.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">10.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s1">'created_at'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">]))</span>
+        <span class="n">produced</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Flush and close</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">producer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> events failed to deliver"</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Successfully produced </span><span class="si">{</span><span class="n">produced</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">produced</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"produce-order-events"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">produce_order_events_flow</span><span class="p">(</span><span class="n">event_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Flow to produce order events on a schedule.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event_count: Number of events to produce per run</span>
+<span class="sd">    """</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"🚀 Starting order events production flow..."</span><span class="p">)</span>
+
+    <span class="c1"># Produce events</span>
+    <span class="n">produced</span> <span class="o">=</span> <span class="n">produce_events</span><span class="p">(</span><span class="n">event_count</span><span class="o">=</span><span class="n">event_count</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Flow complete! Produced </span><span class="si">{</span><span class="n">produced</span><span class="si">}</span><span class="s2"> events"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">produced</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="c1"># Run locally for testing</span>
+    <span class="n">produce_order_events_flow</span><span class="p">(</span><span class="n">event_count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="deploy-to-prefect-cloud">Deploy to Prefect Cloud</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Build deployment</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>flows/produce_order_events_flow.py:produce_order_events_flow<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"Order Events Producer"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--pool<span class="w"> </span><span class="s2">"default-agent-pool"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--cron<span class="w"> </span><span class="s2">"*/5 * * * *"</span><span class="w">  </span><span class="c1"># Every 5 minutes</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Trigger manually</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>produce-order-events/Order<span class="se">\ </span>Events<span class="se">\ </span>Producer
+<div class="highlight"><pre><span></span><code><span class="c1"># Build deployment</span>
+prefect<span class="w"> </span>deploy<span class="w"> </span>flows/produce_order_events_flow.py:produce_order_events_flow<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"Order Events Producer"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--pool<span class="w"> </span><span class="s2">"default-agent-pool"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--cron<span class="w"> </span><span class="s2">"*/5 * * * *"</span><span class="w">  </span><span class="c1"># Every 5 minutes</span>
+
+<span class="c1"># Trigger manually</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>produce-order-events/Order<span class="se">\ </span>Events<span class="se">\ </span>Producer
 </code></pre></div>
 <h3 id="schedule-options">Schedule Options</h3>
 <table>
@@ -6747,38 +6749,38 @@
 <h2 id="error-handling-and-retries">Error Handling and Retries</h2>
 <h3 id="handling-serialisation-errors">Handling Serialisation Errors</h3>
 <p>Invalid events that don't match the Avro schema will fail serialisation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Serialisation failed for event: </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="c1"># Send to dead letter queue or skip</span>
+<div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Serialisation failed for event: </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Send to dead letter queue or skip</span>
 </code></pre></div>
 <h3 id="handling-delivery-failures">Handling Delivery Failures</h3>
 <p>Delivery failures are retried automatically (up to <code>retries</code> config):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">delivery_callback</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="c1"># Permanent failure after retries</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Permanent delivery failure: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="c1"># Alert or write to DLQ</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="c1"># Success</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Delivered: </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="p">()</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">partition</span><span class="p">()</span><span class="si">}</span><span class="s2">] @ </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">delivery_callback</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
+        <span class="c1"># Permanent failure after retries</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Permanent delivery failure: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Alert or write to DLQ</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Success</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Delivered: </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="p">()</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">partition</span><span class="p">()</span><span class="si">}</span><span class="s2">] @ </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="dead-letter-queue-pattern">Dead Letter Queue Pattern</h3>
 <p>For permanent failures, send events to a DLQ topic:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">produce_with_dlq</span><span class="p">(</span><span class="n">producer</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dlq_producer</span><span class="p">):</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="sd">"""Produce event with DLQ fallback."""</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to deliver: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>            <span class="c1"># Send to DLQ</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>            <span class="n">dlq_producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>                <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s1">'original_event'</span><span class="p">:</span> <span class="n">event</span><span class="p">,</span> <span class="s1">'error'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)},</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>                <span class="n">key</span><span class="o">=</span><span class="n">key</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>            <span class="p">)</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">produce_with_dlq</span><span class="p">(</span><span class="n">producer</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dlq_producer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Produce event with DLQ fallback."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to deliver: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># Send to DLQ</span>
+            <span class="n">dlq_producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+                <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s1">'original_event'</span><span class="p">:</span> <span class="n">event</span><span class="p">,</span> <span class="s1">'error'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)},</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">key</span>
+            <span class="p">)</span>
+
+    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've built production Python producers:</p>
@@ -6844,6 +6846,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6887,7 +6891,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6155,205 +6157,205 @@
 </ul>
 <h2 id="the-user-module">The User Module</h2>
 <p>The user module creates a user with role grants and a default warehouse.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_user
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_user
 </code></pre></div>
 <h3 id="maintf">main.tf</h3>
 <p>Create <code>modules/snowflake_user/main.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.security_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.user_admin</span><span class="p">]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">  # Determine the default role</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_create_dedicated_role</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">module.dedicated_role[0].role_name</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_role</span><span class="p">)</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1">  # Combine default role with additional roles</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">all_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">concat</span><span class="p">([</span><span class="nv">local.default_role</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">r</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.user_additional_roles</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="err">r</span><span class="p">)])</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">}</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1"># User</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">  </span><span class="na">login_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">  </span><span class="na">display_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="na">comment</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="na">email</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="na">first_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="na">last_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_warehouse</span><span class="p">)</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="c1">  # Validation for human users</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="nb">precondition</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">      </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_is_service_account</span><span class="w"> </span><span class="err">||</span><span class="w"> </span><span class="nv">var.user_email</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">      </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Email is required for human users."</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="p">}</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="c1"># Dedicated Role (Optional)</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="c1"># Useful for data loaders that need their own role for database writes</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"dedicated_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../snowflake_role"</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">  </span><span class="na">count</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_create_dedicated_role</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">  </span><span class="na">role_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_name</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="w">  </span><span class="na">role_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Dedicated role for ${var.user_name}."</span>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="p">}</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="c1"># Role Grants</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_account_role"</span><span class="w"> </span><span class="nv">"roles_to_user"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">  </span><span class="na">provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">  </span><span class="na">for_each</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">local.all_roles</span><span class="p">)</span>
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">  </span><span class="na">role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value</span>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">  </span><span class="na">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.name</span>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
+<span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
+<span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.security_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.user_admin</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # Determine the default role</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_create_dedicated_role</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">module.dedicated_role[0].role_name</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_role</span><span class="p">)</span>
+
+<span class="c1">  # Combine default role with additional roles</span>
+<span class="w">  </span><span class="na">all_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">concat</span><span class="p">([</span><span class="nv">local.default_role</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">r</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.user_additional_roles</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="err">r</span><span class="p">)])</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># User</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">login_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">display_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
+<span class="w">  </span><span class="na">email</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
+<span class="w">  </span><span class="na">first_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
+<span class="w">  </span><span class="na">last_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_warehouse</span><span class="p">)</span>
+
+<span class="c1">  # Validation for human users</span>
+<span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">precondition</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_is_service_account</span><span class="w"> </span><span class="err">||</span><span class="w"> </span><span class="nv">var.user_email</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span>
+<span class="w">      </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Email is required for human users."</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Dedicated Role (Optional)</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Useful for data loaders that need their own role for database writes</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"dedicated_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../snowflake_role"</span>
+<span class="w">  </span><span class="na">count</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_create_dedicated_role</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">role_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_name</span>
+<span class="w">  </span><span class="na">role_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Dedicated role for ${var.user_name}."</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Role Grants</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_account_role"</span><span class="w"> </span><span class="nv">"roles_to_user"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">local.all_roles</span><span class="p">)</span>
+<span class="w">  </span><span class="na">role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value</span>
+<span class="w">  </span><span class="na">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.name</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="variablestf">variables.tf</h3>
 <p>Create <code>modules/snowflake_user/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The username (will be uppercased)"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_comment"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the user"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_display_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Display name shown in the UI"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_email"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Email address (required for human users)"</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="err">||</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"</span><span class="p">,</span><span class="w"> </span><span class="nv">var.user_email</span><span class="p">))</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Invalid email address format."</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="p">}</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_first_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"First name"</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="p">}</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_last_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Last name"</span>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="p">}</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_default_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Default role for the user (ignored if user_create_dedicated_role is true)"</span>
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="p">}</span>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_default_warehouse"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Default warehouse for the user"</span>
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="p">}</span>
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_additional_roles"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Additional roles to grant to the user"</span>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="p">}</span>
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_create_dedicated_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Create a dedicated role for this user (useful for data loaders)"</span>
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="p">}</span>
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_is_service_account"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Is this a service account? Relaxes email validation"</span>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The username (will be uppercased)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_comment"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the user"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_display_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Display name shown in the UI"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_email"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Email address (required for human users)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="err">||</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"</span><span class="p">,</span><span class="w"> </span><span class="nv">var.user_email</span><span class="p">))</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Invalid email address format."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_first_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"First name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_last_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Last name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_default_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Default role for the user (ignored if user_create_dedicated_role is true)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_default_warehouse"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Default warehouse for the user"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_additional_roles"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Additional roles to grant to the user"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_create_dedicated_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Create a dedicated role for this user (useful for data loaders)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"user_is_service_account"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Is this a service account? Relaxes email validation"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="outputstf">outputs.tf</h3>
 <p>Create <code>modules/snowflake_user/outputs.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"user_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The username"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.name</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"user_default_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The user's default role"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"user_default_warehouse"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The user's default warehouse"</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.default_warehouse</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"user_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The username"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.name</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"user_default_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The user's default role"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"user_default_warehouse"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The user's default warehouse"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.this.default_warehouse</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="import-svc_terraform">Import SVC_TERRAFORM</h2>
 <p>The <code>SVC_TERRAFORM</code> service account was created during the <a href="../../../getting-started/terraform-setup/snowflake/2-create-terraform-service-account/">Getting Started</a> section. Now we'll import it into this module-based configuration.</p>
 <p>Create <code>users.tf</code> in your root Snowflake directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Service Accounts</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># Terraform Service Account</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_terraform"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management."</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="na">user_additional_roles</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SYSADMIN", "SECURITYADMIN", "USERADMIN"</span><span class="p">]</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Service Accounts</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Terraform Service Account</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_terraform"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management."</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
+<span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
+<span class="w">  </span><span class="na">user_additional_roles</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SYSADMIN", "SECURITYADMIN", "USERADMIN"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Create <code>imports.tf</code> to import the existing user:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Import Blocks</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># These blocks import existing Snowflake resources into Terraform state.</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Remove these blocks after the initial import is complete.</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_terraform.snowflake_user.this</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Import Blocks</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># These blocks import existing Snowflake resources into Terraform state.</span>
+<span class="c1"># Remove these blocks after the initial import is complete.</span>
+
+<span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_terraform.snowflake_user.this</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">After Import</p>
@@ -6361,123 +6363,123 @@
 </div>
 <h2 id="create-human-users">Create Human Users</h2>
 <p>For human users, use a variable-driven approach. Add to <code>variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"developer_users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of developer users to create"</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="p">}))</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="p">}</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"admin_users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of admin users (creates both _ADMIN and regular accounts)"</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">  </span><span class="p">}))</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"developer_users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of developer users to create"</span>
+<span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"admin_users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of admin users (creates both _ADMIN and regular accounts)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Add to <code>users.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Developer Users</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Analytics Developer"</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="p">}</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="c1"># Admin Users</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="c1"># Each admin gets two accounts:</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="c1"># - USERNAME_ADMIN: For administrative tasks (SYSADMIN default)</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="c1"># - USERNAME: For daily development work (ANALYTICS_DEVELOPER default)</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="c1"># Admin account</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_admins_admin"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.admin_users</span>
-<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>
-<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a>
-<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.key}_ADMIN"</span>
-<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Admin Account"</span>
-<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} (Admin)"</span>
-<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
-<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a><span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
-<a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a><span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
-<a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a>
-<a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
-<a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a><span class="w">  </span><span class="na">user_additional_roles</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"ACCOUNTADMIN", "USERADMIN", "SECURITYADMIN"</span><span class="p">]</span>
-<a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a><span class="p">}</span>
-<a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a>
-<a id="__codelineno-7-53" name="__codelineno-7-53" href="#__codelineno-7-53"></a><span class="c1"># Developer account</span>
-<a id="__codelineno-7-54" name="__codelineno-7-54" href="#__codelineno-7-54"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_admins_developer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-55" name="__codelineno-7-55" href="#__codelineno-7-55"></a><span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-7-56" name="__codelineno-7-56" href="#__codelineno-7-56"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.admin_users</span>
-<a id="__codelineno-7-57" name="__codelineno-7-57" href="#__codelineno-7-57"></a>
-<a id="__codelineno-7-58" name="__codelineno-7-58" href="#__codelineno-7-58"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-59" name="__codelineno-7-59" href="#__codelineno-7-59"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-7-60" name="__codelineno-7-60" href="#__codelineno-7-60"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-7-61" name="__codelineno-7-61" href="#__codelineno-7-61"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-62" name="__codelineno-7-62" href="#__codelineno-7-62"></a>
-<a id="__codelineno-7-63" name="__codelineno-7-63" href="#__codelineno-7-63"></a><span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
-<a id="__codelineno-7-64" name="__codelineno-7-64" href="#__codelineno-7-64"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Developer Account"</span>
-<a id="__codelineno-7-65" name="__codelineno-7-65" href="#__codelineno-7-65"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
-<a id="__codelineno-7-66" name="__codelineno-7-66" href="#__codelineno-7-66"></a><span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
-<a id="__codelineno-7-67" name="__codelineno-7-67" href="#__codelineno-7-67"></a><span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
-<a id="__codelineno-7-68" name="__codelineno-7-68" href="#__codelineno-7-68"></a><span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
-<a id="__codelineno-7-69" name="__codelineno-7-69" href="#__codelineno-7-69"></a>
-<a id="__codelineno-7-70" name="__codelineno-7-70" href="#__codelineno-7-70"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-7-71" name="__codelineno-7-71" href="#__codelineno-7-71"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
-<a id="__codelineno-7-72" name="__codelineno-7-72" href="#__codelineno-7-72"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Developer Users</span>
+<span class="c1"># =============================================================================</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Analytics Developer"</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
+<span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
+<span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
+<span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
+<span class="p">}</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Admin Users</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Each admin gets two accounts:</span>
+<span class="c1"># - USERNAME_ADMIN: For administrative tasks (SYSADMIN default)</span>
+<span class="c1"># - USERNAME: For daily development work (ANALYTICS_DEVELOPER default)</span>
+
+<span class="c1"># Admin account</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_admins_admin"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.admin_users</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.key}_ADMIN"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Admin Account"</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} (Admin)"</span>
+<span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
+<span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
+<span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span>
+<span class="w">  </span><span class="na">user_additional_roles</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"ACCOUNTADMIN", "USERADMIN", "SECURITYADMIN"</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Developer account</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_admins_developer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.admin_users</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"${each.value.display_name} - Developer Account"</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
+<span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
+<span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
+<span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Create <code>users.auto.tfvars</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Non-admin developers - creates a single account</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">  # "ASMITH" = {</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">  #   display_name = "Alice Smith"</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">  #   first_name   = "Alice"</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">  #   last_name    = "Smith"</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">  #   email        = "alice.smith@company.com"</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1">  # }</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">}</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="c1"># Admins - creates TWO accounts: USERNAME_ADMIN and USERNAME</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="c1"># Don't add admins to developer_users - they already get a developer account</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="nb">admin_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1">  # "JBLOGGS" = {</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="c1">  #   display_name = "Joe Bloggs"</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="c1">  #   first_name   = "Joe"</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="c1">  #   last_name    = "Bloggs"</span>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="c1">  #   email        = "joe.bloggs@company.com"</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="c1">  # }</span>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Non-admin developers - creates a single account</span>
+<span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # "ASMITH" = {</span>
+<span class="c1">  #   display_name = "Alice Smith"</span>
+<span class="c1">  #   first_name   = "Alice"</span>
+<span class="c1">  #   last_name    = "Smith"</span>
+<span class="c1">  #   email        = "alice.smith@company.com"</span>
+<span class="c1">  # }</span>
+<span class="p">}</span>
+
+<span class="c1"># Admins - creates TWO accounts: USERNAME_ADMIN and USERNAME</span>
+<span class="c1"># Don't add admins to developer_users - they already get a developer account</span>
+<span class="nb">admin_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # "JBLOGGS" = {</span>
+<span class="c1">  #   display_name = "Joe Bloggs"</span>
+<span class="c1">  #   first_name   = "Joe"</span>
+<span class="c1">  #   last_name    = "Bloggs"</span>
+<span class="c1">  #   email        = "joe.bloggs@company.com"</span>
+<span class="c1">  # }</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Don't Duplicate Users</p>
@@ -6517,20 +6519,20 @@
 <p>For service accounts, generate key pairs and store in 1Password or AWS Secrets Manager.</p>
 <h2 id="commit-and-deploy">Commit and Deploy</h2>
 <p>Commit your changes and push to trigger the CI/CD pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add snowflake_user module and import SVC_TERRAFORM"</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add snowflake_user module and import SVC_TERRAFORM"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <h2 id="verify-in-snowflake">Verify in Snowflake</h2>
 <p>After the pipeline completes, verify the users:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- Check service account exists</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_%'</span><span class="p">;</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">-- Check user configuration</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">-- Check role grants</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check service account exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_%'</span><span class="p">;</span>
+
+<span class="c1">-- Check user configuration</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
+
+<span class="c1">-- Check role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've created the user infrastructure for your data platform:</p>
@@ -6595,6 +6597,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6638,7 +6642,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

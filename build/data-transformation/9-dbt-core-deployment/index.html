@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6131,47 +6133,47 @@
 <p><strong><code>deploy.yml</code></strong> — runs on every merge to <code>main</code>. Runs a full <code>dbt build</code>, uploads the new <code>manifest.json</code> to S3, and deploys the updated docs site.</p>
 </li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                       dbt CORE CI/CD PIPELINE                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Pull Request                         Merge to main                         │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────                         ─────────────                         │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                             │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  1. Fetch manifest.json from S3       1. dbt build (all models)             │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  2. dbt source freshness              2. dbt test (all tests)               │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  3. dbt build --select                3. dbt_project_evaluator              │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│       state:modified+                 4. Upload manifest.json → S3          │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│       --defer                         5. dbt docs generate                  │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│       --state .artifacts/             6. Deploy docs → S3 + CloudFront      │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  4. dbt_project_evaluator                                                   │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                                                                             │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                       dbt CORE CI/CD PIPELINE                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Pull Request                         Merge to main                         │
+│  ────────────                         ─────────────                         │
+│                                                                             │
+│  1. Fetch manifest.json from S3       1. dbt build (all models)             │
+│  2. dbt source freshness              2. dbt test (all tests)               │
+│  3. dbt build --select                3. dbt_project_evaluator              │
+│       state:modified+                 4. Upload manifest.json → S3          │
+│       --defer                         5. dbt docs generate                  │
+│       --state .artifacts/             6. Deploy docs → S3 + CloudFront      │
+│  4. dbt_project_evaluator                                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="prerequisites">Prerequisites</h2>
 <h3 id="s3-bucket-for-artifacts">S3 Bucket for Artifacts</h3>
 <p>Create an S3 bucket in your AWS Terraform for storing dbt state artifacts and the docs site:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># terraform/aws/s3.tf — add alongside existing buckets</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"bucket_dbt_artifacts"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/s3_bucket"</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="na">bucket_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-org-dbt-artifacts"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt state artifacts (manifest.json) and docs site"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="na">versioning_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="na">lifecycle_rules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="na">id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"expire-old-artifacts"</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="na">prefix</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"artifacts/"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="na">expiration_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">90</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="p">}]</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="na">Project</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/s3.tf — add alongside existing buckets</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"bucket_dbt_artifacts"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/s3_bucket"</span>
+
+<span class="w">  </span><span class="na">bucket_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-org-dbt-artifacts"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt state artifacts (manifest.json) and docs site"</span>
+
+<span class="w">  </span><span class="na">versioning_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">lifecycle_rules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">    </span><span class="na">id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"expire-old-artifacts"</span>
+<span class="w">    </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="na">prefix</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"artifacts/"</span>
+<span class="w">    </span><span class="na">expiration_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">90</span>
+<span class="w">  </span><span class="p">}]</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Project</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The bucket has two "folders" by convention:</p>
 <ul>
@@ -6180,135 +6182,135 @@
 </ul>
 <h3 id="iam-permissions-for-github-actions">IAM Permissions for GitHub Actions</h3>
 <p>The <code>TerraformGitHubActionsRole</code> used by your CI/CD already has S3 read/write permissions from the data lake buckets. Add permissions for the new artifacts bucket:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># In the IAM policy for TerraformGitHubActionsRole (in aws/2-import-iam-roles.md)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"DbtArtifactsAccess"</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="na">effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="s2">"s3:PutObject"</span><span class="p">,</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="s2">"s3:ListBucket"</span><span class="p">,</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="s2">"s3:DeleteObject"</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="nv">module.bucket_dbt_artifacts.bucket_arn</span><span class="p">,</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="s2">"${module.bucket_dbt_artifacts.bucket_arn}/*"</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># In the IAM policy for TerraformGitHubActionsRole (in aws/2-import-iam-roles.md)</span>
+<span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"DbtArtifactsAccess"</span>
+<span class="w">  </span><span class="na">effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"s3:PutObject"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"s3:ListBucket"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"s3:DeleteObject"</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.bucket_dbt_artifacts.bucket_arn</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"${module.bucket_dbt_artifacts.bucket_arn}/*"</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="snowflake-credentials-secret">Snowflake Credentials Secret</h3>
 <p>Confirm the <code>dbt/snowflake-credentials</code> secret exists in AWS Secrets Manager (created in <a href="../4-snowflake-infrastructure/">Snowflake Infrastructure</a>).</p>
 <h2 id="pull-request-ci-workflow">Pull Request CI Workflow</h2>
 <p>Create <code>.github/workflows/ci.yml</code> in the <code>dbt-transform</code> repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt CI</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">on</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">   </span><span class="c1"># required for OIDC authentication to AWS</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nt">jobs</span><span class="p">:</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="nt">dbt-ci</span><span class="p">:</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Slim CI</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS credentials (OIDC)</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">          </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">          </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-1</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install uv</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astral-sh/setup-uv@v4</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">          </span><span class="nt">enable-cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv python install 3.11</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv sync</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get Snowflake credentials from Secrets Manager</span>
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">          </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">            </span><span class="no">SNOWFLAKE, dbt/snowflake-credentials</span>
-<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">          </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>
-<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write Snowflake private key</span>
-<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">          </span><span class="no">echo "$SNOWFLAKE_PRIVATE_KEY" &gt; /tmp/snowflake_key.pem</span>
-<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">          </span><span class="no">chmod 600 /tmp/snowflake_key.pem</span>
-<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>
-<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write profiles.yml</span>
-<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="w">          </span><span class="no">mkdir -p ~/.dbt</span>
-<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">          </span><span class="no">cat &gt; ~/.dbt/profiles.yml &lt;&lt; EOF</span>
-<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="w">          </span><span class="no">dbt_transform:</span>
-<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">            </span><span class="no">target: ci</span>
-<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">            </span><span class="no">outputs:</span>
-<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a><span class="w">              </span><span class="no">ci:</span>
-<a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="w">                </span><span class="no">type: snowflake</span>
-<a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="w">                </span><span class="no">account: "${SNOWFLAKE_ACCOUNT}"</span>
-<a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a><span class="w">                </span><span class="no">user: "${SNOWFLAKE_USER}"</span>
-<a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w">                </span><span class="no">private_key_path: "/tmp/snowflake_key.pem"</span>
-<a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="w">                </span><span class="no">role: "${SNOWFLAKE_ROLE}"</span>
-<a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a><span class="w">                </span><span class="no">warehouse: "${SNOWFLAKE_WAREHOUSE}"</span>
-<a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a><span class="w">                </span><span class="no">database: ANALYTICS_DEV</span>
-<a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a><span class="w">                </span><span class="no">schema: "CI_PR_${{ github.event.number }}"</span>
-<a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a><span class="w">                </span><span class="no">threads: 4</span>
-<a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a><span class="w">          </span><span class="no">EOF</span>
-<a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a>
-<a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Fetch production manifest (for deferral)</span>
-<a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a><span class="w">          </span><span class="no">mkdir -p .artifacts</span>
-<a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a><span class="w">          </span><span class="no">aws s3 cp s3://your-org-dbt-artifacts/artifacts/manifest.json .artifacts/manifest.json \</span>
-<a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="w">            </span><span class="no">|| echo "No production manifest found — running without deferral"</span>
-<a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a>
-<a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check source freshness</span>
-<a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt source freshness --target ci</span>
-<a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># warn but don't fail CI on stale sources</span>
-<a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a>
-<a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run slim CI (changed models + downstream)</span>
-<a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a><span class="w">          </span><span class="no">if [ -f .artifacts/manifest.json ]; then</span>
-<a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a><span class="w">            </span><span class="no">dbt build \</span>
-<a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a><span class="w">              </span><span class="no">--target ci \</span>
-<a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a><span class="w">              </span><span class="no">--select state:modified+ \</span>
-<a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a><span class="w">              </span><span class="no">--defer \</span>
-<a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a><span class="w">              </span><span class="no">--state .artifacts/ \</span>
-<a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a><span class="w">              </span><span class="no">--fail-fast</span>
-<a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a><span class="w">          </span><span class="no">else</span>
-<a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a><span class="w">            </span><span class="no"># First run — no manifest yet, build everything</span>
-<a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a><span class="w">            </span><span class="no">dbt build --target ci --fail-fast</span>
-<a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a><span class="w">          </span><span class="no">fi</span>
-<a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a>
-<a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt_project_evaluator</span>
-<a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt build --target ci --select package:dbt_project_evaluator</span>
-<a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a>
-<a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Clean up CI schema</span>
-<a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
-<a id="__codelineno-3-105" name="__codelineno-3-105" href="#__codelineno-3-105"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-3-106" name="__codelineno-3-106" href="#__codelineno-3-106"></a><span class="w">          </span><span class="no">dbt run-operation drop_schema \</span>
-<a id="__codelineno-3-107" name="__codelineno-3-107" href="#__codelineno-3-107"></a><span class="w">            </span><span class="no">--args "{schema_name: CI_PR_${{ github.event.number }}, database_name: ANALYTICS_DEV}" \</span>
-<a id="__codelineno-3-108" name="__codelineno-3-108" href="#__codelineno-3-108"></a><span class="w">            </span><span class="no">--target ci</span>
-<a id="__codelineno-3-109" name="__codelineno-3-109" href="#__codelineno-3-109"></a><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt CI</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">   </span><span class="c1"># required for OIDC authentication to AWS</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt-ci</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Slim CI</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS credentials (OIDC)</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole</span>
+<span class="w">          </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-1</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install uv</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astral-sh/setup-uv@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">enable-cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv python install 3.11</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv sync</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get Snowflake credentials from Secrets Manager</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">SNOWFLAKE, dbt/snowflake-credentials</span>
+<span class="w">          </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write Snowflake private key</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">echo "$SNOWFLAKE_PRIVATE_KEY" &gt; /tmp/snowflake_key.pem</span>
+<span class="w">          </span><span class="no">chmod 600 /tmp/snowflake_key.pem</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write profiles.yml</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">mkdir -p ~/.dbt</span>
+<span class="w">          </span><span class="no">cat &gt; ~/.dbt/profiles.yml &lt;&lt; EOF</span>
+<span class="w">          </span><span class="no">dbt_transform:</span>
+<span class="w">            </span><span class="no">target: ci</span>
+<span class="w">            </span><span class="no">outputs:</span>
+<span class="w">              </span><span class="no">ci:</span>
+<span class="w">                </span><span class="no">type: snowflake</span>
+<span class="w">                </span><span class="no">account: "${SNOWFLAKE_ACCOUNT}"</span>
+<span class="w">                </span><span class="no">user: "${SNOWFLAKE_USER}"</span>
+<span class="w">                </span><span class="no">private_key_path: "/tmp/snowflake_key.pem"</span>
+<span class="w">                </span><span class="no">role: "${SNOWFLAKE_ROLE}"</span>
+<span class="w">                </span><span class="no">warehouse: "${SNOWFLAKE_WAREHOUSE}"</span>
+<span class="w">                </span><span class="no">database: ANALYTICS_DEV</span>
+<span class="w">                </span><span class="no">schema: "CI_PR_${{ github.event.number }}"</span>
+<span class="w">                </span><span class="no">threads: 4</span>
+<span class="w">          </span><span class="no">EOF</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Fetch production manifest (for deferral)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">mkdir -p .artifacts</span>
+<span class="w">          </span><span class="no">aws s3 cp s3://your-org-dbt-artifacts/artifacts/manifest.json .artifacts/manifest.json \</span>
+<span class="w">            </span><span class="no">|| echo "No production manifest found — running without deferral"</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check source freshness</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt source freshness --target ci</span>
+<span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># warn but don't fail CI on stale sources</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run slim CI (changed models + downstream)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">if [ -f .artifacts/manifest.json ]; then</span>
+<span class="w">            </span><span class="no">dbt build \</span>
+<span class="w">              </span><span class="no">--target ci \</span>
+<span class="w">              </span><span class="no">--select state:modified+ \</span>
+<span class="w">              </span><span class="no">--defer \</span>
+<span class="w">              </span><span class="no">--state .artifacts/ \</span>
+<span class="w">              </span><span class="no">--fail-fast</span>
+<span class="w">          </span><span class="no">else</span>
+<span class="w">            </span><span class="no"># First run — no manifest yet, build everything</span>
+<span class="w">            </span><span class="no">dbt build --target ci --fail-fast</span>
+<span class="w">          </span><span class="no">fi</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt_project_evaluator</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt build --target ci --select package:dbt_project_evaluator</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Clean up CI schema</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">dbt run-operation drop_schema \</span>
+<span class="w">            </span><span class="no">--args "{schema_name: CI_PR_${{ github.event.number }}, database_name: ANALYTICS_DEV}" \</span>
+<span class="w">            </span><span class="no">--target ci</span>
+<span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">CI schema isolation</p>
@@ -6316,121 +6318,121 @@
 </div>
 <h3 id="the-drop_schema-macro">The <code>drop_schema</code> Macro</h3>
 <p>Create <code>macros/drop_schema.sql</code> to support CI cleanup:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">macro</span><span class="w"> </span><span class="n">drop_schema</span><span class="p">(</span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">database_name</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">drop_query</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="k">drop</span><span class="w"> </span><span class="k">schema</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">exists</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">database_name</span><span class="w"> </span><span class="err">}}</span><span class="p">.</span><span class="err">{{</span><span class="w"> </span><span class="k">schema_name</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="k">cascade</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endset</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">run_query</span><span class="p">(</span><span class="n">drop_query</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="err">{{</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="ss">"Dropped schema: "</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">database_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="ss">"."</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="o">=</span><span class="k">True</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endmacro</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">macro</span><span class="w"> </span><span class="n">drop_schema</span><span class="p">(</span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">database_name</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">drop_query</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<span class="w">        </span><span class="k">drop</span><span class="w"> </span><span class="k">schema</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">exists</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">database_name</span><span class="w"> </span><span class="err">}}</span><span class="p">.</span><span class="err">{{</span><span class="w"> </span><span class="k">schema_name</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="k">cascade</span>
+<span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endset</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<span class="w">    </span><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">run_query</span><span class="p">(</span><span class="n">drop_query</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<span class="w">    </span><span class="err">{{</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="ss">"Dropped schema: "</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">database_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="ss">"."</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="o">=</span><span class="k">True</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endmacro</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
 </code></pre></div>
 <h2 id="production-deployment-workflow">Production Deployment Workflow</h2>
 <p>Create <code>.github/workflows/deploy.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt Production Deploy</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nt">on</span><span class="p">:</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="nt">jobs</span><span class="p">:</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span><span class="nt">dbt-deploy</span><span class="p">:</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Production Run</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS credentials (OIDC)</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">          </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">          </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-1</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install uv</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astral-sh/setup-uv@v4</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">          </span><span class="nt">enable-cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv python install 3.11</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv sync</span>
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
-<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
-<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>
-<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
-<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
-<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>
-<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get Snowflake credentials from Secrets Manager</span>
-<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
-<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">          </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">            </span><span class="no">SNOWFLAKE, dbt/snowflake-credentials</span>
-<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">          </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>
-<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write Snowflake private key</span>
-<a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a><span class="w">          </span><span class="no">echo "$SNOWFLAKE_PRIVATE_KEY" &gt; /tmp/snowflake_key.pem</span>
-<a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a><span class="w">          </span><span class="no">chmod 600 /tmp/snowflake_key.pem</span>
-<a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a>
-<a id="__codelineno-5-56" name="__codelineno-5-56" href="#__codelineno-5-56"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write profiles.yml</span>
-<a id="__codelineno-5-57" name="__codelineno-5-57" href="#__codelineno-5-57"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-58" name="__codelineno-5-58" href="#__codelineno-5-58"></a><span class="w">          </span><span class="no">mkdir -p ~/.dbt</span>
-<a id="__codelineno-5-59" name="__codelineno-5-59" href="#__codelineno-5-59"></a><span class="w">          </span><span class="no">cat &gt; ~/.dbt/profiles.yml &lt;&lt; EOF</span>
-<a id="__codelineno-5-60" name="__codelineno-5-60" href="#__codelineno-5-60"></a><span class="w">          </span><span class="no">dbt_transform:</span>
-<a id="__codelineno-5-61" name="__codelineno-5-61" href="#__codelineno-5-61"></a><span class="w">            </span><span class="no">target: prod</span>
-<a id="__codelineno-5-62" name="__codelineno-5-62" href="#__codelineno-5-62"></a><span class="w">            </span><span class="no">outputs:</span>
-<a id="__codelineno-5-63" name="__codelineno-5-63" href="#__codelineno-5-63"></a><span class="w">              </span><span class="no">prod:</span>
-<a id="__codelineno-5-64" name="__codelineno-5-64" href="#__codelineno-5-64"></a><span class="w">                </span><span class="no">type: snowflake</span>
-<a id="__codelineno-5-65" name="__codelineno-5-65" href="#__codelineno-5-65"></a><span class="w">                </span><span class="no">account: "${SNOWFLAKE_ACCOUNT}"</span>
-<a id="__codelineno-5-66" name="__codelineno-5-66" href="#__codelineno-5-66"></a><span class="w">                </span><span class="no">user: "${SNOWFLAKE_USER}"</span>
-<a id="__codelineno-5-67" name="__codelineno-5-67" href="#__codelineno-5-67"></a><span class="w">                </span><span class="no">private_key_path: "/tmp/snowflake_key.pem"</span>
-<a id="__codelineno-5-68" name="__codelineno-5-68" href="#__codelineno-5-68"></a><span class="w">                </span><span class="no">role: "${SNOWFLAKE_ROLE}"</span>
-<a id="__codelineno-5-69" name="__codelineno-5-69" href="#__codelineno-5-69"></a><span class="w">                </span><span class="no">warehouse: "${SNOWFLAKE_WAREHOUSE}"</span>
-<a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a><span class="w">                </span><span class="no">database: ANALYTICS</span>
-<a id="__codelineno-5-71" name="__codelineno-5-71" href="#__codelineno-5-71"></a><span class="w">                </span><span class="no">schema: ANALYTICS</span>
-<a id="__codelineno-5-72" name="__codelineno-5-72" href="#__codelineno-5-72"></a><span class="w">                </span><span class="no">threads: 8</span>
-<a id="__codelineno-5-73" name="__codelineno-5-73" href="#__codelineno-5-73"></a><span class="w">          </span><span class="no">EOF</span>
-<a id="__codelineno-5-74" name="__codelineno-5-74" href="#__codelineno-5-74"></a>
-<a id="__codelineno-5-75" name="__codelineno-5-75" href="#__codelineno-5-75"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt build (production)</span>
-<a id="__codelineno-5-76" name="__codelineno-5-76" href="#__codelineno-5-76"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt build --target prod --fail-fast</span>
-<a id="__codelineno-5-77" name="__codelineno-5-77" href="#__codelineno-5-77"></a>
-<a id="__codelineno-5-78" name="__codelineno-5-78" href="#__codelineno-5-78"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload manifest to S3 (for future deferral)</span>
-<a id="__codelineno-5-79" name="__codelineno-5-79" href="#__codelineno-5-79"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
-<a id="__codelineno-5-80" name="__codelineno-5-80" href="#__codelineno-5-80"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-81" name="__codelineno-5-81" href="#__codelineno-5-81"></a><span class="w">          </span><span class="no">aws s3 cp target/manifest.json \</span>
-<a id="__codelineno-5-82" name="__codelineno-5-82" href="#__codelineno-5-82"></a><span class="w">            </span><span class="no">s3://your-org-dbt-artifacts/artifacts/manifest.json</span>
-<a id="__codelineno-5-83" name="__codelineno-5-83" href="#__codelineno-5-83"></a>
-<a id="__codelineno-5-84" name="__codelineno-5-84" href="#__codelineno-5-84"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate dbt docs</span>
-<a id="__codelineno-5-85" name="__codelineno-5-85" href="#__codelineno-5-85"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
-<a id="__codelineno-5-86" name="__codelineno-5-86" href="#__codelineno-5-86"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt docs generate --target prod</span>
-<a id="__codelineno-5-87" name="__codelineno-5-87" href="#__codelineno-5-87"></a>
-<a id="__codelineno-5-88" name="__codelineno-5-88" href="#__codelineno-5-88"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy docs to S3</span>
-<a id="__codelineno-5-89" name="__codelineno-5-89" href="#__codelineno-5-89"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
-<a id="__codelineno-5-90" name="__codelineno-5-90" href="#__codelineno-5-90"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-91" name="__codelineno-5-91" href="#__codelineno-5-91"></a><span class="w">          </span><span class="no">aws s3 sync ./target/ \</span>
-<a id="__codelineno-5-92" name="__codelineno-5-92" href="#__codelineno-5-92"></a><span class="w">            </span><span class="no">s3://your-org-dbt-artifacts/docs/ \</span>
-<a id="__codelineno-5-93" name="__codelineno-5-93" href="#__codelineno-5-93"></a><span class="w">            </span><span class="no">--delete \</span>
-<a id="__codelineno-5-94" name="__codelineno-5-94" href="#__codelineno-5-94"></a><span class="w">            </span><span class="no">--exclude "*.json" \</span>
-<a id="__codelineno-5-95" name="__codelineno-5-95" href="#__codelineno-5-95"></a><span class="w">            </span><span class="no">--include "index.html" \</span>
-<a id="__codelineno-5-96" name="__codelineno-5-96" href="#__codelineno-5-96"></a><span class="w">            </span><span class="no">--include "catalog.json" \</span>
-<a id="__codelineno-5-97" name="__codelineno-5-97" href="#__codelineno-5-97"></a><span class="w">            </span><span class="no">--include "manifest.json" \</span>
-<a id="__codelineno-5-98" name="__codelineno-5-98" href="#__codelineno-5-98"></a><span class="w">            </span><span class="no">--include "run_results.json"</span>
-<a id="__codelineno-5-99" name="__codelineno-5-99" href="#__codelineno-5-99"></a>
-<a id="__codelineno-5-100" name="__codelineno-5-100" href="#__codelineno-5-100"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Invalidate CloudFront cache</span>
-<a id="__codelineno-5-101" name="__codelineno-5-101" href="#__codelineno-5-101"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
-<a id="__codelineno-5-102" name="__codelineno-5-102" href="#__codelineno-5-102"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-103" name="__codelineno-5-103" href="#__codelineno-5-103"></a><span class="w">          </span><span class="no">aws cloudfront create-invalidation \</span>
-<a id="__codelineno-5-104" name="__codelineno-5-104" href="#__codelineno-5-104"></a><span class="w">            </span><span class="no">--distribution-id YOUR_DISTRIBUTION_ID \</span>
-<a id="__codelineno-5-105" name="__codelineno-5-105" href="#__codelineno-5-105"></a><span class="w">            </span><span class="no">--paths "/*"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt Production Deploy</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt-deploy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Production Run</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS credentials (OIDC)</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::YOUR_ACCOUNT_ID:role/TerraformGitHubActionsRole</span>
+<span class="w">          </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-1</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install uv</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astral-sh/setup-uv@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">enable-cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv python install 3.11</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv sync</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get Snowflake credentials from Secrets Manager</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">SNOWFLAKE, dbt/snowflake-credentials</span>
+<span class="w">          </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write Snowflake private key</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">echo "$SNOWFLAKE_PRIVATE_KEY" &gt; /tmp/snowflake_key.pem</span>
+<span class="w">          </span><span class="no">chmod 600 /tmp/snowflake_key.pem</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write profiles.yml</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">mkdir -p ~/.dbt</span>
+<span class="w">          </span><span class="no">cat &gt; ~/.dbt/profiles.yml &lt;&lt; EOF</span>
+<span class="w">          </span><span class="no">dbt_transform:</span>
+<span class="w">            </span><span class="no">target: prod</span>
+<span class="w">            </span><span class="no">outputs:</span>
+<span class="w">              </span><span class="no">prod:</span>
+<span class="w">                </span><span class="no">type: snowflake</span>
+<span class="w">                </span><span class="no">account: "${SNOWFLAKE_ACCOUNT}"</span>
+<span class="w">                </span><span class="no">user: "${SNOWFLAKE_USER}"</span>
+<span class="w">                </span><span class="no">private_key_path: "/tmp/snowflake_key.pem"</span>
+<span class="w">                </span><span class="no">role: "${SNOWFLAKE_ROLE}"</span>
+<span class="w">                </span><span class="no">warehouse: "${SNOWFLAKE_WAREHOUSE}"</span>
+<span class="w">                </span><span class="no">database: ANALYTICS</span>
+<span class="w">                </span><span class="no">schema: ANALYTICS</span>
+<span class="w">                </span><span class="no">threads: 8</span>
+<span class="w">          </span><span class="no">EOF</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt build (production)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt build --target prod --fail-fast</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload manifest to S3 (for future deferral)</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">aws s3 cp target/manifest.json \</span>
+<span class="w">            </span><span class="no">s3://your-org-dbt-artifacts/artifacts/manifest.json</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate dbt docs</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt docs generate --target prod</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy docs to S3</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">aws s3 sync ./target/ \</span>
+<span class="w">            </span><span class="no">s3://your-org-dbt-artifacts/docs/ \</span>
+<span class="w">            </span><span class="no">--delete \</span>
+<span class="w">            </span><span class="no">--exclude "*.json" \</span>
+<span class="w">            </span><span class="no">--include "index.html" \</span>
+<span class="w">            </span><span class="no">--include "catalog.json" \</span>
+<span class="w">            </span><span class="no">--include "manifest.json" \</span>
+<span class="w">            </span><span class="no">--include "run_results.json"</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Invalidate CloudFront cache</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success()</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">aws cloudfront create-invalidation \</span>
+<span class="w">            </span><span class="no">--distribution-id YOUR_DISTRIBUTION_ID \</span>
+<span class="w">            </span><span class="no">--paths "/*"</span>
 </code></pre></div>
 <h2 id="cloudfront-docs-site">CloudFront Docs Site</h2>
 <p>CloudFront is AWS's Content Delivery Network (CDN). It serves the dbt docs site over HTTPS with caching and global distribution, making the docs fast and secure to access. Without CloudFront, you'd need to make the S3 bucket publicly accessible directly, which is less secure and slower for users geographically distant from your bucket's region.</p>
@@ -6442,63 +6444,63 @@
 <li><strong>Custom domain support</strong> — add your own domain (e.g. <code>docs.yourcompany.com</code>) if needed</li>
 </ul>
 <p>Add the CloudFront distribution and S3 static site hosting to Terraform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># terraform/aws/cloudfront.tf</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudfront_origin_access_control"</span><span class="w"> </span><span class="nv">"dbt_docs"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="na">name</span><span class="w">                              </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-oac"</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="na">description</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">"OAC for dbt docs S3 bucket"</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="na">origin_access_control_origin_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3"</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="na">signing_behavior</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"always"</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="na">signing_protocol</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"sigv4"</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudfront_distribution"</span><span class="w"> </span><span class="nv">"dbt_docs"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="na">enabled</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="na">default_root_object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"index.html"</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="na">comment</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt documentation site"</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">  </span><span class="nb">origin</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="na">domain_name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">module.bucket_dbt_artifacts.bucket_regional_domain_name</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="na">origin_id</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-s3"</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="na">origin_path</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"/docs"</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="na">origin_access_control_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudfront_origin_access_control.dbt_docs.id</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">  </span><span class="nb">default_cache_behavior</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">    </span><span class="na">allowed_methods</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET", "HEAD"</span><span class="p">]</span>
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">    </span><span class="na">cached_methods</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET", "HEAD"</span><span class="p">]</span>
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">    </span><span class="na">target_origin_id</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-s3"</span>
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">    </span><span class="na">viewer_protocol_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"redirect-to-https"</span>
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>
-<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">    </span><span class="nb">forwarded_values</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="w">      </span><span class="na">query_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="w">      </span><span class="nb">cookies</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">forward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="w"> </span><span class="p">}</span>
-<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>
-<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="w">    </span><span class="na">min_ttl</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="w">    </span><span class="na">default_ttl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span>
-<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="w">    </span><span class="na">max_ttl</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3600</span>
-<a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a>
-<a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="w">  </span><span class="nb">restrictions</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="w">    </span><span class="nb">geo_restriction</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">restriction_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="w"> </span><span class="p">}</span>
-<a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a>
-<a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a><span class="w">  </span><span class="nb">viewer_certificate</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a><span class="w">    </span><span class="na">cloudfront_default_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-6-46" name="__codelineno-6-46" href="#__codelineno-6-46"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-47" name="__codelineno-6-47" href="#__codelineno-6-47"></a>
-<a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-49" name="__codelineno-6-49" href="#__codelineno-6-49"></a><span class="w">    </span><span class="na">Project</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
-<a id="__codelineno-6-50" name="__codelineno-6-50" href="#__codelineno-6-50"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-6-51" name="__codelineno-6-51" href="#__codelineno-6-51"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-52" name="__codelineno-6-52" href="#__codelineno-6-52"></a><span class="p">}</span>
-<a id="__codelineno-6-53" name="__codelineno-6-53" href="#__codelineno-6-53"></a>
-<a id="__codelineno-6-54" name="__codelineno-6-54" href="#__codelineno-6-54"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"dbt_docs_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-55" name="__codelineno-6-55" href="#__codelineno-6-55"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"URL for the dbt documentation site"</span>
-<a id="__codelineno-6-56" name="__codelineno-6-56" href="#__codelineno-6-56"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_cloudfront_distribution.dbt_docs.domain_name}"</span>
-<a id="__codelineno-6-57" name="__codelineno-6-57" href="#__codelineno-6-57"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/cloudfront.tf</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudfront_origin_access_control"</span><span class="w"> </span><span class="nv">"dbt_docs"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">                              </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-oac"</span>
+<span class="w">  </span><span class="na">description</span><span class="w">                       </span><span class="o">=</span><span class="w"> </span><span class="s2">"OAC for dbt docs S3 bucket"</span>
+<span class="w">  </span><span class="na">origin_access_control_origin_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3"</span>
+<span class="w">  </span><span class="na">signing_behavior</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"always"</span>
+<span class="w">  </span><span class="na">signing_protocol</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"sigv4"</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudfront_distribution"</span><span class="w"> </span><span class="nv">"dbt_docs"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">default_root_object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"index.html"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt documentation site"</span>
+
+<span class="w">  </span><span class="nb">origin</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">domain_name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">module.bucket_dbt_artifacts.bucket_regional_domain_name</span>
+<span class="w">    </span><span class="na">origin_id</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-s3"</span>
+<span class="w">    </span><span class="na">origin_path</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"/docs"</span>
+
+<span class="w">    </span><span class="na">origin_access_control_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudfront_origin_access_control.dbt_docs.id</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">default_cache_behavior</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">allowed_methods</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET", "HEAD"</span><span class="p">]</span>
+<span class="w">    </span><span class="na">cached_methods</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET", "HEAD"</span><span class="p">]</span>
+<span class="w">    </span><span class="na">target_origin_id</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt-docs-s3"</span>
+<span class="w">    </span><span class="na">viewer_protocol_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"redirect-to-https"</span>
+
+<span class="w">    </span><span class="nb">forwarded_values</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">query_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">      </span><span class="nb">cookies</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">forward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">min_ttl</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">default_ttl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span>
+<span class="w">    </span><span class="na">max_ttl</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3600</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">restrictions</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">geo_restriction</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">restriction_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">viewer_certificate</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">cloudfront_default_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Project</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"dbt_docs_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"URL for the dbt documentation site"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_cloudfront_distribution.dbt_docs.domain_name}"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>After <code>terraform apply</code>, note the CloudFront distribution ID and update <code>YOUR_DISTRIBUTION_ID</code> in <code>deploy.yml</code>.</p>
 <div class="admonition tip">
@@ -6507,16 +6509,16 @@
 </div>
 <h2 id="local-development-with-deferral">Local Development with Deferral</h2>
 <p>Developers can use the production <code>manifest.json</code> locally to defer unchanged models:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Fetch the production manifest</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>.artifacts
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>s3://your-org-dbt-artifacts/artifacts/manifest.json<span class="w"> </span>.artifacts/manifest.json<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>--profile<span class="w"> </span>data-engineer
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># Run only your changed models, deferring everything else to production</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>dbt<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>--select<span class="w"> </span>state:modified+<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span>--defer<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span>--state<span class="w"> </span>.artifacts/
+<div class="highlight"><pre><span></span><code><span class="c1"># Fetch the production manifest</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>.artifacts
+aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>s3://your-org-dbt-artifacts/artifacts/manifest.json<span class="w"> </span>.artifacts/manifest.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>data-engineer
+
+<span class="c1"># Run only your changed models, deferring everything else to production</span>
+dbt<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--select<span class="w"> </span>state:modified+<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--defer<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--state<span class="w"> </span>.artifacts/
 </code></pre></div>
 <p>This means a developer working on <code>fct_contacts</code> will:</p>
 <ul>
@@ -6527,46 +6529,46 @@
 <p>The result: a fast, focused development cycle without rebuilding the entire project.</p>
 <h3 id="add-just-commands-for-deferral">Add just Commands for Deferral</h3>
 <p>Create a <code>justfile</code> in the repository root to streamline deferral workflows:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a># Fetch the production manifest from S3 for deferral
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>fetch-manifest:
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    @echo "Fetching production manifest..."
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    @mkdir -p .artifacts
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    @aws s3 cp s3://your-org-dbt-artifacts/artifacts/manifest.json .artifacts/manifest.json \
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        --profile data-engineer 2&gt;/dev/null \
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        || echo "Warning: No production manifest found — running without deferral"
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a># Run dbt with deferral to production (only changed models)
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>dev *ARGS: fetch-manifest
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    @if [ -f .artifacts/manifest.json ]; then \
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        dbt build --select state:modified+ --defer --state .artifacts/ {{ ARGS }}; \
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    else \
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        dbt build {{ ARGS }}; \
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    fi
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a># Run a specific selection with deferral
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>dev-select SELECTION: fetch-manifest
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>    @if [ -f .artifacts/manifest.json ]; then \
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>        dbt build --select {{ SELECTION }} --defer --state .artifacts/; \
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>    else \
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>        dbt build --select {{ SELECTION }}; \
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>    fi
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a># Clean local artifacts
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>clean-artifacts:
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>    rm -rf .artifacts
+<div class="highlight"><pre><span></span><code># Fetch the production manifest from S3 for deferral
+fetch-manifest:
+    @echo "Fetching production manifest..."
+    @mkdir -p .artifacts
+    @aws s3 cp s3://your-org-dbt-artifacts/artifacts/manifest.json .artifacts/manifest.json \
+        --profile data-engineer 2&gt;/dev/null \
+        || echo "Warning: No production manifest found — running without deferral"
+
+# Run dbt with deferral to production (only changed models)
+dev *ARGS: fetch-manifest
+    @if [ -f .artifacts/manifest.json ]; then \
+        dbt build --select state:modified+ --defer --state .artifacts/ {{ ARGS }}; \
+    else \
+        dbt build {{ ARGS }}; \
+    fi
+
+# Run a specific selection with deferral
+dev-select SELECTION: fetch-manifest
+    @if [ -f .artifacts/manifest.json ]; then \
+        dbt build --select {{ SELECTION }} --defer --state .artifacts/; \
+    else \
+        dbt build --select {{ SELECTION }}; \
+    fi
+
+# Clean local artifacts
+clean-artifacts:
+    rm -rf .artifacts
 </code></pre></div>
 <p>Usage:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Run changed models with deferral</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>just<span class="w"> </span>dev
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Run specific model with deferral</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>just<span class="w"> </span>dev-select<span class="w"> </span>fct_exchange_rates
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Run changed models with additional flags</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>just<span class="w"> </span>dev<span class="w"> </span>--fail-fast
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># Clean downloaded artifacts</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>just<span class="w"> </span>clean-artifacts
+<div class="highlight"><pre><span></span><code><span class="c1"># Run changed models with deferral</span>
+just<span class="w"> </span>dev
+
+<span class="c1"># Run specific model with deferral</span>
+just<span class="w"> </span>dev-select<span class="w"> </span>fct_exchange_rates
+
+<span class="c1"># Run changed models with additional flags</span>
+just<span class="w"> </span>dev<span class="w"> </span>--fail-fast
+
+<span class="c1"># Clean downloaded artifacts</span>
+just<span class="w"> </span>clean-artifacts
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've configured dbt Core CI/CD:</p>
@@ -6629,6 +6631,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6672,7 +6676,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

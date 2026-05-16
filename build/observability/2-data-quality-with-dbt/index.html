@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6982,259 +6984,259 @@
 <h2 id="overview">Overview</h2>
 <p>dbt tests are the foundation of data quality in the modern data stack. They run SQL queries that return failing rows — if any rows are returned, the test fails. Tests run after every <code>dbt build</code> or <code>dbt test</code> command, providing immediate feedback on data quality.</p>
 <p>This page builds on the basic dbt tests covered in <a href="../../data-transformation/8-testing-and-documentation/">Data Transformation</a>, adding advanced patterns and packages.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                       dbt TESTING HIERARCHY                             │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Generic Tests              dbt_expectations           Singular Tests   │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────             ─────────────────          ───────────────  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  (Built-in)                 (Package)                  (Custom SQL)     │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│                                                                         │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  • unique                   • expect_column_values_    • Complex        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  • not_null                   to_be_between              business      │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  • accepted_values          • expect_column_values_      logic         │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  • relationships              to_match_regex           • Multi-table   │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                             • expect_table_row_          validation    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                               count_to_be_between      • Custom        │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                             • expect_column_stddev_      aggregations  │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                               to_be_between                            │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                                                         │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  All tests run via: dbt test                                           │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  Failed tests → Alert (SEV2) or Warn (SEV3) depending on config        │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                                                         │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                       dbt TESTING HIERARCHY                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Generic Tests              dbt_expectations           Singular Tests   │
+│  ──────────────             ─────────────────          ───────────────  │
+│  (Built-in)                 (Package)                  (Custom SQL)     │
+│                                                                         │
+│  • unique                   • expect_column_values_    • Complex        │
+│  • not_null                   to_be_between              business      │
+│  • accepted_values          • expect_column_values_      logic         │
+│  • relationships              to_match_regex           • Multi-table   │
+│                             • expect_table_row_          validation    │
+│                               count_to_be_between      • Custom        │
+│                             • expect_column_stddev_      aggregations  │
+│                               to_be_between                            │
+│                                                                         │
+│  All tests run via: dbt test                                           │
+│  Failed tests → Alert (SEV2) or Warn (SEV3) depending on config        │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="recap-the-four-generic-tests">Recap: The Four Generic Tests</h2>
 <p>dbt ships with four built-in generic tests. These cover 80% of common data quality checks.</p>
 <h3 id="1-unique">1. unique</h3>
 <p><strong>Ensures:</strong> Column values are unique (no duplicates).</p>
 <p><strong>Use case:</strong> Primary keys, natural keys, unique identifiers.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
+<span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
 </code></pre></div>
 <p><strong>Generated SQL:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">exchange_rate_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">count</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">exchange_rate_id</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">exchange_rate_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">count</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">exchange_rate_id</span>
+<span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div><p></p>
 <p>If any rows are returned (duplicates exist), the test fails.</p>
 <h3 id="2-not_null">2. not_null</h3>
 <p><strong>Ensures:</strong> Column has no NULL values.</p>
 <p><strong>Use case:</strong> Required fields, foreign keys, critical business data.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
 </code></pre></div>
 <p><strong>Generated SQL:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
 </code></pre></div><p></p>
 <h3 id="3-accepted_values">3. accepted_values</h3>
 <p><strong>Ensures:</strong> Column values are in a predefined list.</p>
 <p><strong>Use case:</strong> Enums, status fields, categorical data.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_status</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">          </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'pending'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'shipped'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'delivered'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cancelled'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_status</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'pending'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'shipped'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'delivered'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cancelled'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p><strong>Generated SQL:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'pending'</span><span class="p">,</span><span class="w"> </span><span class="s1">'shipped'</span><span class="p">,</span><span class="w"> </span><span class="s1">'delivered'</span><span class="p">,</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="p">);</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'pending'</span><span class="p">,</span><span class="w"> </span><span class="s1">'shipped'</span><span class="p">,</span><span class="w"> </span><span class="s1">'delivered'</span><span class="p">,</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="p">);</span>
 </code></pre></div><p></p>
 <h3 id="4-relationships">4. relationships</h3>
 <p><strong>Ensures:</strong> Foreign key values exist in the referenced table.</p>
 <p><strong>Use case:</strong> Referential integrity, joins.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">          </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">          </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
+<span class="w">          </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
 </code></pre></div>
 <p><strong>Generated SQL:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">dim_customers</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">);</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">dim_customers</span>
+<span class="p">);</span>
 </code></pre></div><p></p>
 <h2 id="dbt_expectations-package">dbt_expectations Package</h2>
 <p><a href="https://github.com/calogica/dbt-expectations">dbt_expectations</a> is a community package that adds 50+ tests inspired by Great Expectations. These tests cover statistical validation, distribution checks, and regex patterns.</p>
 <h3 id="installation">Installation</h3>
 <p>Add to <code>packages.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># packages.yml</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">packages</span><span class="p">:</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calogica/dbt_expectations</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.10.3</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># packages.yml</span>
+<span class="nt">packages</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calogica/dbt_expectations</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.10.3</span>
 </code></pre></div>
 <p>Install:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>dbt<span class="w"> </span>deps
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>deps
 </code></pre></div>
 <h3 id="statistical-tests">Statistical Tests</h3>
 <h4 id="expect_column_values_to_be_between">expect_column_values_to_be_between</h4>
 <p><strong>Ensures:</strong> Numeric values fall within a range.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"base_currency</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">'GBP'"</span><span class="w">  </span><span class="c1"># Optional filter</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
+<span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
+<span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"base_currency</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">'GBP'"</span><span class="w">  </span><span class="c1"># Optional filter</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Validate exchange rates are within realistic bounds.</p>
 <h4 id="expect_column_mean_to_be_between">expect_column_mean_to_be_between</h4>
 <p><strong>Ensures:</strong> Column mean is within expected range.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_mean_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">          </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">order_date</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Calculate mean per day</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_mean_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+<span class="w">          </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">order_date</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Calculate mean per day</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Detect anomalies in average order value.</p>
 <h4 id="expect_column_stdev_to_be_between">expect_column_stdev_to_be_between</h4>
 <p><strong>Ensures:</strong> Standard deviation is within expected range (detects volatility changes).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_stdev_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">          </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">target_currency</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_stdev_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">          </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">target_currency</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Alert if exchange rate volatility suddenly increases.</p>
 <h3 id="row-count-tests">Row Count Tests</h3>
 <h4 id="expect_table_row_count_to_be_between">expect_table_row_count_to_be_between</h4>
 <p><strong>Ensures:</strong> Table has expected number of rows.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># At least 1000 rows</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span><span class="w">  </span><span class="c1"># No more than 1M rows</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># At least 1000 rows</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span><span class="w">  </span><span class="c1"># No more than 1M rows</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Detect data pipeline failures (too few rows) or duplication (too many rows).</p>
 <h4 id="expect_table_row_count_to_equal_other_table">expect_table_row_count_to_equal_other_table</h4>
 <p><strong>Ensures:</strong> Two tables have the same row count.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_equal_other_table</span><span class="p">:</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">          </span><span class="nt">compare_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source('raw', 'exchange_rates')</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_equal_other_table</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">compare_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source('raw', 'exchange_rates')</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Validate no rows were lost in transformation.</p>
 <h3 id="format-validation">Format Validation</h3>
 <h4 id="expect_column_values_to_match_regex">expect_column_values_to_match_regex</h4>
 <p><strong>Ensures:</strong> Values match a regex pattern.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_regex</span><span class="p">:</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">          </span><span class="nt">regex</span><span class="p">:</span><span class="w"> </span><span class="s">'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_regex</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">regex</span><span class="p">:</span><span class="w"> </span><span class="s">'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Validate email format, phone numbers, postcodes.</p>
 <h4 id="expect_column_values_to_match_like_pattern">expect_column_values_to_match_like_pattern</h4>
 <p><strong>Ensures:</strong> Values match a SQL LIKE pattern.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">product_id</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_like_pattern</span><span class="p">:</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">          </span><span class="nt">like_pattern</span><span class="p">:</span><span class="w"> </span><span class="s">'PROD-%'</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">product_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_like_pattern</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">like_pattern</span><span class="p">:</span><span class="w"> </span><span class="s">'PROD-%'</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Validate IDs follow naming conventions.</p>
 <h3 id="distribution-tests">Distribution Tests</h3>
 <h4 id="expect_column_quantile_values_to_be_between">expect_column_quantile_values_to_be_between</h4>
 <p><strong>Ensures:</strong> Percentiles fall within expected ranges.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_quantile_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">          </span><span class="nt">quantile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.95</span><span class="w">  </span><span class="c1"># 95th percentile</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_quantile_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">quantile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.95</span><span class="w">  </span><span class="c1"># 95th percentile</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
 </code></pre></div>
 <p><strong>Use case:</strong> Detect outliers in order totals.</p>
 <h2 id="custom-singular-tests">Custom Singular Tests</h2>
 <p>For complex business logic that can't be expressed with generic tests, write custom SQL tests.</p>
 <h3 id="example-revenue-reconciliation">Example: Revenue Reconciliation</h3>
 <p><strong>Business rule:</strong> Total revenue in <code>fct_orders</code> must match sum of line items in <code>fct_order_lines</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">-- tests/revenue_reconciliation.sql</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">order_totals</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">        </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">        </span><span class="n">order_total</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p">),</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="n">line_item_totals</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">        </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unit_price</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">line_item_total</span>
-<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_order_lines'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
-<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="p">)</span>
-<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="k">SELECT</span>
-<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="p">,</span>
-<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="w">    </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">,</span>
-<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="w">    </span><span class="k">ABS</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">difference</span>
-<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a><span class="k">FROM</span><span class="w"> </span><span class="n">order_totals</span><span class="w"> </span><span class="n">o</span>
-<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">line_item_totals</span><span class="w"> </span><span class="n">l</span>
-<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span>
-<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a><span class="k">WHERE</span><span class="w"> </span><span class="k">ABS</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span><span class="w">  </span><span class="c1">-- Allow 1 cent rounding</span>
-<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/revenue_reconciliation.sql</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">order_totals</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">        </span><span class="n">order_total</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="p">),</span>
+<span class="n">line_item_totals</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unit_price</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">line_item_total</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_order_lines'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="p">,</span>
+<span class="w">    </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">,</span>
+<span class="w">    </span><span class="k">ABS</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">difference</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">order_totals</span><span class="w"> </span><span class="n">o</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">line_item_totals</span><span class="w"> </span><span class="n">l</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">ABS</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">order_total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">line_item_total</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span><span class="w">  </span><span class="c1">-- Allow 1 cent rounding</span>
+<span class="p">;</span>
 </code></pre></div>
 <p>If any rows are returned (mismatches exist), the test fails.</p>
 <h3 id="example-temporal-consistency">Example: Temporal Consistency</h3>
 <p><strong>Business rule:</strong> <code>created_at</code> must always be before <code>updated_at</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1">-- tests/created_before_updated.sql</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'dim_customers'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">updated_at</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/created_before_updated.sql</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'dim_customers'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">updated_at</span>
+<span class="p">;</span>
 </code></pre></div>
 <h3 id="example-cross-table-consistency">Example: Cross-Table Consistency</h3>
 <p><strong>Business rule:</strong> Every order must have at least one line item.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1">-- tests/orders_have_line_items.sql</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="n">o</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_order_lines'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="n">l</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/orders_have_line_items.sql</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span>
+<span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="n">o</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_order_lines'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="n">l</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">l</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="p">;</span>
 </code></pre></div>
 <h2 id="test-severity-warn-vs-error">Test Severity: Warn vs Error</h2>
 <p>Not all test failures require immediate action. Use <code>severity</code> to control behavior.</p>
 <h3 id="error-default">Error (Default)</h3>
 <p><strong>Behavior:</strong> Test failure causes <code>dbt build</code> or <code>dbt test</code> to exit with error code 1.</p>
 <p><strong>Use case:</strong> Critical data quality checks (primary keys, not_null on critical fields).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span><span class="w">  </span><span class="c1"># Default; can be omitted</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span><span class="w">  </span><span class="c1"># Default; can be omitted</span>
 </code></pre></div>
 <p><strong>CI/CD impact:</strong> Pull request fails if test fails.</p>
 <h3 id="warn">Warn</h3>
 <p><strong>Behavior:</strong> Test failure logs a warning but doesn't fail the build.</p>
 <p><strong>Use case:</strong> Non-critical checks, exploratory tests, tests in development.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">product_description</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">  </span><span class="c1"># Build succeeds even if test fails</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">product_description</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">  </span><span class="c1"># Build succeeds even if test fails</span>
 </code></pre></div>
 <p><strong>CI/CD impact:</strong> Pull request passes, but warning is visible in logs.</p>
 <h3 id="when-to-use-each">When to Use Each</h3>
@@ -7278,60 +7280,60 @@
 <p>Apply tests to a subset of rows using <code>where</code> or <code>row_condition</code>.</p>
 <h3 id="where-clause-dbt-native">where Clause (dbt Native)</h3>
 <p><strong>Filter rows before testing:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
-<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">          </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
 </code></pre></div>
 <p><strong>Generated SQL:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="w">  </span><span class="c1">-- Applied first</span>
-<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span><span class="w">        </span><span class="c1">-- Then test</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="w">  </span><span class="c1">-- Applied first</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span><span class="w">        </span><span class="c1">-- Then test</span>
 </code></pre></div><p></p>
 <p><strong>Use case:</strong> "customer_id must be not null for non-cancelled orders."</p>
 <h3 id="row_condition-dbt_expectations">row_condition (dbt_expectations)</h3>
 <p><strong>Same as <code>where</code>, but for dbt_expectations tests:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
-<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">IN</span><span class="nv"> </span><span class="s">('shipped',</span><span class="nv"> </span><span class="s">'delivered')"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">IN</span><span class="nv"> </span><span class="s">('shipped',</span><span class="nv"> </span><span class="s">'delivered')"</span>
 </code></pre></div>
 <p><strong>Use case:</strong> "order_total must be between 0 and 10,000 for completed orders."</p>
 <h2 id="testing-incremental-models">Testing Incremental Models</h2>
 <p>Incremental models only process new rows (<code>is_incremental()</code>). Test strategies differ.</p>
 <h3 id="strategy-1-test-full-table">Strategy 1: Test Full Table</h3>
 <p><strong>Approach:</strong> Test the entire table, not just new rows.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Default behavior — tests run against full table</span>
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span><span class="w">  </span><span class="c1"># Checks all rows, including historical</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Default behavior — tests run against full table</span>
+<span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span><span class="w">  </span><span class="c1"># Checks all rows, including historical</span>
 </code></pre></div>
 <p><strong>Pros:</strong> Catches issues in historical data.
 <strong>Cons:</strong> Slow for large tables (millions of rows).</p>
 <h3 id="strategy-2-test-recent-data-only">Strategy 2: Test Recent Data Only</h3>
 <p><strong>Approach:</strong> Use <code>where</code> to test only recent rows.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
-<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">          </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at</span><span class="nv"> </span><span class="s">&gt;=</span><span class="nv"> </span><span class="s">CURRENT_DATE()</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">INTERVAL</span><span class="nv"> </span><span class="s">'7</span><span class="nv"> </span><span class="s">days'"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at</span><span class="nv"> </span><span class="s">&gt;=</span><span class="nv"> </span><span class="s">CURRENT_DATE()</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">INTERVAL</span><span class="nv"> </span><span class="s">'7</span><span class="nv"> </span><span class="s">days'"</span>
 </code></pre></div>
 <p><strong>Pros:</strong> Fast (tests only last 7 days).
 <strong>Cons:</strong> Misses issues in older data.</p>
 <h3 id="strategy-3-test-on-dbt-build-full-refresh">Strategy 3: Test on <code>dbt build --full-refresh</code></h3>
 <p><strong>Approach:</strong> Run full table tests only on full refresh (weekly).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
-<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">target.name</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">'prod'</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">is_incremental()</span><span class="nv"> </span><span class="s">}}"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">target.name</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">'prod'</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">is_incremental()</span><span class="nv"> </span><span class="s">}}"</span>
 </code></pre></div>
 <p><strong>Pros:</strong> Fast incremental runs, thorough weekly validation.
 <strong>Cons:</strong> Complex configuration.</p>
@@ -7339,43 +7341,43 @@
 <h2 id="cicd-integration">CI/CD Integration</h2>
 <p>Fail builds on test failures to prevent bad data from reaching production.</p>
 <h3 id="github-actions-workflow">GitHub Actions Workflow</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># .github/workflows/dbt_ci.yml (in dbt-transform repo)</span>
-<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt CI</span>
-<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
-<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="nt">on</span><span class="p">:</span>
-<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
-<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
-<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
-<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>
-<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="nt">jobs</span><span class="p">:</span>
-<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="w">  </span><span class="nt">dbt-test</span><span class="p">:</span>
-<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a>
-<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
-<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
-<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
-<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a>
-<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt</span>
-<a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv add dbt-snowflake dbt-expectations</span>
-<a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a>
-<a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
-<a id="__codelineno-30-24" name="__codelineno-30-24" href="#__codelineno-30-24"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
-<a id="__codelineno-30-25" name="__codelineno-30-25" href="#__codelineno-30-25"></a>
-<a id="__codelineno-30-26" name="__codelineno-30-26" href="#__codelineno-30-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
-<a id="__codelineno-30-27" name="__codelineno-30-27" href="#__codelineno-30-27"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
-<a id="__codelineno-30-28" name="__codelineno-30-28" href="#__codelineno-30-28"></a>
-<a id="__codelineno-30-29" name="__codelineno-30-29" href="#__codelineno-30-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt tests</span>
-<a id="__codelineno-30-30" name="__codelineno-30-30" href="#__codelineno-30-30"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-30-31" name="__codelineno-30-31" href="#__codelineno-30-31"></a><span class="w">          </span><span class="no">dbt test --select state:modified+ \</span>
-<a id="__codelineno-30-32" name="__codelineno-30-32" href="#__codelineno-30-32"></a><span class="w">            </span><span class="no">--defer --state .artifacts/ \</span>
-<a id="__codelineno-30-33" name="__codelineno-30-33" href="#__codelineno-30-33"></a><span class="w">            </span><span class="no">--fail-fast</span>
-<a id="__codelineno-30-34" name="__codelineno-30-34" href="#__codelineno-30-34"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
-<a id="__codelineno-30-35" name="__codelineno-30-35" href="#__codelineno-30-35"></a><span class="w">          </span><span class="nt">DBT_SNOWFLAKE_ACCOUNT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_ACCOUNT }}</span>
-<a id="__codelineno-30-36" name="__codelineno-30-36" href="#__codelineno-30-36"></a><span class="w">          </span><span class="nt">DBT_SNOWFLAKE_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_USER }}</span>
-<a id="__codelineno-30-37" name="__codelineno-30-37" href="#__codelineno-30-37"></a><span class="w">          </span><span class="nt">DBT_SNOWFLAKE_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_PRIVATE_KEY }}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/dbt_ci.yml (in dbt-transform repo)</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt CI</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt-test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv add dbt-snowflake dbt-expectations</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add venv to PATH</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "$GITHUB_WORKSPACE/.venv/bin" &gt;&gt; $GITHUB_PATH</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dbt packages</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt deps</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run dbt tests</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">dbt test --select state:modified+ \</span>
+<span class="w">            </span><span class="no">--defer --state .artifacts/ \</span>
+<span class="w">            </span><span class="no">--fail-fast</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">DBT_SNOWFLAKE_ACCOUNT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_ACCOUNT }}</span>
+<span class="w">          </span><span class="nt">DBT_SNOWFLAKE_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_USER }}</span>
+<span class="w">          </span><span class="nt">DBT_SNOWFLAKE_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.SNOWFLAKE_PRIVATE_KEY }}</span>
 </code></pre></div>
 <p><strong>Behavior:</strong>
 - Pull request triggers CI
@@ -7384,32 +7386,32 @@
 - Pull request cannot merge until tests pass</p>
 <h3 id="test-selectors">Test Selectors</h3>
 <p>Run specific subsets of tests:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Run all tests</span>
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>dbt<span class="w"> </span><span class="nb">test</span>
-<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
-<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># Run tests on one model</span>
-<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates
-<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
-<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="c1"># Run tests on modified models + downstream</span>
-<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>state:modified+
-<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>
-<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="c1"># Run only dbt_expectations tests</span>
-<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>test_type:generic,package:dbt_expectations
-<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>
-<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="c1"># Run only error-severity tests</span>
-<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>config.severity:error
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all tests</span>
+dbt<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Run tests on one model</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates
+
+<span class="c1"># Run tests on modified models + downstream</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>state:modified+
+
+<span class="c1"># Run only dbt_expectations tests</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>test_type:generic,package:dbt_expectations
+
+<span class="c1"># Run only error-severity tests</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>config.severity:error
 </code></pre></div>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-test-every-model">1. Test Every Model</h3>
 <p><strong>Rule:</strong> Every model should have at least one test (typically on the primary key).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="c1"># Minimum viable testing</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
-<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Minimum viable testing</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
 </code></pre></div>
 <h3 id="2-test-critical-columns">2. Test Critical Columns</h3>
 <p><strong>Focus on:</strong>
@@ -7422,15 +7424,15 @@
 <strong>warn:</strong> Nice-to-have, exploratory</p>
 <h3 id="4-document-test-logic">4. Document Test Logic</h3>
 <p><strong>Explain non-obvious tests:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
-<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
-<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">            </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">              </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Order</span><span class="nv"> </span><span class="s">totals</span><span class="nv"> </span><span class="s">capped</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">$1M</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">catch</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">entry</span><span class="nv"> </span><span class="s">errors"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Order</span><span class="nv"> </span><span class="s">totals</span><span class="nv"> </span><span class="s">capped</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">$1M</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">catch</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">entry</span><span class="nv"> </span><span class="s">errors"</span>
 </code></pre></div>
 <h3 id="5-monitor-test-results-over-time">5. Monitor Test Results Over Time</h3>
 <p><strong>Use Elementary (next page) to track:</strong>
@@ -7438,69 +7440,69 @@
 - Which tests fail most frequently
 - When tests started failing (correlate with code changes)</p>
 <h2 id="example-complete-fct_exchange_rates-testing">Example: Complete fct_exchange_rates Testing</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
-<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
-<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Daily exchange rates for GBP to various currencies</span>
-<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>
-<a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="w">    </span><span class="c1"># Table-level tests</span>
-<a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
-<a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
-<a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
-<a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a>
-<a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Surrogate key</span>
-<a id="__codelineno-34-19" name="__codelineno-34-19" href="#__codelineno-34-19"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-20" name="__codelineno-34-20" href="#__codelineno-34-20"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
-<a id="__codelineno-34-21" name="__codelineno-34-21" href="#__codelineno-34-21"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-22" name="__codelineno-34-22" href="#__codelineno-34-22"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
-<a id="__codelineno-34-23" name="__codelineno-34-23" href="#__codelineno-34-23"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
-<a id="__codelineno-34-24" name="__codelineno-34-24" href="#__codelineno-34-24"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-25" name="__codelineno-34-25" href="#__codelineno-34-25"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
-<a id="__codelineno-34-26" name="__codelineno-34-26" href="#__codelineno-34-26"></a>
-<a id="__codelineno-34-27" name="__codelineno-34-27" href="#__codelineno-34-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
-<a id="__codelineno-34-28" name="__codelineno-34-28" href="#__codelineno-34-28"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Date of the exchange rate</span>
-<a id="__codelineno-34-29" name="__codelineno-34-29" href="#__codelineno-34-29"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-30" name="__codelineno-34-30" href="#__codelineno-34-30"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-34-31" name="__codelineno-34-31" href="#__codelineno-34-31"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-34-32" name="__codelineno-34-32" href="#__codelineno-34-32"></a><span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="s">"'2020-01-01'"</span>
-<a id="__codelineno-34-33" name="__codelineno-34-33" href="#__codelineno-34-33"></a><span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="s">"CURRENT_DATE()</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">INTERVAL</span><span class="nv"> </span><span class="s">'1</span><span class="nv"> </span><span class="s">day'"</span>
-<a id="__codelineno-34-34" name="__codelineno-34-34" href="#__codelineno-34-34"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-35" name="__codelineno-34-35" href="#__codelineno-34-35"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
-<a id="__codelineno-34-36" name="__codelineno-34-36" href="#__codelineno-34-36"></a>
-<a id="__codelineno-34-37" name="__codelineno-34-37" href="#__codelineno-34-37"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base_currency</span>
-<a id="__codelineno-34-38" name="__codelineno-34-38" href="#__codelineno-34-38"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-39" name="__codelineno-34-39" href="#__codelineno-34-39"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
-<a id="__codelineno-34-40" name="__codelineno-34-40" href="#__codelineno-34-40"></a><span class="w">              </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'GBP'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-34-41" name="__codelineno-34-41" href="#__codelineno-34-41"></a>
-<a id="__codelineno-34-42" name="__codelineno-34-42" href="#__codelineno-34-42"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_currency</span>
-<a id="__codelineno-34-43" name="__codelineno-34-43" href="#__codelineno-34-43"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-44" name="__codelineno-34-44" href="#__codelineno-34-44"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-34-45" name="__codelineno-34-45" href="#__codelineno-34-45"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_in_set</span><span class="p">:</span>
-<a id="__codelineno-34-46" name="__codelineno-34-46" href="#__codelineno-34-46"></a><span class="w">              </span><span class="nt">value_set</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'USD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'EUR'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'JPY'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'AUD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'CAD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'CHF'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'NZD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'SEK'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-34-47" name="__codelineno-34-47" href="#__codelineno-34-47"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-48" name="__codelineno-34-48" href="#__codelineno-34-48"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">  </span><span class="c1"># New currencies added occasionally</span>
-<a id="__codelineno-34-49" name="__codelineno-34-49" href="#__codelineno-34-49"></a>
-<a id="__codelineno-34-50" name="__codelineno-34-50" href="#__codelineno-34-50"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-34-51" name="__codelineno-34-51" href="#__codelineno-34-51"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-34-52" name="__codelineno-34-52" href="#__codelineno-34-52"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-34-53" name="__codelineno-34-53" href="#__codelineno-34-53"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-34-54" name="__codelineno-34-54" href="#__codelineno-34-54"></a><span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
-<a id="__codelineno-34-55" name="__codelineno-34-55" href="#__codelineno-34-55"></a><span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
-<a id="__codelineno-34-56" name="__codelineno-34-56" href="#__codelineno-34-56"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-57" name="__codelineno-34-57" href="#__codelineno-34-57"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
-<a id="__codelineno-34-58" name="__codelineno-34-58" href="#__codelineno-34-58"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_mean_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-34-59" name="__codelineno-34-59" href="#__codelineno-34-59"></a><span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<a id="__codelineno-34-60" name="__codelineno-34-60" href="#__codelineno-34-60"></a><span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
-<a id="__codelineno-34-61" name="__codelineno-34-61" href="#__codelineno-34-61"></a><span class="w">              </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">target_currency</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-34-62" name="__codelineno-34-62" href="#__codelineno-34-62"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-34-63" name="__codelineno-34-63" href="#__codelineno-34-63"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_exchange_rates.yml</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Daily exchange rates for GBP to various currencies</span>
+
+<span class="w">    </span><span class="c1"># Table-level tests</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_table_row_count_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Surrogate key</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">unique</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Date of the exchange rate</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="s">"'2020-01-01'"</span>
+<span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="s">"CURRENT_DATE()</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">INTERVAL</span><span class="nv"> </span><span class="s">'1</span><span class="nv"> </span><span class="s">day'"</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base_currency</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'GBP'</span><span class="p p-Indicator">]</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_currency</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_in_set</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">value_set</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'USD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'EUR'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'JPY'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'AUD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'CAD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'CHF'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'NZD'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'SEK'</span><span class="p p-Indicator">]</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">  </span><span class="c1"># New currencies added occasionally</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+<span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_mean_to_be_between</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">              </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+<span class="w">              </span><span class="nt">group_by</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">target_currency</span><span class="p p-Indicator">]</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've mastered dbt data quality testing:</p>
@@ -7566,6 +7568,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7609,7 +7613,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6087,7 +6089,7 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" checked><span class="task-list-indicator"></span></label> Import GitHub organisation settings</li>
 </ul>
 <h2 id="navigate-to-your-terraform-directory">Navigate to Your Terraform Directory</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/github
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/github
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Working Directory</p>
@@ -6102,43 +6104,43 @@
 </div>
 <h3 id="create-organisation-settings-file">Create Organisation Settings File</h3>
 <p>Create <code>organisation.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># GitHub Organisation Settings</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"github_organization_settings"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">  # Required configuration</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="na">billing_email</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_billing_email</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">  # Optional</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_name</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="na">description</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_description</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">  # Optional but recommended settings</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="na">default_repository_permission</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"read"</span><span class="c1">  # new members can view all repos</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="na">members_can_create_private_repositories</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">    # team members can create repos</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">members_can_create_public_repositories</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">   # prevent accidental public data</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="na">members_can_create_public_pages</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">dependabot_alerts_enabled_for_new_repositories</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">    # enable security scanning</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">members_can_create_teams</span><span class="w">                        </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">   # only admins create teams (via Terraform)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Organisation Settings</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"github_organization_settings"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # Required configuration</span>
+<span class="w">  </span><span class="na">billing_email</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_billing_email</span>
+
+<span class="c1">  # Optional</span>
+<span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_name</span>
+<span class="w">  </span><span class="na">description</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_description</span>
+
+<span class="c1">  # Optional but recommended settings</span>
+<span class="w">  </span><span class="na">default_repository_permission</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"read"</span><span class="c1">  # new members can view all repos</span>
+<span class="w">  </span><span class="na">members_can_create_private_repositories</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">    # team members can create repos</span>
+<span class="w">  </span><span class="na">members_can_create_public_repositories</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">   # prevent accidental public data</span>
+<span class="w">  </span><span class="na">members_can_create_public_pages</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">dependabot_alerts_enabled_for_new_repositories</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">    # enable security scanning</span>
+<span class="w">  </span><span class="na">members_can_create_teams</span><span class="w">                        </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">   # only admins create teams (via Terraform)</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Add the required values to your variables files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># variables.tf</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_billing_email"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The billing email address for the GtHub organisation."</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name for the organization."</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_description"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The description for the organization."</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="p">}</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># terraform.tfvars</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="na">github_billing_email</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"name@your-company.com"</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="na">github_organization_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"My Company"</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="na">github_organization_description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the organisation"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># variables.tf</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_billing_email"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The billing email address for the GtHub organisation."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name for the organization."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_description"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The description for the organization."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="c1"># terraform.tfvars</span>
+<span class="na">github_billing_email</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"name@your-company.com"</span>
+<span class="na">github_organization_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"My Company"</span>
+<span class="na">github_organization_description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the organisation"</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Available options</p>
@@ -6146,71 +6148,71 @@
 <p>You can see what options are available here by looking at the <a href="https://registry.terraform.io/providers/integrations/github/latest/docs/resources/organization_settings">docs</a>. We've used some basic standards, but you may want to change them, or add additional settings.</p>
 <h3 id="create-import-configuration-file">Create Import Configuration File</h3>
 <p>Firstly, you need to retrieve your organisation ID. To do that, run the following, and copy the response:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gh<span class="w"> </span>api<span class="w"> </span>orgs/your-organisation-name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.id'</span>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>api<span class="w"> </span>orgs/your-organisation-name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.id'</span>
 </code></pre></div>
 <p>You can press Ctrl + C to exit the command. Add this to your variables files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># variables.tf</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_id"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub organisation ID"</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">int</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># terraform.tfvars</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="na">github_organization_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">123456</span><span class="c1"> # Replace with the id retrieved above</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># variables.tf</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization_id"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub organisation ID"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">int</span>
+<span class="p">}</span>
+
+<span class="c1"># terraform.tfvars</span>
+<span class="na">github_organization_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">123456</span><span class="c1"> # Replace with the id retrieved above</span>
 </code></pre></div>
 <p>Now, create <code>imports.tf</code> and add the organisation import:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Import block - tells Terraform where to find the existing organisation</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">github_organization_settings.this</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_id</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Import block - tells Terraform where to find the existing organisation</span>
+<span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">github_organization_settings.this</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization_id</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="plan-the-import">Plan the Import</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>github_organization_settings.org: Preparing import... [id=your-org-name]
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>github_organization_settings.org: Refreshing state... [id=your-org-name]
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Terraform will perform the following actions:
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  # github_organization_settings.org will be imported
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    resource "github_organization_settings" "org" {
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        billing_email = "your.email@company.com"
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>        ...
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    }
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
+<div class="highlight"><pre><span></span><code>github_organization_settings.org: Preparing import... [id=your-org-name]
+github_organization_settings.org: Refreshing state... [id=your-org-name]
+
+Terraform will perform the following actions:
+
+  # github_organization_settings.org will be imported
+    resource "github_organization_settings" "org" {
+        billing_email = "your.email@company.com"
+        ...
+    }
+
+Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 </code></pre></div>
 <p>If you see any differences (indicated by <code>~</code> symbols), update your <code>organisation.tf</code> to match the required settings.</p>
 <h3 id="apply-the-import">Apply the Import</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>Type <code>yes</code> when prompted.</p>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>github_organization_settings.org: Importing... [id=your-org-name]
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>github_organization_settings.org: Import complete [id=your-org-name]
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Apply complete! Resources: 1 imported, 0 added, 0 changed, 0 destroyed.
+<div class="highlight"><pre><span></span><code>github_organization_settings.org: Importing... [id=your-org-name]
+github_organization_settings.org: Import complete [id=your-org-name]
+
+Apply complete! Resources: 1 imported, 0 added, 0 changed, 0 destroyed.
 </code></pre></div>
 <h2 id="commit-your-work">Commit your work</h2>
 <p>Make sure to commit your work - remember commit frequently. You need to check you are on the correct branch, which you can do at any time by running <code>gst</code> if you haven't set up your command prompt to include the current branch.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="error-resource-already-exists">Error: Resource already exists</h3>
 <p>If you see:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Error: Resource already exists
+<div class="highlight"><pre><span></span><code>Error: Resource already exists
 </code></pre></div>
 <p>You likely forgot to add an <code>import</code> block for an existing resource. Add the import block, run <code>terraform plan</code>, then <code>terraform apply</code>.</p>
 <h3 id="error-404-not-found">Error: 404 Not Found</h3>
 <p>If you see:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Error: GET https://api.github.com/orgs/your-org/teams/team-name: 404 Not Found
+<div class="highlight"><pre><span></span><code>Error: GET https://api.github.com/orgs/your-org/teams/team-name: 404 Not Found
 </code></pre></div>
 <p>Check:
 1. Team name is correct (case-sensitive)
 2. <code>GITHUB_TOKEN</code> has <code>admin:org</code> scope
 3. You're authenticated to the correct organisation</p>
 <h3 id="error-insufficient-permissions">Error: Insufficient permissions</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Error: PATCH https://api.github.com/orgs/...: 403 Forbidden
+<div class="highlight"><pre><span></span><code>Error: PATCH https://api.github.com/orgs/...: 403 Forbidden
 </code></pre></div>
 <p>Your GitHub token needs broader permissions. Regenerate with <code>admin:org</code> scope.</p>
 <h2 id="whats-next">What's Next</h2>
@@ -6270,6 +6272,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6313,7 +6317,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

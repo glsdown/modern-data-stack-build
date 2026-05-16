@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5895,79 +5897,79 @@
 <p>dlt is ideal when you need custom extraction logic or want to avoid SaaS costs. For standard SaaS sources (Salesforce, HubSpot, Stripe), consider Airbyte which has pre-built connectors.</p>
 <h2 id="role-in-the-stack">Role in the Stack</h2>
 <p>dlt sits in the ingestion layer, loading raw data into dedicated loader databases:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                           DATA SOURCES                                      │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │   REST APIs     │  │   Databases     │  │   Files (S3)    │              │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │  (Exchange      │  │  (PostgreSQL,   │  │  (CSV, JSON,    │              │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │   Rates, etc.)  │  │   MySQL, etc.)  │  │   Parquet)      │              │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘              │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│           │                    │                    │                       │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│           └────────────────────┼────────────────────┘                       │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                ▼                                            │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │                         dlt Pipelines                           │        │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │     (Orchestrated by Prefect - retries, scheduling, alerts)     │        │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                │                                            │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                ┌───────────────┴───────────────┐                            │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                ▼                               ▼                            │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  ┌─────────────────────────┐     ┌─────────────────────────┐                │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  │     DLT Database        │     │   SNOWPIPE Database     │                │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  │  (dlt-loaded tables)    │     │  (auto-ingest from S3)  │                │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  └─────────────────────────┘     └─────────────────────────┘                │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                                                             │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                │                                            │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│                                ▼                                            │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  │                    dbt Transformations                          │        │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  │              (covered in Data Transformation section)           │        │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│                                │                                            │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│                                ▼                                            │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │                     ANALYTICS Database                          │        │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  │                   (transformed, analysis-ready)                 │        │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│                                                                             │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                           DATA SOURCES                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │   REST APIs     │  │   Databases     │  │   Files (S3)    │              │
+│  │  (Exchange      │  │  (PostgreSQL,   │  │  (CSV, JSON,    │              │
+│  │   Rates, etc.)  │  │   MySQL, etc.)  │  │   Parquet)      │              │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘              │
+│           │                    │                    │                       │
+│           └────────────────────┼────────────────────┘                       │
+│                                ▼                                            │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │                         dlt Pipelines                           │        │
+│  │     (Orchestrated by Prefect - retries, scheduling, alerts)     │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+│                                │                                            │
+│                ┌───────────────┴───────────────┐                            │
+│                ▼                               ▼                            │
+│  ┌─────────────────────────┐     ┌─────────────────────────┐                │
+│  │     DLT Database        │     │   SNOWPIPE Database     │                │
+│  │  (dlt-loaded tables)    │     │  (auto-ingest from S3)  │                │
+│  └─────────────────────────┘     └─────────────────────────┘                │
+│                                                                             │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │                    dbt Transformations                          │        │
+│  │              (covered in Data Transformation section)           │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+│                                │                                            │
+│                                ▼                                            │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │                     ANALYTICS Database                          │        │
+│  │                   (transformed, analysis-ready)                 │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="what-youll-build">What You'll Build</h2>
 <p>In this section, you'll create four data pipelines demonstrating different ingestion patterns:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                        BATCH DATA INGESTION                                 │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│                                                                             │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│  Pipeline 1: Currencies (API → Snowflake direct)                            │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  │ Open Exchange   │  dlt   │    Snowflake    │ Prefect│  Weekly refresh │  │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│  │ Rates API       │ ────▶  │ DLT.OPEN_       │ ◀───── │  replace mode   │  │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│  │ /currencies.json│        │ EXCHANGE_RATES  │        │                 │  │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│                                                                             │
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│  Pipeline 2: Exchange Rates (API → S3 → Snowpipe → Snowflake)               │
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│  │ Open Exchange   │  dlt   │   S3 Bucket     │Snowpipe│   SNOWPIPE.     │  │
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>│  │ Rates API       │ ────▶  │ /exchange-rates/ │ ────▶  │ OPEN_EXCHANGE_  │  │
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>│  │ /historical/    │        │                 │        │ RATES           │  │
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>│                                                                             │
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>│  Pipeline 3: Products (PostgreSQL → Snowflake)                              │
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>│  │ Clever Cloud    │  dlt   │    Snowflake    │ Prefect│  Daily 06:00    │  │
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>│  │ PostgreSQL      │ ────▶  │ DLT.APPLICATION │ ◀───── │  Type 2 SCD     │  │
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>│  │ (Products)      │        │ _DATA           │        │                 │  │
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>│                                                                             │
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>│  Pipeline 4: HubSpot (API → Snowflake)                                      │
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>│  │ HubSpot CRM     │  dlt   │    Snowflake    │ Prefect│  Daily 07:00    │  │
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>│  │ (contacts)      │ ────▶  │ DLT.HUBSPOT     │ ◀───── │  incremental    │  │
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>│                                                                             │
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                        BATCH DATA INGESTION                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Pipeline 1: Currencies (API → Snowflake direct)                            │
+│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
+│  │ Open Exchange   │  dlt   │    Snowflake    │ Prefect│  Weekly refresh │  │
+│  │ Rates API       │ ────▶  │ DLT.OPEN_       │ ◀───── │  replace mode   │  │
+│  │ /currencies.json│        │ EXCHANGE_RATES  │        │                 │  │
+│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
+│                                                                             │
+│  Pipeline 2: Exchange Rates (API → S3 → Snowpipe → Snowflake)               │
+│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
+│  │ Open Exchange   │  dlt   │   S3 Bucket     │Snowpipe│   SNOWPIPE.     │  │
+│  │ Rates API       │ ────▶  │ /exchange-rates/ │ ────▶  │ OPEN_EXCHANGE_  │  │
+│  │ /historical/    │        │                 │        │ RATES           │  │
+│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
+│                                                                             │
+│  Pipeline 3: Products (PostgreSQL → Snowflake)                              │
+│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
+│  │ Clever Cloud    │  dlt   │    Snowflake    │ Prefect│  Daily 06:00    │  │
+│  │ PostgreSQL      │ ────▶  │ DLT.APPLICATION │ ◀───── │  Type 2 SCD     │  │
+│  │ (Products)      │        │ _DATA           │        │                 │  │
+│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
+│                                                                             │
+│  Pipeline 4: HubSpot (API → Snowflake)                                      │
+│  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐  │
+│  │ HubSpot CRM     │  dlt   │    Snowflake    │ Prefect│  Daily 07:00    │  │
+│  │ (contacts)      │ ────▶  │ DLT.HUBSPOT     │ ◀───── │  incremental    │  │
+│  └─────────────────┘        └─────────────────┘        └─────────────────┘  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p><strong>Key patterns demonstrated:</strong></p>
 <ul>
@@ -6031,12 +6033,12 @@
 <td>Wrap pipelines in Prefect flows with schedules and alerting</td>
 </tr>
 <tr>
-<td><a href="9-finishing-up.md">9. Finishing Up</a></td>
-<td>Verification and next steps</td>
+<td><a href="9-hubspot-pipeline/">9. HubSpot Pipeline</a></td>
+<td>CRM data ingestion with the dlt HubSpot connector</td>
 </tr>
 <tr>
-<td><a href="10-hubspot-pipeline.md">10. HubSpot Pipeline</a></td>
-<td>CRM data ingestion with the dlt HubSpot connector</td>
+<td><a href="10-finishing-up/">10. Finishing Up</a></td>
+<td>Verification and next steps</td>
 </tr>
 </tbody>
 </table>
@@ -6098,7 +6100,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6125,6 +6127,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6168,7 +6172,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

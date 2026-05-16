@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6501,29 +6503,29 @@
 <h2 id="overview">Overview</h2>
 <p>Before building observability infrastructure, you need to understand the fundamentals: what makes data "good quality", how to measure pipeline reliability, and when to take action on issues.</p>
 <p>This page covers the core concepts that underpin all observability practices in data engineering.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    OBSERVABILITY FUNDAMENTALS                           │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Data Quality Dimensions          Reliability Metrics                  │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ───────────────────────          ───────────────────                  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  • Accuracy                       • SLI (Indicator)                    │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  • Completeness                     "dbt run success rate"             │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  • Consistency                    • SLO (Objective)                    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  • Timeliness                       "99% of runs succeed"              │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  • Validity                       • SLA (Agreement)                    │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                     "We guarantee 99% uptime"          │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                                                         │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  Incident Severity                Action Thresholds                    │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ─────────────────                ──────────────────                   │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                                                         │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  • SEV1: Data outage              Alert → Immediate page-out           │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  • SEV2: Quality degraded         Alert → Next business day           │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  • SEV3: Minor issue              Log → Review weekly                 │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  • SEV4: Cosmetic                 Log → Review monthly                │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                                         │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    OBSERVABILITY FUNDAMENTALS                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Data Quality Dimensions          Reliability Metrics                  │
+│  ───────────────────────          ───────────────────                  │
+│                                                                         │
+│  • Accuracy                       • SLI (Indicator)                    │
+│  • Completeness                     "dbt run success rate"             │
+│  • Consistency                    • SLO (Objective)                    │
+│  • Timeliness                       "99% of runs succeed"              │
+│  • Validity                       • SLA (Agreement)                    │
+│                                     "We guarantee 99% uptime"          │
+│                                                                         │
+│  Incident Severity                Action Thresholds                    │
+│  ─────────────────                ──────────────────                   │
+│                                                                         │
+│  • SEV1: Data outage              Alert → Immediate page-out           │
+│  • SEV2: Quality degraded         Alert → Next business day           │
+│  • SEV3: Minor issue              Log → Review weekly                 │
+│  • SEV4: Cosmetic                 Log → Review monthly                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="the-five-dimensions-of-data-quality">The Five Dimensions of Data Quality</h2>
 <p>Data quality is multi-dimensional. A dataset can be accurate but late, or complete but inconsistent. Understanding these dimensions helps you design appropriate tests and monitors.</p>
@@ -6537,11 +6539,11 @@
 - Check calculations match expected results (e.g., <code>revenue = quantity * price</code>)
 - Validate against business rules (e.g., discounts never exceed 100%)</p>
 <p><strong>dbt test example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Ensure calculated revenue matches sum of line items</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total_accuracy</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_utils.expression_is_true</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="s">"abs(order_total</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">(quantity</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">unit_price))</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">0.01"</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Ensure calculated revenue matches sum of line items</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total_accuracy</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_utils.expression_is_true</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="s">"abs(order_total</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">(quantity</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">unit_price))</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">0.01"</span>
 </code></pre></div><p></p>
 <h3 id="2-completeness">2. Completeness</h3>
 <p><strong>Definition:</strong> All expected data is present; no missing values or records.</p>
@@ -6553,12 +6555,12 @@
 - No unexpected NULL values in required columns
 - All time periods have data (no gaps in daily data)</p>
 <p><strong>dbt test example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Ensure critical columns have no nulls</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_not_be_null</span><span class="p">:</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Ensure critical columns have no nulls</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_not_be_null</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
 </code></pre></div><p></p>
 <h3 id="3-consistency">3. Consistency</h3>
 <p><strong>Definition:</strong> Data is uniform across systems and over time; no contradictions.</p>
@@ -6570,12 +6572,12 @@
 - Referential integrity (foreign keys exist)
 - Temporal consistency (values don't change illogically)</p>
 <p><strong>dbt test example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Ensure foreign keys are valid</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Ensure foreign keys are valid</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
+<span class="w">        </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
 </code></pre></div><p></p>
 <h3 id="4-timeliness">4. Timeliness</h3>
 <p><strong>Definition:</strong> Data is available when needed; minimal lag between event and availability.</p>
@@ -6587,12 +6589,12 @@
 - Pipeline SLAs (ingestion completed within X hours)
 - Time-to-availability metrics</p>
 <p><strong>dbt test example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># dbt source freshness check</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">sources</span><span class="p">:</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">raw_orders</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">12</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># dbt source freshness check</span>
+<span class="nt">sources</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">raw_orders</span>
+<span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">12</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
 </code></pre></div><p></p>
 <h3 id="5-validity">5. Validity</h3>
 <p><strong>Definition:</strong> Data conforms to defined formats, types, and rules.</p>
@@ -6604,12 +6606,12 @@
 - Format validation (emails, phone numbers, postcodes)
 - Range validation (age between 0 and 120)</p>
 <p><strong>dbt test example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Ensure values are within expected ranges</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Ensure values are within expected ranges</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_total</span>
+<span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
 </code></pre></div><p></p>
 <h2 id="slis-slos-and-slas">SLIs, SLOs, and SLAs</h2>
 <p>These metrics help you measure and communicate pipeline reliability.</p>
@@ -6621,11 +6623,11 @@
 - Pipeline duration: <code>time(end) - time(start)</code>
 - Data quality: <code>passed_tests / total_tests</code></p>
 <p><strong>How to calculate:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- dbt run success rate over last 30 days</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'success'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">success_rate_pct</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">FROM</span><span class="w"> </span><span class="n">dbt_run_history</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">run_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span><span class="p">;</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1">-- dbt run success rate over last 30 days</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'success'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">success_rate_pct</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">dbt_run_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">run_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span><span class="p">;</span>
 </code></pre></div><p></p>
 <h3 id="slo-service-level-objective">SLO (Service Level Objective)</h3>
 <p><strong>Definition:</strong> Target value or range for an SLI. Your internal goal.</p>
@@ -6640,17 +6642,17 @@
 - <strong>Measurable</strong> (can be calculated from SLIs)
 - <strong>Time-bound</strong> (measured over a period, e.g., 30 days)</p>
 <p><strong>Example SLO definition:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># SLOs for the dbt daily run</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">slos</span><span class="p">:</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_daily_run_success_rate</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">sli</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">successful_dbt_runs / total_dbt_runs</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.99</span><span class="w">  </span><span class="c1"># 99%</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30_days</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_daily_run_duration</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nt">sli</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95(dbt_run_duration_minutes)</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w">  </span><span class="c1"># 30 minutes</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30_days</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># SLOs for the dbt daily run</span>
+<span class="nt">slos</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_daily_run_success_rate</span>
+<span class="w">    </span><span class="nt">sli</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">successful_dbt_runs / total_dbt_runs</span>
+<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.99</span><span class="w">  </span><span class="c1"># 99%</span>
+<span class="w">    </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30_days</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_daily_run_duration</span>
+<span class="w">    </span><span class="nt">sli</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p95(dbt_run_duration_minutes)</span>
+<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w">  </span><span class="c1"># 30 minutes</span>
+<span class="w">    </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30_days</span>
 </code></pre></div><p></p>
 <h3 id="sla-service-level-agreement">SLA (Service Level Agreement)</h3>
 <p><strong>Definition:</strong> A contractual commitment to customers. What you <strong>promise</strong>.</p>
@@ -6663,29 +6665,29 @@
 - <strong>Contractual</strong> (may have penalties if violated)
 - <strong>Stricter than SLOs</strong> (SLO = 99%, SLA = 95% to leave error budget)</p>
 <p><strong>Example SLA:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gu">## Marketing Dashboard SLA</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="gs">**Commitment:**</span> Marketing KPI dashboard refreshed by 08:00 UTC daily.
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="gs">**Scope:**</span> Includes metrics from Airbyte (HubSpot), dbt (fct_contacts), Lightdash (dashboard)
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="gs">**Target:**</span> 95% of days (28.5 days per month)
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="gs">**Penalties:**</span> None (internal SLA)
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="gs">**Escalation:**</span> If not met, page on-call data engineer.
+</p><div class="highlight"><pre><span></span><code><span class="gu">## Marketing Dashboard SLA</span>
+
+<span class="gs">**Commitment:**</span> Marketing KPI dashboard refreshed by 08:00 UTC daily.
+
+<span class="gs">**Scope:**</span> Includes metrics from Airbyte (HubSpot), dbt (fct_contacts), Lightdash (dashboard)
+
+<span class="gs">**Target:**</span> 95% of days (28.5 days per month)
+
+<span class="gs">**Penalties:**</span> None (internal SLA)
+
+<span class="gs">**Escalation:**</span> If not met, page on-call data engineer.
 </code></pre></div><p></p>
 <h3 id="relationship-between-sli-slo-sla">Relationship Between SLI, SLO, SLA</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>SLI (Measurement)
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    ↓
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>SLO (Internal Target)
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    ↓
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>SLA (External Promise)
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>Example:
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>SLI: dbt run success rate = 99.2% (last 30 days)
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>SLO: Target ≥ 99%
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>SLA: Promise to marketing team: "Dashboard updated 95% of days"
+<div class="highlight"><pre><span></span><code>SLI (Measurement)
+    ↓
+SLO (Internal Target)
+    ↓
+SLA (External Promise)
+
+Example:
+SLI: dbt run success rate = 99.2% (last 30 days)
+SLO: Target ≥ 99%
+SLA: Promise to marketing team: "Dashboard updated 95% of days"
 </code></pre></div>
 <p><strong>Error Budget:</strong>
 If your SLO is 99%, you have a 1% error budget (3.6 hours/month of downtime allowable).</p>
@@ -6867,18 +6869,18 @@ If your SLO is 99%, you have a 1% error budget (3.6 hours/month of downtime allo
 - <strong>Auto-resolved</strong> — transient, self-healing
 - <strong>Too frequent</strong> — would create noise</p>
 <h3 id="decision-tree">Decision Tree</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Issue detected
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    │
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    ├─ User-facing impact? ─── YES ──▶ Alert (SEV1/SEV2)
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    │                           NO
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    │                            ↓
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    ├─ Actionable now? ──────── YES ──▶ Alert (SEV2/SEV3)
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    │                           NO
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    │                            ↓
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    ├─ Useful for debugging? ── YES ──▶ Log (SEV3/SEV4)
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    │                           NO
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    │                            ↓
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    └─ Ignore (noise, expected behavior)
+<div class="highlight"><pre><span></span><code>Issue detected
+    │
+    ├─ User-facing impact? ─── YES ──▶ Alert (SEV1/SEV2)
+    │                           NO
+    │                            ↓
+    ├─ Actionable now? ──────── YES ──▶ Alert (SEV2/SEV3)
+    │                           NO
+    │                            ↓
+    ├─ Useful for debugging? ── YES ──▶ Log (SEV3/SEV4)
+    │                           NO
+    │                            ↓
+    └─ Ignore (noise, expected behavior)
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've learned observability fundamentals:</p>
@@ -6942,6 +6944,8 @@ If your SLO is 99%, you have a 1% error budget (3.6 hours/month of downtime allo
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6985,7 +6989,7 @@ If your SLO is 99%, you have a 1% error budget (3.6 hours/month of downtime allo
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

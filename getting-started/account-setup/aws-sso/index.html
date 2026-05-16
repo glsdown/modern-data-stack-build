@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6390,17 +6392,17 @@ role. This approach is straightforward for small teams.</p>
 individual IAM users with long-lived access keys, team members authenticate
 through a central identity provider and receive temporary credentials
 automatically.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>IAM Users Approach                    IAM Identity Centre Approach
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>──────────────────                    ────────────────────────────
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>IAM User (jane.bloggs)                Identity Provider (Okta/Azure AD)
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  │                                     │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  ├── AssumeDataEngineerPolicy          ├── Permission Set: DataEngineer
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  ├── AssumeInfraAdminPolicy            ├── Permission Set: InfraAdmin
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  └── Long-lived access keys            └── Temporary credentials (12h)
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>         │                                       │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>     ~/.aws/credentials                      aws sso login
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>     (rotate manually)                    (browser-based, automatic)
+<div class="highlight"><pre><span></span><code>IAM Users Approach                    IAM Identity Centre Approach
+──────────────────                    ────────────────────────────
+
+IAM User (jane.bloggs)                Identity Provider (Okta/Azure AD)
+  │                                     │
+  ├── AssumeDataEngineerPolicy          ├── Permission Set: DataEngineer
+  ├── AssumeInfraAdminPolicy            ├── Permission Set: InfraAdmin
+  └── Long-lived access keys            └── Temporary credentials (12h)
+         │                                       │
+     ~/.aws/credentials                      aws sso login
+     (rotate manually)                    (browser-based, automatic)
 </code></pre></div>
 <h2 id="when-to-use-iam-identity-centre">When to Use IAM Identity Centre</h2>
 <table>
@@ -6540,42 +6542,42 @@ one permission set per role, matching the existing role-based access model.</p>
 <li>Session duration: 12 hours</li>
 <li>Attach the same IAM policies that <code>DataEngineerRole</code> uses:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="s2">"s3:ListBucket"</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="s2">"s3:PutObject"</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="p">],</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::your-data-lake-*"</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::your-data-lake-*/*"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="p">]</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">,</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">        </span><span class="s2">"secretsmanager:DescribeSecret"</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">      </span><span class="p">],</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:*:*:secret:*"</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">        </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">        </span><span class="s2">"s3:ListBucket"</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">      </span><span class="p">],</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::your-terraform-state-bucket"</span><span class="p">,</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::your-terraform-state-bucket/*"</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">      </span><span class="p">]</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"s3:ListBucket"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"s3:PutObject"</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"arn:aws:s3:::your-data-lake-*"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"arn:aws:s3:::your-data-lake-*/*"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"secretsmanager:DescribeSecret"</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:*:*:secret:*"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"s3:GetObject"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"s3:ListBucket"</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"arn:aws:s3:::your-terraform-state-bucket"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"arn:aws:s3:::your-terraform-state-bucket/*"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Reuse Existing Policies</p>
@@ -6602,59 +6604,59 @@ set to the <code>Administrators</code> group.</p>
 <h2 id="configure-aws-cli-for-sso">Configure AWS CLI for SSO</h2>
 <h3 id="step-1-configure-sso-profile">Step 1: Configure SSO Profile</h3>
 <p>Run the SSO configuration wizard:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>configure<span class="w"> </span>sso
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>configure<span class="w"> </span>sso
 </code></pre></div>
 <p>You will be prompted for:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>SSO session name: my-sso
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>SSO start URL: https://d-xxxxxxxxxx.awsapps.com/start
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>SSO region: eu-west-2
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>SSO registration scopes: sso:account:access
+<div class="highlight"><pre><span></span><code>SSO session name: my-sso
+SSO start URL: https://d-xxxxxxxxxx.awsapps.com/start
+SSO region: eu-west-2
+SSO registration scopes: sso:account:access
 </code></pre></div>
 <p>The CLI opens your browser for authentication. After signing in, select your
 account and permission set. The CLI writes the configuration to <code>~/.aws/config</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[profile data-engineer]</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">DataEngineer</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">[profile infrastructure-admin]</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">InfrastructureAdmin</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">[profile admin]</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Administrator</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="k">[sso-session my-sso]</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="na">sso_start_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">https://d-xxxxxxxxxx.awsapps.com/start</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="na">sso_region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="na">sso_registration_scopes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sso:account:access</span>
+<div class="highlight"><pre><span></span><code><span class="k">[profile data-engineer]</span>
+<span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
+<span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
+<span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">DataEngineer</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+
+<span class="k">[profile infrastructure-admin]</span>
+<span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
+<span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
+<span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">InfrastructureAdmin</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+
+<span class="k">[profile admin]</span>
+<span class="na">sso_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">my-sso</span>
+<span class="na">sso_account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">123456789012</span>
+<span class="na">sso_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Administrator</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+
+<span class="k">[sso-session my-sso]</span>
+<span class="na">sso_start_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">https://d-xxxxxxxxxx.awsapps.com/start</span>
+<span class="na">sso_region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+<span class="na">sso_registration_scopes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sso:account:access</span>
 </code></pre></div>
 <h3 id="step-2-log-in">Step 2: Log In</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>aws<span class="w"> </span>sso<span class="w"> </span>login<span class="w"> </span>--profile<span class="w"> </span>data-engineer
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sso<span class="w"> </span>login<span class="w"> </span>--profile<span class="w"> </span>data-engineer
 </code></pre></div>
 <p>This opens your browser. After authenticating, the CLI receives temporary
 credentials that last for the session duration (default 12 hours).</p>
 <h3 id="step-3-verify">Step 3: Verify</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>data-engineer
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>data-engineer
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLEROLEID:jane.bloggs@company.com"</span><span class="p">,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_DataEngineer_abc123/jane.bloggs@company.com"</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLEROLEID:jane.bloggs@company.com"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_DataEngineer_abc123/jane.bloggs@company.com"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="step-4-set-default-profile">Step 4: Set Default Profile</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
 </code></pre></div>
 <p>Add to your shell configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'export AWS_PROFILE=data-engineer'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">'export AWS_PROFILE=data-engineer'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">No Long-Lived Credentials</p>
@@ -6666,10 +6668,10 @@ the CLI prompts you to re-authenticate.</p>
 <h2 id="terraform-integration">Terraform Integration</h2>
 <h3 id="aws-provider-configuration">AWS Provider Configuration</h3>
 <p>Update the AWS provider to use SSO profiles:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"aws"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="na">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="na">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"infrastructure-admin"</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">"aws"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span>
+<span class="w">  </span><span class="na">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"infrastructure-admin"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Terraform reads the SSO profile from <code>~/.aws/config</code> and uses the temporary
 credentials. No changes to your Terraform code are needed beyond the profile
@@ -6678,42 +6680,42 @@ name — the same <code>--profile</code> flag works for both IAM user and SSO pr
 <p>CI/CD pipelines continue to use OIDC authentication with
 <code>TerraformGitHubActionsRole</code>. SSO is for human users only — service accounts
 and automation use IAM roles with OIDC or key-pair authentication.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># .github/workflows/terraform.yml — unchanged</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS Credentials</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::123456789012:role/TerraformGitHubActionsRole</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-2</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/terraform.yml — unchanged</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure AWS Credentials</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/configure-aws-credentials@v4</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">role-to-assume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::123456789012:role/TerraformGitHubActionsRole</span>
+<span class="w">    </span><span class="nt">aws-region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eu-west-2</span>
 </code></pre></div>
 <h3 id="managing-iam-identity-centre-with-terraform">Managing IAM Identity Centre with Terraform</h3>
 <p>You can optionally manage IAM Identity Centre resources with Terraform using the
 <code>aws_ssoadmin_*</code> resources:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Permission set</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_permission_set"</span><span class="w"> </span><span class="nv">"data_engineer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="na">name</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"DataEngineer"</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="na">instance_arn</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="na">session_duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PT12H"</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="na">description</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Day-to-day data engineering access."</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="p">}</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1"># Attach policy to permission set</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_managed_policy_attachment"</span><span class="w"> </span><span class="nv">"data_engineer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="na">instance_arn</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span><span class="na">managed_policy_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_policy.data_engineer.arn</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">  </span><span class="na">permission_set_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ssoadmin_permission_set.data_engineer.arn</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="p">}</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="c1"># Assign permission set to group for an account</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_account_assignment"</span><span class="w"> </span><span class="nv">"data_engineers"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">  </span><span class="na">instance_arn</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">  </span><span class="na">permission_set_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ssoadmin_permission_set.data_engineer.arn</span>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="w">  </span><span class="na">principal_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_identitystore_group.data_engineers.group_id</span>
-<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="w">  </span><span class="na">principal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GROUP"</span>
-<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>
-<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">  </span><span class="na">target_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_organizations_organization.this.roots[0].id</span>
-<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AWS_ACCOUNT"</span>
-<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Permission set</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_permission_set"</span><span class="w"> </span><span class="nv">"data_engineer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"DataEngineer"</span>
+<span class="w">  </span><span class="na">instance_arn</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
+<span class="w">  </span><span class="na">session_duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PT12H"</span>
+<span class="w">  </span><span class="na">description</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Day-to-day data engineering access."</span>
+<span class="p">}</span>
+
+<span class="c1"># Attach policy to permission set</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_managed_policy_attachment"</span><span class="w"> </span><span class="nv">"data_engineer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">instance_arn</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
+<span class="w">  </span><span class="na">managed_policy_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_policy.data_engineer.arn</span>
+<span class="w">  </span><span class="na">permission_set_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ssoadmin_permission_set.data_engineer.arn</span>
+<span class="p">}</span>
+
+<span class="c1"># Assign permission set to group for an account</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ssoadmin_account_assignment"</span><span class="w"> </span><span class="nv">"data_engineers"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">instance_arn</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">tolist</span><span class="p">(</span><span class="nv">data.aws_ssoadmin_instances.this.arns</span><span class="p">)[</span><span class="m">0</span><span class="p">]</span>
+<span class="w">  </span><span class="na">permission_set_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ssoadmin_permission_set.data_engineer.arn</span>
+
+<span class="w">  </span><span class="na">principal_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_identitystore_group.data_engineers.group_id</span>
+<span class="w">  </span><span class="na">principal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GROUP"</span>
+
+<span class="w">  </span><span class="na">target_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_organizations_organization.this.roots[0].id</span>
+<span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AWS_ACCOUNT"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">AWS Organisations Required</p>
@@ -6854,6 +6856,8 @@ Only delete IAM users after confirming all access has migrated.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6897,7 +6901,7 @@ Only delete IAM users after confirming all access has migrated.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

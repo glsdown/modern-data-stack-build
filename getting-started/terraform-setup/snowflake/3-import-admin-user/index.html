@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6251,16 +6253,16 @@
 </div>
 <h2 id="gather-user-information">Gather User Information</h2>
 <p>First, get the details of your existing users from Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">-- List all users</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="p">;</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">-- Get details of your admin user</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">your_admin_username</span><span class="p">;</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">-- Get details of the service account</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+
+<span class="c1">-- List all users</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="p">;</span>
+
+<span class="c1">-- Get details of your admin user</span>
+<span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">your_admin_username</span><span class="p">;</span>
+
+<span class="c1">-- Get details of the service account</span>
+<span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
 </code></pre></div>
 <p>Note down:</p>
 <ul>
@@ -6270,24 +6272,24 @@
 </ul>
 <h2 id="add-variables">Add Variables</h2>
 <p>Update <code>variables.tf</code> to add user configuration. This follows the same pattern as <a href="../../aws/4-import-iam-users/">AWS IAM User Management</a> and <a href="../../github/4-github-user-management/">GitHub User Management</a>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of Snowflake users to manage"</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="s2">"PERSON"</span><span class="p">)</span><span class="c1">  # PERSON or SERVICE</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">}))</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="err">for</span><span class="w"> </span><span class="err">user</span><span class="p">,</span><span class="w"> </span><span class="err">config</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.snowflake_users</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">"PERSON", "SERVICE"</span><span class="p">],</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">config.type</span><span class="p">))</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="p">])</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Valid type values are: PERSON, SERVICE"</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Map of Snowflake users to manage"</span>
+<span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="s2">"PERSON"</span><span class="p">)</span><span class="c1">  # PERSON or SERVICE</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span>
+<span class="w">      </span><span class="err">for</span><span class="w"> </span><span class="err">user</span><span class="p">,</span><span class="w"> </span><span class="err">config</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.snowflake_users</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">"PERSON", "SERVICE"</span><span class="p">],</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">config.type</span><span class="p">))</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Valid type values are: PERSON, SERVICE"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">User Types</p>
@@ -6299,21 +6301,21 @@
 </div>
 <h2 id="configure-users">Configure Users</h2>
 <p>Create <code>users.auto.tfvars</code> for user configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">snowflake_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="s2">"YOUR_ADMIN_USERNAME"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="c1">  # Replace with your actual username (uppercase)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Your Name (Admin)"</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"your.email@example.com"</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account administrator"</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="s2">"SVC_TERRAFORM"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"SERVICE"</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">snowflake_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">"YOUR_ADMIN_USERNAME"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="c1">  # Replace with your actual username (uppercase)</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Your Name (Admin)"</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"your.email@example.com"</span>
+<span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
+<span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account administrator"</span>
+<span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="s2">"SVC_TERRAFORM"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
+<span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
+<span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management"</span>
+<span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"SERVICE"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Username Format</p>
@@ -6331,38 +6333,38 @@
 </div>
 <h2 id="create-users-configuration">Create Users Configuration</h2>
 <p>Create <code>users.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Snowflake Users</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># This file manages Snowflake user accounts using a for_each pattern.</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Users are configured in users.auto.tfvars.</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Snowflake Users</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_users</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="na">name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.key</span><span class="p">)</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.key</span><span class="p">)</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.value.default_role</span><span class="p">)</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.comment</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="c1">  # Sensitive fields are managed outside Terraform:</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="c1">  # - Passwords: Set via UI, stored in 1Password</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="c1">  # - RSA keys: Set via SQL, stored in 1Password/Secrets Manager</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">      </span><span class="err">password</span><span class="p">,</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">      </span><span class="err">rsa_public_key</span><span class="p">,</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">      </span><span class="err">rsa_public_key_</span><span class="m">2</span><span class="p">,</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">      </span><span class="err">must_change_password</span><span class="p">,</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Snowflake Users</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># This file manages Snowflake user accounts using a for_each pattern.</span>
+<span class="c1"># Users are configured in users.auto.tfvars.</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Snowflake Users</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_users</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.key</span><span class="p">)</span>
+<span class="w">  </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.key</span><span class="p">)</span>
+<span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
+<span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.value.default_role</span><span class="p">)</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.comment</span>
+
+<span class="c1">  # Sensitive fields are managed outside Terraform:</span>
+<span class="c1">  # - Passwords: Set via UI, stored in 1Password</span>
+<span class="c1">  # - RSA keys: Set via SQL, stored in 1Password/Secrets Manager</span>
+<span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="err">password</span><span class="p">,</span>
+<span class="w">      </span><span class="err">rsa_public_key</span><span class="p">,</span>
+<span class="w">      </span><span class="err">rsa_public_key_</span><span class="m">2</span><span class="p">,</span>
+<span class="w">      </span><span class="err">must_change_password</span><span class="p">,</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Lifecycle Ignore Changes</p>
@@ -6385,23 +6387,23 @@
 </div>
 <h2 id="create-import-blocks">Create Import Blocks</h2>
 <p>Create <code>imports.tf</code> to import the existing users:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Import Blocks</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># These blocks import existing Snowflake resources into Terraform state.</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Remove these blocks after the initial import is complete.</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Import admin user</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="p">[</span><span class="s2">"YOUR_ADMIN_USERNAME"</span><span class="p">]</span><span class="c1">  # Replace with your actual username</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"YOUR_ADMIN_USERNAME"</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># Import Terraform service account</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="p">[</span><span class="s2">"SVC_TERRAFORM"</span><span class="p">]</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Import Blocks</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># These blocks import existing Snowflake resources into Terraform state.</span>
+<span class="c1"># Remove these blocks after the initial import is complete.</span>
+
+<span class="c1"># Import admin user</span>
+<span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="p">[</span><span class="s2">"YOUR_ADMIN_USERNAME"</span><span class="p">]</span><span class="c1">  # Replace with your actual username</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"YOUR_ADMIN_USERNAME"</span>
+<span class="p">}</span>
+
+<span class="c1"># Import Terraform service account</span>
+<span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="p">[</span><span class="s2">"SVC_TERRAFORM"</span><span class="p">]</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Update the Username</p>
@@ -6409,38 +6411,38 @@
 </div>
 <h2 id="plan-the-import">Plan the Import</h2>
 <p>Run terraform plan to preview what will be imported:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output shows the import actions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>snowflake_user.users["YOUR_ADMIN_USERNAME"]: Preparing import... [id=YOUR_ADMIN_USERNAME]
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>snowflake_user.users["SVC_TERRAFORM"]: Preparing import... [id=SVC_TERRAFORM]
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Terraform will perform the following actions:
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  # snowflake_user.users["YOUR_ADMIN_USERNAME"] will be imported
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    resource "snowflake_user" "users" {
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        + comment                      = "Account administrator"
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        + default_role                 = "PUBLIC"
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        + display_name                 = "Your Name (Admin)"
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        + email                        = "your.email@example.com"
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        + id                           = "YOUR_ADMIN_USERNAME"
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        + login_name                   = "YOUR_ADMIN_USERNAME"
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        + name                         = "YOUR_ADMIN_USERNAME"
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        ...
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    }
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>  # snowflake_user.users["SVC_TERRAFORM"] will be imported
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>    resource "snowflake_user" "users" {
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        + comment                      = "Service account for Terraform infrastructure management"
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>        + default_role                 = "ACCOUNTADMIN"
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>        + display_name                 = "Terraform Service Account"
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        + id                           = "SVC_TERRAFORM"
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>        + login_name                   = "SVC_TERRAFORM"
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>        + name                         = "SVC_TERRAFORM"
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>        ...
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    }
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>Plan: 2 to import, 0 to add, 0 to change, 0 to destroy.
+<div class="highlight"><pre><span></span><code>snowflake_user.users["YOUR_ADMIN_USERNAME"]: Preparing import... [id=YOUR_ADMIN_USERNAME]
+snowflake_user.users["SVC_TERRAFORM"]: Preparing import... [id=SVC_TERRAFORM]
+
+Terraform will perform the following actions:
+
+  # snowflake_user.users["YOUR_ADMIN_USERNAME"] will be imported
+    resource "snowflake_user" "users" {
+        + comment                      = "Account administrator"
+        + default_role                 = "PUBLIC"
+        + display_name                 = "Your Name (Admin)"
+        + email                        = "your.email@example.com"
+        + id                           = "YOUR_ADMIN_USERNAME"
+        + login_name                   = "YOUR_ADMIN_USERNAME"
+        + name                         = "YOUR_ADMIN_USERNAME"
+        ...
+    }
+
+  # snowflake_user.users["SVC_TERRAFORM"] will be imported
+    resource "snowflake_user" "users" {
+        + comment                      = "Service account for Terraform infrastructure management"
+        + default_role                 = "ACCOUNTADMIN"
+        + display_name                 = "Terraform Service Account"
+        + id                           = "SVC_TERRAFORM"
+        + login_name                   = "SVC_TERRAFORM"
+        + name                         = "SVC_TERRAFORM"
+        ...
+    }
+
+Plan: 2 to import, 0 to add, 0 to change, 0 to destroy.
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Review Carefully</p>
@@ -6448,64 +6450,64 @@
 </div>
 <h2 id="apply-the-import">Apply the Import</h2>
 <p>Apply the changes to import the users:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>Type <code>yes</code> to confirm.</p>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>snowflake_user.users["YOUR_ADMIN_USERNAME"]: Importing... [id=YOUR_ADMIN_USERNAME]
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>snowflake_user.users["YOUR_ADMIN_USERNAME"]: Import complete [id=YOUR_ADMIN_USERNAME]
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>snowflake_user.users["SVC_TERRAFORM"]: Importing... [id=SVC_TERRAFORM]
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>snowflake_user.users["SVC_TERRAFORM"]: Import complete [id=SVC_TERRAFORM]
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>Apply complete! Resources: 2 imported, 0 added, 0 changed, 0 destroyed.
+<div class="highlight"><pre><span></span><code>snowflake_user.users["YOUR_ADMIN_USERNAME"]: Importing... [id=YOUR_ADMIN_USERNAME]
+snowflake_user.users["YOUR_ADMIN_USERNAME"]: Import complete [id=YOUR_ADMIN_USERNAME]
+snowflake_user.users["SVC_TERRAFORM"]: Importing... [id=SVC_TERRAFORM]
+snowflake_user.users["SVC_TERRAFORM"]: Import complete [id=SVC_TERRAFORM]
+
+Apply complete! Resources: 2 imported, 0 added, 0 changed, 0 destroyed.
 </code></pre></div>
 <h2 id="verify-the-import">Verify the Import</h2>
 <p>Check that the users are now in Terraform state:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>terraform<span class="w"> </span>state<span class="w"> </span>list
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>state<span class="w"> </span>list
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>snowflake_user.users["SVC_TERRAFORM"]
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>snowflake_user.users["YOUR_ADMIN_USERNAME"]
+<div class="highlight"><pre><span></span><code>snowflake_user.users["SVC_TERRAFORM"]
+snowflake_user.users["YOUR_ADMIN_USERNAME"]
 </code></pre></div>
 <p>View the details of an imported user:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>terraform<span class="w"> </span>state<span class="w"> </span>show<span class="w"> </span><span class="s1">'snowflake_user.users["YOUR_ADMIN_USERNAME"]'</span>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>state<span class="w"> </span>show<span class="w"> </span><span class="s1">'snowflake_user.users["YOUR_ADMIN_USERNAME"]'</span>
 </code></pre></div>
 <h2 id="clean-up-import-blocks">Clean Up Import Blocks</h2>
 <p>After successful import, delete the <code>imports.tf</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>rm<span class="w"> </span>imports.tf
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>imports.tf
 </code></pre></div>
 <p>Run <code>terraform plan</code> to verify no changes are planned:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>No changes. Your infrastructure matches the configuration.
+<div class="highlight"><pre><span></span><code>No changes. Your infrastructure matches the configuration.
 </code></pre></div>
 <h2 id="add-outputs">Add Outputs</h2>
 <p>Update <code>outputs.tf</code> to include user information:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># User outputs</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_user_names"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Names of all Snowflake users"</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nb">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">k</span><span class="p">,</span><span class="w"> </span><span class="err">v</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="na">k</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">v.name</span><span class="w"> </span><span class="p">}</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># User outputs</span>
+<span class="kr">output</span><span class="w"> </span><span class="nv">"snowflake_user_names"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Names of all Snowflake users"</span>
+<span class="w">  </span><span class="nb">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">k</span><span class="p">,</span><span class="w"> </span><span class="err">v</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">snowflake_user.users</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="na">k</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">v.name</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="commit-your-work">Commit Your Work</h2>
 <p>Commit your progress:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Import Snowflake users with for_each pattern"</span>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Import Snowflake users with for_each pattern"</span>
 </code></pre></div>
 <h2 id="managing-users">Managing Users</h2>
 <h3 id="adding-a-new-user">Adding a New User</h3>
 <p>Add them to <code>users.auto.tfvars</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">snowflake_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c1">  # ... existing users ...</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="s2">"ALICE_ADMIN"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith (Admin)"</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice@example.com"</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Platform engineer admin account"</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">snowflake_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # ... existing users ...</span>
+<span class="w">  </span><span class="s2">"ALICE_ADMIN"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith (Admin)"</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice@example.com"</span>
+<span class="w">    </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PUBLIC"</span>
+<span class="w">    </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Platform engineer admin account"</span>
+<span class="w">    </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Run <code>terraform apply</code> - the user will be created.</p>
 <div class="admonition note">
@@ -6519,13 +6521,13 @@
 </div>
 <h3 id="changing-a-users-configuration">Changing a User's Configuration</h3>
 <p>Update their entry in <code>users.auto.tfvars</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="s2">"ALICE_ADMIN"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith (Admin)"</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice.smith@example.com"</span><span class="c1">  # Updated email</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span><span class="c1">                 # Changed default role</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Platform engineer admin account"</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="s2">"ALICE_ADMIN"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith (Admin)"</span>
+<span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice.smith@example.com"</span><span class="c1">  # Updated email</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SYSADMIN"</span><span class="c1">                 # Changed default role</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Platform engineer admin account"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"PERSON"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Run <code>terraform apply</code> - Terraform will update the user.</p>
 <h3 id="offboarding-a-user">Offboarding a User</h3>
@@ -6565,7 +6567,7 @@
 <h2 id="what-about-other-users">What About Other Users?</h2>
 <div class="admonition info">
 <p class="admonition-title">Regular Users</p>
-<p>In this section, we only manage the admin user and service account - the minimum needed for Terraform to work. You'll create additional users (developers, service accounts for dbt, Airbyte, etc.) in the <a href="../../../build/data-warehouse/">Data Warehouse</a> section.</p>
+<p>In this section, we only manage the admin user and service account - the minimum needed for Terraform to work. You'll create additional users (developers, service accounts for dbt, Airbyte, etc.) in the <a href="../../../../build/data-warehouse/">Data Warehouse</a> section.</p>
 <p>The guidance about having separate admin and regular accounts for the same person (e.g. <code>JBLOGGS_ADMIN</code> and <code>JBLOGGS</code>) will be addressed when setting up the full user management in the Data Warehouse section.</p>
 </div>
 <h2 id="whats-next">What's Next</h2>
@@ -6593,7 +6595,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6620,6 +6622,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6663,7 +6667,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

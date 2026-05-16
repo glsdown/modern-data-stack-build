@@ -39,10 +39,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5918,50 +5920,50 @@
 <p>There are skills available to help with common maintenance tasks - <code>add-source-and-staging</code> and <code>add-mart-model</code>.</p>
 <hr>
 <h2 id="repository-structure">Repository Structure</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dbt-transform/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── dbt_project.yml             # Project configuration and schema routing
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── packages.yml                # dbt packages (dbt_utils, dbt_expectations, etc.)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── profiles.yml                # Generated locally by direnv, not committed
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── .envrc.example              # Template for local Snowflake credentials
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── pyproject.toml              # Python dependencies (managed by uv)
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── models/
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── staging/
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   │   ├── dlt/
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   │   │   ├── _sources.yml
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   │   │   ├── stg_dlt__products.sql
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   │   │   ├── stg_dlt__products.yml
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   │   │   ├── stg_dlt__currencies.sql
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   │   │   └── stg_dlt__currencies.yml
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   │   ├── snowpipe/
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   │   │   ├── _sources.yml
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   │   │   ├── stg_snowpipe__exchange_rates.sql
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   │   │   └── stg_snowpipe__exchange_rates.yml
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   │   └── airbyte/
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   │       ├── _sources.yml
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   │       ├── stg_airbyte__contacts.sql
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   │       └── stg_airbyte__contacts.yml
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── intermediate/
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   │   ├── products/
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   │   │   ├── int_products__current.sql
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│   │   │   └── int_products__current.yml
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   │   └── contacts/
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   │       ├── int_contacts__enriched.sql
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   │       └── int_contacts__enriched.yml
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   └── marts/
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│       ├── core/
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│       │   ├── fct_exchange_rates.sql / .yml
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│       │   ├── dim_currencies.sql / .yml
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│       │   └── dim_products.sql / .yml
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│       ├── crm/
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│       │   ├── fct_contacts.sql / .yml
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│       │   └── fct_contacts.yml
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│       └── reporting/
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│           ├── rpt_contacts.sql
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│           └── rpt_contacts.yml
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>├── tests/                      # Custom singular tests
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>├── macros/                     # Custom macros
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>├── seeds/                      # Static reference data
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>└── .github/workflows/          # CI/CD (slim CI + deploy)
+<div class="highlight"><pre><span></span><code>dbt-transform/
+├── dbt_project.yml             # Project configuration and schema routing
+├── packages.yml                # dbt packages (dbt_utils, dbt_expectations, etc.)
+├── profiles.yml                # Generated locally by direnv, not committed
+├── .envrc.example              # Template for local Snowflake credentials
+├── pyproject.toml              # Python dependencies (managed by uv)
+├── models/
+│   ├── staging/
+│   │   ├── dlt/
+│   │   │   ├── _sources.yml
+│   │   │   ├── stg_dlt__products.sql
+│   │   │   ├── stg_dlt__products.yml
+│   │   │   ├── stg_dlt__currencies.sql
+│   │   │   └── stg_dlt__currencies.yml
+│   │   ├── snowpipe/
+│   │   │   ├── _sources.yml
+│   │   │   ├── stg_snowpipe__exchange_rates.sql
+│   │   │   └── stg_snowpipe__exchange_rates.yml
+│   │   └── airbyte/
+│   │       ├── _sources.yml
+│   │       ├── stg_airbyte__contacts.sql
+│   │       └── stg_airbyte__contacts.yml
+│   ├── intermediate/
+│   │   ├── products/
+│   │   │   ├── int_products__current.sql
+│   │   │   └── int_products__current.yml
+│   │   └── contacts/
+│   │       ├── int_contacts__enriched.sql
+│   │       └── int_contacts__enriched.yml
+│   └── marts/
+│       ├── core/
+│       │   ├── fct_exchange_rates.sql / .yml
+│       │   ├── dim_currencies.sql / .yml
+│       │   └── dim_products.sql / .yml
+│       ├── crm/
+│       │   ├── fct_contacts.sql / .yml
+│       │   └── fct_contacts.yml
+│       └── reporting/
+│           ├── rpt_contacts.sql
+│           └── rpt_contacts.yml
+├── tests/                      # Custom singular tests
+├── macros/                     # Custom macros
+├── seeds/                      # Static reference data
+└── .github/workflows/          # CI/CD (slim CI + deploy)
 </code></pre></div>
 <hr>
 <h2 id="model-layers">Model Layers</h2>
@@ -6039,17 +6041,17 @@
 </ul>
 <h3 id="incremental-models">Incremental Models</h3>
 <p>For large fact tables, use incremental materialisation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">materialized</span><span class="o">=</span><span class="s1">'incremental'</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">unique_key</span><span class="o">=</span><span class="s1">'surrogate_key'</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">on_schema_change</span><span class="o">=</span><span class="s1">'append_new_columns'</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">...</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_incremental</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">timestamp_column</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">max</span><span class="p">(</span><span class="n">timestamp_column</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="err">}}</span><span class="p">)</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endif</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span>
+<span class="w">    </span><span class="n">materialized</span><span class="o">=</span><span class="s1">'incremental'</span><span class="p">,</span>
+<span class="w">    </span><span class="n">unique_key</span><span class="o">=</span><span class="s1">'surrogate_key'</span><span class="p">,</span>
+<span class="w">    </span><span class="n">on_schema_change</span><span class="o">=</span><span class="s1">'append_new_columns'</span>
+<span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="p">...</span>
+
+<span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_incremental</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">timestamp_column</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">max</span><span class="p">(</span><span class="n">timestamp_column</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="err">}}</span><span class="p">)</span>
+<span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">endif</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
 </code></pre></div>
 <hr>
 <h2 id="common-operations">Common Operations</h2>
@@ -6068,11 +6070,11 @@
 <li>Run: <code>dbt test -s {model_name}</code></li>
 </ol>
 <h3 id="running-dbt-locally">Running dbt Locally</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>dbt<span class="w"> </span>deps<span class="w">          </span><span class="c1"># Install packages</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>dbt<span class="w"> </span>debug<span class="w">         </span><span class="c1"># Verify connection</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>dbt<span class="w"> </span>build<span class="w">         </span><span class="c1"># Run models + tests</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>dbt<span class="w"> </span>run<span class="w"> </span>-s<span class="w"> </span>+model<span class="w"> </span><span class="c1"># Run a model and all upstream dependencies</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>model<span class="w"> </span><span class="c1"># Run tests for a specific model</span>
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>deps<span class="w">          </span><span class="c1"># Install packages</span>
+dbt<span class="w"> </span>debug<span class="w">         </span><span class="c1"># Verify connection</span>
+dbt<span class="w"> </span>build<span class="w">         </span><span class="c1"># Run models + tests</span>
+dbt<span class="w"> </span>run<span class="w"> </span>-s<span class="w"> </span>+model<span class="w"> </span><span class="c1"># Run a model and all upstream dependencies</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>model<span class="w"> </span><span class="c1"># Run tests for a specific model</span>
 </code></pre></div>
 <p>Dev is the default target - never use <code>--target dev</code> explicitly.</p>
 <hr>
@@ -6165,6 +6167,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6208,7 +6212,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

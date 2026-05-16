@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5992,62 +5994,62 @@
 <p>Before working with the AWS provider, ensure your AWS CLI is configured correctly.</p>
 <h3 id="verify-your-credentials">Verify Your Credentials</h3>
 <p>For Terraform operations, use the InfrastructureAdminRole which has write access to state files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output showing the InfrastructureAdminRole:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLE:aws-cli-session"</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/InfrastructureAdminRole/aws-cli-session"</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLE:aws-cli-session"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/InfrastructureAdminRole/aws-cli-session"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="update-the-envrc-file">Update the .envrc File</h3>
 <p>In your repository root, update the <code>.envrc</code> file to include AWS configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># AWS Configuration - use infrastructure-admin for Terraform operations</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"infrastructure-admin"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_REGION</span><span class="o">=</span><span class="s2">"eu-west-2"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># AWS Configuration - use infrastructure-admin for Terraform operations</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"infrastructure-admin"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_REGION</span><span class="o">=</span><span class="s2">"eu-west-2"</span>
 </code></pre></div>
 <p>Verify it's working:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$AWS_PROFILE</span><span class="w">  </span><span class="c1"># Should show: infrastructure-admin</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$AWS_REGION</span><span class="w">   </span><span class="c1"># Should show: eu-west-2</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$AWS_PROFILE</span><span class="w">  </span><span class="c1"># Should show: infrastructure-admin</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$AWS_REGION</span><span class="w">   </span><span class="c1"># Should show: eu-west-2</span>
 </code></pre></div>
 <p>Update the <code>.envrc.example</code> to document the required variables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># AWS Configuration - use infrastructure-admin for Terraform operations</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"infrastructure-admin"</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_REGION</span><span class="o">=</span><span class="s2">"eu-west-2"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># AWS Configuration - use infrastructure-admin for Terraform operations</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"infrastructure-admin"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_REGION</span><span class="o">=</span><span class="s2">"eu-west-2"</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Using aws-vault</p>
 <p>If you configured aws-vault in the <a href="../../account-setup/aws/">AWS Account Setup</a>, you'll need to run Terraform commands within an aws-vault session instead of relying on <code>AWS_PROFILE</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Option 1: Prefix each command</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin<span class="w"> </span>--<span class="w"> </span>terraform<span class="w"> </span>plan
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Option 2: Start a shell session</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>terraform<span class="w"> </span>apply
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">exit</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Option 1: Prefix each command</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin<span class="w"> </span>--<span class="w"> </span>terraform<span class="w"> </span>plan
+
+<span class="c1"># Option 2: Start a shell session</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
+<span class="nb">exit</span>
 </code></pre></div>
 <p>The <code>AWS_PROFILE</code> environment variable in <code>.envrc</code> is for users of the standard AWS CLI configuration.</p>
 </div>
 <h2 id="file-organisation">File Organisation</h2>
 <p>For AWS resources, we'll organise files by resource type:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform/aws/
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── backend.tf           # S3 backend configuration
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── main.tf              # Terraform and provider versions
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── providers.tf         # AWS provider configuration
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>├── variables.tf         # Variable definitions
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>├── terraform.tfvars     # Variable values
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>├── outputs.tf           # Output definitions
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>├── imports.tf           # Import blocks (temporary)
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>├── iam_roles.tf         # IAM role resources
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>├── iam_users.tf         # IAM user resources
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>├── iam_policies.tf      # IAM policy resources
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>├── state_infrastructure.tf  # S3 bucket and DynamoDB table
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>├── budgets.tf           # Budget and alert resources
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>├── secrets_manager.tf   # Secrets Manager resources
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>└── oidc.tf              # GitHub OIDC provider and role
+<div class="highlight"><pre><span></span><code>terraform/aws/
+├── backend.tf           # S3 backend configuration
+├── main.tf              # Terraform and provider versions
+├── providers.tf         # AWS provider configuration
+├── variables.tf         # Variable definitions
+├── terraform.tfvars     # Variable values
+├── outputs.tf           # Output definitions
+├── imports.tf           # Import blocks (temporary)
+├── iam_roles.tf         # IAM role resources
+├── iam_users.tf         # IAM user resources
+├── iam_policies.tf      # IAM policy resources
+├── state_infrastructure.tf  # S3 bucket and DynamoDB table
+├── budgets.tf           # Budget and alert resources
+├── secrets_manager.tf   # Secrets Manager resources
+└── oidc.tf              # GitHub OIDC provider and role
 </code></pre></div>
 <p>This organisation makes it easy to find and manage resources as your infrastructure grows. IAM resources are grouped by type, whilst infrastructure resources each have their own file.</p>
 <div class="admonition tip">
@@ -6111,6 +6113,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6154,7 +6158,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

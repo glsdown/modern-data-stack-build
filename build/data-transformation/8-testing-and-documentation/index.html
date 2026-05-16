@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6611,47 +6613,47 @@
 </table>
 <h3 id="generic-tests">Generic Tests</h3>
 <p>Generic tests are declared in <code>.yml</code> files. dbt ships with four built-ins:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span><span class="w">           </span><span class="c1"># no duplicate values</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span><span class="w">         </span><span class="c1"># no nulls</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lifecycle_stage</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">          </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'subscriber'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'lead'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marketingqualifiedlead'</span><span class="p p-Indicator">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">                   </span><span class="s">'salesqualifiedlead'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'opportunity'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'customer'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'evangelist'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base_currency</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">          </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_currencies')</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">          </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">currency_code</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span><span class="w">           </span><span class="c1"># no duplicate values</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span><span class="w">         </span><span class="c1"># no nulls</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lifecycle_stage</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">accepted_values</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'subscriber'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'lead'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marketingqualifiedlead'</span><span class="p p-Indicator">,</span>
+<span class="w">                   </span><span class="s">'salesqualifiedlead'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'opportunity'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'customer'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'evangelist'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base_currency</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">relationships</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_currencies')</span>
+<span class="w">          </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">currency_code</span>
 </code></pre></div>
 <h3 id="dbt_expectations-tests"><code>dbt_expectations</code> Tests</h3>
 <p>The <code>dbt_expectations</code> package provides column-level tests modelled on Great Expectations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">           </span><span class="c1"># &gt; 0, not &gt;= 0</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_of_type</span><span class="p">:</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">          </span><span class="nt">column_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">float</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_regex</span><span class="p">:</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">          </span><span class="nt">regex</span><span class="p">:</span><span class="w"> </span><span class="s">'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$'</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="s">"'2020-01-01'::date"</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="s">"current_date</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">interval</span><span class="nv"> </span><span class="s">'1</span><span class="nv"> </span><span class="s">day'"</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"rate_date</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">null"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">           </span><span class="c1"># &gt; 0, not &gt;= 0</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_of_type</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">column_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">float</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_match_regex</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">regex</span><span class="p">:</span><span class="w"> </span><span class="s">'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$'</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="s">"'2020-01-01'::date"</span>
+<span class="w">          </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="s">"current_date</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">interval</span><span class="nv"> </span><span class="s">'1</span><span class="nv"> </span><span class="s">day'"</span>
+<span class="w">          </span><span class="nt">row_condition</span><span class="p">:</span><span class="w"> </span><span class="s">"rate_date</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">null"</span>
 </code></pre></div>
 <p>Useful <code>dbt_expectations</code> tests:</p>
 <table>
@@ -6692,108 +6694,108 @@
 <p>Some tests and models share a common building block: a complete sequence of dates. Rather than generating this inline with <code>dbt_utils.date_spine</code> in every place it's needed, the project maintains a single <code>util_date_spine</code> model in <code>models/utilities/</code>.</p>
 <h3 id="util_date_spine"><code>util_date_spine</code></h3>
 <p>Create <code>models/utilities/util_date_spine.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/*</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cm">A complete sequence of calendar dates from the start of data collection</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cm">to today. Materialised as a table so downstream tests and models can</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cm">join against it cheaply without recomputing the spine each time.</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="cm">Extend `start_date` if you backfill historical data before 2020-01-01.</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cm">*/</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span><span class="n">materialised</span><span class="o">=</span><span class="s1">'table'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="err">{{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">date_spine</span><span class="p">(</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">        </span><span class="n">datepart</span><span class="o">=</span><span class="s1">'day'</span><span class="p">,</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="n">start_date</span><span class="o">=</span><span class="ss">"cast('2020-01-01' as date)"</span><span class="p">,</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="n">end_date</span><span class="o">=</span><span class="ss">"current_date + interval '1 day'"</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="p">)</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm">A complete sequence of calendar dates from the start of data collection</span>
+<span class="cm">to today. Materialised as a table so downstream tests and models can</span>
+<span class="cm">join against it cheaply without recomputing the spine each time.</span>
+
+<span class="cm">Extend `start_date` if you backfill historical data before 2020-01-01.</span>
+<span class="cm">*/</span>
+
+<span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span><span class="n">materialised</span><span class="o">=</span><span class="s1">'table'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="err">{{</span>
+<span class="w">    </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">date_spine</span><span class="p">(</span>
+<span class="w">        </span><span class="n">datepart</span><span class="o">=</span><span class="s1">'day'</span><span class="p">,</span>
+<span class="w">        </span><span class="n">start_date</span><span class="o">=</span><span class="ss">"cast('2020-01-01' as date)"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">end_date</span><span class="o">=</span><span class="ss">"current_date + interval '1 day'"</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="err">}}</span>
 </code></pre></div>
 <p>Add a YAML file <code>models/utilities/util_date_spine.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">util_date_spine</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="no">A complete sequence of calendar dates from 2020-01-01 to today.</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="no">Used as a reference table for completeness tests and date-based joins.</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date_day</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A single calendar date.</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">util_date_spine</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">A complete sequence of calendar dates from 2020-01-01 to today.</span>
+<span class="w">      </span><span class="no">Used as a reference table for completeness tests and date-based joins.</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date_day</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A single calendar date.</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
 </code></pre></div>
 <h3 id="singular-tests">Singular Tests</h3>
 <p>Singular tests are custom SQL queries in the <code>tests/</code> directory. A test passes if it returns <strong>zero rows</strong>. Use them for business rules too complex for generic tests.</p>
 <h4 id="exchange-rate-completeness">Exchange rate completeness</h4>
 <p>This test uses <code>util_date_spine</code> to assert that exchange rate data exists for every expected calendar day. A left join against the fact table reveals any gaps:</p>
 <p>Create <code>tests/assert_exchange_rates_complete.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cm">/*</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cm">Asserts that fct_exchange_rates contains a GBP rate for every calendar day</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cm">from the start of data collection up to yesterday.</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="cm">GBP is used as a proxy: if GBP is missing for a given date, the daily load</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="cm">was either skipped or failed. A missing row will cause this test to fail.</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="cm">*/</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">with</span><span class="w"> </span><span class="n">expected_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="n">date_day</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'util_date_spine'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">date_day</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="k">and</span><span class="w"> </span><span class="n">date_day</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">current_date</span><span class="w">  </span><span class="c1">-- yesterday is the latest we expect</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">),</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">actual_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">rate_date</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">target_currency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'GBP'</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="p">),</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="n">missing_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">    </span><span class="k">select</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">        </span><span class="n">ed</span><span class="p">.</span><span class="n">date_day</span><span class="w">         </span><span class="k">as</span><span class="w"> </span><span class="n">missing_date</span><span class="p">,</span>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">        </span><span class="s1">'GBP'</span><span class="w"> </span><span class="p">::</span><span class="w"> </span><span class="nb">varchar</span><span class="w">    </span><span class="k">as</span><span class="w"> </span><span class="n">expected_currency</span>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="n">expected_dates</span><span class="w"> </span><span class="n">ed</span>
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">    </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">actual_dates</span><span class="w"> </span><span class="n">ad</span>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">        </span><span class="k">on</span><span class="w"> </span><span class="n">ed</span><span class="p">.</span><span class="n">date_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ad</span><span class="p">.</span><span class="n">rate_date</span>
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">ad</span><span class="p">.</span><span class="n">rate_date</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span>
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>
-<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="p">)</span>
-<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>
-<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">missing_dates</span>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm">Asserts that fct_exchange_rates contains a GBP rate for every calendar day</span>
+<span class="cm">from the start of data collection up to yesterday.</span>
+
+<span class="cm">GBP is used as a proxy: if GBP is missing for a given date, the daily load</span>
+<span class="cm">was either skipped or failed. A missing row will cause this test to fail.</span>
+<span class="cm">*/</span>
+
+<span class="k">with</span><span class="w"> </span><span class="n">expected_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="n">date_day</span>
+<span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'util_date_spine'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">date_day</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span>
+<span class="w">      </span><span class="k">and</span><span class="w"> </span><span class="n">date_day</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">current_date</span><span class="w">  </span><span class="c1">-- yesterday is the latest we expect</span>
+
+<span class="p">),</span>
+
+<span class="n">actual_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">rate_date</span>
+<span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">target_currency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'GBP'</span>
+
+<span class="p">),</span>
+
+<span class="n">missing_dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span>
+<span class="w">        </span><span class="n">ed</span><span class="p">.</span><span class="n">date_day</span><span class="w">         </span><span class="k">as</span><span class="w"> </span><span class="n">missing_date</span><span class="p">,</span>
+<span class="w">        </span><span class="s1">'GBP'</span><span class="w"> </span><span class="p">::</span><span class="w"> </span><span class="nb">varchar</span><span class="w">    </span><span class="k">as</span><span class="w"> </span><span class="n">expected_currency</span>
+
+<span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="n">expected_dates</span><span class="w"> </span><span class="n">ed</span>
+<span class="w">    </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">actual_dates</span><span class="w"> </span><span class="n">ad</span>
+<span class="w">        </span><span class="k">on</span><span class="w"> </span><span class="n">ed</span><span class="p">.</span><span class="n">date_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ad</span><span class="p">.</span><span class="n">rate_date</span>
+<span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">ad</span><span class="p">.</span><span class="n">rate_date</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span>
+
+<span class="p">)</span>
+
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">missing_dates</span>
 </code></pre></div>
 <p>Create <code>tests/assert_no_duplicate_contacts.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cm">/*</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="cm">Asserts that fct_contacts has no duplicate email addresses.</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cm">Each email should appear exactly once.</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cm">*/</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">select</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">email</span><span class="p">,</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">row_count</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_contacts'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">email</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">having</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm">Asserts that fct_contacts has no duplicate email addresses.</span>
+<span class="cm">Each email should appear exactly once.</span>
+<span class="cm">*/</span>
+
+<span class="k">select</span>
+<span class="w">    </span><span class="n">email</span><span class="p">,</span>
+<span class="w">    </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">row_count</span>
+<span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_contacts'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">email</span>
+<span class="k">having</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
 <h3 id="test-severity">Test Severity</h3>
 <p>Not all test failures should block a production run. Configure severity levels:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">          </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span><span class="w">          </span><span class="c1"># blocks production run</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">          </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">           </span><span class="c1"># logs warning, does not block</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span><span class="w">          </span><span class="c1"># blocks production run</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span><span class="w">           </span><span class="c1"># logs warning, does not block</span>
 </code></pre></div>
 <p>Use <code>error</code> for tests that indicate corrupt or missing data, and <code>warn</code> for anomaly checks that may trigger for valid business reasons.</p>
 <h2 id="dbt_project_evaluator"><code>dbt_project_evaluator</code></h2>
@@ -6843,40 +6845,40 @@
 <h3 id="variable-overrides">Variable Overrides</h3>
 <p>The <code>vars</code> block in <code>dbt_project.yml</code> contains variables for the project. <code>dbt_project_evaluator</code> uses a number of variables which can be <a href="https://dbt-labs.github.io/dbt-project-evaluator/latest/customization/overriding-variables/">customised</a> to provide different thresholds for each rule.</p>
 <p>In addition, there are variables which control which folder names and prefixes are considered valid for each model type. Add these to <code>dbt_project.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">vars</span><span class="p">:</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="c1"># dbt_project_evaluator variable overrides</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">model_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'staging'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'intermediate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marts'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">staging_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'staging'</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">intermediate_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'intermediate'</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">marts_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'marts'</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nt">staging_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'stg_'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">intermediate_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'int_'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="nt">marts_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'fct_'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'dim_'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">    </span><span class="nt">other_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'rpt_'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">vars</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># dbt_project_evaluator variable overrides</span>
+<span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">model_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'staging'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'intermediate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marts'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">staging_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'staging'</span>
+<span class="w">    </span><span class="nt">intermediate_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'intermediate'</span>
+<span class="w">    </span><span class="nt">marts_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'marts'</span>
+
+<span class="w">    </span><span class="nt">staging_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'stg_'</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">intermediate_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'int_'</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">marts_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'fct_'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'dim_'</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">other_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'rpt_'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p>To add a model type (for example, a <code>utilities</code> layer):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">vars</span><span class="p">:</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">model_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'staging'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'intermediate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marts'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'utilities'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">utilities_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'utilities'</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">utilities_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'util_'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">vars</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">model_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'staging'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'intermediate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'marts'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'utilities'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'other'</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">utilities_folder_name</span><span class="p">:</span><span class="w"> </span><span class="s">'utilities'</span>
+<span class="w">    </span><span class="nt">utilities_prefixes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'util_'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="exceptions-seed">Exceptions Seed</h3>
 <p>The package ships with an empty <code>dbt_project_evaluator_exceptions</code> seed that lets you suppress specific violations. Disable the package seed in <code>dbt_project.yml</code> so you can provide your own version:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Seed configurations</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">seeds</span><span class="p">:</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="c1"># Disable the package's built-in exceptions seed so we can provide our own</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="nt">dbt_project_evaluator_exceptions</span><span class="p">:</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">      </span><span class="nt">+enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Seed configurations</span>
+<span class="nt">seeds</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds</span>
+<span class="w">  </span><span class="c1"># Disable the package's built-in exceptions seed so we can provide our own</span>
+<span class="w">  </span><span class="nt">dbt_project_evaluator</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dbt_project_evaluator_exceptions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">+enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <p>Create <code>seeds/dbt_project_evaluator_exceptions.csv</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>fct_name,column_name,id_to_exclude,comment
+<div class="highlight"><pre><span></span><code>fct_name,column_name,id_to_exclude,comment
 </code></pre></div>
 <p>The columns are:</p>
 <table>
@@ -6907,18 +6909,18 @@
 </table>
 <h3 id="on-run-end-hook">On-Run-End Hook</h3>
 <p>Add an <code>on-run-end</code> hook in <code>dbt_project.yml</code> to print evaluator issues after every run. This makes failures visible even when running locally:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">on-run-end</span><span class="p">:</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="c1"># Print dbt_project_evaluator issues to the logs after every run</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">dbt_project_evaluator.print_dbt_project_evaluator_issues()</span><span class="nv"> </span><span class="s">}}"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">on-run-end</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Print dbt_project_evaluator issues to the logs after every run</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">dbt_project_evaluator.print_dbt_project_evaluator_issues()</span><span class="nv"> </span><span class="s">}}"</span>
 </code></pre></div>
 <p>Example output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>│ dbt_project_evaluator issues                                            │
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>├─────────────────────────┬───────────────────────────────────────────────┤
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>│ fct_name                │ issue                                         │
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>├─────────────────────────┼───────────────────────────────────────────────┤
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>│ fct_undocumented_models │ stg_dlt__products has no description          │
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>└─────────────────────────┴───────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│ dbt_project_evaluator issues                                            │
+├─────────────────────────┬───────────────────────────────────────────────┤
+│ fct_name                │ issue                                         │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ fct_undocumented_models │ stg_dlt__products has no description          │
+└─────────────────────────┴───────────────────────────────────────────────┘
 </code></pre></div>
 <h3 id="custom-checks">Custom Checks</h3>
 <p>Extend the evaluator with project-specific rules by creating <code>fct_</code> models under <code>models/utilities/dbt_project_evaluator/</code>. These follow the same pattern as the package's own fact tables: they query <code>stg_nodes</code> and other staging models exposed by <code>dbt_project_evaluator</code>, and use the <code>dbt_project_evaluator.is_empty</code> generic test — which passes when the model returns zero rows.</p>
@@ -6926,60 +6928,60 @@
 <p>The default dbt behaviour for incremental models is <code>on_schema_change: ignore</code>, which silently drops new columns from incremental runs. This check enforces the safer <code>append_new_columns</code> setting across all incremental models in the project.</p>
 <p><code>stg_nodes</code> (exposed by <code>dbt_project_evaluator</code>) contains a row for every node in the project graph, including the <code>on_schema_change</code> configuration for each model.</p>
 <p>Create <code>models/utilities/dbt_project_evaluator/fct_incremental_on_schema_change.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span><span class="n">materialized</span><span class="o">=</span><span class="s1">'table'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">with</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_nodes'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">)</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">select</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="n">unique_id</span><span class="p">,</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="n">name</span><span class="p">,</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="n">file_path</span><span class="p">,</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="n">on_schema_change</span><span class="w">     </span><span class="k">as</span><span class="w"> </span><span class="n">current_setting</span><span class="p">,</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="s1">'append_new_columns'</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">expected_setting</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="k">from</span><span class="w"> </span><span class="n">nodes</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="k">where</span><span class="w"> </span><span class="n">resource_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'model'</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">package_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dbt_transform'</span>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">materialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'incremental'</span>
-<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="k">coalesce</span><span class="p">(</span><span class="n">on_schema_change</span><span class="p">,</span><span class="w"> </span><span class="s1">'ignore'</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">'append_new_columns'</span>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">config</span><span class="p">(</span><span class="n">materialized</span><span class="o">=</span><span class="s1">'table'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="k">with</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_nodes'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="p">)</span>
+
+<span class="k">select</span>
+<span class="w">    </span><span class="n">unique_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">file_path</span><span class="p">,</span>
+<span class="w">    </span><span class="n">on_schema_change</span><span class="w">     </span><span class="k">as</span><span class="w"> </span><span class="n">current_setting</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">'append_new_columns'</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">expected_setting</span>
+<span class="k">from</span><span class="w"> </span><span class="n">nodes</span>
+<span class="k">where</span><span class="w"> </span><span class="n">resource_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'model'</span>
+<span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">package_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dbt_transform'</span>
+<span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">materialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'incremental'</span>
+<span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="k">coalesce</span><span class="p">(</span><span class="n">on_schema_change</span><span class="p">,</span><span class="w"> </span><span class="s1">'ignore'</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">'append_new_columns'</span>
 </code></pre></div>
 <p>Create <code>models/utilities/dbt_project_evaluator/fct_incremental_on_schema_change.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_incremental_on_schema_change</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="no">Incremental models in this project that do not set on_schema_change: append_new_columns.</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">      </span><span class="no">The default dbt behaviour (ignore) silently drops new columns from incremental runs.</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">      </span><span class="no">This model fails if any incremental model uses the unsafe default.</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator.is_empty</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_incremental_on_schema_change</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Incremental models in this project that do not set on_schema_change: append_new_columns.</span>
+<span class="w">      </span><span class="no">The default dbt behaviour (ignore) silently drops new columns from incremental runs.</span>
+<span class="w">      </span><span class="no">This model fails if any incremental model uses the unsafe default.</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator.is_empty</span>
 </code></pre></div>
 <p>To add further custom checks, create additional <code>fct_</code> models in the same folder following the same pattern.</p>
 <h3 id="ci-selector">CI Selector</h3>
 <p>Create <code>selectors.yml</code> in the project root to run project_evaluator rules, custom checks, and the exceptions seed together in a single command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">selectors</span><span class="p">:</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci_quality_checks</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator rules, custom check models, and exceptions seed</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">definition</span><span class="p">:</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">      </span><span class="nt">union</span><span class="p">:</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">package</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">models/utilities/dbt_project_evaluator</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds/dbt_project_evaluator_exceptions.csv</span>
+<div class="highlight"><pre><span></span><code><span class="nt">selectors</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci_quality_checks</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator rules, custom check models, and exceptions seed</span>
+<span class="w">    </span><span class="nt">definition</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">union</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">package</span>
+<span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_project_evaluator</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
+<span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">models/utilities/dbt_project_evaluator</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
+<span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds/dbt_project_evaluator_exceptions.csv</span>
 </code></pre></div>
 <p>In CI and locally:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Run all quality checks</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>dbt<span class="w"> </span>build<span class="w"> </span>--selector<span class="w"> </span>ci_quality_checks
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Run only project_evaluator rules</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>package:dbt_project_evaluator
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Run only custom checks</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>path:models/utilities/dbt_project_evaluator
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all quality checks</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--selector<span class="w"> </span>ci_quality_checks
+
+<span class="c1"># Run only project_evaluator rules</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>package:dbt_project_evaluator
+
+<span class="c1"># Run only custom checks</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>path:models/utilities/dbt_project_evaluator
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Fail fast in CI, warn locally</p>
@@ -6992,85 +6994,85 @@
 - Where the data comes from
 - Any important business logic or caveats
 - Granularity (one row per X)</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">      </span><span class="no">Daily USD base exchange rates for all currencies. Combines data from the</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">      </span><span class="no">dlt direct pipeline and the Snowpipe pipeline, with dlt taking precedence</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">      </span><span class="no">when both sources are available for the same date and currency.</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">      </span><span class="no">One row per target currency per date. Base currency is always USD.</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">      </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="s">"@analytics-team"</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">      </span><span class="nt">contains_pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Daily USD base exchange rates for all currencies. Combines data from the</span>
+<span class="w">      </span><span class="no">dlt direct pipeline and the Snowpipe pipeline, with dlt taking precedence</span>
+<span class="w">      </span><span class="no">when both sources are available for the same date and currency.</span>
+<span class="w">      </span><span class="no">One row per target currency per date. Base currency is always USD.</span>
+<span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="s">"@analytics-team"</span>
+<span class="w">      </span><span class="nt">contains_pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <h3 id="column-descriptions">Column Descriptions</h3>
 <p>Document every column in mart models — analysts will read these in the docs site:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Surrogate key derived from rate_date and target_currency.</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The date for which the exchange rate applies.</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">      </span><span class="no">Exchange rate from USD to the target currency. A value of 0.79</span>
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">      </span><span class="no">means 1 USD = 0.79 of the target currency.</span>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inverse_rate</span>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inverse exchange rate (1 / exchange_rate). Useful for converting</span>
-<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">from the target currency back to USD. Null if exchange_rate is zero.</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Surrogate key derived from rate_date and target_currency.</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The date for which the exchange rate applies.</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Exchange rate from USD to the target currency. A value of 0.79</span>
+<span class="w">      </span><span class="no">means 1 USD = 0.79 of the target currency.</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inverse_rate</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inverse exchange rate (1 / exchange_rate). Useful for converting</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">from the target currency back to USD. Null if exchange_rate is zero.</span>
 </code></pre></div>
 <h3 id="source-descriptions">Source Descriptions</h3>
 <p>Sources should document what the raw table contains, the loader, and the update frequency:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">sources</span><span class="p">:</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dlt_open_exchange_rates</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">      </span><span class="no">Raw exchange rate and currency data loaded by dlt from the Open Exchange Rates API.</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">      </span><span class="no">Exchange rates are updated daily; currencies are updated weekly.</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="s">"@data-engineering"</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">      </span><span class="nt">update_frequency</span><span class="p">:</span><span class="w"> </span><span class="s">"daily</span><span class="nv"> </span><span class="s">(exchange_rates),</span><span class="nv"> </span><span class="s">weekly</span><span class="nv"> </span><span class="s">(currencies)"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">sources</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dlt_open_exchange_rates</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Raw exchange rate and currency data loaded by dlt from the Open Exchange Rates API.</span>
+<span class="w">      </span><span class="no">Exchange rates are updated daily; currencies are updated weekly.</span>
+<span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="s">"@data-engineering"</span>
+<span class="w">      </span><span class="nt">update_frequency</span><span class="p">:</span><span class="w"> </span><span class="s">"daily</span><span class="nv"> </span><span class="s">(exchange_rates),</span><span class="nv"> </span><span class="s">weekly</span><span class="nv"> </span><span class="s">(currencies)"</span>
 </code></pre></div>
 <h2 id="doc-blocks">Doc Blocks</h2>
 <p>Doc blocks allow you to write reusable documentation that can be referenced across multiple models. This is especially useful for column descriptions that repeat across models (like IDs, timestamps, or common business terms).</p>
 <h3 id="creating-doc-blocks">Creating Doc Blocks</h3>
 <p>Doc blocks live in Markdown files in the <code>docs/</code> directory. Create <code>docs/column_descriptions.md</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>{% docs currency_code %}
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>ISO 4217 currency code (e.g. GBP, EUR, USD).
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>{% enddocs %}
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>{% docs exchange_rate %}
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>Exchange rate from USD to the target currency. A value of 0.79 means 1 USD = 0.79 of the target currency.
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>{% enddocs %}
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>{% docs created_at %}
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>Timestamp when this record was created in the source system.
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>{% enddocs %}
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>{% docs loaded_at %}
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>Timestamp when this record was loaded into Snowflake by the ingestion pipeline.
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>{% enddocs %}
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>{% docs surrogate_key %}
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a>Surrogate key generated by dbt using <span class="sb">`generate_surrogate_key`</span> from dbt-utils. This is a deterministic hash of the business key columns.
-<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a>{% enddocs %}
+<div class="highlight"><pre><span></span><code>{% docs currency_code %}
+ISO 4217 currency code (e.g. GBP, EUR, USD).
+{% enddocs %}
+
+{% docs exchange_rate %}
+Exchange rate from USD to the target currency. A value of 0.79 means 1 USD = 0.79 of the target currency.
+{% enddocs %}
+
+{% docs created_at %}
+Timestamp when this record was created in the source system.
+{% enddocs %}
+
+{% docs loaded_at %}
+Timestamp when this record was loaded into Snowflake by the ingestion pipeline.
+{% enddocs %}
+
+{% docs surrogate_key %}
+Surrogate key generated by dbt using <span class="sb">`generate_surrogate_key`</span> from dbt-utils. This is a deterministic hash of the business key columns.
+{% enddocs %}
 </code></pre></div>
 <h3 id="referencing-doc-blocks">Referencing Doc Blocks</h3>
 <p>Reference doc blocks in your YAML files using the <code>"{{ doc('block_name') }}"</code> syntax:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('surrogate_key')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_currency</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('currency_code')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('exchange_rate')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loaded_at</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('loaded_at')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dim_currencies</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">currency_code</span>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('currency_code')</span><span class="nv"> </span><span class="s">}}"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate_id</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('surrogate_key')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">target_currency</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('currency_code')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exchange_rate</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('exchange_rate')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loaded_at</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('loaded_at')</span><span class="nv"> </span><span class="s">}}"</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dim_currencies</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">currency_code</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">doc('currency_code')</span><span class="nv"> </span><span class="s">}}"</span>
 </code></pre></div>
 <h3 id="benefits-of-doc-blocks">Benefits of Doc Blocks</h3>
 <ol>
@@ -7088,11 +7090,11 @@
 </div>
 <h2 id="generate-and-view-documentation">Generate and View Documentation</h2>
 <h3 id="local-development">Local Development</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Generate the docs site</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>dbt<span class="w"> </span>docs<span class="w"> </span>generate
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Serve the docs site at http://localhost:8080</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>dbt<span class="w"> </span>docs<span class="w"> </span>serve
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate the docs site</span>
+dbt<span class="w"> </span>docs<span class="w"> </span>generate
+
+<span class="c1"># Serve the docs site at http://localhost:8080</span>
+dbt<span class="w"> </span>docs<span class="w"> </span>serve
 </code></pre></div>
 <p>The docs site includes:</p>
 <ul>
@@ -7105,20 +7107,20 @@
 <p>For dbt Core, the generated docs are deployed to S3 + CloudFront as part of the production CI/CD pipeline. See <a href="../9-dbt-core-deployment/">dbt Core Deployment</a> for the GitHub Actions workflow.</p>
 <p>For dbt Cloud, docs are generated and hosted automatically after each job run.</p>
 <h2 id="running-all-tests">Running All Tests</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Run all tests</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>dbt<span class="w"> </span><span class="nb">test</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1"># Run tests for a specific model and its upstreams</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>+fct_exchange_rates
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="c1"># Run only tests tagged as critical</span>
-<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>tag:critical
-<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>
-<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="c1"># Run tests in parallel (faster for large projects)</span>
-<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--threads<span class="w"> </span><span class="m">8</span>
-<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>
-<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="c1"># Run source freshness checks</span>
-<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all tests</span>
+dbt<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Run tests for a specific model and its upstreams</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>+fct_exchange_rates
+
+<span class="c1"># Run only tests tagged as critical</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>tag:critical
+
+<span class="c1"># Run tests in parallel (faster for large projects)</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--threads<span class="w"> </span><span class="m">8</span>
+
+<span class="c1"># Run source freshness checks</span>
+dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've built a comprehensive testing and documentation strategy:</p>
@@ -7183,6 +7185,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7226,7 +7230,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6550,34 +6552,34 @@
 - <strong>Schema anomalies</strong> — columns added, removed, or type changes
 - <strong>Distribution anomalies</strong> — values outside expected ranges
 - <strong>Null rate anomalies</strong> — sudden increase in null values</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                      ANOMALY DETECTION STACK                            │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Data Observation      Anomaly Detection       Alerts                  │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────────      ────────────────────    ──────                  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐     ┌──────────────────┐    ┌──────────────┐        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Row counts   │────▶│ Elementary       │───▶│ Slack        │        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ Null rates   │     │ • Volume         │    │ #data-alerts │        │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ Column types │     │ • Freshness      │    └──────────────┘        │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ Distributions│     │ • Schema         │                            │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └──────────────┘     └──────────────────┘                            │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│         │                      │                                       │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│         │              ┌───────▼───────────┐                           │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│         └─────────────▶│ Custom SQL        │                           │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                        │ anomaly checks    │                           │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                        └───────────────────┘                           │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                │                                       │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                        ┌───────▼───────────┐                           │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                        │ Great Expectations│                           │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                        │ • Statistical     │                           │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                        │   validation      │                           │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                        └───────────────────┘                           │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                         │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  All anomalies stored in ELEMENTARY schema for trend analysis          │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│                                                                         │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                      ANOMALY DETECTION STACK                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Data Observation      Anomaly Detection       Alerts                  │
+│  ────────────────      ────────────────────    ──────                  │
+│                                                                         │
+│  ┌──────────────┐     ┌──────────────────┐    ┌──────────────┐        │
+│  │ Row counts   │────▶│ Elementary       │───▶│ Slack        │        │
+│  │ Null rates   │     │ • Volume         │    │ #data-alerts │        │
+│  │ Column types │     │ • Freshness      │    └──────────────┘        │
+│  │ Distributions│     │ • Schema         │                            │
+│  └──────────────┘     └──────────────────┘                            │
+│         │                      │                                       │
+│         │              ┌───────▼───────────┐                           │
+│         └─────────────▶│ Custom SQL        │                           │
+│                        │ anomaly checks    │                           │
+│                        └───────────────────┘                           │
+│                                │                                       │
+│                        ┌───────▼───────────┐                           │
+│                        │ Great Expectations│                           │
+│                        │ • Statistical     │                           │
+│                        │   validation      │                           │
+│                        └───────────────────┘                           │
+│                                                                         │
+│  All anomalies stored in ELEMENTARY schema for trend analysis          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="elementary-anomaly-detection">Elementary Anomaly Detection</h2>
 <p>Elementary provides automated anomaly detection with minimal configuration (you've already set this up in <a href="../3-elementary-setup/">Elementary Setup</a>).</p>
@@ -6588,16 +6590,16 @@
 2. Calculate standard deviation
 3. Alert if current row count outside <code>average ± (sensitivity × std_dev)</code></p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># models/marts/core/fct_orders.yml</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.volume_anomalies</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">          </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"order_date"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">          </span><span class="nt">where_expression</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'elementary'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'anomaly_detection'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_orders.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.volume_anomalies</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"order_date"</span>
+<span class="w">          </span><span class="nt">where_expression</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'elementary'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'anomaly_detection'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p><strong>Example scenario:</strong></p>
 <table>
@@ -6639,10 +6641,10 @@
 </tbody>
 </table>
 <p><strong>Alert message:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>🚨 Volume anomaly detected in fct_orders
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Expected: ~990 rows (based on 7-day average)
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Actual: 450 rows
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Deviation: -54.5% from expected
+</p><div class="highlight"><pre><span></span><code>🚨 Volume anomaly detected in fct_orders
+Expected: ~990 rows (based on 7-day average)
+Actual: 450 rows
+Deviation: -54.5% from expected
 </code></pre></div><p></p>
 <h3 id="freshness-anomaly-detection">Freshness Anomaly Detection</h3>
 <p><strong>What it detects:</strong> Data hasn't been updated recently (stale data).</p>
@@ -6651,18 +6653,18 @@
 2. Compare to current time
 3. Alert if <code>current_time - MAX(timestamp_column) &gt; threshold</code></p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="nt">elementary</span><span class="p">:</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at"</span><span class="w">  </span><span class="c1"># Column tracking when data was loaded</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.freshness_anomalies</span><span class="p">:</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">          </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at"</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">            </span><span class="nt">freshness_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span><span class="w">  </span><span class="c1"># Alert if data older than 24 hours</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">elementary</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at"</span><span class="w">  </span><span class="c1"># Column tracking when data was loaded</span>
+
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.freshness_anomalies</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">timestamp_column</span><span class="p">:</span><span class="w"> </span><span class="s">"loaded_at"</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<span class="w">            </span><span class="nt">freshness_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span><span class="w">  </span><span class="c1"># Alert if data older than 24 hours</span>
 </code></pre></div>
 <p><strong>Example scenario:</strong></p>
 <ul>
@@ -6673,10 +6675,10 @@
 <li><strong>Result:</strong> ✗ Anomaly! Data is stale</li>
 </ul>
 <p><strong>Alert message:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>🚨 Freshness anomaly detected in fct_orders
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Last updated: 2026-02-19 08:00 (26 hours ago)
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Threshold: 24 hours
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Action required: Check upstream pipelines (dlt, Airbyte)
+</p><div class="highlight"><pre><span></span><code>🚨 Freshness anomaly detected in fct_orders
+Last updated: 2026-02-19 08:00 (26 hours ago)
+Threshold: 24 hours
+Action required: Check upstream pipelines (dlt, Airbyte)
 </code></pre></div><p></p>
 <h3 id="schema-change-detection">Schema Change Detection</h3>
 <p><strong>What it detects:</strong> Columns added, removed, or type changes.</p>
@@ -6685,47 +6687,47 @@
 2. Compare current schema to previous snapshot
 3. Alert on differences</p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.schema_changes</span><span class="p">:</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.schema_changes</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
 </code></pre></div>
 <p><strong>Example scenario:</strong></p>
 <p><strong>Previous schema:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>order_id (NUMBER)
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>customer_id (NUMBER)
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>order_total (DECIMAL(10,2))
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>order_date (DATE)
+</p><div class="highlight"><pre><span></span><code>order_id (NUMBER)
+customer_id (NUMBER)
+order_total (DECIMAL(10,2))
+order_date (DATE)
 </code></pre></div><p></p>
 <p><strong>Current schema:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>order_id (NUMBER)
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>customer_id (NUMBER)
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>order_total (DECIMAL(10,2))
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>order_date (DATE)
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>order_status (VARCHAR)  ← New column added
+</p><div class="highlight"><pre><span></span><code>order_id (NUMBER)
+customer_id (NUMBER)
+order_total (DECIMAL(10,2))
+order_date (DATE)
+order_status (VARCHAR)  ← New column added
 </code></pre></div><p></p>
 <p><strong>Alert message:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>⚠️ Schema change detected in fct_orders
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Change: Column added
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Column name: order_status
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Column type: VARCHAR
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Impact: Downstream dashboards/models may need updates
+</p><div class="highlight"><pre><span></span><code>⚠️ Schema change detected in fct_orders
+Change: Column added
+Column name: order_status
+Column type: VARCHAR
+Impact: Downstream dashboards/models may need updates
 </code></pre></div><p></p>
 <h3 id="null-rate-anomaly-detection">Null Rate Anomaly Detection</h3>
 <p><strong>What it detects:</strong> Sudden increase in null values.</p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.anomaly_detection</span><span class="p">:</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null_rate</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">              </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">                </span><span class="nt">anomaly_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">  </span><span class="c1"># Alert if null rate &gt; 10%</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.anomaly_detection</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null_rate</span>
+<span class="w">              </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<span class="w">                </span><span class="nt">anomaly_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">  </span><span class="c1"># Alert if null rate &gt; 10%</span>
 </code></pre></div>
 <p><strong>Example scenario:</strong></p>
 <table>
@@ -6759,227 +6761,227 @@
 </tbody>
 </table>
 <p><strong>Alert message:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>🚨 Null rate anomaly in fct_orders.customer_email
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Expected null rate: ~0.5%
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Actual null rate: 15.8%
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Rows affected: 150 out of 950
+</p><div class="highlight"><pre><span></span><code>🚨 Null rate anomaly in fct_orders.customer_email
+Expected null rate: ~0.5%
+Actual null rate: 15.8%
+Rows affected: 150 out of 950
 </code></pre></div><p></p>
 <h3 id="run-elementary-anomaly-detection">Run Elementary Anomaly Detection</h3>
 <p>Elementary anomaly detection runs automatically if configured in <code>on-run-end</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># dbt_project.yml</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">on-run-end</span><span class="p">:</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">elementary.upload_test_results()</span><span class="nv"> </span><span class="s">}}"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># dbt_project.yml</span>
+<span class="nt">on-run-end</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">elementary.upload_test_results()</span><span class="nv"> </span><span class="s">}}"</span>
 </code></pre></div>
 <p>Or run manually:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Run all Elementary anomaly tests</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>tag:elementary
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># Run via Elementary CLI (includes ML-based detection)</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>edr<span class="w"> </span>monitor<span class="w"> </span>--profiles-dir<span class="w"> </span>~/.dbt
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
+
+<span class="c1"># Run all Elementary anomaly tests</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>tag:elementary
+
+<span class="c1"># Run via Elementary CLI (includes ML-based detection)</span>
+edr<span class="w"> </span>monitor<span class="w"> </span>--profiles-dir<span class="w"> </span>~/.dbt
 </code></pre></div>
 <h2 id="custom-anomaly-detection-with-sql">Custom Anomaly Detection with SQL</h2>
 <p>For anomalies not covered by Elementary, write custom SQL tests.</p>
 <h3 id="custom-test-spike-in-refund-rate">Custom Test: Spike in Refund Rate</h3>
 <p><strong>Business rule:</strong> Refund rate should be &lt;5%. Alert if &gt;10%.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- tests/custom/refund_rate_anomaly.sql</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">daily_refunds</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'refunded'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">refunds</span><span class="p">,</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_orders</span><span class="p">,</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="p">(</span><span class="n">refunds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_orders</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">refund_rate_pct</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'7 days'</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="p">)</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="k">SELECT</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">    </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="n">refund_rate_pct</span>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="k">FROM</span><span class="w"> </span><span class="n">daily_refunds</span>
-<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">refund_rate_pct</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="w">  </span><span class="c1">-- Anomaly threshold</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/custom/refund_rate_anomaly.sql</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">daily_refunds</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'refunded'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">refunds</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_orders</span><span class="p">,</span>
+<span class="w">        </span><span class="p">(</span><span class="n">refunds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_orders</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">refund_rate_pct</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'7 days'</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
+<span class="p">)</span>
+
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="k">day</span><span class="p">,</span>
+<span class="w">    </span><span class="n">refund_rate_pct</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">daily_refunds</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">refund_rate_pct</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="w">  </span><span class="c1">-- Anomaly threshold</span>
 </code></pre></div>
 <p><strong>Add to schema.yml:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">custom.refund_rate_anomaly</span><span class="p">:</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">          </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">custom.refund_rate_anomaly</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
 </code></pre></div>
 <p>If this test fails, dbt will alert you to the anomaly.</p>
 <h3 id="custom-test-sudden-drop-in-revenue">Custom Test: Sudden Drop in Revenue</h3>
 <p><strong>Business rule:</strong> Daily revenue should not drop &gt;30% from 7-day average.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">-- tests/custom/revenue_drop_anomaly.sql</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">daily_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">order_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">revenue</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'14 days'</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="p">),</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">revenue_with_avg</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">        </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">        </span><span class="n">revenue</span><span class="p">,</span>
-<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">        </span><span class="k">AVG</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">            </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
-<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">            </span><span class="k">ROWS</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="n">PRECEDING</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">PRECEDING</span>
-<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_revenue_7d</span>
-<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_revenue</span>
-<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="p">)</span>
-<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
-<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="k">SELECT</span>
-<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="w">    </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a><span class="w">    </span><span class="n">revenue</span><span class="p">,</span>
-<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a><span class="w">    </span><span class="n">avg_revenue_7d</span><span class="p">,</span>
-<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a><span class="w">    </span><span class="p">((</span><span class="n">revenue</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">avg_revenue_7d</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">avg_revenue_7d</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pct_change</span>
-<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a><span class="k">FROM</span><span class="w"> </span><span class="n">revenue_with_avg</span>
-<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a><span class="k">WHERE</span><span class="w"> </span><span class="k">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
-<a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">pct_change</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="w">  </span><span class="c1">-- Alert if &gt;30% drop</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/custom/revenue_drop_anomaly.sql</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">daily_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">order_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">revenue</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'14 days'</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
+<span class="p">),</span>
+
+<span class="n">revenue_with_avg</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="n">revenue</span><span class="p">,</span>
+<span class="w">        </span><span class="k">AVG</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
+<span class="w">            </span><span class="k">ROWS</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="n">PRECEDING</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">PRECEDING</span>
+<span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_revenue_7d</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_revenue</span>
+<span class="p">)</span>
+
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="k">day</span><span class="p">,</span>
+<span class="w">    </span><span class="n">revenue</span><span class="p">,</span>
+<span class="w">    </span><span class="n">avg_revenue_7d</span><span class="p">,</span>
+<span class="w">    </span><span class="p">((</span><span class="n">revenue</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">avg_revenue_7d</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">avg_revenue_7d</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pct_change</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">revenue_with_avg</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">pct_change</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="w">  </span><span class="c1">-- Alert if &gt;30% drop</span>
 </code></pre></div>
 <h3 id="custom-test-unexpected-value-in-column">Custom Test: Unexpected Value in Column</h3>
 <p><strong>Business rule:</strong> <code>order_status</code> should only contain known values.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">-- tests/custom/unexpected_order_status.sql</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="n">order_status</span><span class="p">,</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">row_count</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'pending'</span><span class="p">,</span><span class="w"> </span><span class="s1">'confirmed'</span><span class="p">,</span><span class="w"> </span><span class="s1">'shipped'</span><span class="p">,</span><span class="w"> </span><span class="s1">'delivered'</span><span class="p">,</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="p">,</span><span class="w"> </span><span class="s1">'refunded'</span><span class="p">)</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_status</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- tests/custom/unexpected_order_status.sql</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">order_status</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">row_count</span>
+<span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'pending'</span><span class="p">,</span><span class="w"> </span><span class="s1">'confirmed'</span><span class="p">,</span><span class="w"> </span><span class="s1">'shipped'</span><span class="p">,</span><span class="w"> </span><span class="s1">'delivered'</span><span class="p">,</span><span class="w"> </span><span class="s1">'cancelled'</span><span class="p">,</span><span class="w"> </span><span class="s1">'refunded'</span><span class="p">)</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_status</span>
 </code></pre></div>
 <p>If this query returns any rows, dbt test fails, alerting you to unexpected values.</p>
 <h2 id="great-expectations">Great Expectations</h2>
 <p>Great Expectations is a Python library for data validation with extensive statistical checks.</p>
 <h3 id="install-great-expectations">Install Great Expectations</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>uv<span class="w"> </span>add<span class="w"> </span>great_expectations
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
+uv<span class="w"> </span>add<span class="w"> </span>great_expectations
 </code></pre></div>
 <h3 id="initialise-great-expectations">Initialise Great Expectations</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>great_expectations<span class="w"> </span>init
+<div class="highlight"><pre><span></span><code>great_expectations<span class="w"> </span>init
 </code></pre></div>
 <p>This creates a <code>great_expectations/</code> directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>great_expectations/
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>├── great_expectations.yml
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>├── expectations/
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>├── checkpoints/
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>└── plugins/
+<div class="highlight"><pre><span></span><code>great_expectations/
+├── great_expectations.yml
+├── expectations/
+├── checkpoints/
+└── plugins/
 </code></pre></div>
 <h3 id="create-expectation-suite">Create Expectation Suite</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>great_expectations<span class="w"> </span>suite<span class="w"> </span>new
+<div class="highlight"><pre><span></span><code>great_expectations<span class="w"> </span>suite<span class="w"> </span>new
 </code></pre></div>
 <p><strong>Example expectations:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># great_expectations/expectations/fct_orders_suite.json</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="p">{</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>    <span class="s2">"expectation_suite_name"</span><span class="p">:</span> <span class="s2">"fct_orders_suite"</span><span class="p">,</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="s2">"expectations"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>        <span class="p">{</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_table_row_count_to_be_between"</span><span class="p">,</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>                <span class="s2">"min_value"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>                <span class="s2">"max_value"</span><span class="p">:</span> <span class="mi">10000</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>            <span class="p">}</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>        <span class="p">},</span>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>        <span class="p">{</span>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_values_to_be_in_set"</span><span class="p">,</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>                <span class="s2">"value_set"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"pending"</span><span class="p">,</span> <span class="s2">"confirmed"</span><span class="p">,</span> <span class="s2">"shipped"</span><span class="p">,</span> <span class="s2">"delivered"</span><span class="p">,</span> <span class="s2">"cancelled"</span><span class="p">,</span> <span class="s2">"refunded"</span><span class="p">]</span>
-<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>            <span class="p">}</span>
-<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>        <span class="p">},</span>
-<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>        <span class="p">{</span>
-<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_mean_to_be_between"</span><span class="p">,</span>
-<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span>
-<a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>                <span class="s2">"min_value"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-<a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a>                <span class="s2">"max_value"</span><span class="p">:</span> <span class="mi">500</span>
-<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>            <span class="p">}</span>
-<a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>        <span class="p">},</span>
-<a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a>        <span class="p">{</span>
-<a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_quantile_values_to_be_between"</span><span class="p">,</span>
-<a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a>            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span>
-<a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>                <span class="s2">"quantile_ranges"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a>                    <span class="s2">"quantiles"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>
-<a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a>                    <span class="s2">"value_ranges"</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">]]</span>
-<a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a>                <span class="p">}</span>
-<a id="__codelineno-21-35" name="__codelineno-21-35" href="#__codelineno-21-35"></a>            <span class="p">}</span>
-<a id="__codelineno-21-36" name="__codelineno-21-36" href="#__codelineno-21-36"></a>        <span class="p">}</span>
-<a id="__codelineno-21-37" name="__codelineno-21-37" href="#__codelineno-21-37"></a>    <span class="p">]</span>
-<a id="__codelineno-21-38" name="__codelineno-21-38" href="#__codelineno-21-38"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># great_expectations/expectations/fct_orders_suite.json</span>
+<span class="p">{</span>
+    <span class="s2">"expectation_suite_name"</span><span class="p">:</span> <span class="s2">"fct_orders_suite"</span><span class="p">,</span>
+    <span class="s2">"expectations"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_table_row_count_to_be_between"</span><span class="p">,</span>
+            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"min_value"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s2">"max_value"</span><span class="p">:</span> <span class="mi">10000</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_values_to_be_in_set"</span><span class="p">,</span>
+            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_status"</span><span class="p">,</span>
+                <span class="s2">"value_set"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"pending"</span><span class="p">,</span> <span class="s2">"confirmed"</span><span class="p">,</span> <span class="s2">"shipped"</span><span class="p">,</span> <span class="s2">"delivered"</span><span class="p">,</span> <span class="s2">"cancelled"</span><span class="p">,</span> <span class="s2">"refunded"</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_mean_to_be_between"</span><span class="p">,</span>
+            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span>
+                <span class="s2">"min_value"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                <span class="s2">"max_value"</span><span class="p">:</span> <span class="mi">500</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"expectation_type"</span><span class="p">:</span> <span class="s2">"expect_column_quantile_values_to_be_between"</span><span class="p">,</span>
+            <span class="s2">"kwargs"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"column"</span><span class="p">:</span> <span class="s2">"order_total"</span><span class="p">,</span>
+                <span class="s2">"quantile_ranges"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"quantiles"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>
+                    <span class="s2">"value_ranges"</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">]]</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="run-expectations">Run Expectations</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># scripts/run_great_expectations.py</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">great_expectations</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gx</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Connect to data</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="n">context</span> <span class="o">=</span> <span class="n">gx</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
-<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Add Snowflake datasource</span>
-<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="n">datasource</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">add_snowflake</span><span class="p">(</span>
-<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"snowflake_analytics"</span><span class="p">,</span>
-<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>    <span class="n">connection_string</span><span class="o">=</span><span class="s2">"snowflake://user:pass@account/database/schema"</span>
-<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="p">)</span>
-<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>
-<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="c1"># Get data asset</span>
-<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="n">data_asset</span> <span class="o">=</span> <span class="n">datasource</span><span class="o">.</span><span class="n">add_table_asset</span><span class="p">(</span>
-<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"fct_orders"</span><span class="p">,</span>
-<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a>    <span class="n">table_name</span><span class="o">=</span><span class="s2">"fct_orders"</span>
-<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="p">)</span>
-<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a>
-<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="c1"># Create checkpoint</span>
-<a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">add_or_update_checkpoint</span><span class="p">(</span>
-<a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"fct_orders_checkpoint"</span><span class="p">,</span>
-<a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a>    <span class="n">validations</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a>        <span class="p">{</span>
-<a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a>            <span class="s2">"batch_request"</span><span class="p">:</span> <span class="n">data_asset</span><span class="o">.</span><span class="n">build_batch_request</span><span class="p">(),</span>
-<a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a>            <span class="s2">"expectation_suite_name"</span><span class="p">:</span> <span class="s2">"fct_orders_suite"</span>
-<a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a>        <span class="p">}</span>
-<a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a>    <span class="p">]</span>
-<a id="__codelineno-22-28" name="__codelineno-22-28" href="#__codelineno-22-28"></a><span class="p">)</span>
-<a id="__codelineno-22-29" name="__codelineno-22-29" href="#__codelineno-22-29"></a>
-<a id="__codelineno-22-30" name="__codelineno-22-30" href="#__codelineno-22-30"></a><span class="c1"># Run validation</span>
-<a id="__codelineno-22-31" name="__codelineno-22-31" href="#__codelineno-22-31"></a><span class="n">result</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<a id="__codelineno-22-32" name="__codelineno-22-32" href="#__codelineno-22-32"></a>
-<a id="__codelineno-22-33" name="__codelineno-22-33" href="#__codelineno-22-33"></a><span class="c1"># Check results</span>
-<a id="__codelineno-22-34" name="__codelineno-22-34" href="#__codelineno-22-34"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a id="__codelineno-22-35" name="__codelineno-22-35" href="#__codelineno-22-35"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"❌ Great Expectations validation failed!"</span><span class="p">)</span>
-<a id="__codelineno-22-36" name="__codelineno-22-36" href="#__codelineno-22-36"></a>    <span class="k">for</span> <span class="n">validation</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">run_results</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-<a id="__codelineno-22-37" name="__codelineno-22-37" href="#__codelineno-22-37"></a>        <span class="k">for</span> <span class="n">expectation_result</span> <span class="ow">in</span> <span class="n">validation</span><span class="p">[</span><span class="s2">"validation_result"</span><span class="p">][</span><span class="s2">"results"</span><span class="p">]:</span>
-<a id="__codelineno-22-38" name="__codelineno-22-38" href="#__codelineno-22-38"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">expectation_result</span><span class="p">[</span><span class="s2">"success"</span><span class="p">]:</span>
-<a id="__codelineno-22-39" name="__codelineno-22-39" href="#__codelineno-22-39"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed: </span><span class="si">{</span><span class="n">expectation_result</span><span class="p">[</span><span class="s1">'expectation_config'</span><span class="p">][</span><span class="s1">'expectation_type'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-22-40" name="__codelineno-22-40" href="#__codelineno-22-40"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Details: </span><span class="si">{</span><span class="n">expectation_result</span><span class="p">[</span><span class="s1">'result'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-22-41" name="__codelineno-22-41" href="#__codelineno-22-41"></a><span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-22-42" name="__codelineno-22-42" href="#__codelineno-22-42"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"✅ All expectations passed"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># scripts/run_great_expectations.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">great_expectations</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gx</span>
+
+<span class="c1"># Connect to data</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">gx</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+<span class="c1"># Add Snowflake datasource</span>
+<span class="n">datasource</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">add_snowflake</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"snowflake_analytics"</span><span class="p">,</span>
+    <span class="n">connection_string</span><span class="o">=</span><span class="s2">"snowflake://user:pass@account/database/schema"</span>
+<span class="p">)</span>
+
+<span class="c1"># Get data asset</span>
+<span class="n">data_asset</span> <span class="o">=</span> <span class="n">datasource</span><span class="o">.</span><span class="n">add_table_asset</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"fct_orders"</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="o">=</span><span class="s2">"fct_orders"</span>
+<span class="p">)</span>
+
+<span class="c1"># Create checkpoint</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">add_or_update_checkpoint</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"fct_orders_checkpoint"</span><span class="p">,</span>
+    <span class="n">validations</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"batch_request"</span><span class="p">:</span> <span class="n">data_asset</span><span class="o">.</span><span class="n">build_batch_request</span><span class="p">(),</span>
+            <span class="s2">"expectation_suite_name"</span><span class="p">:</span> <span class="s2">"fct_orders_suite"</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Run validation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># Check results</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"❌ Great Expectations validation failed!"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">validation</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">run_results</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">expectation_result</span> <span class="ow">in</span> <span class="n">validation</span><span class="p">[</span><span class="s2">"validation_result"</span><span class="p">][</span><span class="s2">"results"</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">expectation_result</span><span class="p">[</span><span class="s2">"success"</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed: </span><span class="si">{</span><span class="n">expectation_result</span><span class="p">[</span><span class="s1">'expectation_config'</span><span class="p">][</span><span class="s1">'expectation_type'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Details: </span><span class="si">{</span><span class="n">expectation_result</span><span class="p">[</span><span class="s1">'result'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"✅ All expectations passed"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="integrate-with-prefect">Integrate with Prefect</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="nd">@task</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_great_expectations_validation</span><span class="p">():</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>        <span class="c1"># Send alert</span>
-<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">"🚨 Great Expectations validation failed for fct_orders"</span><span class="p">)</span>
-<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Great Expectations validation failed"</span><span class="p">)</span>
-<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
-<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="nd">@flow</span>
-<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_with_validation</span><span class="p">():</span>
-<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>    <span class="n">run_dbt_build</span><span class="p">()</span>
-<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>    <span class="n">run_great_expectations_validation</span><span class="p">()</span>  <span class="c1"># Run after dbt</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_great_expectations_validation</span><span class="p">():</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="c1"># Send alert</span>
+        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">"🚨 Great Expectations validation failed for fct_orders"</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Great Expectations validation failed"</span><span class="p">)</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_with_validation</span><span class="p">():</span>
+    <span class="n">run_dbt_build</span><span class="p">()</span>
+    <span class="n">run_great_expectations_validation</span><span class="p">()</span>  <span class="c1"># Run after dbt</span>
 </code></pre></div>
 <h2 id="reducing-false-positives">Reducing False Positives</h2>
 <p>Anomaly detection can generate false positives (alerts for normal behaviour). Tune thresholds to reduce noise.</p>
 <h3 id="strategy-1-adjust-sensitivity">Strategy 1: Adjust Sensitivity</h3>
 <p>Elementary's <code>anomaly_sensitivity</code> parameter controls how strict detection is:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nt">vars</span><span class="p">:</span>
-<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span><span class="nt">elementary</span><span class="p">:</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="nt">anomaly_sensitivity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w">  </span><span class="c1"># Standard deviations (1 = very sensitive, 5 = very strict)</span>
+<div class="highlight"><pre><span></span><code><span class="nt">vars</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">elementary</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">anomaly_sensitivity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w">  </span><span class="c1"># Standard deviations (1 = very sensitive, 5 = very strict)</span>
 </code></pre></div>
 <p><strong>Low sensitivity (1-2):</strong> Catch more anomalies, more false positives
 <strong>Medium sensitivity (3):</strong> Balanced (default)
@@ -6987,103 +6989,103 @@
 <p><strong>Recommendation:</strong> Start with 3, increase to 4-5 if too many false positives.</p>
 <h3 id="strategy-2-exclude-known-patterns">Strategy 2: Exclude Known Patterns</h3>
 <p>If certain days are always low (e.g., weekends), exclude them:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.volume_anomalies</span><span class="p">:</span>
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">      </span><span class="nt">where_expression</span><span class="p">:</span><span class="w"> </span><span class="s">"DAYOFWEEK(order_date)</span><span class="nv"> </span><span class="s">NOT</span><span class="nv"> </span><span class="s">IN</span><span class="nv"> </span><span class="s">(0,</span><span class="nv"> </span><span class="s">6)"</span><span class="w">  </span><span class="c1"># Exclude Sat/Sun</span>
+<div class="highlight"><pre><span></span><code><span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">elementary.volume_anomalies</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">where_expression</span><span class="p">:</span><span class="w"> </span><span class="s">"DAYOFWEEK(order_date)</span><span class="nv"> </span><span class="s">NOT</span><span class="nv"> </span><span class="s">IN</span><span class="nv"> </span><span class="s">(0,</span><span class="nv"> </span><span class="s">6)"</span><span class="w">  </span><span class="c1"># Exclude Sat/Sun</span>
 </code></pre></div>
 <h3 id="strategy-3-set-time-based-thresholds">Strategy 3: Set Time-Based Thresholds</h3>
 <p>Different thresholds for different times:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1">-- Custom anomaly test with time-based thresholds</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">daily_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">        </span><span class="n">DAYOFWEEK</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">day_of_week</span><span class="p">,</span>
-<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">order_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">revenue</span>
-<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="n">day_of_week</span>
-<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="p">),</span>
-<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>
-<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="n">expected_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="w">        </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="w">        </span><span class="n">revenue</span><span class="p">,</span>
-<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="w">        </span><span class="k">CASE</span>
-<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="w">            </span><span class="k">WHEN</span><span class="w"> </span><span class="n">day_of_week</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">5000</span><span class="w">  </span><span class="c1">-- Weekend threshold</span>
-<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="w">            </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">15000</span><span class="w">  </span><span class="c1">-- Weekday threshold</span>
-<a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">expected_min_revenue</span>
-<a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_revenue</span>
-<a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="p">)</span>
-<a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a>
-<a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a><span class="k">FROM</span><span class="w"> </span><span class="n">expected_revenue</span>
-<a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">expected_min_revenue</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Custom anomaly test with time-based thresholds</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">daily_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="n">DAYOFWEEK</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">day_of_week</span><span class="p">,</span>
+<span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="n">order_total</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">revenue</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="n">day_of_week</span>
+<span class="p">),</span>
+
+<span class="n">expected_revenue</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="n">revenue</span><span class="p">,</span>
+<span class="w">        </span><span class="k">CASE</span>
+<span class="w">            </span><span class="k">WHEN</span><span class="w"> </span><span class="n">day_of_week</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">5000</span><span class="w">  </span><span class="c1">-- Weekend threshold</span>
+<span class="w">            </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">15000</span><span class="w">  </span><span class="c1">-- Weekday threshold</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">expected_min_revenue</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_revenue</span>
+<span class="p">)</span>
+
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">expected_revenue</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">expected_min_revenue</span>
 </code></pre></div>
 <h3 id="strategy-4-use-anomaly-score">Strategy 4: Use Anomaly Score</h3>
 <p>Instead of binary pass/fail, calculate anomaly score:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1">-- Anomaly score: how many standard deviations from mean</span>
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">daily_orders</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_count</span>
-<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span>
-<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
-<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="p">),</span>
-<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>
-<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="n">stats</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">        </span><span class="k">AVG</span><span class="p">(</span><span class="n">order_count</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_count</span><span class="p">,</span>
-<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">        </span><span class="n">STDDEV</span><span class="p">(</span><span class="n">order_count</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">stddev_count</span>
-<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_orders</span>
-<a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="p">),</span>
-<a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a>
-<a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="n">anomaly_scores</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="w">        </span><span class="n">d</span><span class="p">.</span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="w">        </span><span class="n">d</span><span class="p">.</span><span class="n">order_count</span><span class="p">,</span>
-<a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">avg_count</span><span class="p">,</span>
-<a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="w">        </span><span class="k">ABS</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">order_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">avg_count</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">stddev_count</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">anomaly_score</span>
-<a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_orders</span><span class="w"> </span><span class="n">d</span>
-<a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="w">    </span><span class="k">CROSS</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stats</span><span class="w"> </span><span class="n">s</span>
-<a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="p">)</span>
-<a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a>
-<a id="__codelineno-27-28" name="__codelineno-27-28" href="#__codelineno-27-28"></a><span class="k">SELECT</span>
-<a id="__codelineno-27-29" name="__codelineno-27-29" href="#__codelineno-27-29"></a><span class="w">    </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-27-30" name="__codelineno-27-30" href="#__codelineno-27-30"></a><span class="w">    </span><span class="n">order_count</span><span class="p">,</span>
-<a id="__codelineno-27-31" name="__codelineno-27-31" href="#__codelineno-27-31"></a><span class="w">    </span><span class="n">avg_count</span><span class="p">,</span>
-<a id="__codelineno-27-32" name="__codelineno-27-32" href="#__codelineno-27-32"></a><span class="w">    </span><span class="n">anomaly_score</span><span class="p">,</span>
-<a id="__codelineno-27-33" name="__codelineno-27-33" href="#__codelineno-27-33"></a><span class="w">    </span><span class="k">CASE</span>
-<a id="__codelineno-27-34" name="__codelineno-27-34" href="#__codelineno-27-34"></a><span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s1">'Critical'</span>
-<a id="__codelineno-27-35" name="__codelineno-27-35" href="#__codelineno-27-35"></a><span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s1">'Warning'</span>
-<a id="__codelineno-27-36" name="__codelineno-27-36" href="#__codelineno-27-36"></a><span class="w">        </span><span class="k">ELSE</span><span class="w"> </span><span class="s1">'Normal'</span>
-<a id="__codelineno-27-37" name="__codelineno-27-37" href="#__codelineno-27-37"></a><span class="w">    </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">severity</span>
-<a id="__codelineno-27-38" name="__codelineno-27-38" href="#__codelineno-27-38"></a><span class="k">FROM</span><span class="w"> </span><span class="n">anomaly_scores</span>
-<a id="__codelineno-27-39" name="__codelineno-27-39" href="#__codelineno-27-39"></a><span class="k">WHERE</span><span class="w"> </span><span class="k">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
-<a id="__codelineno-27-40" name="__codelineno-27-40" href="#__codelineno-27-40"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="c1">-- Only alert if score &gt; 2</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Anomaly score: how many standard deviations from mean</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">daily_orders</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="p">(</span><span class="n">order_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">order_count</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'fct_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
+<span class="p">),</span>
+
+<span class="n">stats</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="k">AVG</span><span class="p">(</span><span class="n">order_count</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_count</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STDDEV</span><span class="p">(</span><span class="n">order_count</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">stddev_count</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_orders</span>
+<span class="p">),</span>
+
+<span class="n">anomaly_scores</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">d</span><span class="p">.</span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="n">d</span><span class="p">.</span><span class="n">order_count</span><span class="p">,</span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">avg_count</span><span class="p">,</span>
+<span class="w">        </span><span class="k">ABS</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">order_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">avg_count</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">stddev_count</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">anomaly_score</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_orders</span><span class="w"> </span><span class="n">d</span>
+<span class="w">    </span><span class="k">CROSS</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stats</span><span class="w"> </span><span class="n">s</span>
+<span class="p">)</span>
+
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="k">day</span><span class="p">,</span>
+<span class="w">    </span><span class="n">order_count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">avg_count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">anomaly_score</span><span class="p">,</span>
+<span class="w">    </span><span class="k">CASE</span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s1">'Critical'</span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s1">'Warning'</span>
+<span class="w">        </span><span class="k">ELSE</span><span class="w"> </span><span class="s1">'Normal'</span>
+<span class="w">    </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">severity</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">anomaly_scores</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">anomaly_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="c1">-- Only alert if score &gt; 2</span>
 </code></pre></div>
 <h3 id="strategy-5-alert-aggregation">Strategy 5: Alert Aggregation</h3>
 <p>Instead of alerting on every anomaly, aggregate:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nd">@task</span>
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">aggregate_anomalies</span><span class="p">():</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="sd">"""Send one Slack message summarising all anomalies detected today"""</span>
-<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
-<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>    <span class="c1"># Query Elementary results</span>
-<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>    <span class="n">anomalies</span> <span class="o">=</span> <span class="n">query_elementary_anomalies</span><span class="p">()</span>
-<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
-<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">anomalies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>        <span class="k">return</span>  <span class="c1"># No anomalies, no alert</span>
-<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>
-<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>    <span class="c1"># Group by severity</span>
-<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>    <span class="n">critical</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anomalies</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'critical'</span><span class="p">]</span>
-<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>    <span class="n">warnings</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anomalies</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'warning'</span><span class="p">]</span>
-<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a>
-<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a>    <span class="c1"># Send aggregated alert</span>
-<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a>    <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a>        <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"📊 Daily Anomaly Summary (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">anomalies</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span>
-<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a>             <span class="sa">f</span><span class="s2">"🚨 Critical: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">critical</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span>
-<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a>             <span class="sa">f</span><span class="s2">"⚠️ Warnings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">warnings</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span>
-<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>             <span class="s2">"View details: https://elementary-ui.com/anomalies"</span>
-<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">aggregate_anomalies</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Send one Slack message summarising all anomalies detected today"""</span>
+
+    <span class="c1"># Query Elementary results</span>
+    <span class="n">anomalies</span> <span class="o">=</span> <span class="n">query_elementary_anomalies</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">anomalies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="c1"># No anomalies, no alert</span>
+
+    <span class="c1"># Group by severity</span>
+    <span class="n">critical</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anomalies</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'critical'</span><span class="p">]</span>
+    <span class="n">warnings</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anomalies</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'warning'</span><span class="p">]</span>
+
+    <span class="c1"># Send aggregated alert</span>
+    <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"📊 Daily Anomaly Summary (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">anomalies</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span>
+             <span class="sa">f</span><span class="s2">"🚨 Critical: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">critical</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span>
+             <span class="sa">f</span><span class="s2">"⚠️ Warnings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">warnings</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span>
+             <span class="s2">"View details: https://elementary-ui.com/anomalies"</span>
+    <span class="p">)</span>
 </code></pre></div>
 <h2 id="anomaly-detection-best-practices">Anomaly Detection Best Practices</h2>
 <h3 id="1-start-with-high-impact-tables">1. Start with High-Impact Tables</h3>
@@ -7104,36 +7106,36 @@
 - Adjust thresholds accordingly</p>
 <h3 id="4-document-expected-anomalies">4. Document Expected Anomalies</h3>
 <p>Some anomalies are expected (e.g., Black Friday spike):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># models/marts/core/fct_orders.yml</span>
-<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">      </span><span class="no">Expected anomalies:</span>
-<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">      </span><span class="no">- Black Friday (last Friday of November): 10x normal volume</span>
-<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">      </span><span class="no">- New Year's Day: 50% drop in volume</span>
-<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">      </span><span class="no">- End of month: 2x normal volume (invoicing)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_orders.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">Expected anomalies:</span>
+<span class="w">      </span><span class="no">- Black Friday (last Friday of November): 10x normal volume</span>
+<span class="w">      </span><span class="no">- New Year's Day: 50% drop in volume</span>
+<span class="w">      </span><span class="no">- End of month: 2x normal volume (invoicing)</span>
 </code></pre></div>
 <h3 id="5-alert-on-trends-not-single-points">5. Alert on Trends, Not Single Points</h3>
 <p>Instead of alerting on one day's anomaly, alert on trends:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1">-- Alert if 3 consecutive days show anomalies</span>
-<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="k">WITH</span><span class="w"> </span><span class="n">daily_anomalies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">    </span><span class="c1">-- Your anomaly detection query</span>
-<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">    </span><span class="p">...</span>
-<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="p">),</span>
-<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>
-<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="n">consecutive_anomalies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w">        </span><span class="k">day</span><span class="p">,</span>
-<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">is_anomaly</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w">            </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
-<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">            </span><span class="k">ROWS</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">PRECEDING</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">CURRENT</span><span class="w"> </span><span class="k">ROW</span>
-<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">anomaly_count_3d</span>
-<a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_anomalies</span>
-<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="p">)</span>
-<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a>
-<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="k">FROM</span><span class="w"> </span><span class="n">consecutive_anomalies</span>
-<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">anomaly_count_3d</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="w">  </span><span class="c1">-- Alert if 3 consecutive days</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Alert if 3 consecutive days show anomalies</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">daily_anomalies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">-- Your anomaly detection query</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">),</span>
+
+<span class="n">consecutive_anomalies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="k">day</span><span class="p">,</span>
+<span class="w">        </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">is_anomaly</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">day</span>
+<span class="w">            </span><span class="k">ROWS</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">PRECEDING</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">CURRENT</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">anomaly_count_3d</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">daily_anomalies</span>
+<span class="p">)</span>
+
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">consecutive_anomalies</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">anomaly_count_3d</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="w">  </span><span class="c1">-- Alert if 3 consecutive days</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've implemented comprehensive anomaly detection:</p>
@@ -7197,6 +7199,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7240,7 +7244,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

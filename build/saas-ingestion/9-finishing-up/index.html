@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6511,45 +6513,45 @@
 </ul>
 <h2 id="verification-checklist">Verification Checklist</h2>
 <h3 id="snowflake-infrastructure">Snowflake Infrastructure</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- Database exists</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'AIRBYTE'</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">-- Schemas exist</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">-- Should show: HUBSPOT</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">-- Database roles exist</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">-- Should show: AIRBYTE_DB_READER, AIRBYTE_DB_WRITER</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1">-- Service account</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">-- default_role should be SVC_AIRBYTE</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1">-- default_warehouse should be LOADING</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1">-- Role grants</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1">-- Should include: AIRBYTE_DB_WRITER, LOADING warehouse usage</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1">-- Reader access chain</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">AIRBYTE_DB_READER</span><span class="p">;</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1">-- Should show: ANALYTICS_SOURCES_READER</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Database exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'AIRBYTE'</span><span class="p">;</span>
+
+<span class="c1">-- Schemas exist</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should show: HUBSPOT</span>
+
+<span class="c1">-- Database roles exist</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should show: AIRBYTE_DB_READER, AIRBYTE_DB_WRITER</span>
+
+<span class="c1">-- Service account</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- default_role should be SVC_AIRBYTE</span>
+<span class="c1">-- default_warehouse should be LOADING</span>
+
+<span class="c1">-- Role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should include: AIRBYTE_DB_WRITER, LOADING warehouse usage</span>
+
+<span class="c1">-- Reader access chain</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">AIRBYTE_DB_READER</span><span class="p">;</span>
+<span class="c1">-- Should show: ANALYTICS_SOURCES_READER</span>
 </code></pre></div>
 <h3 id="data-in-snowflake">Data in Snowflake</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- HubSpot contacts loaded</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="n">lastmodifieddate</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">lastmodifieddate</span><span class="p">)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">-- Analyst access works</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- HubSpot contacts loaded</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="n">lastmodifieddate</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">lastmodifieddate</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
+
+<span class="c1">-- Analyst access works</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="airbyte-connections">Airbyte Connections</h3>
 <p>Verify in the Airbyte UI or API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># List connections</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/connections?workspaceId=YOUR_WORKSPACE_ID"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.data[].name'</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># List connections</span>
+curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/connections?workspaceId=YOUR_WORKSPACE_ID"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.data[].name'</span>
 </code></pre></div>
 <p>Should show:</p>
 <ul>
@@ -6557,7 +6559,7 @@
 <li><code>retl-contacts-to-hubspot</code> — Reverse ETL (enriched contacts, if configured)</li>
 </ul>
 <h3 id="prefect-deployments">Prefect Deployments</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>ls
 </code></pre></div>
 <p>Should include:</p>
 <ul>
@@ -6565,42 +6567,42 @@
 <li><code>retl-contacts-daily</code> — Scheduled daily at 08:00 UTC (if configured)</li>
 </ul>
 <h3 id="recent-flow-runs">Recent Flow Runs</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>prefect<span class="w"> </span>flow-run<span class="w"> </span>ls<span class="w"> </span>--limit<span class="w"> </span><span class="m">10</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>flow-run<span class="w"> </span>ls<span class="w"> </span>--limit<span class="w"> </span><span class="m">10</span>
 </code></pre></div>
 <p>Check that states are <code>Completed</code>.</p>
 <h2 id="architecture-summary">Architecture Summary</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│                      SAAS DATA INGESTION                                    │
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│                                                                             │
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│  Forward ETL                                                                │
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│  ───────────                                                                │
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│  ┌─────────────┐     ┌─────────────────────┐     ┌─────────────────────┐    │
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│  │ HubSpot CRM │     │  Airbyte            │     │ AIRBYTE.HUBSPOT     │    │
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│  │ API         │────▶│  hubspot-to-        │────▶│ .CONTACTS           │    │
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│  │ /contacts   │     │  snowflake          │     │                     │    │
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│  └─────────────┘     │  (Daily 07:00 UTC)  │     └─────────────────────┘    │
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│                      └─────────────────────┘                                │
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│                                                                             │
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│  Reverse ETL (Optional)                                                     │
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│  ──────────────────────                                                     │
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>│  ┌─────────────────┐  ┌─────────────────────┐     ┌─────────────────────┐   │
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│  │ Snowflake       │  │  Airbyte            │     │ HubSpot CRM         │   │
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│  │ ANALYTICS.CRM.  │─▶│  retl-contacts-    │────▶│ Custom properties    │   │
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│  │ CONTACTS_       │  │  to-hubspot         │     │ (enriched data)     │   │
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│  │ ENRICHED        │  │  (Daily 08:00 UTC)  │     └─────────────────────┘   │
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│  └─────────────────┘  └─────────────────────┘                               │
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│                                                                             │
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>│  Orchestration                                                              │
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>│  ─────────────                                                              │
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>│  ┌─────────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>│  │  Prefect Cloud                                                      │    │
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>│  │  • Triggers syncs via Airbyte API                                   │    │
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>│  │  • Monitors completion / failure                                    │    │
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>│  │  • Alerts via Slack automations                                     │    │
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>│  └─────────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>│                                                                             │
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                      SAAS DATA INGESTION                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Forward ETL                                                                │
+│  ───────────                                                                │
+│  ┌─────────────┐     ┌─────────────────────┐     ┌─────────────────────┐    │
+│  │ HubSpot CRM │     │  Airbyte            │     │ AIRBYTE.HUBSPOT     │    │
+│  │ API         │────▶│  hubspot-to-        │────▶│ .CONTACTS           │    │
+│  │ /contacts   │     │  snowflake          │     │                     │    │
+│  └─────────────┘     │  (Daily 07:00 UTC)  │     └─────────────────────┘    │
+│                      └─────────────────────┘                                │
+│                                                                             │
+│  Reverse ETL (Optional)                                                     │
+│  ──────────────────────                                                     │
+│  ┌─────────────────┐  ┌─────────────────────┐     ┌─────────────────────┐   │
+│  │ Snowflake       │  │  Airbyte            │     │ HubSpot CRM         │   │
+│  │ ANALYTICS.CRM.  │─▶│  retl-contacts-    │────▶│ Custom properties    │   │
+│  │ CONTACTS_       │  │  to-hubspot         │     │ (enriched data)     │   │
+│  │ ENRICHED        │  │  (Daily 08:00 UTC)  │     └─────────────────────┘   │
+│  └─────────────────┘  └─────────────────────┘                               │
+│                                                                             │
+│  Orchestration                                                              │
+│  ─────────────                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  Prefect Cloud                                                      │    │
+│  │  • Triggers syncs via Airbyte API                                   │    │
+│  │  • Monitors completion / failure                                    │    │
+│  │  • Alerts via Slack automations                                     │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="monitoring">Monitoring</h2>
 <h3 id="prefect-cloud">Prefect Cloud</h3>
@@ -6616,30 +6618,30 @@
 <li><strong>Error details</strong>: Connector-level error messages for debugging</li>
 </ul>
 <h3 id="snowflake-query-history">Snowflake Query History</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Recent queries by SVC_AIRBYTE</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">start_time</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">seconds</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="n">rows_inserted</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="n">bytes_scanned</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">QUERY_HISTORY</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Recent queries by SVC_AIRBYTE</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">seconds</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rows_inserted</span><span class="p">,</span>
+<span class="w">    </span><span class="n">bytes_scanned</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">QUERY_HISTORY</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">user_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="common-operations">Common Operations</h2>
 <h3 id="trigger-manual-sync">Trigger Manual Sync</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Via Prefect</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hubspot-airbyte-daily/production
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Via Airbyte API</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"connectionId": "YOUR_CONNECTION_ID", "jobType": "sync"}'</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Via Prefect</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hubspot-airbyte-daily/production
+
+<span class="c1"># Via Airbyte API</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"connectionId": "YOUR_CONNECTION_ID", "jobType": "sync"}'</span>
 </code></pre></div>
 <h3 id="reset-a-connection">Reset a Connection</h3>
 <p>If you need to re-sync all data from scratch:</p>
@@ -6658,11 +6660,11 @@
 </ol>
 <h3 id="pauseresume-syncs">Pause/Resume Syncs</h3>
 <p>In Prefect:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Pause</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>pause<span class="w"> </span>hubspot-airbyte-daily/production
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Resume</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>resume<span class="w"> </span>hubspot-airbyte-daily/production
+<div class="highlight"><pre><span></span><code><span class="c1"># Pause</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>pause<span class="w"> </span>hubspot-airbyte-daily/production
+
+<span class="c1"># Resume</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>resume<span class="w"> </span>hubspot-airbyte-daily/production
 </code></pre></div>
 <h2 id="cost-summary">Cost Summary</h2>
 <h3 id="airbyte-cloud">Airbyte Cloud</h3>
@@ -6878,6 +6880,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6921,7 +6925,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

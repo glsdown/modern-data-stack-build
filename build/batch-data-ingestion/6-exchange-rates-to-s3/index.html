@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6283,25 +6285,25 @@
 <li><strong>Accumulate historical data</strong> with auto-scaling ingestion</li>
 <li><strong>Separate concerns</strong> between extraction (dlt) and loading (Snowpipe)</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    EXCHANGE RATES PIPELINE                                   │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │ Open Exchange   │ dlt │   S3 Bucket     │ SQS │    Snowpipe     │        │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │ Rates API       │────▶│ /exchange-rates/│────▶│  (auto-ingest)  │        │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │ /latest.json    │     │                 │     │                 │        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ /historical.json│     └─────────────────┘     └────────┬────────┘        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  └─────────────────┘                                      │                 │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│                                                           ▼                 │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                               ┌─────────────────┐           │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                               │    Snowflake    │           │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                               │ SNOWPIPE.OPEN_  │           │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                                               │ EXCHANGE_RATES  │           │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                                               │ .EXCHANGE_RATES │           │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                               └─────────────────┘           │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                                                                             │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    EXCHANGE RATES PIPELINE                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐        │
+│  │ Open Exchange   │ dlt │   S3 Bucket     │ SQS │    Snowpipe     │        │
+│  │ Rates API       │────▶│ /exchange-rates/│────▶│  (auto-ingest)  │        │
+│  │ /latest.json    │     │                 │     │                 │        │
+│  │ /historical.json│     └─────────────────┘     └────────┬────────┘        │
+│  └─────────────────┘                                      │                 │
+│                                                           ▼                 │
+│                                               ┌─────────────────┐           │
+│                                               │    Snowflake    │           │
+│                                               │ SNOWPIPE.OPEN_  │           │
+│                                               │ EXCHANGE_RATES  │           │
+│                                               │ .EXCHANGE_RATES │           │
+│                                               └─────────────────┘           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="api-endpoints">API Endpoints</h2>
 <p>Open Exchange Rates provides two relevant endpoints:</p>
@@ -6327,140 +6329,140 @@
 </tbody>
 </table>
 <p>Both return the same structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1704067200</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USD"</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"rates"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">"GBP"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.785</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nt">"EUR"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.918</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="nt">"JPY"</span><span class="p">:</span><span class="w"> </span><span class="mf">141.52</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1704067200</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USD"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"rates"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"GBP"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.785</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"EUR"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.918</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"JPY"</span><span class="p">:</span><span class="w"> </span><span class="mf">141.52</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The nested <code>rates</code> object contains ~170 currency codes. With <code>max_table_nesting = 1</code> (set in <code>.dlt/config.toml</code>), dlt flattens this into individual columns (<code>rates__gbp</code>, <code>rates__eur</code>, <code>rates__jpy</code>, etc.) rather than creating a separate child table.</p>
 <h2 id="the-dlt-source">The dlt Source</h2>
 <p>Create <code>sources/exchange_rates/__init__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="sd">"""Open Exchange Rates source."""</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.source</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates</span><span class="p">,</span> <span class="n">exchange_rates_historical</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"exchange_rates"</span><span class="p">,</span> <span class="s2">"exchange_rates_historical"</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Open Exchange Rates source."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.source</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates</span><span class="p">,</span> <span class="n">exchange_rates_historical</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"exchange_rates"</span><span class="p">,</span> <span class="s2">"exchange_rates_historical"</span><span class="p">]</span>
 </code></pre></div>
 <p>Create <code>sources/exchange_rates/source.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">"""dlt source for Open Exchange Rates API."""</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">"https://openexchangerates.org/api"</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">)</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="sd">    Source for latest exchange rates.</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="sd">    Args:</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="sd">        api_key: Open Exchange Rates App ID (auto-resolved by dlt)</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="sd">    """</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="k">return</span> <span class="n">latest_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">)</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">,</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="p">)</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="k">def</span><span class="w"> </span><span class="nf">latest_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="sd">    Fetch the latest exchange rates.</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="sd">    Uses append disposition since Snowpipe handles the loading.</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="sd">    Each run produces a new file in S3 for Snowpipe to ingest.</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="sd">    """</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/latest.json"</span><span class="p">,</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"app_id"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>        <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>    <span class="p">)</span>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>    <span class="n">rate_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">])</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>    <span class="k">yield</span> <span class="p">{</span>
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>        <span class="s2">"date"</span><span class="p">:</span> <span class="n">rate_date</span><span class="p">,</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>        <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
-<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>        <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
-<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>        <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">],</span>  <span class="c1"># dlt flattens this into columns</span>
-<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a>        <span class="s2">"_loaded_at"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>    <span class="p">}</span>
-<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>
-<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>
-<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">)</span>
-<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates_historical</span><span class="p">(</span>
-<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>    <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>    <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="p">):</span>
-<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="sd">    Source for historical exchange rates.</span>
-<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>
-<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="sd">    Fetches rates for each day in the date range.</span>
-<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>
-<a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="sd">    Args:</span>
-<a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="sd">        api_key: Open Exchange Rates App ID (auto-resolved by dlt)</span>
-<a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a><span class="sd">        start_date: First date to fetch (inclusive)</span>
-<a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="sd">        end_date: Last date to fetch (inclusive), defaults to yesterday</span>
-<a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="sd">    """</span>
-<a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a>    <span class="k">return</span> <span class="n">historical_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
-<a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>
-<a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>
-<a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
-<a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a>    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">,</span>
-<a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a><span class="p">)</span>
-<a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a><span class="k">def</span><span class="w"> </span><span class="nf">historical_rates</span><span class="p">(</span>
-<a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a>    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a>    <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
-<a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a>    <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a><span class="sd">    Fetch historical exchange rates for a date range.</span>
-<a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a>
-<a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a><span class="sd">    Yields one record per day. Each backfill run produces</span>
-<a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a><span class="sd">    files in S3 for Snowpipe to ingest.</span>
-<a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a><span class="sd">    """</span>
-<a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a>    <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a>        <span class="n">end_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a>
-<a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a>    <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span>
-<a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a>    <span class="k">while</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">:</span>
-<a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/historical/</span><span class="si">{</span><span class="n">current_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span><span class="p">,</span>
-<a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a>            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"app_id"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span>
-<a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a>            <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a>        <span class="p">)</span>
-<a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a>
-<a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a>        <span class="c1"># Skip if date not available</span>
-<a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a>        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
-<a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a>            <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a>            <span class="k">continue</span>
-<a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a>
-<a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a id="__codelineno-3-105" name="__codelineno-3-105" href="#__codelineno-3-105"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a id="__codelineno-3-106" name="__codelineno-3-106" href="#__codelineno-3-106"></a>
-<a id="__codelineno-3-107" name="__codelineno-3-107" href="#__codelineno-3-107"></a>        <span class="k">yield</span> <span class="p">{</span>
-<a id="__codelineno-3-108" name="__codelineno-3-108" href="#__codelineno-3-108"></a>            <span class="s2">"date"</span><span class="p">:</span> <span class="n">current_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a id="__codelineno-3-109" name="__codelineno-3-109" href="#__codelineno-3-109"></a>            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
-<a id="__codelineno-3-110" name="__codelineno-3-110" href="#__codelineno-3-110"></a>            <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
-<a id="__codelineno-3-111" name="__codelineno-3-111" href="#__codelineno-3-111"></a>            <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">],</span>
-<a id="__codelineno-3-112" name="__codelineno-3-112" href="#__codelineno-3-112"></a>            <span class="s2">"_loaded_at"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a id="__codelineno-3-113" name="__codelineno-3-113" href="#__codelineno-3-113"></a>        <span class="p">}</span>
-<a id="__codelineno-3-114" name="__codelineno-3-114" href="#__codelineno-3-114"></a>
-<a id="__codelineno-3-115" name="__codelineno-3-115" href="#__codelineno-3-115"></a>        <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""dlt source for Open Exchange Rates API."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">"https://openexchangerates.org/api"</span>
+
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Source for latest exchange rates.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key: Open Exchange Rates App ID (auto-resolved by dlt)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">latest_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">)</span>
+
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
+    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">latest_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Fetch the latest exchange rates.</span>
+
+<span class="sd">    Uses append disposition since Snowpipe handles the loading.</span>
+<span class="sd">    Each run produces a new file in S3 for Snowpipe to ingest.</span>
+<span class="sd">    """</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/latest.json"</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"app_id"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">rate_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">])</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="k">yield</span> <span class="p">{</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="n">rate_date</span><span class="p">,</span>
+        <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
+        <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
+        <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">],</span>  <span class="c1"># dlt flattens this into columns</span>
+        <span class="s2">"_loaded_at"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+    <span class="p">}</span>
+
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates_historical</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Source for historical exchange rates.</span>
+
+<span class="sd">    Fetches rates for each day in the date range.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key: Open Exchange Rates App ID (auto-resolved by dlt)</span>
+<span class="sd">        start_date: First date to fetch (inclusive)</span>
+<span class="sd">        end_date: Last date to fetch (inclusive), defaults to yesterday</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">historical_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
+    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">historical_rates</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Fetch historical exchange rates for a date range.</span>
+
+<span class="sd">    Yields one record per day. Each backfill run produces</span>
+<span class="sd">    files in S3 for Snowpipe to ingest.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span>
+    <span class="k">while</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/historical/</span><span class="si">{</span><span class="n">current_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"app_id"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">},</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Skip if date not available</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+            <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">yield</span> <span class="p">{</span>
+            <span class="s2">"date"</span><span class="p">:</span> <span class="n">current_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
+            <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
+            <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">],</span>
+            <span class="s2">"_loaded_at"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="p">}</span>
+
+        <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="why-append-disposition">Why Append Disposition?</h3>
 <p>Unlike the currencies pipeline (which uses <code>replace</code> for full refresh), exchange rates use <code>append</code>:</p>
@@ -6472,168 +6474,168 @@
 </ul>
 <h2 id="the-dlt-pipeline">The dlt Pipeline</h2>
 <p>Create <code>pipelines/exchange_rates.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="sd">"""Exchange rates pipeline: Open Exchange Rates API → S3 → Snowpipe → Snowflake."""</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sources.exchange_rates</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates</span><span class="p">,</span> <span class="n">exchange_rates_historical</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utils.vault_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_aws_secrets</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">dlt</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">:</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="sd">"""Create the exchange rates pipeline with S3 filesystem destination."""</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="c1"># Register AWS Secrets Manager for production</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">register_aws_secrets</span><span class="p">()</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>        <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>        <span class="n">destination</span><span class="o">=</span><span class="s2">"filesystem"</span><span class="p">,</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>        <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="p">)</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="k">return</span> <span class="n">pipeline</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_latest</span><span class="p">():</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="sd">"""Run pipeline for latest exchange rates (daily run)."""</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">create_pipeline</span><span class="p">()</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>    <span class="n">source</span> <span class="o">=</span> <span class="n">exchange_rates</span><span class="p">()</span>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>    <span class="k">return</span> <span class="n">load_info</span>
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>
-<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_backfill</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="sd">    Run pipeline for historical exchange rates (backfill).</span>
-<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>
-<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="sd">    Args:</span>
-<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="sd">        start_date: First date to backfill</span>
-<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="sd">        end_date: Last date to backfill (defaults to yesterday)</span>
-<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="sd">    """</span>
-<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">create_pipeline</span><span class="p">()</span>
-<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>
-<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>    <span class="n">source</span> <span class="o">=</span> <span class="n">exchange_rates_historical</span><span class="p">(</span>
-<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>        <span class="n">start_date</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span>
-<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>        <span class="n">end_date</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span>
-<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>    <span class="p">)</span>
-<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>
-<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
-<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>    <span class="k">return</span> <span class="n">load_info</span>
-<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>
-<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a>
-<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
-<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>
-<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Exchange rates pipeline"</span><span class="p">)</span>
-<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>        <span class="s2">"--backfill"</span><span class="p">,</span>
-<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>        <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
-<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">"Run backfill instead of latest"</span><span class="p">,</span>
-<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>    <span class="p">)</span>
-<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a>        <span class="s2">"--start-date"</span><span class="p">,</span>
-<a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a>        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span>
-<a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a>        <span class="n">default</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">"Backfill start date (YYYY-MM-DD)"</span><span class="p">,</span>
-<a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a>    <span class="p">)</span>
-<a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-<a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>        <span class="s2">"--end-date"</span><span class="p">,</span>
-<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a>        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span>
-<a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a>        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-4-76" name="__codelineno-4-76" href="#__codelineno-4-76"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">"Backfill end date (YYYY-MM-DD), defaults to yesterday"</span><span class="p">,</span>
-<a id="__codelineno-4-77" name="__codelineno-4-77" href="#__codelineno-4-77"></a>    <span class="p">)</span>
-<a id="__codelineno-4-78" name="__codelineno-4-78" href="#__codelineno-4-78"></a>
-<a id="__codelineno-4-79" name="__codelineno-4-79" href="#__codelineno-4-79"></a>    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-<a id="__codelineno-4-80" name="__codelineno-4-80" href="#__codelineno-4-80"></a>
-<a id="__codelineno-4-81" name="__codelineno-4-81" href="#__codelineno-4-81"></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">backfill</span><span class="p">:</span>
-<a id="__codelineno-4-82" name="__codelineno-4-82" href="#__codelineno-4-82"></a>        <span class="n">run_backfill</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
-<a id="__codelineno-4-83" name="__codelineno-4-83" href="#__codelineno-4-83"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-4-84" name="__codelineno-4-84" href="#__codelineno-4-84"></a>        <span class="n">run_latest</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Exchange rates pipeline: Open Exchange Rates API → S3 → Snowpipe → Snowflake."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sources.exchange_rates</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates</span><span class="p">,</span> <span class="n">exchange_rates_historical</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils.vault_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_aws_secrets</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">dlt</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Create the exchange rates pipeline with S3 filesystem destination."""</span>
+
+    <span class="c1"># Register AWS Secrets Manager for production</span>
+    <span class="n">register_aws_secrets</span><span class="p">()</span>
+
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
+        <span class="n">destination</span><span class="o">=</span><span class="s2">"filesystem"</span><span class="p">,</span>
+        <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pipeline</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_latest</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Run pipeline for latest exchange rates (daily run)."""</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">create_pipeline</span><span class="p">()</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="n">exchange_rates</span><span class="p">()</span>
+    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_info</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_backfill</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Run pipeline for historical exchange rates (backfill).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start_date: First date to backfill</span>
+<span class="sd">        end_date: Last date to backfill (defaults to yesterday)</span>
+<span class="sd">    """</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">create_pipeline</span><span class="p">()</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="n">exchange_rates_historical</span><span class="p">(</span>
+        <span class="n">start_date</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span>
+        <span class="n">end_date</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_info</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Exchange rates pipeline"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--backfill"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Run backfill instead of latest"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--start-date"</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Backfill start date (YYYY-MM-DD)"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--end-date"</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Backfill end date (YYYY-MM-DD), defaults to yesterday"</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">backfill</span><span class="p">:</span>
+        <span class="n">run_backfill</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">run_latest</span><span class="p">()</span>
 </code></pre></div>
 <p>The <code>bucket_url</code> and S3 credentials are resolved from <code>.dlt/secrets.toml</code> (locally) or via the <code>AWSSecretsManagerProvider</code> (production). In production on ECS/EC2, IAM roles provide S3 access without explicit credentials.</p>
 <h2 id="deploy-snowpipe-infrastructure">Deploy Snowpipe Infrastructure</h2>
 <p>Before Snowpipe can ingest data, you need to create the stage, file format, and pipe using the module defined in <a href="../3-snowflake-infrastructure/">Snowflake Infrastructure</a>.</p>
 <h3 id="create-the-snowpipe">Create the Snowpipe</h3>
 <p>Navigate to your Snowflake Terraform directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
 </code></pre></div>
 <p>Add to <code>snowpipe.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># Snowpipes</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Variables</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"data_lake_bucket"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"S3 data lake bucket name"</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">}</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1"># Exchange Rates</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="c1"># Auto-ingests exchange rates data written to S3 by the dlt pipeline</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_snowpipe"</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">  </span><span class="na">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_snowpipe.database_name</span>
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">  </span><span class="na">schema</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_snowpipe_open_exchange_rates.schema_name</span>
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">  </span><span class="na">name</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"EXCHANGE_RATES"</span>
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">  </span><span class="na">stage_url</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3://${var.data_lake_bucket}/exchange-rates/"</span>
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">  </span><span class="na">storage_integration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DATA_LAKE_PROD"</span>
-<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">  </span><span class="na">target_table</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"EXCHANGE_RATES"</span>
-<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="w">  </span><span class="na">format_type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"JSON"</span>
-<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Snowpipes</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Variables</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"data_lake_bucket"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"S3 data lake bucket name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Exchange Rates</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Auto-ingests exchange rates data written to S3 by the dlt pipeline</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_snowpipe"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_snowpipe.database_name</span>
+<span class="w">  </span><span class="na">schema</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_snowpipe_open_exchange_rates.schema_name</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"EXCHANGE_RATES"</span>
+<span class="w">  </span><span class="na">stage_url</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3://${var.data_lake_bucket}/exchange-rates/"</span>
+<span class="w">  </span><span class="na">storage_integration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DATA_LAKE_PROD"</span>
+<span class="w">  </span><span class="na">target_table</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"EXCHANGE_RATES"</span>
+<span class="w">  </span><span class="na">format_type</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"JSON"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Add to <code>outputs.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates_notification_channel"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SQS queue ARN for exchange rates Snowpipe notifications"</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.snowpipe_exchange_rates.notification_channel</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates_notification_channel"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SQS queue ARN for exchange rates Snowpipe notifications"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.snowpipe_exchange_rates.notification_channel</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Target Table</p>
 <p>Snowpipe needs the target table to exist before it can ingest data. The table is created when you first run the exchange rates pipeline (dlt writes the schema to S3 which Snowpipe uses). Alternatively, create it manually:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nb">date</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="k">timestamp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="n">base</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="n">rates</span><span class="w"> </span><span class="n">VARIANT</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">_loaded_at</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="n">_dlt_load_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="n">_dlt_id</span><span class="w"> </span><span class="nb">VARCHAR</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="nb">date</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="k">timestamp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">base</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rates</span><span class="w"> </span><span class="n">VARIANT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_loaded_at</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_dlt_load_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_dlt_id</span><span class="w"> </span><span class="nb">VARCHAR</span>
+<span class="p">);</span>
 </code></pre></div>
 </div>
 <h3 id="deploy-the-snowpipe">Deploy the Snowpipe</h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">CI/CD</label><label for="__tabbed_1_2">Local</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feat/exchange-rates-snowpipe
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/snowpipe.tf<span class="w"> </span>terraform/snowflake/outputs.tf
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Snowpipe for exchange rates auto-ingestion"</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feat/exchange-rates-snowpipe
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feat/exchange-rates-snowpipe
+git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/snowpipe.tf<span class="w"> </span>terraform/snowflake/outputs.tf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Snowpipe for exchange rates auto-ingestion"</span>
+git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feat/exchange-rates-snowpipe
 </code></pre></div>
 <p>Open a PR, review the plan, then merge to apply.</p>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
 </code></pre></div>
 </div>
 </div>
@@ -6642,54 +6644,54 @@
 <h3 id="configure-s3-event-notifications">Configure S3 Event Notifications</h3>
 <p>Snowpipe auto-ingest works by listening for S3 event notifications. When dlt writes a new file to S3, an SQS message triggers Snowpipe to load it.</p>
 <p>Navigate to your AWS Terraform directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
 </code></pre></div>
 <p>Add to <code>snowpipe_notifications.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Snowpipe S3 Event Notifications</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># Variables</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates_sqs_arn"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SQS ARN from Snowflake Snowpipe for exchange rates"</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="c1">  # Set after Snowpipe is created</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">}</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="c1"># Exchange Rates S3 → Snowpipe</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_s3_bucket_notification"</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">  </span><span class="na">count</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowpipe_exchange_rates_sqs_arn</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">  </span><span class="na">bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.data_lake</span><span class="p">[</span><span class="s2">"prod"</span><span class="p">].</span><span class="err">bucket_id</span>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="w">  </span><span class="nb">queue</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="w">    </span><span class="na">queue_arn</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowpipe_exchange_rates_sqs_arn</span>
-<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="w">    </span><span class="na">events</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"s3:ObjectCreated:*"</span><span class="p">]</span>
-<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">    </span><span class="na">filter_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"exchange-rates/"</span>
-<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Snowpipe S3 Event Notifications</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Variables</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates_sqs_arn"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SQS ARN from Snowflake Snowpipe for exchange rates"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="c1">  # Set after Snowpipe is created</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Exchange Rates S3 → Snowpipe</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_s3_bucket_notification"</span><span class="w"> </span><span class="nv">"snowpipe_exchange_rates"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">count</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowpipe_exchange_rates_sqs_arn</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="na">bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.data_lake</span><span class="p">[</span><span class="s2">"prod"</span><span class="p">].</span><span class="err">bucket_id</span>
+
+<span class="w">  </span><span class="nb">queue</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">queue_arn</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowpipe_exchange_rates_sqs_arn</span>
+<span class="w">    </span><span class="na">events</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"s3:ObjectCreated:*"</span><span class="p">]</span>
+<span class="w">    </span><span class="na">filter_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"exchange-rates/"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Set the SQS ARN from the Snowpipe output and deploy:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">CI/CD</label><label for="__tabbed_2_2">Local</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Update <code>terraform.tfvars</code> with the SQS ARN:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="na">snowpipe_exchange_rates_sqs_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:sqs:eu-west-2:..."</span>
+<div class="highlight"><pre><span></span><code><span class="na">snowpipe_exchange_rates_sqs_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:sqs:eu-west-2:..."</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feat/snowpipe-s3-notifications
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/aws/snowpipe_notifications.tf<span class="w"> </span>terraform/aws/terraform.tfvars
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add S3 event notifications for exchange rates Snowpipe"</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feat/snowpipe-s3-notifications
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feat/snowpipe-s3-notifications
+git<span class="w"> </span>add<span class="w"> </span>terraform/aws/snowpipe_notifications.tf<span class="w"> </span>terraform/aws/terraform.tfvars
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add S3 event notifications for exchange rates Snowpipe"</span>
+git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feat/snowpipe-s3-notifications
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>terraform<span class="w"> </span>plan<span class="w"> </span>-var<span class="o">=</span><span class="s1">'snowpipe_exchange_rates_sqs_arn=arn:aws:sqs:eu-west-2:...'</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
+terraform<span class="w"> </span>plan<span class="w"> </span>-var<span class="o">=</span><span class="s1">'snowpipe_exchange_rates_sqs_arn=arn:aws:sqs:eu-west-2:...'</span>
+terraform<span class="w"> </span>apply
 </code></pre></div>
 </div>
 </div>
@@ -6703,55 +6705,55 @@
 </ol>
 <h2 id="run-the-pipeline">Run the Pipeline</h2>
 <p>Test the pipeline locally:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1"># Run latest rates (writes one file to S3)</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>python<span class="w"> </span>-m<span class="w"> </span>pipelines.exchange_rates
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="c1"># Run backfill for a week (writes one file per day)</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>python<span class="w"> </span>-m<span class="w"> </span>pipelines.exchange_rates<span class="w"> </span>--backfill<span class="w"> </span>--start-date<span class="w"> </span><span class="m">2026</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2026</span>-01-07
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
+
+<span class="c1"># Run latest rates (writes one file to S3)</span>
+python<span class="w"> </span>-m<span class="w"> </span>pipelines.exchange_rates
+
+<span class="c1"># Run backfill for a week (writes one file per day)</span>
+python<span class="w"> </span>-m<span class="w"> </span>pipelines.exchange_rates<span class="w"> </span>--backfill<span class="w"> </span>--start-date<span class="w"> </span><span class="m">2026</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2026</span>-01-07
 </code></pre></div>
 <h2 id="verify-s3-files">Verify S3 Files</h2>
 <p>Check that files were written to S3:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span>s3://your-data-lake-bucket/exchange-rates/<span class="w"> </span>--recursive
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span>s3://your-data-lake-bucket/exchange-rates/<span class="w"> </span>--recursive
 </code></pre></div>
 <p>View the contents of a file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span>s3://your-data-lake-bucket/exchange-rates/exchange_rates/exchange_rates/1704067200.json<span class="w"> </span>-<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span>s3://your-data-lake-bucket/exchange-rates/exchange_rates/exchange_rates/1704067200.json<span class="w"> </span>-<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
 </code></pre></div>
 <h2 id="verify-snowpipe-ingestion">Verify Snowpipe Ingestion</h2>
 <p>Snowpipe should automatically ingest files within a few minutes. Check the status:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">-- Check pipe status</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">PIPE_STATUS</span><span class="p">(</span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_PIPE'</span><span class="p">);</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1">-- Check recent copy history</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="k">FROM</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">COPY_HISTORY</span><span class="p">(</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">    </span><span class="k">TABLE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES'</span><span class="p">,</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="n">START_TIME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check pipe status</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">PIPE_STATUS</span><span class="p">(</span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_PIPE'</span><span class="p">);</span>
+
+<span class="c1">-- Check recent copy history</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">COPY_HISTORY</span><span class="p">(</span>
+<span class="w">    </span><span class="k">TABLE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES'</span><span class="p">,</span>
+<span class="w">    </span><span class="n">START_TIME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="p">));</span>
 </code></pre></div>
 <p>Query the loaded data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1">-- View recent exchange rates</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="nb">date</span><span class="p">,</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="n">base</span><span class="p">,</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="n">rates__gbp</span><span class="p">,</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="n">rates__eur</span><span class="p">,</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="n">rates__jpy</span><span class="p">,</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span><span class="n">_loaded_at</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="nb">date</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="c1">-- Check date range</span>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="nb">date</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="nb">date</span><span class="p">),</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span><span class="p">;</span>
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="c1">-- Check for duplicates (if any, handle in dbt)</span>
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="k">SELECT</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">cnt</span>
-<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
-<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="nb">date</span>
-<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- View recent exchange rates</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="nb">date</span><span class="p">,</span>
+<span class="w">    </span><span class="n">base</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rates__gbp</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rates__eur</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rates__jpy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_loaded_at</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="nb">date</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- Check date range</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="nb">date</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="nb">date</span><span class="p">),</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span><span class="p">;</span>
+
+<span class="c1">-- Check for duplicates (if any, handle in dbt)</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">cnt</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="nb">date</span>
+<span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="schema-evolution">Schema Evolution</h2>
 <p>dlt automatically handles schema changes. When Open Exchange Rates adds new currencies:</p>
@@ -6779,26 +6781,26 @@
 <ol>
 <li>
 <p><strong>Check S3 event notifications</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-notification-configuration<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span>--bucket<span class="w"> </span>your-data-lake-bucket
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-notification-configuration<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bucket<span class="w"> </span>your-data-lake-bucket
 </code></pre></div>
 <p>Should show a queue configuration for the <code>exchange-rates/</code> prefix.</p>
 </li>
 <li>
 <p><strong>Check if the pipe is paused</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">PIPES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'EXCHANGE_RATES_PIPE'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">PIPES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'EXCHANGE_RATES_PIPE'</span><span class="p">;</span>
 </code></pre></div>
 <p>Resume if paused:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">PIPE</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_PIPE</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">PIPE_EXECUTION_PAUSED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="n">PIPE</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_PIPE</span>
+<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">PIPE_EXECUTION_PAUSED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Check file format errors</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">COPY</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
-<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="k">FROM</span><span class="w"> </span><span class="o">@</span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_STAGE</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">FILE_FORMAT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">FORMAT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_FORMAT'</span><span class="p">)</span>
-<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">VALIDATION_MODE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'RETURN_ERRORS'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
+<span class="k">FROM</span><span class="w"> </span><span class="o">@</span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_STAGE</span>
+<span class="n">FILE_FORMAT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">FORMAT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_FORMAT'</span><span class="p">)</span>
+<span class="n">VALIDATION_MODE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'RETURN_ERRORS'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6909,6 +6911,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6952,7 +6956,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

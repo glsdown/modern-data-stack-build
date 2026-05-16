@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6441,72 +6443,72 @@
 <li><strong>Key-pair authentication</strong> — Secure, passwordless auth for automation</li>
 <li><strong>STREAMING_DB_WRITER role</strong> — Write permissions for the connector</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    SNOWFLAKE STREAMING INFRASTRUCTURE                   │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Kafka Connect (Confluent Cloud)                                        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────────────────────                                           │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  ┌────────────────────────────────────────────────────┐                │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │ Snowflake Sink Connector                           │                │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ • Reads from Kafka topics                          │                │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • Authenticates as SVC_KAFKA_CONNECTOR (key-pair)  │                │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ • Writes to STREAMING database                     │                │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  └────────────────────────────────────────────────────┘                │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                         │                                               │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                         ▼                                               │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  Snowflake                                                              │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ─────────                                                              │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ┌────────────────────────────────────────────────────┐                │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │ STREAMING database                                 │                │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │ • STREAMING_DB_READER (read-only)                  │                │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │ • STREAMING_DB_WRITER (insert/update)              │                │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  └────────────────────────────────────────────────────┘                │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                         │                                               │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  ┌────────────────────────────────────────────────────┐                │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  │ SVC_KAFKA_CONNECTOR service account                │                │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │ • Type: SERVICE                                    │                │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │ • Auth: Key-pair (no password)                     │                │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  │ • Dedicated role: SVC_KAFKA_CONNECTOR              │                │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  │ • Grants: STREAMING_DB_WRITER                      │                │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  └────────────────────────────────────────────────────┘                │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│                         │                                               │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│  ┌────────────────────────────────────────────────────┐                │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  │ ANALYTICS_SOURCES_READER (account role)            │                │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  │ • Granted: STREAMING_DB_READER                     │                │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │ • Inherited by: ANALYTICS_DEVELOPER                │                │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  └────────────────────────────────────────────────────┘                │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│                                                                         │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│  Pattern: Service account has dedicated role + writer access            │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│  Analysts get reader access via ANALYTICS_SOURCES_READER                │
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│                                                                         │
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    SNOWFLAKE STREAMING INFRASTRUCTURE                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Kafka Connect (Confluent Cloud)                                        │
+│  ────────────────────────────                                           │
+│  ┌────────────────────────────────────────────────────┐                │
+│  │ Snowflake Sink Connector                           │                │
+│  │ • Reads from Kafka topics                          │                │
+│  │ • Authenticates as SVC_KAFKA_CONNECTOR (key-pair)  │                │
+│  │ • Writes to STREAMING database                     │                │
+│  └────────────────────────────────────────────────────┘                │
+│                         │                                               │
+│                         ▼                                               │
+│  Snowflake                                                              │
+│  ─────────                                                              │
+│  ┌────────────────────────────────────────────────────┐                │
+│  │ STREAMING database                                 │                │
+│  │ • STREAMING_DB_READER (read-only)                  │                │
+│  │ • STREAMING_DB_WRITER (insert/update)              │                │
+│  └────────────────────────────────────────────────────┘                │
+│                         │                                               │
+│  ┌────────────────────────────────────────────────────┐                │
+│  │ SVC_KAFKA_CONNECTOR service account                │                │
+│  │ • Type: SERVICE                                    │                │
+│  │ • Auth: Key-pair (no password)                     │                │
+│  │ • Dedicated role: SVC_KAFKA_CONNECTOR              │                │
+│  │ • Grants: STREAMING_DB_WRITER                      │                │
+│  └────────────────────────────────────────────────────┘                │
+│                         │                                               │
+│  ┌────────────────────────────────────────────────────┐                │
+│  │ ANALYTICS_SOURCES_READER (account role)            │                │
+│  │ • Granted: STREAMING_DB_READER                     │                │
+│  │ • Inherited by: ANALYTICS_DEVELOPER                │                │
+│  └────────────────────────────────────────────────────┘                │
+│                                                                         │
+│  Pattern: Service account has dedicated role + writer access            │
+│  Analysts get reader access via ANALYTICS_SOURCES_READER                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="create-streaming-database">Create STREAMING Database</h2>
 <p>Use the existing <code>snowflake_database</code> Terraform module to create the STREAMING database.</p>
 <h3 id="add-to-databasestf">Add to databases.tf</h3>
 <p>Edit <code>~/src/terraform/snowflake/config/databases.tf</code> and add:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># STREAMING Database (Kafka Events)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"streaming_database"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_database"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"STREAMING"</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Real-time events from Kafka topics via Snowpipe Streaming"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1">  # Data retention (7 days for streaming events - adjust based on your needs)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">data_retention_time_in_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">  # Automatic database roles</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="na">create_reader_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # STREAMING_DB_READER</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="na">create_writer_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # STREAMING_DB_WRITER</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># STREAMING Database (Kafka Events)</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"streaming_database"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_database"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"STREAMING"</span>
+<span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Real-time events from Kafka topics via Snowpipe Streaming"</span>
+
+<span class="c1">  # Data retention (7 days for streaming events - adjust based on your needs)</span>
+<span class="w">  </span><span class="na">data_retention_time_in_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
+
+<span class="c1">  # Automatic database roles</span>
+<span class="w">  </span><span class="na">create_reader_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # STREAMING_DB_READER</span>
+<span class="w">  </span><span class="na">create_writer_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # STREAMING_DB_WRITER</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="why-7-days-retention">Why 7 Days Retention?</h3>
 <p>Streaming data is typically processed quickly and doesn't need long retention in raw form:</p>
@@ -6520,70 +6522,70 @@
 - <strong>30 days</strong> — Compliance, audit trails
 - <strong>0 days</strong> — Inherit account default (typically 1 day for transient data)</p>
 <h3 id="apply-terraform">Apply Terraform</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>~/src/terraform/snowflake/config
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Set AWS profile for Secrets Manager access</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>infrastructure-admin
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Initialise (if not already done)</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>terraform<span class="w"> </span>init
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Plan</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Review changes (should show STREAMING database + 2 database roles)</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># Apply</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/src/terraform/snowflake/config
+
+<span class="c1"># Set AWS profile for Secrets Manager access</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>infrastructure-admin
+
+<span class="c1"># Initialise (if not already done)</span>
+terraform<span class="w"> </span>init
+
+<span class="c1"># Plan</span>
+terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
+
+<span class="c1"># Review changes (should show STREAMING database + 2 database roles)</span>
+
+<span class="c1"># Apply</span>
+terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>module.streaming_database.snowflake_database.this: Creating...
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>module.streaming_database.snowflake_database_role.reader: Creating...
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>module.streaming_database.snowflake_database_role.writer: Creating...
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>module.streaming_database.snowflake_grant_database_role.reader_to_sysadmin: Creating...
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>module.streaming_database.snowflake_grant_database_role.writer_to_sysadmin: Creating...
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
+</p><div class="highlight"><pre><span></span><code>module.streaming_database.snowflake_database.this: Creating...
+module.streaming_database.snowflake_database_role.reader: Creating...
+module.streaming_database.snowflake_database_role.writer: Creating...
+module.streaming_database.snowflake_grant_database_role.reader_to_sysadmin: Creating...
+module.streaming_database.snowflake_grant_database_role.writer_to_sysadmin: Creating...
+
+Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
 </code></pre></div><p></p>
 <h3 id="verify-in-snowflake">Verify in Snowflake</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Show databases</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'STREAMING'</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- Show database roles</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">;</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">-- Result:</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1">-- STREAMING_DB_READER</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">-- STREAMING_DB_WRITER</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Show databases</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'STREAMING'</span><span class="p">;</span>
+
+<span class="c1">-- Show database roles</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">;</span>
+
+<span class="c1">-- Result:</span>
+<span class="c1">-- STREAMING_DB_READER</span>
+<span class="c1">-- STREAMING_DB_WRITER</span>
 </code></pre></div>
 <h2 id="create-svc_kafka_connector-service-account">Create SVC_KAFKA_CONNECTOR Service Account</h2>
 <p>Service accounts use the <code>user_create_dedicated_role = true</code> pattern, which creates a role matching the user name.</p>
 <h3 id="generate-key-pair">Generate Key Pair</h3>
 <p>Snowflake service accounts use <strong>key-pair authentication</strong> (not passwords) for security.</p>
 <p>Generate an RSA key pair:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Create directory for keys</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.ssh/snowflake
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Generate private key (4096-bit RSA)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="m">4096</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Generate public key</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span>-pubout<span class="w"> </span>-out<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pub
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Secure private key</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1"># Extract public key value (without headers) for Snowflake</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN PUBLIC KEY"</span><span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"END PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="w"> </span>&gt;<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key_value.txt
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="c1"># Display public key value</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>cat<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key_value.txt
+<div class="highlight"><pre><span></span><code><span class="c1"># Create directory for keys</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/.ssh/snowflake
+
+<span class="c1"># Generate private key (4096-bit RSA)</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="m">4096</span>
+
+<span class="c1"># Generate public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-pubout<span class="w"> </span>-out<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pub
+
+<span class="c1"># Secure private key</span>
+chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem
+
+<span class="c1"># Extract public key value (without headers) for Snowflake</span>
+grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN PUBLIC KEY"</span><span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"END PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="w"> </span>&gt;<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key_value.txt
+
+<span class="c1"># Display public key value</span>
+cat<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key_value.txt
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1234567890abcdef...
+</p><div class="highlight"><pre><span></span><code>MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1234567890abcdef...
 </code></pre></div><p></p>
 <div class="admonition warning">
 <p class="admonition-title">Protect Private Keys</p>
@@ -6591,44 +6593,44 @@
 </div>
 <h3 id="add-service-account-to-userstf">Add Service Account to users.tf</h3>
 <p>Edit <code>~/src/terraform/snowflake/config/users.tf</code> and add:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Service Accounts</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># SVC_KAFKA_CONNECTOR - Kafka Connect writes to Snowflake</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"svc_kafka_connector"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_user"</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nv">snowflake.account_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Kafka Connect to write streaming events"</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="c1">  # Service account configuration</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">  </span><span class="na">user_type</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SERVICE"</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Creates SVC_KAFKA_CONNECTOR role</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1">  # Key-pair authentication (no password)</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="s2">"~/.ssh/snowflake/svc_kafka_connector_key_value.txt"</span><span class="p">)</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="c1">  # Default warehouse</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGEST_WH"</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="c1">  # Dedicated warehouse for this service account</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">  </span><span class="na">create_dedicated_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Use shared INGEST_WH</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="c1">  # Roles to grant</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="w">  </span><span class="na">granted_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">    </span><span class="nv">module.streaming_database.writer_role_name</span><span class="p">,</span><span class="c1">  # STREAMING_DB_WRITER</span>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>
-<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="c1">  # Network policy (optional - restrict IPs if needed)</span>
-<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="w">  </span><span class="na">network_policy_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span><span class="c1">  # Allow from anywhere for Confluent Cloud</span>
-<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Service Accounts</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="c1"># SVC_KAFKA_CONNECTOR - Kafka Connect writes to Snowflake</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"svc_kafka_connector"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.account_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Kafka Connect to write streaming events"</span>
+
+<span class="c1">  # Service account configuration</span>
+<span class="w">  </span><span class="na">user_type</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SERVICE"</span>
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Creates SVC_KAFKA_CONNECTOR role</span>
+
+<span class="c1">  # Key-pair authentication (no password)</span>
+<span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="s2">"~/.ssh/snowflake/svc_kafka_connector_key_value.txt"</span><span class="p">)</span>
+
+<span class="c1">  # Default warehouse</span>
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGEST_WH"</span>
+
+<span class="c1">  # Dedicated warehouse for this service account</span>
+<span class="w">  </span><span class="na">create_dedicated_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Use shared INGEST_WH</span>
+
+<span class="c1">  # Roles to grant</span>
+<span class="w">  </span><span class="na">granted_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.streaming_database.writer_role_name</span><span class="p">,</span><span class="c1">  # STREAMING_DB_WRITER</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="c1">  # Network policy (optional - restrict IPs if needed)</span>
+<span class="w">  </span><span class="na">network_policy_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span><span class="c1">  # Allow from anywhere for Confluent Cloud</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="why-user_create_dedicated_role-true">Why user_create_dedicated_role = true?</h3>
 <p>This pattern creates a role matching the service account name (<code>SVC_KAFKA_CONNECTOR</code>):</p>
@@ -6639,243 +6641,243 @@
 <li><strong>Consistency</strong> — All service accounts follow the same pattern</li>
 </ul>
 <h3 id="apply-terraform_1">Apply Terraform</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Review changes:</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># + SVC_KAFKA_CONNECTOR user</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># + SVC_KAFKA_CONNECTOR role (dedicated)</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># + Grant STREAMING_DB_WRITER to SVC_KAFKA_CONNECTOR</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># + Grant SVC_KAFKA_CONNECTOR to SYSADMIN</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
+
+<span class="c1"># Review changes:</span>
+<span class="c1"># + SVC_KAFKA_CONNECTOR user</span>
+<span class="c1"># + SVC_KAFKA_CONNECTOR role (dedicated)</span>
+<span class="c1"># + Grant STREAMING_DB_WRITER to SVC_KAFKA_CONNECTOR</span>
+<span class="c1"># + Grant SVC_KAFKA_CONNECTOR to SYSADMIN</span>
+
+terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>module.svc_kafka_connector.snowflake_user.this: Creating...
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>module.svc_kafka_connector.snowflake_role.dedicated: Creating...
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>module.svc_kafka_connector.snowflake_grant_account_role.dedicated_to_user: Creating...
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>module.svc_kafka_connector.snowflake_grant_account_role.granted_roles[0]: Creating...
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+</p><div class="highlight"><pre><span></span><code>module.svc_kafka_connector.snowflake_user.this: Creating...
+module.svc_kafka_connector.snowflake_role.dedicated: Creating...
+module.svc_kafka_connector.snowflake_grant_account_role.dedicated_to_user: Creating...
+module.svc_kafka_connector.snowflake_grant_account_role.granted_roles[0]: Creating...
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 </code></pre></div><p></p>
 <h3 id="verify-in-snowflake_1">Verify in Snowflake</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- Show service account</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_KAFKA_CONNECTOR'</span><span class="p">;</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">-- Show dedicated role</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_KAFKA_CONNECTOR'</span><span class="p">;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">-- Show role grants</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_KAFKA_CONNECTOR</span><span class="p">;</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">-- Result should include:</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1">-- STREAMING_DB_WRITER (database role)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Show service account</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_KAFKA_CONNECTOR'</span><span class="p">;</span>
+
+<span class="c1">-- Show dedicated role</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_KAFKA_CONNECTOR'</span><span class="p">;</span>
+
+<span class="c1">-- Show role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_KAFKA_CONNECTOR</span><span class="p">;</span>
+
+<span class="c1">-- Result should include:</span>
+<span class="c1">-- STREAMING_DB_WRITER (database role)</span>
 </code></pre></div>
 <h2 id="grant-reader-access-to-analysts">Grant Reader Access to Analysts</h2>
 <p>Analysts need read-only access to streaming data. Grant <code>STREAMING_DB_READER</code> to <code>ANALYTICS_SOURCES_READER</code>.</p>
 <h3 id="update-functional_rolestf">Update functional_roles.tf</h3>
 <p>Edit <code>~/src/terraform/snowflake/config/functional_roles.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># ANALYTICS_SOURCES_READER - Read access to all data sources</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"analytics_sources_reader_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_role"</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="na">role_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS_SOURCES_READER"</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">  </span><span class="na">role_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Read access to all data sources (DLT, AIRBYTE, STREAMING)"</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">  </span><span class="na">granted_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="nv">module.dlt_database.reader_role_name</span><span class="p">,</span><span class="c1">        # DLT_DB_READER</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">    </span><span class="nv">module.airbyte_database.reader_role_name</span><span class="p">,</span><span class="c1">    # AIRBYTE_DB_READER</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span><span class="nv">module.streaming_database.reader_role_name</span><span class="p">,</span><span class="c1">  # STREAMING_DB_READER (new)</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">  </span><span class="na">granted_to_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"ANALYTICS_DEVELOPER"</span><span class="p">]</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># ANALYTICS_SOURCES_READER - Read access to all data sources</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"analytics_sources_reader_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_role"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">role_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS_SOURCES_READER"</span>
+<span class="w">  </span><span class="na">role_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Read access to all data sources (DLT, AIRBYTE, STREAMING)"</span>
+
+<span class="w">  </span><span class="na">granted_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.dlt_database.reader_role_name</span><span class="p">,</span><span class="c1">        # DLT_DB_READER</span>
+<span class="w">    </span><span class="nv">module.airbyte_database.reader_role_name</span><span class="p">,</span><span class="c1">    # AIRBYTE_DB_READER</span>
+<span class="w">    </span><span class="nv">module.streaming_database.reader_role_name</span><span class="p">,</span><span class="c1">  # STREAMING_DB_READER (new)</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">granted_to_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"ANALYTICS_DEVELOPER"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="apply-terraform_2">Apply Terraform</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Review: Should show grant of STREAMING_DB_READER to ANALYTICS_SOURCES_READER</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan<span class="w"> </span>-out<span class="o">=</span>tfplan
+
+<span class="c1"># Review: Should show grant of STREAMING_DB_READER to ANALYTICS_SOURCES_READER</span>
+
+terraform<span class="w"> </span>apply<span class="w"> </span>tfplan
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>module.analytics_sources_reader_role.snowflake_grant_account_role.granted_roles[2]: Creating...
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+</p><div class="highlight"><pre><span></span><code>module.analytics_sources_reader_role.snowflake_grant_account_role.granted_roles[2]: Creating...
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 </code></pre></div><p></p>
 <h3 id="verify-access">Verify Access</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">-- Login as analyst</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1">-- Should be able to read (but not write)</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">;</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1">-- Try to create schema (should fail)</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">TEST</span><span class="p">;</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">-- Error: Insufficient privileges</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Login as analyst</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+
+<span class="c1">-- Should be able to read (but not write)</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">STREAMING</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span>
+
+<span class="c1">-- Try to create schema (should fail)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">TEST</span><span class="p">;</span>
+<span class="c1">-- Error: Insufficient privileges</span>
 </code></pre></div>
 <h2 id="store-credentials-in-aws-secrets-manager">Store Credentials in AWS Secrets Manager</h2>
 <p>Store the Snowflake service account credentials for Kafka Connect to use.</p>
 <h3 id="create-secret">Create Secret</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Set AWS profile</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Read private key</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="k">)</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Create secret</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span>--name<span class="w"> </span>snowflake/svc-kafka-connector<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"Snowflake credentials for Kafka Connect Snowflake Sink Connector"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s2">        \"account\": \"your-account.eu-west-2.aws\",</span>
-<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="s2">        \"user\": \"SVC_KAFKA_CONNECTOR\",</span>
-<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="s2">        \"private_key\": \"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">\",</span>
-<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="s2">        \"database\": \"STREAMING\",</span>
-<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="s2">        \"schema\": \"PUBLIC\",</span>
-<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="s2">        \"warehouse\": \"INGEST_WH\",</span>
-<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="s2">        \"role\": \"SVC_KAFKA_CONNECTOR\"</span>
-<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">    </span>--region<span class="w"> </span>eu-west-2
+<div class="highlight"><pre><span></span><code><span class="c1"># Set AWS profile</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
+
+<span class="c1"># Read private key</span>
+<span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.ssh/snowflake/svc_kafka_connector_key.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="k">)</span>
+
+<span class="c1"># Create secret</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span>snowflake/svc-kafka-connector<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"Snowflake credentials for Kafka Connect Snowflake Sink Connector"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
+<span class="s2">        \"account\": \"your-account.eu-west-2.aws\",</span>
+<span class="s2">        \"user\": \"SVC_KAFKA_CONNECTOR\",</span>
+<span class="s2">        \"private_key\": \"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">\",</span>
+<span class="s2">        \"database\": \"STREAMING\",</span>
+<span class="s2">        \"schema\": \"PUBLIC\",</span>
+<span class="s2">        \"warehouse\": \"INGEST_WH\",</span>
+<span class="s2">        \"role\": \"SVC_KAFKA_CONNECTOR\"</span>
+<span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--region<span class="w"> </span>eu-west-2
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Account Identifier</p>
 <p>Find your Snowflake account identifier:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ACCOUNT</span><span class="p">();</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">CURRENT_ACCOUNT</span><span class="p">();</span>
 </code></pre></div>
 Format: <code>your-account.eu-west-2.aws</code> (includes region and cloud)<p></p>
 </div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">{</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="nt">"ARN"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:eu-west-2:123456789012:secret:snowflake/svc-kafka-connector-abc123"</span><span class="p">,</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"snowflake/svc-kafka-connector"</span><span class="p">,</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nt">"VersionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="p">}</span>
+</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ARN"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:eu-west-2:123456789012:secret:snowflake/svc-kafka-connector-abc123"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"snowflake/svc-kafka-connector"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"VersionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"</span>
+<span class="p">}</span>
 </code></pre></div><p></p>
 <h3 id="retrieve-secret-test">Retrieve Secret (Test)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span>--secret-id<span class="w"> </span>snowflake/svc-kafka-connector<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span>--query<span class="w"> </span>SecretString<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span>snowflake/svc-kafka-connector<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--query<span class="w"> </span>SecretString<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">"account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.eu-west-2.aws"</span><span class="p">,</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="nt">"private_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN RSA PRIVATE KEY-----\n..."</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STREAMING"</span><span class="p">,</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">  </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PUBLIC"</span><span class="p">,</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"INGEST_WH"</span><span class="p">,</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">  </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="p">}</span>
+</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.eu-west-2.aws"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"private_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN RSA PRIVATE KEY-----\n..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STREAMING"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PUBLIC"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"INGEST_WH"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span>
+<span class="p">}</span>
 </code></pre></div><p></p>
 <h2 id="test-authentication">Test Authentication</h2>
 <p>Verify the service account can authenticate using the private key.</p>
 <h3 id="python-test-script">Python Test Script</h3>
 <p>Create <code>test_snowflake_auth.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="ch">#!/usr/bin/env python3</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="sd">"""</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="sd">Test Snowflake key-pair authentication for SVC_KAFKA_CONNECTOR.</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="sd">"""</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialization</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_backend</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">snowflake.connector</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_snowflake_credentials</span><span class="p">():</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">    </span><span class="sd">"""Retrieve Snowflake credentials from AWS Secrets Manager."""</span>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>    <span class="n">session</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>        <span class="n">service_name</span><span class="o">=</span><span class="s1">'secretsmanager'</span><span class="p">,</span>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>        <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span>
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a>    <span class="p">)</span>
-<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a>
-<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s1">'snowflake/svc-kafka-connector'</span><span class="p">)</span>
-<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a>    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
-<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a>
-<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a>
-<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_private_key_bytes</span><span class="p">(</span><span class="n">private_key_pem</span><span class="p">):</span>
-<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a><span class="w">    </span><span class="sd">"""Convert PEM private key to DER bytes for Snowflake connector."""</span>
-<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a>    <span class="n">private_key</span> <span class="o">=</span> <span class="n">serialization</span><span class="o">.</span><span class="n">load_pem_private_key</span><span class="p">(</span>
-<a id="__codelineno-20-27" name="__codelineno-20-27" href="#__codelineno-20-27"></a>        <span class="n">private_key_pem</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>
-<a id="__codelineno-20-28" name="__codelineno-20-28" href="#__codelineno-20-28"></a>        <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-20-29" name="__codelineno-20-29" href="#__codelineno-20-29"></a>        <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">()</span>
-<a id="__codelineno-20-30" name="__codelineno-20-30" href="#__codelineno-20-30"></a>    <span class="p">)</span>
-<a id="__codelineno-20-31" name="__codelineno-20-31" href="#__codelineno-20-31"></a>
-<a id="__codelineno-20-32" name="__codelineno-20-32" href="#__codelineno-20-32"></a>    <span class="k">return</span> <span class="n">private_key</span><span class="o">.</span><span class="n">private_bytes</span><span class="p">(</span>
-<a id="__codelineno-20-33" name="__codelineno-20-33" href="#__codelineno-20-33"></a>        <span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">DER</span><span class="p">,</span>
-<a id="__codelineno-20-34" name="__codelineno-20-34" href="#__codelineno-20-34"></a>        <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">PKCS8</span><span class="p">,</span>
-<a id="__codelineno-20-35" name="__codelineno-20-35" href="#__codelineno-20-35"></a>        <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">NoEncryption</span><span class="p">()</span>
-<a id="__codelineno-20-36" name="__codelineno-20-36" href="#__codelineno-20-36"></a>    <span class="p">)</span>
-<a id="__codelineno-20-37" name="__codelineno-20-37" href="#__codelineno-20-37"></a>
-<a id="__codelineno-20-38" name="__codelineno-20-38" href="#__codelineno-20-38"></a>
-<a id="__codelineno-20-39" name="__codelineno-20-39" href="#__codelineno-20-39"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-20-40" name="__codelineno-20-40" href="#__codelineno-20-40"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"🔗 Connecting to Snowflake..."</span><span class="p">)</span>
-<a id="__codelineno-20-41" name="__codelineno-20-41" href="#__codelineno-20-41"></a>
-<a id="__codelineno-20-42" name="__codelineno-20-42" href="#__codelineno-20-42"></a>    <span class="c1"># Get credentials from Secrets Manager</span>
-<a id="__codelineno-20-43" name="__codelineno-20-43" href="#__codelineno-20-43"></a>    <span class="n">creds</span> <span class="o">=</span> <span class="n">get_snowflake_credentials</span><span class="p">()</span>
-<a id="__codelineno-20-44" name="__codelineno-20-44" href="#__codelineno-20-44"></a>
-<a id="__codelineno-20-45" name="__codelineno-20-45" href="#__codelineno-20-45"></a>    <span class="c1"># Convert private key to bytes</span>
-<a id="__codelineno-20-46" name="__codelineno-20-46" href="#__codelineno-20-46"></a>    <span class="n">private_key_bytes</span> <span class="o">=</span> <span class="n">get_private_key_bytes</span><span class="p">(</span><span class="n">creds</span><span class="p">[</span><span class="s1">'private_key'</span><span class="p">])</span>
-<a id="__codelineno-20-47" name="__codelineno-20-47" href="#__codelineno-20-47"></a>
-<a id="__codelineno-20-48" name="__codelineno-20-48" href="#__codelineno-20-48"></a>    <span class="c1"># Connect to Snowflake</span>
-<a id="__codelineno-20-49" name="__codelineno-20-49" href="#__codelineno-20-49"></a>    <span class="n">conn</span> <span class="o">=</span> <span class="n">snowflake</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-<a id="__codelineno-20-50" name="__codelineno-20-50" href="#__codelineno-20-50"></a>        <span class="n">account</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'account'</span><span class="p">],</span>
-<a id="__codelineno-20-51" name="__codelineno-20-51" href="#__codelineno-20-51"></a>        <span class="n">user</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'user'</span><span class="p">],</span>
-<a id="__codelineno-20-52" name="__codelineno-20-52" href="#__codelineno-20-52"></a>        <span class="n">private_key</span><span class="o">=</span><span class="n">private_key_bytes</span><span class="p">,</span>
-<a id="__codelineno-20-53" name="__codelineno-20-53" href="#__codelineno-20-53"></a>        <span class="n">warehouse</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'warehouse'</span><span class="p">],</span>
-<a id="__codelineno-20-54" name="__codelineno-20-54" href="#__codelineno-20-54"></a>        <span class="n">database</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'database'</span><span class="p">],</span>
-<a id="__codelineno-20-55" name="__codelineno-20-55" href="#__codelineno-20-55"></a>        <span class="n">schema</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">],</span>
-<a id="__codelineno-20-56" name="__codelineno-20-56" href="#__codelineno-20-56"></a>        <span class="n">role</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'role'</span><span class="p">]</span>
-<a id="__codelineno-20-57" name="__codelineno-20-57" href="#__codelineno-20-57"></a>    <span class="p">)</span>
-<a id="__codelineno-20-58" name="__codelineno-20-58" href="#__codelineno-20-58"></a>
-<a id="__codelineno-20-59" name="__codelineno-20-59" href="#__codelineno-20-59"></a>    <span class="c1"># Test query</span>
-<a id="__codelineno-20-60" name="__codelineno-20-60" href="#__codelineno-20-60"></a>    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-<a id="__codelineno-20-61" name="__codelineno-20-61" href="#__codelineno-20-61"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_DATABASE()"</span><span class="p">)</span>
-<a id="__codelineno-20-62" name="__codelineno-20-62" href="#__codelineno-20-62"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-<a id="__codelineno-20-63" name="__codelineno-20-63" href="#__codelineno-20-63"></a>
-<a id="__codelineno-20-64" name="__codelineno-20-64" href="#__codelineno-20-64"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Connected successfully!"</span><span class="p">)</span>
-<a id="__codelineno-20-65" name="__codelineno-20-65" href="#__codelineno-20-65"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   User: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-20-66" name="__codelineno-20-66" href="#__codelineno-20-66"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Role: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-20-67" name="__codelineno-20-67" href="#__codelineno-20-67"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Database: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-20-68" name="__codelineno-20-68" href="#__codelineno-20-68"></a>
-<a id="__codelineno-20-69" name="__codelineno-20-69" href="#__codelineno-20-69"></a>    <span class="c1"># Test write permission</span>
-<a id="__codelineno-20-70" name="__codelineno-20-70" href="#__codelineno-20-70"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"CREATE SCHEMA IF NOT EXISTS TEST_SCHEMA"</span><span class="p">)</span>
-<a id="__codelineno-20-71" name="__codelineno-20-71" href="#__codelineno-20-71"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Write permission verified (created TEST_SCHEMA)"</span><span class="p">)</span>
-<a id="__codelineno-20-72" name="__codelineno-20-72" href="#__codelineno-20-72"></a>
-<a id="__codelineno-20-73" name="__codelineno-20-73" href="#__codelineno-20-73"></a>    <span class="c1"># Clean up</span>
-<a id="__codelineno-20-74" name="__codelineno-20-74" href="#__codelineno-20-74"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"DROP SCHEMA IF EXISTS TEST_SCHEMA"</span><span class="p">)</span>
-<a id="__codelineno-20-75" name="__codelineno-20-75" href="#__codelineno-20-75"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<a id="__codelineno-20-76" name="__codelineno-20-76" href="#__codelineno-20-76"></a>    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<a id="__codelineno-20-77" name="__codelineno-20-77" href="#__codelineno-20-77"></a>
-<a id="__codelineno-20-78" name="__codelineno-20-78" href="#__codelineno-20-78"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"✅ Authentication test complete!"</span><span class="p">)</span>
-<a id="__codelineno-20-79" name="__codelineno-20-79" href="#__codelineno-20-79"></a>
-<a id="__codelineno-20-80" name="__codelineno-20-80" href="#__codelineno-20-80"></a>
-<a id="__codelineno-20-81" name="__codelineno-20-81" href="#__codelineno-20-81"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-<a id="__codelineno-20-82" name="__codelineno-20-82" href="#__codelineno-20-82"></a>    <span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">Test Snowflake key-pair authentication for SVC_KAFKA_CONNECTOR.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialization</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_backend</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">snowflake.connector</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_snowflake_credentials</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Retrieve Snowflake credentials from AWS Secrets Manager."""</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+        <span class="n">service_name</span><span class="o">=</span><span class="s1">'secretsmanager'</span><span class="p">,</span>
+        <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span>
+    <span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s1">'snowflake/svc-kafka-connector'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'SecretString'</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_private_key_bytes</span><span class="p">(</span><span class="n">private_key_pem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert PEM private key to DER bytes for Snowflake connector."""</span>
+    <span class="n">private_key</span> <span class="o">=</span> <span class="n">serialization</span><span class="o">.</span><span class="n">load_pem_private_key</span><span class="p">(</span>
+        <span class="n">private_key_pem</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>
+        <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">private_key</span><span class="o">.</span><span class="n">private_bytes</span><span class="p">(</span>
+        <span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">DER</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">PKCS8</span><span class="p">,</span>
+        <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">NoEncryption</span><span class="p">()</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"🔗 Connecting to Snowflake..."</span><span class="p">)</span>
+
+    <span class="c1"># Get credentials from Secrets Manager</span>
+    <span class="n">creds</span> <span class="o">=</span> <span class="n">get_snowflake_credentials</span><span class="p">()</span>
+
+    <span class="c1"># Convert private key to bytes</span>
+    <span class="n">private_key_bytes</span> <span class="o">=</span> <span class="n">get_private_key_bytes</span><span class="p">(</span><span class="n">creds</span><span class="p">[</span><span class="s1">'private_key'</span><span class="p">])</span>
+
+    <span class="c1"># Connect to Snowflake</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">snowflake</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="n">account</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'account'</span><span class="p">],</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'user'</span><span class="p">],</span>
+        <span class="n">private_key</span><span class="o">=</span><span class="n">private_key_bytes</span><span class="p">,</span>
+        <span class="n">warehouse</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'warehouse'</span><span class="p">],</span>
+        <span class="n">database</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'database'</span><span class="p">],</span>
+        <span class="n">schema</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">],</span>
+        <span class="n">role</span><span class="o">=</span><span class="n">creds</span><span class="p">[</span><span class="s1">'role'</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Test query</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_DATABASE()"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Connected successfully!"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   User: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Role: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Database: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># Test write permission</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"CREATE SCHEMA IF NOT EXISTS TEST_SCHEMA"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Write permission verified (created TEST_SCHEMA)"</span><span class="p">)</span>
+
+    <span class="c1"># Clean up</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"DROP SCHEMA IF EXISTS TEST_SCHEMA"</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"✅ Authentication test complete!"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="install-dependencies">Install Dependencies</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>uv<span class="w"> </span>add<span class="w"> </span>snowflake-connector-python<span class="w"> </span>cryptography<span class="w"> </span>boto3
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>snowflake-connector-python<span class="w"> </span>cryptography<span class="w"> </span>boto3
 </code></pre></div>
 <h3 id="run-test">Run Test</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>python<span class="w"> </span>test_snowflake_auth.py
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>test_snowflake_auth.py
 </code></pre></div>
 <p><strong>Expected output:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>🔗 Connecting to Snowflake...
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>✅ Connected successfully!
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>   User: SVC_KAFKA_CONNECTOR
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>   Role: SVC_KAFKA_CONNECTOR
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>   Database: STREAMING
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>✅ Write permission verified (created TEST_SCHEMA)
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>✅ Authentication test complete!
+</p><div class="highlight"><pre><span></span><code>🔗 Connecting to Snowflake...
+✅ Connected successfully!
+   User: SVC_KAFKA_CONNECTOR
+   Role: SVC_KAFKA_CONNECTOR
+   Database: STREAMING
+✅ Write permission verified (created TEST_SCHEMA)
+✅ Authentication test complete!
 </code></pre></div><p></p>
 <h3 id="troubleshooting">Troubleshooting</h3>
 <p><strong>Error: <code>Invalid private key</code></strong></p>
@@ -6887,7 +6889,7 @@ Format: <code>your-account.eu-west-2.aws</code> (includes region and cloud)<p></
 <p>Service account wasn't created. Re-run Terraform apply.</p>
 <p><strong>Error: <code>Insufficient privileges</code></strong></p>
 <p>Service account doesn't have STREAMING_DB_WRITER granted. Check grants:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_KAFKA_CONNECTOR</span><span class="p">;</span>
+</p><div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_KAFKA_CONNECTOR</span><span class="p">;</span>
 </code></pre></div><p></p>
 <h2 id="summary">Summary</h2>
 <p>You've configured Snowflake infrastructure for streaming:</p>
@@ -6953,6 +6955,8 @@ Format: <code>your-account.eu-west-2.aws</code> (includes region and cloud)<p></
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6996,7 +7000,7 @@ Format: <code>your-account.eu-west-2.aws</code> (includes region and cloud)<p></
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

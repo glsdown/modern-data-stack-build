@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6617,37 +6619,37 @@
 2. <strong>Structure</strong> — consistent format for parsing
 3. <strong>Searchability</strong> — find relevant logs quickly
 4. <strong>Retention</strong> — keep logs long enough for debugging, but not forever (cost)</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                        LOGGING ARCHITECTURE                             │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Log Sources            Log Collection          Log Storage            │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ───────────            ──────────────          ───────────            │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐      ┌──────────────┐        ┌──────────────┐       │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Prefect      │─────▶│ CloudWatch   │───────▶│ CloudWatch   │       │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ flow runs    │      │ Logs Agent   │        │ Log Groups   │       │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  └──────────────┘      └──────────────┘        │ • /ecs/      │       │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                │                │   prefect    │       │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  ┌──────────────┐              │                │ • /ecs/      │       │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │ dbt          │──────────────┘                │   airbyte    │       │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │ models       │                               │ • /ecs/      │       │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  └──────────────┘                               │   lightdash  │       │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                                 └──────────────┘       │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  ┌──────────────┐      ┌──────────────┐                │              │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │ Airbyte      │─────▶│ ECS          │────────────────┘              │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │ syncs        │      │ (auto logs)  │                               │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  └──────────────┘      └──────────────┘                               │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                                         │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  ┌──────────────┐      ┌──────────────┐        ┌──────────────┐       │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  │ Snowflake    │─────▶│ QUERY_       │───────▶│ Snowflake    │       │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │ queries      │      │ HISTORY      │        │ (internal)   │       │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  └──────────────┘      └──────────────┘        └──────────────┘       │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│                                                                         │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  Search logs via CloudWatch Insights or export to S3 for long-term     │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  retention.                                                             │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│                                                                         │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                        LOGGING ARCHITECTURE                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Log Sources            Log Collection          Log Storage            │
+│  ───────────            ──────────────          ───────────            │
+│                                                                         │
+│  ┌──────────────┐      ┌──────────────┐        ┌──────────────┐       │
+│  │ Prefect      │─────▶│ CloudWatch   │───────▶│ CloudWatch   │       │
+│  │ flow runs    │      │ Logs Agent   │        │ Log Groups   │       │
+│  └──────────────┘      └──────────────┘        │ • /ecs/      │       │
+│                                │                │   prefect    │       │
+│  ┌──────────────┐              │                │ • /ecs/      │       │
+│  │ dbt          │──────────────┘                │   airbyte    │       │
+│  │ models       │                               │ • /ecs/      │       │
+│  └──────────────┘                               │   lightdash  │       │
+│                                                 └──────────────┘       │
+│  ┌──────────────┐      ┌──────────────┐                │              │
+│  │ Airbyte      │─────▶│ ECS          │────────────────┘              │
+│  │ syncs        │      │ (auto logs)  │                               │
+│  └──────────────┘      └──────────────┘                               │
+│                                                                         │
+│  ┌──────────────┐      ┌──────────────┐        ┌──────────────┐       │
+│  │ Snowflake    │─────▶│ QUERY_       │───────▶│ Snowflake    │       │
+│  │ queries      │      │ HISTORY      │        │ (internal)   │       │
+│  └──────────────┘      └──────────────┘        └──────────────┘       │
+│                                                                         │
+│  Search logs via CloudWatch Insights or export to S3 for long-term     │
+│  retention.                                                             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="cloudwatch-logs-for-ecs-services">CloudWatch Logs for ECS Services</h2>
 <p>All ECS services (Lightdash, Airbyte self-hosted, OpenMetadata) automatically send logs to CloudWatch.</p>
@@ -6668,10 +6670,10 @@
 <li>Logs appear in real-time as the container runs</li>
 </ol>
 <p><strong>Example logs:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>2026-02-20 08:15:23 INFO: Lightdash server started on port 8080
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>2026-02-20 08:15:45 INFO: Connected to database: lightdash-prod
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>2026-02-20 08:16:02 INFO: User alice@company.com logged in
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>2026-02-20 08:16:15 ERROR: Query failed: invalid column name "revenue_gbp"
+<div class="highlight"><pre><span></span><code>2026-02-20 08:15:23 INFO: Lightdash server started on port 8080
+2026-02-20 08:15:45 INFO: Connected to database: lightdash-prod
+2026-02-20 08:16:02 INFO: User alice@company.com logged in
+2026-02-20 08:16:15 ERROR: Query failed: invalid column name "revenue_gbp"
 </code></pre></div>
 <h3 id="search-logs-with-cloudwatch-insights">Search Logs with CloudWatch Insights</h3>
 <p>For complex queries across log streams:</p>
@@ -6680,26 +6682,26 @@
 <li>Select log groups: <code>/ecs/lightdash</code>, <code>/ecs/airbyte</code></li>
 <li>Enter query:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>fields @timestamp, @message
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>| filter @message like /ERROR/
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>| sort @timestamp desc
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>| limit 100
+<div class="highlight"><pre><span></span><code>fields @timestamp, @message
+| filter @message like /ERROR/
+| sort @timestamp desc
+| limit 100
 </code></pre></div>
 <p><strong>Example queries:</strong></p>
 <h4 id="find-all-errors-in-the-last-24-hours">Find all errors in the last 24 hours</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>fields @timestamp, @message
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>| filter @message like /ERROR/ or @message like /FATAL/
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>| sort @timestamp desc
+<div class="highlight"><pre><span></span><code>fields @timestamp, @message
+| filter @message like /ERROR/ or @message like /FATAL/
+| sort @timestamp desc
 </code></pre></div>
 <h4 id="find-slow-queries-duration-10-seconds">Find slow queries (duration &gt; 10 seconds)</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>fields @timestamp, @message, duration
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>| filter duration &gt; 10000
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>| sort duration desc
+<div class="highlight"><pre><span></span><code>fields @timestamp, @message, duration
+| filter duration &gt; 10000
+| sort duration desc
 </code></pre></div>
 <h4 id="count-errors-by-hour">Count errors by hour</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>fields @timestamp
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>| filter @message like /ERROR/
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>| stats count() by bin(@timestamp, 1h)
+<div class="highlight"><pre><span></span><code>fields @timestamp
+| filter @message like /ERROR/
+| stats count() by bin(@timestamp, 1h)
 </code></pre></div>
 <h2 id="prefect-logs">Prefect Logs</h2>
 <p>Prefect Cloud stores logs for all flow runs.</p>
@@ -6717,247 +6719,247 @@
 - <strong>ERROR</strong> — error occurred, task failed</p>
 <h3 id="customise-log-output">Customise Log Output</h3>
 <p>Use Prefect's logger in your flows:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nd">@task</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">():</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Starting data extraction..."</span><span class="p">)</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Connecting to API: https://api.example.com"</span><span class="p">)</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">fetch_from_api</span><span class="p">()</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extracted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span><span class="p">)</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        <span class="k">return</span> <span class="n">data</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extraction failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="k">raise</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="nd">@flow</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="k">def</span><span class="w"> </span><span class="nf">data_pipeline</span><span class="p">():</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting data pipeline"</span><span class="p">)</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    <span class="n">extract_data</span><span class="p">()</span>
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Data pipeline completed successfully"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Starting data extraction..."</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Connecting to API: https://api.example.com"</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fetch_from_api</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extracted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extraction failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_pipeline</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting data pipeline"</span><span class="p">)</span>
+
+    <span class="n">extract_data</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Data pipeline completed successfully"</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Output:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>2026-02-20 08:15:23 | INFO | Flow run 'data-pipeline-abc123' - Starting data pipeline
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>2026-02-20 08:15:24 | INFO | Task run 'extract_data-xyz789' - Connecting to API: https://api.example.com
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>2026-02-20 08:15:28 | INFO | Task run 'extract_data-xyz789' - Extracted 1523 rows
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>2026-02-20 08:15:30 | INFO | Flow run 'data-pipeline-abc123' - Data pipeline completed successfully
+<div class="highlight"><pre><span></span><code>2026-02-20 08:15:23 | INFO | Flow run 'data-pipeline-abc123' - Starting data pipeline
+2026-02-20 08:15:24 | INFO | Task run 'extract_data-xyz789' - Connecting to API: https://api.example.com
+2026-02-20 08:15:28 | INFO | Task run 'extract_data-xyz789' - Extracted 1523 rows
+2026-02-20 08:15:30 | INFO | Flow run 'data-pipeline-abc123' - Data pipeline completed successfully
 </code></pre></div>
 <h3 id="export-prefect-logs-to-cloudwatch">Export Prefect Logs to CloudWatch</h3>
 <p>For long-term retention (Prefect Cloud Free retains logs for only 7 days):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">export_logs</span><span class="p">])</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">data_pipeline</span><span class="p">():</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="c1"># Your pipeline logic</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">pass</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">export_logs</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="sd">"""Export flow run logs to CloudWatch after completion"""</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'logs'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="c1"># Create log stream</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="n">log_stream_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        <span class="n">cloudwatch</span><span class="o">.</span><span class="n">create_log_stream</span><span class="p">(</span>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>            <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/prefect/flow-runs'</span><span class="p">,</span>
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>            <span class="n">logStreamName</span><span class="o">=</span><span class="n">log_stream_name</span>
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>        <span class="p">)</span>
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>    <span class="k">except</span> <span class="n">cloudwatch</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ResourceAlreadyExistsException</span><span class="p">:</span>
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>        <span class="k">pass</span>  <span class="c1"># Stream already exists</span>
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>    <span class="c1"># Get logs from Prefect</span>
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>    <span class="n">logs</span> <span class="o">=</span> <span class="n">get_flow_run_logs</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>
-<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>    <span class="c1"># Send to CloudWatch</span>
-<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_log_events</span><span class="p">(</span>
-<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>        <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/prefect/flow-runs'</span><span class="p">,</span>
-<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>        <span class="n">logStreamName</span><span class="o">=</span><span class="n">log_stream_name</span><span class="p">,</span>
-<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a>        <span class="n">logEvents</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a>            <span class="p">{</span>
-<a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a>                <span class="s1">'timestamp'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">log</span><span class="p">[</span><span class="s1">'timestamp'</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
-<a id="__codelineno-8-36" name="__codelineno-8-36" href="#__codelineno-8-36"></a>                <span class="s1">'message'</span><span class="p">:</span> <span class="n">log</span><span class="p">[</span><span class="s1">'message'</span><span class="p">]</span>
-<a id="__codelineno-8-37" name="__codelineno-8-37" href="#__codelineno-8-37"></a>            <span class="p">}</span>
-<a id="__codelineno-8-38" name="__codelineno-8-38" href="#__codelineno-8-38"></a>            <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span>
-<a id="__codelineno-8-39" name="__codelineno-8-39" href="#__codelineno-8-39"></a>        <span class="p">]</span>
-<a id="__codelineno-8-40" name="__codelineno-8-40" href="#__codelineno-8-40"></a>    <span class="p">)</span>
-<a id="__codelineno-8-41" name="__codelineno-8-41" href="#__codelineno-8-41"></a>
-<a id="__codelineno-8-42" name="__codelineno-8-42" href="#__codelineno-8-42"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exported logs to CloudWatch: /prefect/flow-runs/</span><span class="si">{</span><span class="n">log_stream_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">export_logs</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_pipeline</span><span class="p">():</span>
+    <span class="c1"># Your pipeline logic</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export_logs</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Export flow run logs to CloudWatch after completion"""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'logs'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
+
+    <span class="c1"># Create log stream</span>
+    <span class="n">log_stream_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cloudwatch</span><span class="o">.</span><span class="n">create_log_stream</span><span class="p">(</span>
+            <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/prefect/flow-runs'</span><span class="p">,</span>
+            <span class="n">logStreamName</span><span class="o">=</span><span class="n">log_stream_name</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">cloudwatch</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ResourceAlreadyExistsException</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Stream already exists</span>
+
+    <span class="c1"># Get logs from Prefect</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">get_flow_run_logs</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="c1"># Send to CloudWatch</span>
+    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_log_events</span><span class="p">(</span>
+        <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/prefect/flow-runs'</span><span class="p">,</span>
+        <span class="n">logStreamName</span><span class="o">=</span><span class="n">log_stream_name</span><span class="p">,</span>
+        <span class="n">logEvents</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">'timestamp'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">log</span><span class="p">[</span><span class="s1">'timestamp'</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
+                <span class="s1">'message'</span><span class="p">:</span> <span class="n">log</span><span class="p">[</span><span class="s1">'message'</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exported logs to CloudWatch: /prefect/flow-runs/</span><span class="si">{</span><span class="n">log_stream_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="dbt-logs">dbt Logs</h2>
 <p>dbt writes logs to <code>logs/dbt.log</code> and <code>target/run_results.json</code>.</p>
 <h3 id="view-dbt-logs-locally">View dbt Logs Locally</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># View latest run logs</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>tail<span class="w"> </span>-100<span class="w"> </span>logs/dbt.log
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># View compiled SQL for a model</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>cat<span class="w"> </span>target/compiled/dbt_transform/models/marts/fct_orders.sql
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1"># View run results (JSON)</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>cat<span class="w"> </span>target/run_results.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.results[] | {name: .unique_id, status: .status, execution_time: .execution_time}'</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/dbt/dbt-transform
+
+<span class="c1"># View latest run logs</span>
+tail<span class="w"> </span>-100<span class="w"> </span>logs/dbt.log
+
+<span class="c1"># View compiled SQL for a model</span>
+cat<span class="w"> </span>target/compiled/dbt_transform/models/marts/fct_orders.sql
+
+<span class="c1"># View run results (JSON)</span>
+cat<span class="w"> </span>target/run_results.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.results[] | {name: .unique_id, status: .status, execution_time: .execution_time}'</span>
 </code></pre></div>
 <p><strong>Example output:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model.dbt_transform.stg_orders"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">}</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model.dbt_transform.fct_orders"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.3</span><span class="p">}</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test.dbt_transform.unique_fct_orders_order_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pass"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model.dbt_transform.stg_orders"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model.dbt_transform.fct_orders"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.3</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test.dbt_transform.unique_fct_orders_order_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pass"</span><span class="p">,</span><span class="w"> </span><span class="nt">"execution_time"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="p">}</span>
 </code></pre></div>
 <h3 id="send-dbt-logs-to-cloudwatch">Send dbt Logs to CloudWatch</h3>
 <p>When running dbt in Prefect:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">shell_run_command</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="nd">@task</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_dbt_with_logging</span><span class="p">():</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="c1"># Run dbt</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">shell_run_command</span><span class="p">(</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>        <span class="n">command</span><span class="o">=</span><span class="s2">"cd ~/projects/dbt/dbt-transform &amp;&amp; dbt build --target prod"</span><span class="p">,</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>        <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="p">)</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="c1"># Parse dbt output</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="n">stdout</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>    <span class="n">stderr</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="c1"># Send to CloudWatch</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'logs'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_log_events</span><span class="p">(</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>        <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/dbt/builds'</span><span class="p">,</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>        <span class="n">logStreamName</span><span class="o">=</span><span class="sa">f</span><span class="s2">"build-</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">-%H%M%S'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>        <span class="n">logEvents</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>            <span class="p">{</span>
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>                <span class="s1">'timestamp'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
-<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>                <span class="s1">'message'</span><span class="p">:</span> <span class="n">stdout</span> <span class="o">+</span> <span class="n">stderr</span>
-<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>            <span class="p">}</span>
-<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>        <span class="p">]</span>
-<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>    <span class="p">)</span>
-<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>
-<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>    <span class="k">return</span> <span class="n">result</span>
-<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>
-<a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a><span class="nd">@flow</span>
-<a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-11-36" name="__codelineno-11-36" href="#__codelineno-11-36"></a>    <span class="n">run_dbt_with_logging</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">shell_run_command</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_dbt_with_logging</span><span class="p">():</span>
+    <span class="c1"># Run dbt</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">shell_run_command</span><span class="p">(</span>
+        <span class="n">command</span><span class="o">=</span><span class="s2">"cd ~/projects/dbt/dbt-transform &amp;&amp; dbt build --target prod"</span><span class="p">,</span>
+        <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Parse dbt output</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="n">stderr</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span>
+
+    <span class="c1"># Send to CloudWatch</span>
+    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'logs'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
+
+    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_log_events</span><span class="p">(</span>
+        <span class="n">logGroupName</span><span class="o">=</span><span class="s1">'/dbt/builds'</span><span class="p">,</span>
+        <span class="n">logStreamName</span><span class="o">=</span><span class="sa">f</span><span class="s2">"build-</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">-%H%M%S'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="n">logEvents</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">'timestamp'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
+                <span class="s1">'message'</span><span class="p">:</span> <span class="n">stdout</span> <span class="o">+</span> <span class="n">stderr</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="n">run_dbt_with_logging</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="parse-dbt-logs-for-errors">Parse dbt Logs for Errors</h3>
 <p>dbt logs contain rich information about model execution:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse_dbt_errors</span><span class="p">(</span><span class="n">log_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="sd">"""Extract error messages from dbt logs"""</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="c1"># Match lines like: "Database Error in model fct_orders (models/marts/fct_orders.sql)"</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"(Database Error|Compilation Error) in model (\w+) \((.*?)\)"</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">log_content</span><span class="p">):</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>        <span class="n">error_type</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>        <span class="n">model_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>        <span class="n">file_path</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>            <span class="s1">'type'</span><span class="p">:</span> <span class="n">error_type</span><span class="p">,</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>            <span class="s1">'model'</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>            <span class="s1">'file'</span><span class="p">:</span> <span class="n">file_path</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>        <span class="p">})</span>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="k">return</span> <span class="n">errors</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dbt_errors</span><span class="p">(</span><span class="n">log_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Extract error messages from dbt logs"""</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Match lines like: "Database Error in model fct_orders (models/marts/fct_orders.sql)"</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"(Database Error|Compilation Error) in model (\w+) \((.*?)\)"</span>
+
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">log_content</span><span class="p">):</span>
+        <span class="n">error_type</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">'type'</span><span class="p">:</span> <span class="n">error_type</span><span class="p">,</span>
+            <span class="s1">'model'</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
+            <span class="s1">'file'</span><span class="p">:</span> <span class="n">file_path</span>
+        <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">errors</span>
 </code></pre></div>
 <h3 id="track-dbt-run-metadata-in-snowflake">Track dbt Run Metadata in Snowflake</h3>
 <p>Store dbt run metadata for historical analysis:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- Create dbt run history table</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">observability</span><span class="p">.</span><span class="n">dbt_run_history</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="n">run_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="n">run_timestamp</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="n">total_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="n">successful_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="n">failed_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="n">total_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="n">passed_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="n">failed_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="n">execution_time_seconds</span><span class="w"> </span><span class="nb">FLOAT</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Create dbt run history table</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">observability</span><span class="p">.</span><span class="n">dbt_run_history</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">run_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">run_timestamp</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">successful_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">failed_models</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">passed_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">failed_tests</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_time_seconds</span><span class="w"> </span><span class="nb">FLOAT</span>
+<span class="p">);</span>
 </code></pre></div>
 <p>Insert run results after each dbt run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@task</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">record_dbt_run_metadata</span><span class="p">():</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="c1"># Parse run_results.json</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'~/projects/dbt/dbt-transform/target/run_results.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>        <span class="n">run_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="c1"># Extract metadata</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">total_models</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s1">'unique_id'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'model.'</span><span class="p">))</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">successful_models</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s1">'unique_id'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'model.'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'success'</span><span class="p">)</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="c1"># Insert into Snowflake</span>
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="n">conn</span> <span class="o">=</span> <span class="n">snowflake</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
-<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""</span>
-<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="s2">        INSERT INTO analytics.observability.dbt_run_history</span>
-<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="s2">        VALUES (</span>
-<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="s2">            '</span><span class="si">{</span><span class="n">run_results</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">][</span><span class="s1">'run_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">',</span>
-<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="s2">            '</span><span class="si">{</span><span class="n">run_results</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">][</span><span class="s1">'generated_at'</span><span class="p">]</span><span class="si">}</span><span class="s2">',</span>
-<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="s2">            '</span><span class="si">{</span><span class="s2">"success"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">all</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'success'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">])</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"failed"</span><span class="si">}</span><span class="s2">',</span>
-<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="s2">            </span><span class="si">{</span><span class="n">total_models</span><span class="si">}</span><span class="s2">,</span>
-<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="s2">            </span><span class="si">{</span><span class="n">successful_models</span><span class="si">}</span><span class="s2">,</span>
-<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="s2">            ...</span>
-<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="s2">        )</span>
-<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="s2">    """</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">record_dbt_run_metadata</span><span class="p">():</span>
+    <span class="c1"># Parse run_results.json</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'~/projects/dbt/dbt-transform/target/run_results.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">run_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="c1"># Extract metadata</span>
+    <span class="n">total_models</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s1">'unique_id'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'model.'</span><span class="p">))</span>
+    <span class="n">successful_models</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s1">'unique_id'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'model.'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'success'</span><span class="p">)</span>
+
+    <span class="c1"># Insert into Snowflake</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">snowflake</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">        INSERT INTO analytics.observability.dbt_run_history</span>
+<span class="s2">        VALUES (</span>
+<span class="s2">            '</span><span class="si">{</span><span class="n">run_results</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">][</span><span class="s1">'run_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">',</span>
+<span class="s2">            '</span><span class="si">{</span><span class="n">run_results</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">][</span><span class="s1">'generated_at'</span><span class="p">]</span><span class="si">}</span><span class="s2">',</span>
+<span class="s2">            '</span><span class="si">{</span><span class="s2">"success"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">all</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'success'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">run_results</span><span class="p">[</span><span class="s1">'results'</span><span class="p">])</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"failed"</span><span class="si">}</span><span class="s2">',</span>
+<span class="s2">            </span><span class="si">{</span><span class="n">total_models</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">            </span><span class="si">{</span><span class="n">successful_models</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">            ...</span>
+<span class="s2">        )</span>
+<span class="s2">    """</span><span class="p">)</span>
 </code></pre></div>
 <p>Query historical dbt runs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="nb">DATE</span><span class="p">(</span><span class="n">run_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">status</span><span class="p">,</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">execution_time_seconds</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_execution_time</span><span class="p">,</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">passed_tests</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_tests</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_test_pass_rate</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">observability</span><span class="p">.</span><span class="n">dbt_run_history</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">run_timestamp</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">month</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="nb">DATE</span><span class="p">(</span><span class="n">run_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">execution_time_seconds</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_execution_time</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">passed_tests</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_tests</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_test_pass_rate</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">observability</span><span class="p">.</span><span class="n">dbt_run_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">run_timestamp</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">month</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="snowflake-query-logs">Snowflake Query Logs</h2>
 <p>Snowflake logs all queries in <code>QUERY_HISTORY</code>.</p>
 <h3 id="view-recent-queries">View Recent Queries</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="n">start_time</span><span class="p">,</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span>
-<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="find-failed-queries">Find Failed Queries</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_preview</span><span class="p">,</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="n">error_code</span><span class="p">,</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">start_time</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FAIL'</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_preview</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_code</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FAIL'</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Common error codes:</strong>
 - <strong>2003</strong> — Compilation error (SQL syntax invalid)
@@ -6965,45 +6967,45 @@
 - <strong>630</strong> — Statement reached its timeout (query &gt; timeout limit)</p>
 <h3 id="correlate-query-logs-with-dbt-runs">Correlate Query Logs with dbt Runs</h3>
 <p>dbt queries include a comment with metadata:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">-- dbt model: fct_orders</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1">-- dbt version: 1.7.0</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="p">...</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- dbt model: fct_orders</span>
+<span class="c1">-- dbt version: 1.7.0</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="p">...</span>
 </code></pre></div>
 <p>Search for dbt queries:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">model_name</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%dbt model:%'</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">model_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%dbt model:%'</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="debugging-common-issues">Debugging Common Issues</h2>
 <h3 id="issue-table-or-view-not-found">Issue: "Table or view not found"</h3>
 <p><strong>Symptom:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>ERROR: Object 'ANALYTICS.MARTS.FCT_ORDERS' does not exist
+</p><div class="highlight"><pre><span></span><code>ERROR: Object 'ANALYTICS.MARTS.FCT_ORDERS' does not exist
 </code></pre></div><p></p>
 <p><strong>Diagnosis:</strong></p>
 <ol>
 <li>
 <p>Check if table exists:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'FCT_ORDERS'</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">;</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'FCT_ORDERS'</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li>
 <p>If table doesn't exist, check dbt run logs:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>tail<span class="w"> </span>-100<span class="w"> </span>~/projects/dbt/dbt-transform/logs/dbt.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>fct_orders
+   </p><div class="highlight"><pre><span></span><code>tail<span class="w"> </span>-100<span class="w"> </span>~/projects/dbt/dbt-transform/logs/dbt.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>fct_orders
 </code></pre></div><p></p>
 </li>
 <li>
 <p>Check if dbt model is disabled:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># models/marts/core/fct_orders.yml</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># ← Disabled!</span>
+   </p><div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_orders.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># ← Disabled!</span>
 </code></pre></div><p></p>
 </li>
 </ol>
@@ -7013,30 +7015,30 @@
 - If table was dropped manually: re-run dbt to recreate</p>
 <h3 id="issue-null-values-found-in-column">Issue: "Null values found in column"</h3>
 <p><strong>Symptom:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>dbt test failed: not_null test on fct_orders.customer_id
+</p><div class="highlight"><pre><span></span><code>dbt test failed: not_null test on fct_orders.customer_id
 </code></pre></div><p></p>
 <p><strong>Diagnosis:</strong></p>
 <ol>
 <li>
 <p>Query the table to find null rows:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li>
 <p>Trace upstream to find where nulls originated:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">);</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">);</span>
 </code></pre></div><p></p>
 </li>
 <li>
 <p>Check source data:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">dlt_db</span><span class="p">.</span><span class="n">raw_orders</span>
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">dlt_db</span><span class="p">.</span><span class="n">raw_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 </ol>
@@ -7044,62 +7046,62 @@
 - If nulls are in source data: filter them out in dbt staging model
 - If nulls are introduced by dbt JOIN: fix JOIN logic (use INNER JOIN instead of LEFT JOIN, or add COALESCE)
 - If nulls are valid: adjust test to allow nulls in specific conditions:
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">      </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span><span class="w">  </span><span class="c1"># Allow nulls for cancelled orders</span>
+  </p><div class="highlight"><pre><span></span><code><span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">not_null</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">where</span><span class="p">:</span><span class="w"> </span><span class="s">"order_status</span><span class="nv"> </span><span class="s">!=</span><span class="nv"> </span><span class="s">'cancelled'"</span><span class="w">  </span><span class="c1"># Allow nulls for cancelled orders</span>
 </code></pre></div><p></p>
 <h3 id="issue-duplicate-rows-in-table">Issue: "Duplicate rows in table"</h3>
 <p><strong>Symptom:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>dbt test failed: unique test on fct_orders.order_id
+</p><div class="highlight"><pre><span></span><code>dbt test failed: unique test on fct_orders.order_id
 </code></pre></div><p></p>
 <p><strong>Diagnosis:</strong></p>
 <ol>
 <li>
 <p>Find duplicate rows:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">row_count</span>
-<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
-<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
-<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">row_count</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">row_count</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
+<span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">row_count</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li>
 <p>Inspect duplicate rows:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span>
-<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
-<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
-<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="w">    </span><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
-<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="p">)</span>
-<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span><span class="p">;</span>
+   </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_orders</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span>
+<span class="w">    </span><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li>
 <p>Check dbt model for incorrect JOINs or missing DISTINCT:
-   </p><div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>cat<span class="w"> </span>~/projects/dbt/dbt-transform/models/marts/fct_orders.sql
+   </p><div class="highlight"><pre><span></span><code>cat<span class="w"> </span>~/projects/dbt/dbt-transform/models/marts/fct_orders.sql
 </code></pre></div><p></p>
 </li>
 </ol>
 <p><strong>Resolution:</strong>
 - If duplicates from JOIN: add <code>DISTINCT</code> or fix JOIN grain
 - If duplicates from source: de-duplicate in staging model using <code>ROW_NUMBER()</code>:
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">        </span><span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">        </span><span class="n">ROW_NUMBER</span><span class="p">()</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">loaded_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">rn</span>
-<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span>
-<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="p">)</span>
-<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">rn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+  </p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="o">*</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ROW_NUMBER</span><span class="p">()</span><span class="w"> </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">loaded_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">rn</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span>
+<span class="p">)</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">rn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div><p></p>
 <h3 id="issue-query-timeout">Issue: "Query timeout"</h3>
 <p><strong>Symptom:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>ERROR: Statement reached its maximum execution time of 300 seconds and was cancelled
+</p><div class="highlight"><pre><span></span><code>ERROR: Statement reached its maximum execution time of 300 seconds and was cancelled
 </code></pre></div><p></p>
 <p><strong>Diagnosis:</strong></p>
 <ol>
@@ -7118,18 +7120,18 @@
 </ol>
 <p><strong>Resolution:</strong>
 - <strong>Temporary:</strong> Increase query timeout:
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">STATEMENT_TIMEOUT_IN_SECONDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">600</span><span class="p">;</span>
+  </p><div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">STATEMENT_TIMEOUT_IN_SECONDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">600</span><span class="p">;</span>
 </code></pre></div>
 - <strong>Long-term:</strong> Optimise query (see <a href="../7-snowflake-monitoring/">Snowflake Monitoring</a>)<p></p>
 <h3 id="issue-out-of-memory">Issue: "Out of memory"</h3>
 <p><strong>Symptom:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>ERROR: Out of memory. Warehouse size may be too small
+</p><div class="highlight"><pre><span></span><code>ERROR: Out of memory. Warehouse size may be too small
 </code></pre></div><p></p>
 <p><strong>Diagnosis:</strong></p>
 <p>Query Profile shows "Bytes spilled to remote storage" (worst case) or "Bytes spilled to local storage".</p>
 <p><strong>Resolution:</strong>
 - Use a larger warehouse temporarily:
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_LARGE</span><span class="p">;</span>
+  </p><div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_LARGE</span><span class="p">;</span>
 </code></pre></div>
 - Optimise query:
   - Reduce window function complexity
@@ -7164,38 +7166,38 @@
 <p><strong>S3 archival cost:</strong> ~$0.023/GB/month (Glacier Deep Archive: ~$0.001/GB/month)</p>
 <h3 id="automate-log-exports">Automate Log Exports</h3>
 <p>Use CloudWatch Logs subscription filter + Lambda:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="c1"># Lambda function to export logs to S3</span>
-<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
-<a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a>
-<a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-<a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a>    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
-<a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>
-<a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a>    <span class="c1"># Decode CloudWatch log event</span>
-<a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a>    <span class="n">log_data</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">'awslogs'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span>
-<a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a>    <span class="n">decoded</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">log_data</span><span class="p">))</span>
-<a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>    <span class="n">log_events</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
-<a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a>
-<a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a>    <span class="c1"># Write to S3</span>
-<a id="__codelineno-38-16" name="__codelineno-38-16" href="#__codelineno-38-16"></a>    <span class="n">bucket</span> <span class="o">=</span> <span class="s1">'data-platform-logs'</span>
-<a id="__codelineno-38-17" name="__codelineno-38-17" href="#__codelineno-38-17"></a>    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"cloudwatch-archive/</span><span class="si">{</span><span class="n">log_events</span><span class="p">[</span><span class="s1">'logGroup'</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y/%m/</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="si">}</span><span class="s2">.json.gz"</span>
-<a id="__codelineno-38-18" name="__codelineno-38-18" href="#__codelineno-38-18"></a>
-<a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a>    <span class="n">s3</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
-<a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a>        <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span>
-<a id="__codelineno-38-21" name="__codelineno-38-21" href="#__codelineno-38-21"></a>        <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-<a id="__codelineno-38-22" name="__codelineno-38-22" href="#__codelineno-38-22"></a>        <span class="n">Body</span><span class="o">=</span><span class="n">gzip</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_events</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-<a id="__codelineno-38-23" name="__codelineno-38-23" href="#__codelineno-38-23"></a>    <span class="p">)</span>
-<a id="__codelineno-38-24" name="__codelineno-38-24" href="#__codelineno-38-24"></a>
-<a id="__codelineno-38-25" name="__codelineno-38-25" href="#__codelineno-38-25"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">'statusCode'</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Lambda function to export logs to S3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
+
+    <span class="c1"># Decode CloudWatch log event</span>
+    <span class="n">log_data</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">'awslogs'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span>
+    <span class="n">decoded</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">log_data</span><span class="p">))</span>
+    <span class="n">log_events</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
+
+    <span class="c1"># Write to S3</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="s1">'data-platform-logs'</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"cloudwatch-archive/</span><span class="si">{</span><span class="n">log_events</span><span class="p">[</span><span class="s1">'logGroup'</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y/%m/</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="si">}</span><span class="s2">.json.gz"</span>
+
+    <span class="n">s3</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
+        <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span>
+        <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+        <span class="n">Body</span><span class="o">=</span><span class="n">gzip</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_events</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">'statusCode'</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
 </code></pre></div>
 <p>Trigger via CloudWatch Logs subscription:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>aws<span class="w"> </span>logs<span class="w"> </span>put-subscription-filter<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="w">    </span>--log-group-name<span class="w"> </span><span class="s2">"/ecs/lightdash"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="w">    </span>--filter-name<span class="w"> </span><span class="s2">"export-to-s3"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="w">    </span>--filter-pattern<span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="w">    </span>--destination-arn<span class="w"> </span><span class="s2">"arn:aws:lambda:eu-west-2:123456789012:function:log-exporter"</span>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>logs<span class="w"> </span>put-subscription-filter<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-group-name<span class="w"> </span><span class="s2">"/ecs/lightdash"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--filter-name<span class="w"> </span><span class="s2">"export-to-s3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--filter-pattern<span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--destination-arn<span class="w"> </span><span class="s2">"arn:aws:lambda:eu-west-2:123456789012:function:log-exporter"</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've set up comprehensive logging and debugging:</p>
@@ -7260,6 +7262,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7303,7 +7307,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

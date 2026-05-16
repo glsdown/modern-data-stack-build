@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6154,15 +6156,15 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Prefect orchestrates the end-to-end data pipeline: ingestion flows run first, and when they complete successfully, the dbt transformation run is triggered. This keeps the full pipeline dependency graph visible in one place.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Prefect (data-pipelines repo)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── daily_pipeline flow
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── Task: run DLT exchange rates pipeline
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── Task: trigger Airbyte HubSpot sync (wait for completion)
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   └── Task: trigger dbt run (after ingestion tasks succeed)
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>└── weekly_pipeline flow
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    ├── Task: run DLT currencies pipeline
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    └── Task: trigger dbt full refresh
+<div class="highlight"><pre><span></span><code>Prefect (data-pipelines repo)
+├── daily_pipeline flow
+│   ├── Task: run DLT exchange rates pipeline
+│   ├── Task: trigger Airbyte HubSpot sync (wait for completion)
+│   └── Task: trigger dbt run (after ingestion tasks succeed)
+│
+└── weekly_pipeline flow
+    ├── Task: run DLT currencies pipeline
+    └── Task: trigger dbt full refresh
 </code></pre></div>
 <p>The dbt code lives in the separate <code>dbt-transform</code> repository. Prefect pulls the latest version at runtime and runs it.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">dbt Core</label><label for="__tabbed_1_2">dbt Cloud</label></div>
@@ -6172,314 +6174,314 @@
 <p>For dbt Core, Prefect clones the <code>dbt-transform</code> repository at runtime and uses <code>DbtCoreOperation</code> from <code>prefect-dbt</code> to run dbt commands.</p>
 <h3 id="install-dependencies">Install Dependencies</h3>
 <p>Add <code>prefect-dbt</code> to the <code>data-pipelines</code> repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># requirements.txt</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>prefect-dbt<span class="o">[</span>snowflake<span class="o">]</span>&gt;<span class="o">=</span><span class="m">0</span>.6.0
+<div class="highlight"><pre><span></span><code><span class="c1"># requirements.txt</span>
+prefect-dbt<span class="o">[</span>snowflake<span class="o">]</span>&gt;<span class="o">=</span><span class="m">0</span>.6.0
 </code></pre></div>
 <h3 id="the-transformation-flow">The Transformation Flow</h3>
 <p>Create <code>pipelines/transform/dbt_flow.py</code> in the <code>data-pipelines</code> repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCoreOperation</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">clone_dbt_repo</span><span class="p">(</span><span class="n">target_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="sd">"""Clone the dbt-transform repository at the latest main branch commit."""</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="c1"># Fetch GitHub token from Secrets Manager</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="n">secret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"terraform/github-token"</span><span class="p">)</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">github_token</span> <span class="o">=</span> <span class="n">secret</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">]</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">repo_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">github_token</span><span class="si">}</span><span class="s2">@github.com/your-org/dbt-transform.git"</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cloning dbt-transform repository to </span><span class="si">{</span><span class="n">target_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        <span class="p">[</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"clone"</span><span class="p">,</span> <span class="s2">"--depth"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"--branch"</span><span class="p">,</span> <span class="s2">"main"</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)],</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    <span class="p">)</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Git clone failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Repository cloned successfully"</span><span class="p">)</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_dbt_profiles</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">credentials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">    </span><span class="sd">"""Write a temporary profiles.yml for this run."""</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>    <span class="n">profiles_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".profiles"</span>
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>    <span class="n">profiles_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>    <span class="n">profiles_path</span> <span class="o">=</span> <span class="n">profiles_dir</span> <span class="o">/</span> <span class="s2">"profiles.yml"</span>
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>    <span class="c1"># Write private key to a temp file</span>
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>    <span class="n">key_path</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".profiles"</span> <span class="o">/</span> <span class="s2">"snowflake_key.pem"</span>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>    <span class="n">key_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s2">"private_key"</span><span class="p">])</span>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>    <span class="n">key_path</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="mo">0o600</span><span class="p">)</span>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>    <span class="n">profiles_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="s2">dbt_transform:</span>
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="s2">  target: prod</span>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="s2">  outputs:</span>
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="s2">    prod:</span>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="s2">      type: snowflake</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="s2">      account: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'account'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="s2">      user: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="s2">      private_key_path: "</span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="s2">      role: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'role'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="s2">      warehouse: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'warehouse'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="s2">      database: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'database'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="s2">      schema: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="s2">      threads: 8</span>
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="s2">"""</span>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>    <span class="n">profiles_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">profiles_content</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>    <span class="k">return</span> <span class="n">profiles_dir</span>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="k">def</span><span class="w"> </span><span class="nf">fetch_dbt_manifest</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">    </span><span class="sd">"""Fetch the production manifest.json from S3 for state-based operations."""</span>
-<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>    <span class="n">artifacts_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".artifacts"</span>
-<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>    <span class="n">artifacts_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>
-<a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
-<a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>        <span class="n">s3</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span>
-<a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a>            <span class="s2">"your-org-dbt-artifacts"</span><span class="p">,</span>
-<a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a>            <span class="s2">"artifacts/manifest.json"</span><span class="p">,</span>
-<a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>            <span class="nb">str</span><span class="p">(</span><span class="n">artifacts_dir</span> <span class="o">/</span> <span class="s2">"manifest.json"</span><span class="p">),</span>
-<a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a>        <span class="p">)</span>
-<a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Production manifest fetched successfully"</span><span class="p">)</span>
-<a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not fetch manifest (first run?): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a>
-<a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>
-<a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">commands</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="w">    </span><span class="sd">"""Run dbt commands using DbtCoreOperation."""</span>
-<a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-2-90" name="__codelineno-2-90" href="#__codelineno-2-90"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running dbt commands: </span><span class="si">{</span><span class="n">commands</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-2-91" name="__codelineno-2-91" href="#__codelineno-2-91"></a>
-<a id="__codelineno-2-92" name="__codelineno-2-92" href="#__codelineno-2-92"></a>    <span class="k">with</span> <span class="n">DbtCoreOperation</span><span class="p">(</span>
-<a id="__codelineno-2-93" name="__codelineno-2-93" href="#__codelineno-2-93"></a>        <span class="n">commands</span><span class="o">=</span><span class="n">commands</span><span class="p">,</span>
-<a id="__codelineno-2-94" name="__codelineno-2-94" href="#__codelineno-2-94"></a>        <span class="n">project_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">project_dir</span><span class="p">),</span>
-<a id="__codelineno-2-95" name="__codelineno-2-95" href="#__codelineno-2-95"></a>        <span class="n">profiles_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">profiles_dir</span><span class="p">),</span>
-<a id="__codelineno-2-96" name="__codelineno-2-96" href="#__codelineno-2-96"></a>        <span class="n">overwrite_profiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-2-97" name="__codelineno-2-97" href="#__codelineno-2-97"></a>    <span class="p">)</span> <span class="k">as</span> <span class="n">dbt_op</span><span class="p">:</span>
-<a id="__codelineno-2-98" name="__codelineno-2-98" href="#__codelineno-2-98"></a>        <span class="n">dbt_op</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<a id="__codelineno-2-99" name="__codelineno-2-99" href="#__codelineno-2-99"></a>
-<a id="__codelineno-2-100" name="__codelineno-2-100" href="#__codelineno-2-100"></a>
-<a id="__codelineno-2-101" name="__codelineno-2-101" href="#__codelineno-2-101"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-transformation"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-2-102" name="__codelineno-2-102" href="#__codelineno-2-102"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-2-103" name="__codelineno-2-103" href="#__codelineno-2-103"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-2-104" name="__codelineno-2-104" href="#__codelineno-2-104"></a><span class="sd">    Run dbt transformations.</span>
-<a id="__codelineno-2-105" name="__codelineno-2-105" href="#__codelineno-2-105"></a>
-<a id="__codelineno-2-106" name="__codelineno-2-106" href="#__codelineno-2-106"></a><span class="sd">    Args:</span>
-<a id="__codelineno-2-107" name="__codelineno-2-107" href="#__codelineno-2-107"></a><span class="sd">        full_refresh: If True, run with --full-refresh flag (for weekly runs).</span>
-<a id="__codelineno-2-108" name="__codelineno-2-108" href="#__codelineno-2-108"></a><span class="sd">    """</span>
-<a id="__codelineno-2-109" name="__codelineno-2-109" href="#__codelineno-2-109"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-2-110" name="__codelineno-2-110" href="#__codelineno-2-110"></a>
-<a id="__codelineno-2-111" name="__codelineno-2-111" href="#__codelineno-2-111"></a>    <span class="c1"># Fetch dbt credentials from Secrets Manager</span>
-<a id="__codelineno-2-112" name="__codelineno-2-112" href="#__codelineno-2-112"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
-<a id="__codelineno-2-113" name="__codelineno-2-113" href="#__codelineno-2-113"></a>    <span class="n">secret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt/snowflake-credentials"</span><span class="p">)</span>
-<a id="__codelineno-2-114" name="__codelineno-2-114" href="#__codelineno-2-114"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-2-115" name="__codelineno-2-115" href="#__codelineno-2-115"></a>    <span class="n">credentials</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">])</span>
-<a id="__codelineno-2-116" name="__codelineno-2-116" href="#__codelineno-2-116"></a>
-<a id="__codelineno-2-117" name="__codelineno-2-117" href="#__codelineno-2-117"></a>    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
-<a id="__codelineno-2-118" name="__codelineno-2-118" href="#__codelineno-2-118"></a>        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"dbt-transform"</span>
-<a id="__codelineno-2-119" name="__codelineno-2-119" href="#__codelineno-2-119"></a>
-<a id="__codelineno-2-120" name="__codelineno-2-120" href="#__codelineno-2-120"></a>        <span class="c1"># Clone the dbt repo</span>
-<a id="__codelineno-2-121" name="__codelineno-2-121" href="#__codelineno-2-121"></a>        <span class="n">clone_dbt_repo</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
-<a id="__codelineno-2-122" name="__codelineno-2-122" href="#__codelineno-2-122"></a>
-<a id="__codelineno-2-123" name="__codelineno-2-123" href="#__codelineno-2-123"></a>        <span class="c1"># Install dbt packages</span>
-<a id="__codelineno-2-124" name="__codelineno-2-124" href="#__codelineno-2-124"></a>        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-<a id="__codelineno-2-125" name="__codelineno-2-125" href="#__codelineno-2-125"></a>            <span class="p">[</span><span class="s2">"dbt"</span><span class="p">,</span> <span class="s2">"deps"</span><span class="p">,</span> <span class="s2">"--project-dir"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)],</span>
-<a id="__codelineno-2-126" name="__codelineno-2-126" href="#__codelineno-2-126"></a>            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-2-127" name="__codelineno-2-127" href="#__codelineno-2-127"></a>        <span class="p">)</span>
-<a id="__codelineno-2-128" name="__codelineno-2-128" href="#__codelineno-2-128"></a>
-<a id="__codelineno-2-129" name="__codelineno-2-129" href="#__codelineno-2-129"></a>        <span class="c1"># Write credentials</span>
-<a id="__codelineno-2-130" name="__codelineno-2-130" href="#__codelineno-2-130"></a>        <span class="n">profiles_dir</span> <span class="o">=</span> <span class="n">write_dbt_profiles</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
-<a id="__codelineno-2-131" name="__codelineno-2-131" href="#__codelineno-2-131"></a>
-<a id="__codelineno-2-132" name="__codelineno-2-132" href="#__codelineno-2-132"></a>        <span class="c1"># Fetch production manifest for deferral</span>
-<a id="__codelineno-2-133" name="__codelineno-2-133" href="#__codelineno-2-133"></a>        <span class="n">fetch_dbt_manifest</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
-<a id="__codelineno-2-134" name="__codelineno-2-134" href="#__codelineno-2-134"></a>
-<a id="__codelineno-2-135" name="__codelineno-2-135" href="#__codelineno-2-135"></a>        <span class="c1"># Check source freshness (warn, don't fail)</span>
-<a id="__codelineno-2-136" name="__codelineno-2-136" href="#__codelineno-2-136"></a>        <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-2-137" name="__codelineno-2-137" href="#__codelineno-2-137"></a>            <span class="n">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">,</span> <span class="p">[</span><span class="s2">"dbt source freshness"</span><span class="p">])</span>
-<a id="__codelineno-2-138" name="__codelineno-2-138" href="#__codelineno-2-138"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-2-139" name="__codelineno-2-139" href="#__codelineno-2-139"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Source freshness check failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-2-140" name="__codelineno-2-140" href="#__codelineno-2-140"></a>
-<a id="__codelineno-2-141" name="__codelineno-2-141" href="#__codelineno-2-141"></a>        <span class="c1"># Build dbt models</span>
-<a id="__codelineno-2-142" name="__codelineno-2-142" href="#__codelineno-2-142"></a>        <span class="n">build_command</span> <span class="o">=</span> <span class="s2">"dbt build"</span>
-<a id="__codelineno-2-143" name="__codelineno-2-143" href="#__codelineno-2-143"></a>        <span class="k">if</span> <span class="n">full_refresh</span><span class="p">:</span>
-<a id="__codelineno-2-144" name="__codelineno-2-144" href="#__codelineno-2-144"></a>            <span class="n">build_command</span> <span class="o">+=</span> <span class="s2">" --full-refresh"</span>
-<a id="__codelineno-2-145" name="__codelineno-2-145" href="#__codelineno-2-145"></a>        <span class="n">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">,</span> <span class="p">[</span><span class="n">build_command</span><span class="p">])</span>
-<a id="__codelineno-2-146" name="__codelineno-2-146" href="#__codelineno-2-146"></a>
-<a id="__codelineno-2-147" name="__codelineno-2-147" href="#__codelineno-2-147"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"dbt transformation completed successfully"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCoreOperation</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clone_dbt_repo</span><span class="p">(</span><span class="n">target_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Clone the dbt-transform repository at the latest main branch commit."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="c1"># Fetch GitHub token from Secrets Manager</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
+    <span class="n">secret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"terraform/github-token"</span><span class="p">)</span>
+    <span class="n">github_token</span> <span class="o">=</span> <span class="n">secret</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">]</span>
+
+    <span class="n">repo_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">github_token</span><span class="si">}</span><span class="s2">@github.com/your-org/dbt-transform.git"</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cloning dbt-transform repository to </span><span class="si">{</span><span class="n">target_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"clone"</span><span class="p">,</span> <span class="s2">"--depth"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"--branch"</span><span class="p">,</span> <span class="s2">"main"</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)],</span>
+        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Git clone failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Repository cloned successfully"</span><span class="p">)</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_dbt_profiles</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">credentials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Write a temporary profiles.yml for this run."""</span>
+    <span class="n">profiles_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".profiles"</span>
+    <span class="n">profiles_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">profiles_path</span> <span class="o">=</span> <span class="n">profiles_dir</span> <span class="o">/</span> <span class="s2">"profiles.yml"</span>
+
+    <span class="c1"># Write private key to a temp file</span>
+    <span class="n">key_path</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".profiles"</span> <span class="o">/</span> <span class="s2">"snowflake_key.pem"</span>
+    <span class="n">key_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s2">"private_key"</span><span class="p">])</span>
+    <span class="n">key_path</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="mo">0o600</span><span class="p">)</span>
+
+    <span class="n">profiles_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">dbt_transform:</span>
+<span class="s2">  target: prod</span>
+<span class="s2">  outputs:</span>
+<span class="s2">    prod:</span>
+<span class="s2">      type: snowflake</span>
+<span class="s2">      account: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'account'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      user: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      private_key_path: "</span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      role: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'role'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      warehouse: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'warehouse'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      database: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'database'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      schema: "</span><span class="si">{</span><span class="n">credentials</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+<span class="s2">      threads: 8</span>
+<span class="s2">"""</span>
+    <span class="n">profiles_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">profiles_content</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">profiles_dir</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_dbt_manifest</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Fetch the production manifest.json from S3 for state-based operations."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">artifacts_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">".artifacts"</span>
+    <span class="n">artifacts_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s3</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span>
+            <span class="s2">"your-org-dbt-artifacts"</span><span class="p">,</span>
+            <span class="s2">"artifacts/manifest.json"</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">artifacts_dir</span> <span class="o">/</span> <span class="s2">"manifest.json"</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Production manifest fetched successfully"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not fetch manifest (first run?): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">commands</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Run dbt commands using DbtCoreOperation."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running dbt commands: </span><span class="si">{</span><span class="n">commands</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">DbtCoreOperation</span><span class="p">(</span>
+        <span class="n">commands</span><span class="o">=</span><span class="n">commands</span><span class="p">,</span>
+        <span class="n">project_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">project_dir</span><span class="p">),</span>
+        <span class="n">profiles_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">profiles_dir</span><span class="p">),</span>
+        <span class="n">overwrite_profiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">dbt_op</span><span class="p">:</span>
+        <span class="n">dbt_op</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-transformation"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Run dbt transformations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        full_refresh: If True, run with --full-refresh flag (for weekly runs).</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="c1"># Fetch dbt credentials from Secrets Manager</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
+    <span class="n">secret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt/snowflake-credentials"</span><span class="p">)</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">])</span>
+
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"dbt-transform"</span>
+
+        <span class="c1"># Clone the dbt repo</span>
+        <span class="n">clone_dbt_repo</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+        <span class="c1"># Install dbt packages</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">"dbt"</span><span class="p">,</span> <span class="s2">"deps"</span><span class="p">,</span> <span class="s2">"--project-dir"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)],</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Write credentials</span>
+        <span class="n">profiles_dir</span> <span class="o">=</span> <span class="n">write_dbt_profiles</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+
+        <span class="c1"># Fetch production manifest for deferral</span>
+        <span class="n">fetch_dbt_manifest</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+        <span class="c1"># Check source freshness (warn, don't fail)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">,</span> <span class="p">[</span><span class="s2">"dbt source freshness"</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Source freshness check failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="c1"># Build dbt models</span>
+        <span class="n">build_command</span> <span class="o">=</span> <span class="s2">"dbt build"</span>
+        <span class="k">if</span> <span class="n">full_refresh</span><span class="p">:</span>
+            <span class="n">build_command</span> <span class="o">+=</span> <span class="s2">" --full-refresh"</span>
+        <span class="n">run_dbt</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">profiles_dir</span><span class="p">,</span> <span class="p">[</span><span class="n">build_command</span><span class="p">])</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"dbt transformation completed successfully"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="integrate-with-the-daily-pipeline">Integrate with the Daily Pipeline</h3>
 <p>Update <code>pipelines/daily_pipeline.py</code> to call the transformation flow after ingestion:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.dlt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates_flow</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.airbyte_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">hubspot_airbyte_flow</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.transform.dbt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">dbt_transformation_flow</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-pipeline"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">daily_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="sd">    Full daily pipeline: ingestion → transformation.</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="sd">    Ingestion flows run in parallel; transformation runs after both complete.</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="sd">    """</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="c1"># Run ingestion flows concurrently</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">exchange_rates</span> <span class="o">=</span> <span class="n">exchange_rates_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="n">hubspot</span> <span class="o">=</span> <span class="n">hubspot_airbyte_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="c1"># Wait for both ingestion flows to complete successfully</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="k">if</span> <span class="n">exchange_rates</span><span class="o">.</span><span class="n">is_failed</span><span class="p">()</span> <span class="ow">or</span> <span class="n">hubspot</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"One or more ingestion flows failed — skipping transformation"</span><span class="p">)</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="c1"># Run transformation after ingestion</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="n">dbt_transformation_flow</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.dlt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates_flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.airbyte_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">hubspot_airbyte_flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.transform.dbt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">dbt_transformation_flow</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-pipeline"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">daily_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Full daily pipeline: ingestion → transformation.</span>
+<span class="sd">    Ingestion flows run in parallel; transformation runs after both complete.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Run ingestion flows concurrently</span>
+    <span class="n">exchange_rates</span> <span class="o">=</span> <span class="n">exchange_rates_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">hubspot</span> <span class="o">=</span> <span class="n">hubspot_airbyte_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Wait for both ingestion flows to complete successfully</span>
+    <span class="k">if</span> <span class="n">exchange_rates</span><span class="o">.</span><span class="n">is_failed</span><span class="p">()</span> <span class="ow">or</span> <span class="n">hubspot</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"One or more ingestion flows failed — skipping transformation"</span><span class="p">)</span>
+
+    <span class="c1"># Run transformation after ingestion</span>
+    <span class="n">dbt_transformation_flow</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="deploy-the-flow">Deploy the Flow</h3>
 <p>Update <code>prefect.yaml</code> in the <code>data-pipelines</code> repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">deployments</span><span class="p">:</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-pipeline</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">flow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipelines/daily_pipeline.py:daily_pipeline</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">schedule</span><span class="p">:</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">   </span><span class="c1"># 06:00 UTC daily</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">      </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-work-pool</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="nt">parameters</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekly-full-refresh</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="nt">flow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipelines/transform/dbt_flow.py:dbt_transformation_flow</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="nt">schedule</span><span class="p">:</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0"</span><span class="w">  </span><span class="c1"># 02:00 UTC every Sunday</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">      </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-work-pool</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">      </span><span class="nt">full_refresh</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-pipeline</span>
+<span class="w">    </span><span class="nt">flow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipelines/daily_pipeline.py:daily_pipeline</span>
+<span class="w">    </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">   </span><span class="c1"># 06:00 UTC daily</span>
+<span class="w">      </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-work-pool</span>
+<span class="w">    </span><span class="nt">parameters</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekly-full-refresh</span>
+<span class="w">    </span><span class="nt">flow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipelines/transform/dbt_flow.py:dbt_transformation_flow</span>
+<span class="w">    </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0"</span><span class="w">  </span><span class="c1"># 02:00 UTC every Sunday</span>
+<span class="w">      </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-work-pool</span>
+<span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">full_refresh</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <p>Deploy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <h2 id="dbt-cloud-integration">dbt Cloud Integration</h2>
 <p>For dbt Cloud, Prefect triggers a dbt Cloud job via the API and polls for completion. This keeps scheduling in Prefect while delegating the actual dbt run to dbt Cloud.</p>
 <h3 id="install-dependencies_1">Install Dependencies</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># requirements.txt</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>prefect-dbt<span class="o">[</span>cloud<span class="o">]</span>&gt;<span class="o">=</span><span class="m">0</span>.6.0
+<div class="highlight"><pre><span></span><code><span class="c1"># requirements.txt</span>
+prefect-dbt<span class="o">[</span>cloud<span class="o">]</span>&gt;<span class="o">=</span><span class="m">0</span>.6.0
 </code></pre></div>
 <h3 id="configure-the-dbt-cloud-block">Configure the dbt Cloud Block</h3>
 <p>Create a Prefect <code>DbtCloudCredentials</code> block with the API token:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># Run once to create the block (or use the Prefect UI)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">DbtCloudCredentials</span><span class="p">(</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">api_key</span><span class="o">=</span><span class="s2">"YOUR_SERVICE_TOKEN"</span><span class="p">,</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">account_id</span><span class="o">=</span><span class="n">YOUR_ACCOUNT_ID</span><span class="p">,</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
+
+<span class="c1"># Run once to create the block (or use the Prefect UI)</span>
+<span class="n">DbtCloudCredentials</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">"YOUR_SERVICE_TOKEN"</span><span class="p">,</span>
+    <span class="n">account_id</span><span class="o">=</span><span class="n">YOUR_ACCOUNT_ID</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">)</span>
 </code></pre></div>
 <p>Or create via the Prefect UI: <strong>Blocks</strong> → <strong>New Block</strong> → <strong>dbt Cloud Credentials</strong>.</p>
 <p>Store the service token in AWS Secrets Manager (<code>dbt-cloud/api-credentials</code>) and create the block programmatically in your CI/CD:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># scripts/create_prefect_blocks.py</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt-cloud/api-credentials"</span><span class="p">)[</span><span class="s2">"SecretString"</span><span class="p">]</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">)</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">DbtCloudCredentials</span><span class="p">(</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="n">api_key</span><span class="o">=</span><span class="n">secret</span><span class="p">[</span><span class="s2">"api_token"</span><span class="p">],</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    <span class="n">account_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"account_id"</span><span class="p">]),</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># scripts/create_prefect_blocks.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
+<span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt-cloud/api-credentials"</span><span class="p">)[</span><span class="s2">"SecretString"</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">DbtCloudCredentials</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="n">secret</span><span class="p">[</span><span class="s2">"api_token"</span><span class="p">],</span>
+    <span class="n">account_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"account_id"</span><span class="p">]),</span>
+<span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="the-transformation-flow_1">The Transformation Flow</h3>
 <p>Create <code>pipelines/transform/dbt_cloud_flow.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudJob</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">trigger_dbt_cloud_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="sd">"""Trigger a dbt Cloud job and wait for it to complete."""</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="n">credentials</span> <span class="o">=</span> <span class="n">DbtCloudCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">)</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    <span class="n">steps_override</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="k">if</span> <span class="n">full_refresh</span><span class="p">:</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="n">steps_override</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"dbt build --full-refresh"</span><span class="p">]</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Triggering dbt Cloud job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>    <span class="n">job</span> <span class="o">=</span> <span class="n">DbtCloudJob</span><span class="p">(</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>        <span class="n">dbt_cloud_credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>        <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>        <span class="n">steps_override</span><span class="o">=</span><span class="n">steps_override</span><span class="p">,</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>    <span class="p">)</span>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>    <span class="n">run</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
-<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>    <span class="n">run</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
-<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
-<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>    <span class="n">artifact_urls</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">get_artifact_link</span><span class="p">(</span><span class="s2">"manifest.json"</span><span class="p">)</span>
-<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"dbt Cloud job completed. Artifacts: </span><span class="si">{</span><span class="n">artifact_urls</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>
-<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>    <span class="k">return</span> <span class="n">run</span><span class="o">.</span><span class="n">get_run_results_artifact</span><span class="p">()</span>
-<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>
-<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>
-<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-cloud-transformation"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_cloud_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a><span class="sd">    Trigger a dbt Cloud job and wait for completion.</span>
-<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
-<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a><span class="sd">    Args:</span>
-<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a><span class="sd">        full_refresh: If True, override job commands with --full-refresh.</span>
-<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a><span class="sd">    """</span>
-<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>
-<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
-<a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>    <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
-<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>        <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt-cloud/api-credentials"</span><span class="p">)[</span><span class="s2">"SecretString"</span><span class="p">]</span>
-<a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>    <span class="p">)</span>
-<a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>    <span class="n">job_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"job_id_production"</span><span class="p">])</span>
-<a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>
-<a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>    <span class="n">trigger_dbt_cloud_job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span> <span class="n">full_refresh</span><span class="o">=</span><span class="n">full_refresh</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trigger_dbt_cloud_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Trigger a dbt Cloud job and wait for it to complete."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">DbtCloudCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"dbt-cloud-credentials"</span><span class="p">)</span>
+
+    <span class="n">steps_override</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">full_refresh</span><span class="p">:</span>
+        <span class="n">steps_override</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"dbt build --full-refresh"</span><span class="p">]</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Triggering dbt Cloud job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">DbtCloudJob</span><span class="p">(</span>
+        <span class="n">dbt_cloud_credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span>
+        <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
+        <span class="n">steps_override</span><span class="o">=</span><span class="n">steps_override</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">run</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
+    <span class="n">run</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
+
+    <span class="n">artifact_urls</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">get_artifact_link</span><span class="p">(</span><span class="s2">"manifest.json"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"dbt Cloud job completed. Artifacts: </span><span class="si">{</span><span class="n">artifact_urls</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">run</span><span class="o">.</span><span class="n">get_run_results_artifact</span><span class="p">()</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-cloud-transformation"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_cloud_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Trigger a dbt Cloud job and wait for completion.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        full_refresh: If True, override job commands with --full-refresh.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-1"</span><span class="p">)</span>
+    <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"dbt-cloud/api-credentials"</span><span class="p">)[</span><span class="s2">"SecretString"</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">secret</span><span class="p">[</span><span class="s2">"job_id_production"</span><span class="p">])</span>
+
+    <span class="n">trigger_dbt_cloud_job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span> <span class="n">full_refresh</span><span class="o">=</span><span class="n">full_refresh</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="integrate-with-the-daily-pipeline_1">Integrate with the Daily Pipeline</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.dlt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates_flow</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.airbyte_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">hubspot_airbyte_flow</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.transform.dbt_cloud_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">dbt_cloud_transformation_flow</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-pipeline"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">daily_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="sd">"""Full daily pipeline: ingestion → dbt Cloud transformation."""</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">exchange_rates</span> <span class="o">=</span> <span class="n">exchange_rates_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">hubspot</span> <span class="o">=</span> <span class="n">hubspot_airbyte_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="k">if</span> <span class="n">exchange_rates</span><span class="o">.</span><span class="n">is_failed</span><span class="p">()</span> <span class="ow">or</span> <span class="n">hubspot</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Ingestion failed — skipping transformation"</span><span class="p">)</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">dbt_cloud_transformation_flow</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.dlt_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_rates_flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.ingest.airbyte_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">hubspot_airbyte_flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.transform.dbt_cloud_flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">dbt_cloud_transformation_flow</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-pipeline"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">daily_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Full daily pipeline: ingestion → dbt Cloud transformation."""</span>
+    <span class="n">exchange_rates</span> <span class="o">=</span> <span class="n">exchange_rates_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">hubspot</span> <span class="o">=</span> <span class="n">hubspot_airbyte_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exchange_rates</span><span class="o">.</span><span class="n">is_failed</span><span class="p">()</span> <span class="ow">or</span> <span class="n">hubspot</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Ingestion failed — skipping transformation"</span><span class="p">)</span>
+
+    <span class="n">dbt_cloud_transformation_flow</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="scheduling-options">Scheduling Options</h3>
 <p>You can schedule the dbt Cloud job directly in dbt Cloud (and not include it in the Prefect daily pipeline), or trigger it from Prefect for dependency ordering. If ingestion timing is variable, triggering from Prefect ensures dbt always runs after fresh data arrives.</p>
@@ -6489,26 +6491,26 @@
 <h2 id="alerting">Alerting</h2>
 <p>Both approaches use Prefect's existing alerting (configured in the <a href="../../orchestration/10-alerting/">Orchestration Alerting</a> page). A failed dbt run will trigger the same Slack or PagerDuty notifications as a failed ingestion flow.</p>
 <p>For dbt-specific context in alerts, add a <code>on_failure</code> hook to the flow:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">notify_dbt_failure</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"slack-webhook"</span><span class="p">)</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>        <span class="sa">f</span><span class="s2">"❌ dbt run failed in flow `</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>        <span class="sa">f</span><span class="s2">"Run ID: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>        <span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="p">)</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="nd">@flow</span><span class="p">(</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"dbt-transformation"</span><span class="p">,</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>    <span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_dbt_failure</span><span class="p">],</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="p">)</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>    <span class="o">...</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">notify_dbt_failure</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"slack-webhook"</span><span class="p">)</span>
+    <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"❌ dbt run failed in flow `</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"Run ID: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"dbt-transformation"</span><span class="p">,</span>
+    <span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_dbt_failure</span><span class="p">],</span>
+    <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_transformation_flow</span><span class="p">(</span><span class="n">full_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've connected Prefect to dbt:</p>
@@ -6585,6 +6587,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6628,7 +6632,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

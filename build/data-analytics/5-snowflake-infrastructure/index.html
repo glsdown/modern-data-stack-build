@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6184,24 +6186,24 @@
 - Query staging or source data
 - Create or drop tables</p>
 <p>The <code>SVC_LIGHTDASH</code> account uses key-pair authentication (no password) and is granted the <code>ANALYTICS_REPORTER</code> role, which you created in the <a href="../../data-warehouse/4-functional-roles/">Data Warehouse section</a>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    LIGHTDASH SNOWFLAKE ACCESS                           │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Service Account              Role                   Access             │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ───────────────              ────                   ──────             │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  SVC_LIGHTDASH  ────────▶  SVC_LIGHTDASH  ──────▶  ANALYTICS_REPORTER  │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  (user)                    (dedicated role)        (functional role)    │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  • Key-pair auth                                                        │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  • No password                                     └─▶ READ on          │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                                         ANALYTICS.       │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                                         REPORTING        │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                                                         │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  Lightdash queries REPORTING schema only.                              │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  Cannot access STAGING, INTERMEDIATE, MARTS.                           │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                                                         │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    LIGHTDASH SNOWFLAKE ACCESS                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Service Account              Role                   Access             │
+│  ───────────────              ────                   ──────             │
+│                                                                         │
+│  SVC_LIGHTDASH  ────────▶  SVC_LIGHTDASH  ──────▶  ANALYTICS_REPORTER  │
+│  (user)                    (dedicated role)        (functional role)    │
+│  • Key-pair auth                                                        │
+│  • No password                                     └─▶ READ on          │
+│                                                         ANALYTICS.       │
+│                                                         REPORTING        │
+│                                                                         │
+│  Lightdash queries REPORTING schema only.                              │
+│  Cannot access STAGING, INTERMEDIATE, MARTS.                           │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Before proceeding, ensure you have:</p>
@@ -6213,14 +6215,14 @@
 </ul>
 <h2 id="generate-key-pair">Generate Key Pair</h2>
 <p>Lightdash authenticates to Snowflake using key-pair authentication. Generate an RSA key pair on your local machine:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Generate private key (4096-bit RSA, encrypted with passphrase)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="w"> </span><span class="m">4096</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Generate public key from private key</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_lightdash_rsa_key.pub
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Display the public key (you'll add this to Terraform)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>cat<span class="w"> </span>svc_lightdash_rsa_key.pub
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate private key (4096-bit RSA, encrypted with passphrase)</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="w"> </span><span class="m">4096</span>
+
+<span class="c1"># Generate public key from private key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_lightdash_rsa_key.pub
+
+<span class="c1"># Display the public key (you'll add this to Terraform)</span>
+cat<span class="w"> </span>svc_lightdash_rsa_key.pub
 </code></pre></div>
 <p>Store both keys securely:</p>
 <ol>
@@ -6234,111 +6236,111 @@
 <h2 id="terraform-configuration">Terraform Configuration</h2>
 <h3 id="add-the-service-user-module">Add the Service User Module</h3>
 <p>Create a new Terraform file for the Lightdash service account:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># terraform/snowflake/service-accounts/lightdash.tf</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"service_user_lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_service_user"</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="na">username</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="na">comment</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Lightdash BI tool (read-only access to REPORTING schema)"</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="na">email</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform@yourcompany.com"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.svc_lightdash_public_key</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="na">dedicated_role_grants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="s2">"ANALYTICS_REPORTER"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="na">default_namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS.REPORTING"</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="na">Service</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/service-accounts/lightdash.tf</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"service_user_lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_service_user"</span>
+
+<span class="w">  </span><span class="na">username</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Lightdash BI tool (read-only access to REPORTING schema)"</span>
+<span class="w">  </span><span class="na">email</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform@yourcompany.com"</span>
+<span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.svc_lightdash_public_key</span>
+
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">dedicated_role_grants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"ANALYTICS_REPORTER"</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
+<span class="w">  </span><span class="na">default_namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS.REPORTING"</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Service</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="add-variable-for-public-key">Add Variable for Public Key</h3>
 <p>Add the public key variable to your Terraform variables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># terraform/snowflake/variables.tf</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"svc_lightdash_public_key"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"RSA public key for SVC_LIGHTDASH service account"</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/variables.tf</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"svc_lightdash_public_key"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"RSA public key for SVC_LIGHTDASH service account"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="pass-the-public-key">Pass the Public Key</h3>
 <p>Pass the public key via environment variable (recommended for CI/CD):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Extract the public key content (remove header/footer)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_svc_lightdash_public_key</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>svc_lightdash_rsa_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"END PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="k">)</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$TF_VAR_svc_lightdash_public_key</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># Should output: MIICIjANBgkqhkiG9w0BAQ...rest of key...</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Extract the public key content (remove header/footer)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_svc_lightdash_public_key</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>svc_lightdash_rsa_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"END PUBLIC KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span><span class="k">)</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$TF_VAR_svc_lightdash_public_key</span>
+<span class="c1"># Should output: MIICIjANBgkqhkiG9w0BAQ...rest of key...</span>
 </code></pre></div>
 <p>Alternatively, create a <code>terraform.tfvars</code> file (do not commit this file):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># terraform/snowflake/terraform.tfvars (DO NOT COMMIT)</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="na">svc_lightdash_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIICIjANBgkqhkiG9w0BAQ...your public key..."</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/terraform.tfvars (DO NOT COMMIT)</span>
+<span class="na">svc_lightdash_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIICIjANBgkqhkiG9w0BAQ...your public key..."</span>
 </code></pre></div>
 <p>Add <code>terraform.tfvars</code> to <code>.gitignore</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># terraform/snowflake/.gitignore
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>terraform.tfvars
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>*.pem
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>*.pub
+<div class="highlight"><pre><span></span><code># terraform/snowflake/.gitignore
+terraform.tfvars
+*.pem
+*.pub
 </code></pre></div>
 <h2 id="apply-terraform">Apply Terraform</h2>
 <p>Run Terraform to create the service account:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Review the plan — should create:</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># - snowflake_user.svc_lightdash</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># - snowflake_role.svc_lightdash (dedicated role)</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># - snowflake_role_grants.svc_lightdash_grants (grants ANALYTICS_REPORTER)</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
+terraform<span class="w"> </span>plan
+
+<span class="c1"># Review the plan — should create:</span>
+<span class="c1"># - snowflake_user.svc_lightdash</span>
+<span class="c1"># - snowflake_role.svc_lightdash (dedicated role)</span>
+<span class="c1"># - snowflake_role_grants.svc_lightdash_grants (grants ANALYTICS_REPORTER)</span>
+
+terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Outputs:
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>svc_lightdash_public_key_fingerprint = "SHA256:a1b2c3d4e5f6..."
+<div class="highlight"><pre><span></span><code>Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+svc_lightdash_public_key_fingerprint = "SHA256:a1b2c3d4e5f6..."
 </code></pre></div>
 <h2 id="verify-the-account">Verify the Account</h2>
 <p>Test the service account authentication:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- In Snowsight, logged in as USERADMIN or ACCOUNTADMIN</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">USERADMIN</span><span class="p">;</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">-- Show the user and its properties</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_LIGHTDASH'</span><span class="p">;</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1">-- Verify RSA public key is set</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1">-- Look for RSA_PUBLIC_KEY_FP (fingerprint)</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="c1">-- Verify role grants</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="c1">-- Should show: granted role SVC_LIGHTDASH</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="c1">-- Verify dedicated role grants</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="c1">-- Should show: granted role ANALYTICS_REPORTER</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- In Snowsight, logged in as USERADMIN or ACCOUNTADMIN</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">USERADMIN</span><span class="p">;</span>
+
+<span class="c1">-- Show the user and its properties</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_LIGHTDASH'</span><span class="p">;</span>
+
+<span class="c1">-- Verify RSA public key is set</span>
+<span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+<span class="c1">-- Look for RSA_PUBLIC_KEY_FP (fingerprint)</span>
+
+<span class="c1">-- Verify role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+<span class="c1">-- Should show: granted role SVC_LIGHTDASH</span>
+
+<span class="c1">-- Verify dedicated role grants</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+<span class="c1">-- Should show: granted role ANALYTICS_REPORTER</span>
 </code></pre></div>
 <h3 id="test-read-access">Test Read Access</h3>
 <p>Verify <code>SVC_LIGHTDASH</code> can query the <code>REPORTING</code> schema:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- Switch to SVC_LIGHTDASH role</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">-- Should succeed: query REPORTING schema</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">-- Should fail: MARTS schema not accessible to ANALYTICS_REPORTER</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1">-- Error: SQL access control error: Insufficient privileges</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Switch to SVC_LIGHTDASH role</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+
+<span class="c1">-- Should succeed: query REPORTING schema</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+
+<span class="c1">-- Should fail: MARTS schema not accessible to ANALYTICS_REPORTER</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+<span class="c1">-- Error: SQL access control error: Insufficient privileges</span>
 </code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">Least Privilege Working</p>
@@ -6346,49 +6348,49 @@
 </div>
 <h2 id="store-credentials-in-aws-secrets-manager">Store Credentials in AWS Secrets Manager</h2>
 <p>Lightdash (whether self-hosted or cloud) needs the private key to authenticate. Store it in AWS Secrets Manager:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Read private key content</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="k">)</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Create secret in AWS Secrets Manager</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"lightdash/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"Snowflake credentials for Lightdash BI tool"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>jq<span class="w"> </span>-n<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">        </span>--arg<span class="w"> </span>account<span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">        </span>--arg<span class="w"> </span>user<span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">        </span>--arg<span class="w"> </span>role<span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">        </span>--arg<span class="w"> </span>warehouse<span class="w"> </span><span class="s2">"REPORTING"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">        </span>--arg<span class="w"> </span>database<span class="w"> </span><span class="s2">"ANALYTICS"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">        </span>--arg<span class="w"> </span>schema<span class="w"> </span><span class="s2">"REPORTING"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">        </span>--arg<span class="w"> </span>private_key<span class="w"> </span><span class="s2">"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">        </span><span class="s1">'{</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="s1">            account: $account,</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="s1">            user: $user,</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="s1">            role: $role,</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="s1">            warehouse: $warehouse,</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="s1">            database: $database,</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="s1">            schema: $schema,</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="s1">            private_key: $private_key</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="s1">        }'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># Read private key content</span>
+<span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>svc_lightdash_rsa_key.pem<span class="k">)</span>
+
+<span class="c1"># Create secret in AWS Secrets Manager</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"lightdash/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"Snowflake credentials for Lightdash BI tool"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>jq<span class="w"> </span>-n<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>account<span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>user<span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>role<span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>warehouse<span class="w"> </span><span class="s2">"REPORTING"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>database<span class="w"> </span><span class="s2">"ANALYTICS"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>schema<span class="w"> </span><span class="s2">"REPORTING"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--arg<span class="w"> </span>private_key<span class="w"> </span><span class="s2">"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s1">'{</span>
+<span class="s1">            account: $account,</span>
+<span class="s1">            user: $user,</span>
+<span class="s1">            role: $role,</span>
+<span class="s1">            warehouse: $warehouse,</span>
+<span class="s1">            database: $database,</span>
+<span class="s1">            schema: $schema,</span>
+<span class="s1">            private_key: $private_key</span>
+<span class="s1">        }'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Verify the secret:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"lightdash/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span>--query<span class="w"> </span>SecretString<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"lightdash/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--query<span class="w"> </span>SecretString<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">"account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="p">,</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="p">,</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="p">,</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REPORTING"</span><span class="p">,</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANALYTICS"</span><span class="p">,</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REPORTING"</span><span class="p">,</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">  </span><span class="nt">"private_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN RSA PRIVATE KEY-----\n..."</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_LIGHTDASH"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REPORTING"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANALYTICS"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REPORTING"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"private_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN RSA PRIVATE KEY-----\n..."</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Terraform AWS Secrets Manager</p>
@@ -6428,26 +6430,26 @@
 - Keep experimental or internal models in <code>MARTS</code> (not exposed to BI tools)
 - Control what end users see without giving access to all dbt models</p>
 <p><strong>Example <code>REPORTING</code> schema structure:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">-- Published to REPORTING (BI-ready)</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="w"> </span><span class="k">AS</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">dim_products</span><span class="w"> </span><span class="k">AS</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">dim_products</span><span class="p">;</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1">-- NOT published to REPORTING (internal dbt model)</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1">-- analytics.marts.int_exchange_rates__unioned</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">-- (Intermediate model, not BI-ready)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Published to REPORTING (BI-ready)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">dim_products</span><span class="w"> </span><span class="k">AS</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">dim_products</span><span class="p">;</span>
+
+<span class="c1">-- NOT published to REPORTING (internal dbt model)</span>
+<span class="c1">-- analytics.marts.int_exchange_rates__unioned</span>
+<span class="c1">-- (Intermediate model, not BI-ready)</span>
 </code></pre></div>
 <p>This pattern is covered in <a href="../../data-transformation/7-mart-models/">dbt Mart Models</a>.</p>
 <h2 id="alternative-accountadmin-for-testing">Alternative: ACCOUNTADMIN for Testing</h2>
 <p>For initial testing, you might grant broader access temporarily:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">-- TEMPORARY: Grant ANALYTICS_DEVELOPER for testing Lightdash setup</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">-- After testing, revoke and keep only ANALYTICS_REPORTER</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="k">REVOKE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- TEMPORARY: Grant ANALYTICS_DEVELOPER for testing Lightdash setup</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+
+<span class="c1">-- After testing, revoke and keep only ANALYTICS_REPORTER</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">Do Not Use ACCOUNTADMIN in Production</p>
@@ -6535,6 +6537,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6578,7 +6582,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

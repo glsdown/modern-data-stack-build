@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6290,53 +6292,53 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Before setting up Prefect, it's important to understand its core concepts. These concepts apply whether you're using Prefect Cloud or self-hosting.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                          PREFECT ARCHITECTURE                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Your Code                          Prefect (Cloud or Server)               │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ─────────                          ─────────────────────────               │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  ┌─────────────────┐                ┌─────────────────────────┐             │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │     Flows       │  ──deploy──▶   │     Deployments         │             │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │   (Python)      │                │   (Config + Schedule)   │             │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  └─────────────────┘                └───────────┬─────────────┘             │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│                                                 │                           │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  ┌─────────────────┐                            │ trigger                   │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │    Workers      │  ◀──────────────────────── │                           │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │  (Executors)    │                            ▼                           │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  └────────┬────────┘                ┌─────────────────────────┐             │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│           │                         │      Work Pools         │             │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│           │ run                     │   (Job Configuration)   │             │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│           ▼                         └─────────────────────────┘             │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  ┌─────────────────┐                                                        │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │   Flow Runs     │  ──logs/status──▶  UI &amp; API                            │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  │   (Execution)   │                                                        │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  └─────────────────┘                                                        │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                                                             │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                          PREFECT ARCHITECTURE                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Your Code                          Prefect (Cloud or Server)               │
+│  ─────────                          ─────────────────────────               │
+│  ┌─────────────────┐                ┌─────────────────────────┐             │
+│  │     Flows       │  ──deploy──▶   │     Deployments         │             │
+│  │   (Python)      │                │   (Config + Schedule)   │             │
+│  └─────────────────┘                └───────────┬─────────────┘             │
+│                                                 │                           │
+│  ┌─────────────────┐                            │ trigger                   │
+│  │    Workers      │  ◀──────────────────────── │                           │
+│  │  (Executors)    │                            ▼                           │
+│  └────────┬────────┘                ┌─────────────────────────┐             │
+│           │                         │      Work Pools         │             │
+│           │ run                     │   (Job Configuration)   │             │
+│           ▼                         └─────────────────────────┘             │
+│  ┌─────────────────┐                                                        │
+│  │   Flow Runs     │  ──logs/status──▶  UI &amp; API                            │
+│  │   (Execution)   │                                                        │
+│  └─────────────────┘                                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="flows-and-tasks">Flows and Tasks</h2>
 <h3 id="tasks">Tasks</h3>
 <p>A <strong>task</strong> is the smallest unit of work in Prefect. It's a Python function decorated with <code>@task</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nd">@task</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="sd">"""Extract data from a source."""</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="c1"># Your extraction logic here</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"records"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nd">@task</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="sd">"""Transform the extracted data."""</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="c1"># Your transformation logic here</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"transformed"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]}</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nd">@task</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="sd">"""Load data to destination."""</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="c1"># Your loading logic here</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"transformed"</span><span class="p">])</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Extract data from a source."""</span>
+    <span class="c1"># Your extraction logic here</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"records"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]}</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Transform the extracted data."""</span>
+    <span class="c1"># Your transformation logic here</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"transformed"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]}</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Load data to destination."""</span>
+    <span class="c1"># Your loading logic here</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"transformed"</span><span class="p">])</span>
 </code></pre></div>
 <p>Tasks provide:</p>
 <ul>
@@ -6348,17 +6350,17 @@
 </ul>
 <h3 id="flows">Flows</h3>
 <p>A <strong>flow</strong> is a container for tasks. It's a Python function decorated with <code>@flow</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"etl-pipeline"</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="sd">"""Extract, transform, and load data."""</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="c1"># Tasks are called like normal functions</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">count</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> records"</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"etl-pipeline"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Extract, transform, and load data."""</span>
+    <span class="c1"># Tasks are called like normal functions</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> records"</span>
 </code></pre></div>
 <p>Flows provide:</p>
 <ul>
@@ -6369,37 +6371,37 @@
 </ul>
 <h3 id="running-flows-locally">Running Flows Locally</h3>
 <p>You can run any flow locally during development. Here's a complete example file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># my_flow.py</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nd">@task</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"records"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]}</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nd">@task</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"transformed"</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"records"</span><span class="p">]]}</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="nd">@task</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"transformed"</span><span class="p">])</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"etl-pipeline"</span><span class="p">)</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="n">count</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> records"</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="c1"># Run when executed directly</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">(</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="n">source</span><span class="o">=</span><span class="s2">"api.example.com"</span><span class="p">,</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    <span class="p">)</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># my_flow.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"records"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]}</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"transformed"</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"records"</span><span class="p">]]}</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"transformed"</span><span class="p">])</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"etl-pipeline"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> records"</span>
+
+<span class="c1"># Run when executed directly</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="s2">"api.example.com"</span><span class="p">,</span>
+        <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>my_flow.py
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>my_flow.py
 </code></pre></div>
 <p>This is one of Prefect's key advantages — your flows are standard Python, so you can develop and test them locally before deploying.</p>
 <h2 id="deployments">Deployments</h2>
@@ -6412,37 +6414,37 @@
 </ul>
 <h3 id="creating-a-deployment">Creating a Deployment</h3>
 <p>Deployments are defined in a <code>prefect.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># prefect.yaml</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-pipelines</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nt">deployments</span><span class="p">:</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">etl-pipeline-daily</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/etl.py:etl_pipeline</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-work-pool</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">      </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"api.example.com"</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">      </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="s">"snowflake"</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">  </span><span class="c1"># Daily at 6 AM</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-pipelines</span>
+
+<span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">etl-pipeline-daily</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/etl.py:etl_pipeline</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-work-pool</span>
+<span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"api.example.com"</span>
+<span class="w">      </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="s">"snowflake"</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">  </span><span class="c1"># Daily at 6 AM</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
 </code></pre></div>
 <p>Deploy with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--name<span class="w"> </span>etl-pipeline-daily
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deploy<span class="w"> </span>--name<span class="w"> </span>etl-pipeline-daily
 </code></pre></div>
 <h3 id="deployment-lifecycle">Deployment Lifecycle</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│   Define     │ ──▶  │   Deploy     │ ──▶  │   Trigger    │
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>│  (YAML/CLI)  │      │  (prefect    │      │  (Schedule,  │
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>│              │      │   deploy)    │      │   API, UI)   │
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>└──────────────┘      └──────────────┘      └──────┬───────┘
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>                                                   │
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>                                                   ▼
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>│   Complete   │ ◀──  │   Execute    │ ◀──  │   Worker     │
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>│  (Success/   │      │   (Flow      │      │   Picks Up   │
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>│   Failure)   │      │    Run)      │      │              │
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>└──────────────┘      └──────────────┘      └──────────────┘
+<div class="highlight"><pre><span></span><code>┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│   Define     │ ──▶  │   Deploy     │ ──▶  │   Trigger    │
+│  (YAML/CLI)  │      │  (prefect    │      │  (Schedule,  │
+│              │      │   deploy)    │      │   API, UI)   │
+└──────────────┘      └──────────────┘      └──────┬───────┘
+                                                   │
+                                                   ▼
+┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│   Complete   │ ◀──  │   Execute    │ ◀──  │   Worker     │
+│  (Success/   │      │   (Flow      │      │   Picks Up   │
+│   Failure)   │      │    Run)      │      │              │
+└──────────────┘      └──────────────┘      └──────────────┘
 </code></pre></div>
 <h2 id="work-pools-and-workers">Work Pools and Workers</h2>
 <h3 id="work-pools">Work Pools</h3>
@@ -6487,45 +6489,45 @@
 <li>Execute flows and report status back to Prefect</li>
 <li>Can be scaled horizontally</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Start a worker for a process work pool</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>--pool<span class="w"> </span>my-work-pool
+<div class="highlight"><pre><span></span><code><span class="c1"># Start a worker for a process work pool</span>
+prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>--pool<span class="w"> </span>my-work-pool
 </code></pre></div>
 <h3 id="work-pool-worker-architecture">Work Pool + Worker Architecture</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>│                              PREFECT                                    │
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>│  ┌─────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>│  │                        Work Pools                               │    │
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │    │
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>│  │  │ dev-pool    │  │ prod-pool   │  │ ml-pool     │              │    │
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>│  │  │ (process)   │  │ (ecs)       │  │ (docker)    │              │    │
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │    │
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>│  └─────────│────────────────│────────────────│─────────────────────┘    │
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>│            │                │                │                          │
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>└────────────│────────────────│────────────────│──────────────────────────┘
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>             │                │                │
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    ┌────────▼────────┐ ┌─────▼─────┐ ┌────────▼────────┐
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    │    Worker       │ │  Worker   │ │    Worker       │
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>    │  (EC2 / Local)  │ │  (ECS)    │ │  (EC2 + Docker) │
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>    └─────────────────┘ └───────────┘ └─────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                              PREFECT                                    │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                        Work Pools                               │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │    │
+│  │  │ dev-pool    │  │ prod-pool   │  │ ml-pool     │              │    │
+│  │  │ (process)   │  │ (ecs)       │  │ (docker)    │              │    │
+│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │    │
+│  └─────────│────────────────│────────────────│─────────────────────┘    │
+│            │                │                │                          │
+└────────────│────────────────│────────────────│──────────────────────────┘
+             │                │                │
+    ┌────────▼────────┐ ┌─────▼─────┐ ┌────────▼────────┐
+    │    Worker       │ │  Worker   │ │    Worker       │
+    │  (EC2 / Local)  │ │  (ECS)    │ │  (EC2 + Docker) │
+    └─────────────────┘ └───────────┘ └─────────────────┘
 </code></pre></div>
 <h2 id="blocks">Blocks</h2>
 <p><strong>Blocks</strong> are reusable configuration objects for external systems. They store credentials, connection details, and settings:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">S3Bucket</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_snowflake</span><span class="w"> </span><span class="kn">import</span> <span class="n">SnowflakeConnector</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Create blocks via code</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">s3_block</span> <span class="o">=</span> <span class="n">S3Bucket</span><span class="p">(</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">bucket_name</span><span class="o">=</span><span class="s2">"my-data-lake"</span><span class="p">,</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="s2">"..."</span><span class="p">,</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="s2">"..."</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">)</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">s3_block</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"data-lake-bucket"</span><span class="p">)</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1"># Use blocks in flows</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="nd">@task</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_to_snowflake</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="n">snowflake</span> <span class="o">=</span> <span class="n">SnowflakeConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"warehouse-connection"</span><span class="p">)</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="c1"># Use the connection...</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">S3Bucket</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_snowflake</span><span class="w"> </span><span class="kn">import</span> <span class="n">SnowflakeConnector</span>
+
+<span class="c1"># Create blocks via code</span>
+<span class="n">s3_block</span> <span class="o">=</span> <span class="n">S3Bucket</span><span class="p">(</span>
+    <span class="n">bucket_name</span><span class="o">=</span><span class="s2">"my-data-lake"</span><span class="p">,</span>
+    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="s2">"..."</span><span class="p">,</span>
+    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="s2">"..."</span>
+<span class="p">)</span>
+<span class="n">s3_block</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"data-lake-bucket"</span><span class="p">)</span>
+
+<span class="c1"># Use blocks in flows</span>
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_to_snowflake</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="n">snowflake</span> <span class="o">=</span> <span class="n">SnowflakeConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"warehouse-connection"</span><span class="p">)</span>
+    <span class="c1"># Use the connection...</span>
 </code></pre></div>
 <p>Common block types:</p>
 <table>
@@ -6567,14 +6569,14 @@
 <h2 id="schedules-and-triggers">Schedules and Triggers</h2>
 <h3 id="schedules">Schedules</h3>
 <p>Deployments can run on schedules using cron expressions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># prefect.yaml</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">deployments</span><span class="p">:</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-etl</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">        </span><span class="c1"># Daily at 6 AM</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">*/4</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">      </span><span class="c1"># Every 4 hours</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
+<span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-etl</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">        </span><span class="c1"># Daily at 6 AM</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">*/4</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">      </span><span class="c1"># Every 4 hours</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
 </code></pre></div>
 <p>Common cron patterns:</p>
 <table>
@@ -6617,11 +6619,11 @@
 <p>Example automation: "If the ETL flow fails, send a Slack notification and retry once."</p>
 <h2 id="state-management">State Management</h2>
 <p>Every flow and task run has a <strong>state</strong> that tracks its lifecycle:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>│ Pending  │ ─▶ │ Running  │ ─▶ │Completed │    │  Failed  │
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>└──────────┘    └────┬─────┘    └──────────┘    └──────────┘
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>                     │                               ▲
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>                     └───────── on error ────────────┘
+<div class="highlight"><pre><span></span><code>┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ Pending  │ ─▶ │ Running  │ ─▶ │Completed │    │  Failed  │
+└──────────┘    └────┬─────┘    └──────────┘    └──────────┘
+                     │                               ▲
+                     └───────── on error ────────────┘
 </code></pre></div>
 <p>States enable:</p>
 <ul>
@@ -6641,39 +6643,39 @@
 <li><strong>Configure schedules or triggers</strong> in the deployment</li>
 <li><strong>Monitor</strong> via the Prefect UI</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># flows/etl.py</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">():</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="o">...</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">)</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="o">...</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="nd">@task</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="o">...</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-etl"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">daily_etl</span><span class="p">():</span>
-<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">extract</span><span class="p">()</span>
-<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    <span class="n">load</span><span class="p">(</span><span class="n">transformed</span><span class="p">)</span>
-<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>
-<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>    <span class="n">daily_etl</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># flows/etl.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"daily-etl"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">daily_etl</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">extract</span><span class="p">()</span>
+    <span class="n">transformed</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">load</span><span class="p">(</span><span class="n">transformed</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">daily_etl</span><span class="p">()</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># prefect.yaml</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">deployments</span><span class="p">:</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-etl</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/etl.py:daily_etl</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
+<span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-etl</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/etl.py:daily_etl</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Europe/London"</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've learned the core Prefect concepts:</p>
@@ -6738,6 +6740,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6781,7 +6785,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

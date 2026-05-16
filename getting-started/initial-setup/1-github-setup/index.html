@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6236,7 +6238,7 @@
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Organisation Naming</p>
-<p>Choose a name that clearly indicates this is for your company's data infrastructure. Avoid names that are too specific to one project, as you'll likely add more repositories over time.</p>
+<p>Choose a unique name that clearly indicates this is your company, and is easy to remember. Avoid names that are too specific to one project, as you'll likely add more repositories over time. If you find another organisation has taken your name, consider adding something else descriptive to it, rather than random numbers.</p>
 </div>
 <h2 id="create-the-infrastructure-repository">Create the Infrastructure Repository</h2>
 <p>A repository (or repo) in git is the name given for what many people would call a "folder of files". This repository will house all your Terraform configurations and infrastructure code.</p>
@@ -6250,6 +6252,10 @@
 <li>Choose a licence: <strong>MIT License</strong> (or your preference)</li>
 <li>Click <strong>Create repository</strong></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Naming conventions</p>
+<p>It's good practice to set naming conventions for repos across the organisation. For example, <code>lower-kebab-case</code>, or <code>lower_snake_case</code>. This helps things to look consistent and professional. Examples in this repo will use <code>lower-kebab-case</code> for repository names.</p>
+</div>
 <h2 id="set-up-team-access">Set Up Team Access</h2>
 <p>Configure who can access your repository and what they can do.</p>
 <div class="admonition tip">
@@ -6267,14 +6273,14 @@
 <li><strong>Team name</strong>: <code>data-platform-admins</code></li>
 <li><strong>Description</strong>: "Full access to data infrastructure"</li>
 <li><strong>Visibility</strong>: Visible (team members can see who else is on the team)</li>
-<li><strong>Add members</strong>: Add yourself and other infrastructure owners</li>
+<li><strong>Add members</strong>: Add yourself and other infrastructure owners. Set yourself as a maintainer so you have the ability to add people to the team.</li>
 </ul>
 <h4 id="data-engineers">Data Engineers</h4>
 <ul>
 <li><strong>Team name</strong>: <code>data-engineers</code></li>
 <li><strong>Description</strong>: "Data Engineers"</li>
 <li><strong>Visibility</strong>: Visible (team members can see who else is on the team)</li>
-<li><strong>Add members</strong>: Add your data engineering team</li>
+<li><strong>Add members</strong>: Add your data engineering team.  Set yourself as a maintainer so you have the ability to add people to the team.</li>
 </ul>
 <h3 id="assign-repository-permissions">Assign Repository Permissions</h3>
 <ol>
@@ -6289,8 +6295,8 @@
 <p>A <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners">CODEOWNERS file</a> defines which teams have responsibility for which parts of the project. You can (and we will) configure repositories to require approvals from code owners before code becomes live to protect the code base.</p>
 <p>To create a CODEOWNERS file, click on the "Add file" &gt; "Create new file" button in the repo. At the top, you will see a breadcrumb to the path location and a box that says "Name your file". In this box type <code>.github/CODEOWNERS</code>. You should see the path resolves to include <code>.github</code> in it.</p>
 <p>In the large text editor below enter the following:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a># Global owners
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>*       @your-org/data-platform-admins   @your-org/data-engineers
+<div class="highlight"><pre><span></span><code># Global owners
+*       @your-org/data-platform-admins   @your-org/data-engineers
 </code></pre></div>
 <p>Press the "commit changes" button, then type "Add global owners to CODEOWNERS file" as your commit message, ensure "Commit directly to the main branch" is selected, and press "commit changes".</p>
 <div class="admonition note">
@@ -6308,45 +6314,68 @@
 <li>Go to repository <strong>Settings</strong> → <strong>Branches</strong></li>
 <li>Click <strong>Add branch protection rule</strong></li>
 <li>Set <strong>Branch name pattern</strong>: <code>main</code></li>
-<li>Enable these settings:</li>
-</ol>
+<li>
+<p>Enable these settings:</p>
 <h4 id="required-settings">Required Settings</h4>
-<p>✅ <strong>Require a pull request before merging</strong>
-- Require approvals: <strong>1</strong> (increase for larger teams)
-- Require review from Code Owners
-- Dismiss stale pull request approvals when new commits are pushed</p>
-<p>✅ <strong>Require status checks to pass before merging</strong>
-- Require branches to be up to date before merging</p>
+<p>✅ <strong>Require a pull request before merging</strong></p>
+<ul>
+<li>Require approvals: <strong>1</strong> (increase for larger teams)</li>
+<li>Require review from Code Owners</li>
+<li>Dismiss stale pull request approvals when new commits are pushed</li>
+</ul>
+<p>✅ <strong>Require status checks to pass before merging</strong></p>
+<ul>
+<li>Require branches to be up to date before merging</li>
+</ul>
 <p>✅ <strong>Require conversation resolution before merging</strong></p>
-<p>✅ <strong>Do not allow bypassing the above settings</strong>
-- Even admins must follow the rules (recommended)</p>
-<ol>
-<li>Click <strong>Create</strong> to save the rule</li>
+<p>✅ <strong>Do not allow bypassing the above settings</strong></p>
+<ul>
+<li>Even admins must follow the rules (recommended)</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Create</strong> to save the rule</p>
+</li>
 </ol>
 <h3 id="configure-merge-settings">Configure Merge Settings</h3>
 <p>Now configure which merge methods are allowed and how PRs behave. A merge is how changes are combined together:</p>
 <ol>
 <li>Go to repository <strong>Settings</strong> → <strong>General</strong></li>
 <li>Scroll down to <strong>Pull Requests</strong> section</li>
-<li>Configure merge options:</li>
+<li>
+<p>Configure merge options:</p>
+<ul>
 <li>❌ <strong>Uncheck</strong> "Allow merge commits"</li>
 <li>❌ <strong>Uncheck</strong> "Allow rebase merging"</li>
 <li>✅ <strong>Check</strong> "Allow squash merging" (keep this enabled)</li>
-<li>✅ Enable <strong>"Always suggest updating pull request branches"</strong></li>
+</ul>
+</li>
+<li>
+<p>✅ Enable <strong>"Always suggest updating pull request branches"</strong></p>
+<ul>
 <li>Whenever there are new changes available in the base branch, present an "update branch" option in the pull request</li>
-<li>✅ Enable <strong>"Automatically delete head branches"</strong></li>
+</ul>
+</li>
+<li>
+<p>✅ Enable <strong>"Automatically delete head branches"</strong></p>
+<ul>
 <li>Deleted branches will still be able to be restored</li>
-<li>Click <strong>Save changes</strong></li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Save changes</strong></p>
+</li>
 </ol>
 <div class="admonition info">
 <p class="admonition-title">Why Squash Merging Only?</p>
+<p>Squash merging means that all commits in a branch are squashed together into a single commit on the <code>main</code> branch, rather than adding all the individual commits.</p>
 <ul>
-<li><strong>Clean history</strong>: Each feature becomes one commit on main</li>
+<li><strong>Clean history</strong>: Each feature becomes one commit on <code>main</code></li>
 <li><strong>Easy rollback</strong>: Can revert (undo) entire features with one command</li>
 <li><strong>Better readability</strong>: Main branch shows what changed, not how, and link to the PR that changed them for more details.</li>
 <li><strong>Consistent</strong>: All PRs merged the same way</li>
 </ul>
-<p>Individual commits are still visible in the PR for review, but main stays clean.</p>
+<p>Individual commits are still visible in the PR for review, but <code>main</code> stays clean.</p>
 </div>
 <h3 id="why-these-rules-matter">Why These Rules Matter</h3>
 <ul>
@@ -6393,7 +6422,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 17, 2026 21:41:39 UTC">January 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6420,6 +6449,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6463,7 +6494,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

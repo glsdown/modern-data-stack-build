@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6144,33 +6146,33 @@
 <h2 id="overview">Overview</h2>
 <p>You've built batch data pipelines that load data on schedules (hourly, daily). But some use cases require <strong>real-time</strong> data - within seconds of events occurring. This is where <strong>streaming data ingestion</strong> excels.</p>
 <p>Streaming ingestion processes data continuously as events happen, rather than waiting for the next scheduled batch run.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    STREAMING DATA INGESTION                             │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Event Sources         Kafka/Confluent       Snowflake                 │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────        ───────────────       ─────────                 │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐     ┌──────────────┐      ┌──────────────┐          │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Web clicks   │────▶│              │      │              │          │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ Mobile app   │────▶│  Kafka       │─────▶│  Snowpipe    │          │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ IoT sensors  │────▶│  Topics      │      │  Streaming   │          │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ DB changes   │────▶│              │      │              │          │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │ (CDC)        │     │              │      │  STREAMING   │          │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  └──────────────┘     └──────────────┘      │  database    │          │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                              │               └──────────────┘          │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                              │                      │                  │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                              ▼                      ▼                  │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                       ┌──────────────┐      ┌──────────────┐          │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                       │ Schema       │      │ dbt          │          │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                       │ Registry     │      │ incremental  │          │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                       │ (Avro/Proto) │      │ models       │          │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                       └──────────────┘      └──────────────┘          │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                                                         │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  Latency: Seconds (not hours)                                          │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  Use case: Real-time dashboards, fraud detection, operational analytics│
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│                                                                         │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    STREAMING DATA INGESTION                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Event Sources         Kafka/Confluent       Snowflake                 │
+│  ──────────────        ───────────────       ─────────                 │
+│                                                                         │
+│  ┌──────────────┐     ┌──────────────┐      ┌──────────────┐          │
+│  │ Web clicks   │────▶│              │      │              │          │
+│  │ Mobile app   │────▶│  Kafka       │─────▶│  Snowpipe    │          │
+│  │ IoT sensors  │────▶│  Topics      │      │  Streaming   │          │
+│  │ DB changes   │────▶│              │      │              │          │
+│  │ (CDC)        │     │              │      │  STREAMING   │          │
+│  └──────────────┘     └──────────────┘      │  database    │          │
+│                              │               └──────────────┘          │
+│                              │                      │                  │
+│                              ▼                      ▼                  │
+│                       ┌──────────────┐      ┌──────────────┐          │
+│                       │ Schema       │      │ dbt          │          │
+│                       │ Registry     │      │ incremental  │          │
+│                       │ (Avro/Proto) │      │ models       │          │
+│                       └──────────────┘      └──────────────┘          │
+│                                                                         │
+│  Latency: Seconds (not hours)                                          │
+│  Use case: Real-time dashboards, fraud detection, operational analytics│
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="streaming-vs-batch-ingestion">Streaming vs Batch Ingestion</h2>
 <h3 id="when-to-use-streaming">When to Use Streaming</h3>
@@ -6279,7 +6281,7 @@
 <h3 id="1-clickstream-analytics">1. Clickstream Analytics</h3>
 <p><strong>Scenario:</strong> Track user behaviour on your website in real-time.</p>
 <p><strong>Flow:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Browser → JavaScript tracker → Kafka topic → Snowflake → Real-time dashboard
+</p><div class="highlight"><pre><span></span><code>Browser → JavaScript tracker → Kafka topic → Snowflake → Real-time dashboard
 </code></pre></div><p></p>
 <p><strong>Business value:</strong>
 - See which pages users visit right now
@@ -6289,7 +6291,7 @@
 <h3 id="2-iot-sensor-data">2. IoT Sensor Data</h3>
 <p><strong>Scenario:</strong> Monitor temperature sensors in warehouses.</p>
 <p><strong>Flow:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>IoT devices → MQTT broker → Kafka topic → Snowflake → Alert if temp &gt; 25°C
+</p><div class="highlight"><pre><span></span><code>IoT devices → MQTT broker → Kafka topic → Snowflake → Alert if temp &gt; 25°C
 </code></pre></div><p></p>
 <p><strong>Business value:</strong>
 - Prevent spoilage by detecting temperature spikes immediately
@@ -6299,7 +6301,7 @@
 <h3 id="3-change-data-capture-cdc">3. Change Data Capture (CDC)</h3>
 <p><strong>Scenario:</strong> Replicate your PostgreSQL production database to Snowflake for analytics without impacting production.</p>
 <p><strong>Flow:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>PostgreSQL WAL → Debezium → Kafka topic → Snowflake → Analytics queries
+</p><div class="highlight"><pre><span></span><code>PostgreSQL WAL → Debezium → Kafka topic → Snowflake → Analytics queries
 </code></pre></div><p></p>
 <p><strong>Business value:</strong>
 - Real-time analytics without slowing production database
@@ -6309,7 +6311,7 @@
 <h3 id="4-fraud-detection">4. Fraud Detection</h3>
 <p><strong>Scenario:</strong> Detect suspicious payment transactions immediately.</p>
 <p><strong>Flow:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Payment gateway → Kafka topic → Fraud ML model → Alert/block transaction
+</p><div class="highlight"><pre><span></span><code>Payment gateway → Kafka topic → Fraud ML model → Alert/block transaction
 </code></pre></div><p></p>
 <p><strong>Business value:</strong>
 - Stop fraudulent transactions before they complete
@@ -6319,7 +6321,7 @@
 <h3 id="5-real-time-dashboards">5. Real-Time Dashboards</h3>
 <p><strong>Scenario:</strong> Live sales dashboard updating every second.</p>
 <p><strong>Flow:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-refresh)
+</p><div class="highlight"><pre><span></span><code>E-commerce checkout → Kafka topic → Snowflake → Lightdash dashboard (auto-refresh)
 </code></pre></div><p></p>
 <p><strong>Business value:</strong>
 - Monitor Black Friday sales in real-time
@@ -6429,50 +6431,50 @@
 <p><strong>Recommendation:</strong> Start with <strong>Confluent Cloud Basic</strong> for simplicity. Migrate to self-hosted later if cost becomes a concern at scale.</p>
 <h2 id="what-youll-build">What You'll Build</h2>
 <p>In this section, you'll create a complete streaming data pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│                   STREAMING PIPELINE ARCHITECTURE                       │
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│                                                                         │
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│  1. Confluent Cloud Setup                                               │
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│     ┌────────────────────────────────────────────────────┐             │
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│     │ Kafka Cluster (Basic tier)                        │             │
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│     │ • Topic: order-events                             │             │
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>│     │ • Schema Registry (Avro schemas)                  │             │
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│     │ • Kafka Connect (Snowflake Sink Connector)        │             │
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>│     └────────────────────────────────────────────────────┘             │
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>│                              │                                          │
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>│  2. Event Production         ▼                                          │
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>│     ┌────────────────────────────────────────────────────┐             │
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>│     │ Python Producer (Prefect task)                    │             │
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>│     │ • Generate sample order events                    │             │
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>│     │ • Validate against Avro schema                    │             │
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>│     │ • Publish to order-events topic                   │             │
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>│     └────────────────────────────────────────────────────┘             │
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>│                              │                                          │
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>│  3. Snowflake Integration    ▼                                          │
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>│     ┌────────────────────────────────────────────────────┐             │
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>│     │ Snowpipe Streaming                                │             │
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>│     │ • STREAMING.ORDER_EVENTS table                    │             │
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>│     │ • Sub-second latency                              │             │
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>│     │ • SVC_KAFKA_CONNECTOR service account             │             │
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>│     └────────────────────────────────────────────────────┘             │
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>│                              │                                          │
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>│  4. dbt Transformation       ▼                                          │
-<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>│     ┌────────────────────────────────────────────────────┐             │
-<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>│     │ Incremental dbt models                            │             │
-<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>│     │ • Process new events every 5 minutes              │             │
-<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>│     │ • ANALYTICS.fct_orders_realtime                   │             │
-<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>│     └────────────────────────────────────────────────────┘             │
-<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a>│                              │                                          │
-<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a>│  5. Monitoring               ▼                                          │
-<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a>│     ┌────────────────────────────────────────────────────┐             │
-<a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a>│     │ Prefect + Confluent Cloud Metrics                 │             │
-<a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a>│     │ • Monitor consumer lag                            │             │
-<a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a>│     │ • Alert on connector failures                     │             │
-<a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a>│     │ • Track throughput and latency                    │             │
-<a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a>│     └────────────────────────────────────────────────────┘             │
-<a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a>│                                                                         │
-<a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                   STREAMING PIPELINE ARCHITECTURE                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  1. Confluent Cloud Setup                                               │
+│     ┌────────────────────────────────────────────────────┐             │
+│     │ Kafka Cluster (Basic tier)                        │             │
+│     │ • Topic: order-events                             │             │
+│     │ • Schema Registry (Avro schemas)                  │             │
+│     │ • Kafka Connect (Snowflake Sink Connector)        │             │
+│     └────────────────────────────────────────────────────┘             │
+│                              │                                          │
+│  2. Event Production         ▼                                          │
+│     ┌────────────────────────────────────────────────────┐             │
+│     │ Python Producer (Prefect task)                    │             │
+│     │ • Generate sample order events                    │             │
+│     │ • Validate against Avro schema                    │             │
+│     │ • Publish to order-events topic                   │             │
+│     └────────────────────────────────────────────────────┘             │
+│                              │                                          │
+│  3. Snowflake Integration    ▼                                          │
+│     ┌────────────────────────────────────────────────────┐             │
+│     │ Snowpipe Streaming                                │             │
+│     │ • STREAMING.ORDER_EVENTS table                    │             │
+│     │ • Sub-second latency                              │             │
+│     │ • SVC_KAFKA_CONNECTOR service account             │             │
+│     └────────────────────────────────────────────────────┘             │
+│                              │                                          │
+│  4. dbt Transformation       ▼                                          │
+│     ┌────────────────────────────────────────────────────┐             │
+│     │ Incremental dbt models                            │             │
+│     │ • Process new events every 5 minutes              │             │
+│     │ • ANALYTICS.fct_orders_realtime                   │             │
+│     └────────────────────────────────────────────────────┘             │
+│                              │                                          │
+│  5. Monitoring               ▼                                          │
+│     ┌────────────────────────────────────────────────────┐             │
+│     │ Prefect + Confluent Cloud Metrics                 │             │
+│     │ • Monitor consumer lag                            │             │
+│     │ • Alert on connector failures                     │             │
+│     │ • Track throughput and latency                    │             │
+│     └────────────────────────────────────────────────────┘             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h3 id="core-pipeline-9-pages">Core Pipeline (9 Pages)</h3>
 <p>You'll learn:
@@ -6693,6 +6695,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6736,7 +6740,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

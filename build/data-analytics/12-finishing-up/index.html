@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6864,34 +6866,34 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>You've built a complete analytics stack: dashboards for operational reporting, notebooks for exploratory analysis, and metrics defined in code. This page helps you verify everything works, understand when to evolve your tooling, and plan next steps.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                      COMPLETE ANALYTICS STACK                           │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Raw Data        Transformation      Analytics Layer                   │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────        ───────────────     ────────────────                  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────┐   ┌──────────────┐    ┌────────────────┐                │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ DLT      │──▶│ dbt (MARTS)  │───▶│ Lightdash      │                │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ SNOWPIPE │   │ • Staging    │    │ • Dashboards   │                │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ AIRBYTE  │   │ • Int models │    │ • Metrics      │                │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  └──────────┘   │ • Fact/Dim   │    └────────────────┘                │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                 │ • REPORTING  │                                       │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                 └──────────────┘    ┌────────────────┐                │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                                     │ Snowsight      │                │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                                     │ • SQL queries  │                │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                     └────────────────┘                │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                                                                         │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                     ┌────────────────┐                │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                     │ Notebooks      │                │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                     │ • Jupyter      │                │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                     │ • Snowflake    │                │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                     │ • Hex          │                │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                     └────────────────┘                │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                         │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  Orchestrated by Prefect, secured by role-based access control.        │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│                                                                         │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                      COMPLETE ANALYTICS STACK                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Raw Data        Transformation      Analytics Layer                   │
+│  ────────        ───────────────     ────────────────                  │
+│                                                                         │
+│  ┌──────────┐   ┌──────────────┐    ┌────────────────┐                │
+│  │ DLT      │──▶│ dbt (MARTS)  │───▶│ Lightdash      │                │
+│  │ SNOWPIPE │   │ • Staging    │    │ • Dashboards   │                │
+│  │ AIRBYTE  │   │ • Int models │    │ • Metrics      │                │
+│  └──────────┘   │ • Fact/Dim   │    └────────────────┘                │
+│                 │ • REPORTING  │                                       │
+│                 └──────────────┘    ┌────────────────┐                │
+│                                     │ Snowsight      │                │
+│                                     │ • SQL queries  │                │
+│                                     └────────────────┘                │
+│                                                                         │
+│                                     ┌────────────────┐                │
+│                                     │ Notebooks      │                │
+│                                     │ • Jupyter      │                │
+│                                     │ • Snowflake    │                │
+│                                     │ • Hex          │                │
+│                                     └────────────────┘                │
+│                                                                         │
+│  Orchestrated by Prefect, secured by role-based access control.        │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="verification-checklist">Verification Checklist</h2>
 <p>Confirm your analytics stack is fully operational:</p>
@@ -6899,17 +6901,17 @@
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <strong>Raw data loaded</strong>: <code>DLT</code>, <code>SNOWPIPE</code>, <code>AIRBYTE</code> databases contain recent data
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Check latest load timestamps</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">dlt</span><span class="p">.</span><span class="n">currencies</span><span class="p">;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">snowpipe</span><span class="p">.</span><span class="n">exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">airbyte</span><span class="p">.</span><span class="n">contacts</span><span class="p">;</span>
+  </p><div class="highlight"><pre><span></span><code><span class="c1">-- Check latest load timestamps</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">dlt</span><span class="p">.</span><span class="n">currencies</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">snowpipe</span><span class="p">.</span><span class="n">exchange_rates</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">airbyte</span><span class="p">.</span><span class="n">contacts</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <strong>dbt models built</strong>: <code>ANALYTICS.MARTS</code> and <code>ANALYTICS.REPORTING</code> contain transformed data
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- Check latest dbt run</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+  </p><div class="highlight"><pre><span></span><code><span class="c1">-- Check latest dbt run</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
 </code></pre></div><p></p>
 </li>
 <li class="task-list-item">
@@ -6951,18 +6953,18 @@
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <strong>Service accounts working</strong>: <code>SVC_LIGHTDASH</code> can query <code>REPORTING</code> schema
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">-- Should succeed</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">-- Should fail (ANALYTICS_REPORTER has no access to MARTS)</span>
+  </p><div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_LIGHTDASH</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">reporting</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+<span class="c1">-- Should succeed</span>
+
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">marts</span><span class="p">.</span><span class="n">fct_exchange_rates</span><span class="p">;</span>
+<span class="c1">-- Should fail (ANALYTICS_REPORTER has no access to MARTS)</span>
 </code></pre></div><p></p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <strong>Roles configured</strong>: Analysts have <code>ANALYTICS_DEVELOPER</code> or <code>ANALYTICS_REPORTER</code>
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">-- Should show grants on REPORTING schema only</span>
+  </p><div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
+<span class="c1">-- Should show grants on REPORTING schema only</span>
 </code></pre></div><p></p>
 </li>
 </ul>
@@ -6970,7 +6972,7 @@
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <strong>Metrics in dbt YAML</strong>: <code>fct_exchange_rates.yml</code> contains metrics definitions
-  </p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cat<span class="w"> </span>models/marts/core/fct_exchange_rates.yml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s2">"metrics:"</span>
+  </p><div class="highlight"><pre><span></span><code>cat<span class="w"> </span>models/marts/core/fct_exchange_rates.yml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s2">"metrics:"</span>
 </code></pre></div><p></p>
 </li>
 <li class="task-list-item">
@@ -7033,16 +7035,16 @@
 <p><strong>More straightforward path</strong>: Looker's LookML is code-based (like dbt metrics). You can translate dbt YAML metrics to LookML views.</p>
 <p><strong>Example:</strong></p>
 <p><strong>dbt YAML (Lightdash):</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">metrics</span><span class="p">:</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">average_exchange_rate</span><span class="p">:</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">average</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">sql</span><span class="p">:</span><span class="w"> </span><span class="s">"${exchange_rate}"</span>
+</p><div class="highlight"><pre><span></span><code><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">average_exchange_rate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">average</span>
+<span class="w">    </span><span class="nt">sql</span><span class="p">:</span><span class="w"> </span><span class="s">"${exchange_rate}"</span>
 </code></pre></div><p></p>
 <p><strong>LookML (Looker):</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>measure: average_exchange_rate {
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  type: average
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  sql: ${exchange_rate} ;;
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>}
+</p><div class="highlight"><pre><span></span><code>measure: average_exchange_rate {
+  type: average
+  sql: ${exchange_rate} ;;
+}
 </code></pre></div><p></p>
 <p>This is more mechanical than Tableau (UI-based metrics).</p>
 <h3 id="from-lightdash-to-power-bi">From Lightdash to Power BI</h3>
@@ -7376,6 +7378,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7419,7 +7423,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

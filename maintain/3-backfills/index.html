@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6131,9 +6133,9 @@
 <div class="tabbed-block">
 <p>Use the dedicated backfill flows created during the <a href="../../build/batch-data-ingestion/8-prefect-orchestration/">Prefect Orchestration</a> setup.</p>
 <p><strong>Trigger via Prefect CLI:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>exchange-rates-backfill/production<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span>--param<span class="w"> </span><span class="nv">start_date</span><span class="o">=</span><span class="m">2026</span>-01-01<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span>--param<span class="w"> </span><span class="nv">end_date</span><span class="o">=</span><span class="m">2026</span>-02-28
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>exchange-rates-backfill/production<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--param<span class="w"> </span><span class="nv">start_date</span><span class="o">=</span><span class="m">2026</span>-01-01<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--param<span class="w"> </span><span class="nv">end_date</span><span class="o">=</span><span class="m">2026</span>-02-28
 </code></pre></div>
 <p><strong>Or trigger via Prefect UI:</strong></p>
 <ol>
@@ -6143,8 +6145,8 @@
 <li>Click <strong>Submit</strong></li>
 </ol>
 <p>For pipelines without a dedicated backfill flow, create a one-off flow or modify the pipeline's <code>write_disposition</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Temporarily use "replace" to reload all data</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">(),</span> <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Temporarily use "replace" to reload all data</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">(),</span> <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">Replace vs Merge</p>
@@ -6170,15 +6172,15 @@
 <li>Re-upload the source files to S3 with new filenames (Snowpipe tracks processed files)</li>
 <li>
 <p>Or use <code>ALTER PIPE ... REFRESH</code> to force reprocessing:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">PIPE</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_PIPE</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="n">REFRESH</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">PREFIX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'exchange-rates/2026/01/'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">PIPE</span><span class="w"> </span><span class="n">SNOWPIPE</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES_PIPE</span>
+<span class="w">  </span><span class="n">REFRESH</span>
+<span class="w">  </span><span class="k">PREFIX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'exchange-rates/2026/01/'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Verify the pipe status:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">PIPE_STATUS</span><span class="p">(</span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_PIPE'</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">PIPE_STATUS</span><span class="p">(</span><span class="s1">'SNOWPIPE.OPEN_EXCHANGE_RATES.EXCHANGE_RATES_PIPE'</span><span class="p">);</span>
 </code></pre></div>
 </li>
 </ol>
@@ -6188,16 +6190,16 @@
 <h3 id="3-backfill-transformation-layer-dbt">3. Backfill Transformation Layer (dbt)</h3>
 <p>After ingestion backfills complete, rebuild affected dbt models.</p>
 <p><strong>Full refresh a single model:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates<span class="w"> </span>--full-refresh
 </code></pre></div>
 <p><strong>Full refresh a model and everything downstream:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
 </code></pre></div>
 <p><strong>Full refresh all models from a source:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>source:dlt_open_exchange_rates+<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>source:dlt_open_exchange_rates+<span class="w"> </span>--full-refresh
 </code></pre></div>
 <p><strong>Run tests after the backfill:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Incremental Models Only</p>
@@ -6208,18 +6210,18 @@
 <ol>
 <li>
 <p><strong>Use a larger warehouse temporarily:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">WAREHOUSE_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'LARGE'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">WAREHOUSE_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'LARGE'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Run the backfill:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
 </code></pre></div>
 </li>
 <li>
 <p><strong>Scale back down immediately after:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">WAREHOUSE_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'X-SMALL'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">WAREHOUSE_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'X-SMALL'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6231,26 +6233,26 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Pipeline run completed successfully in Prefect UI</li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Row counts match expectations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="n">rate_date</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">rate_date</span><span class="p">)</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="n">rate_date</span><span class="p">),</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">rate_date</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> No duplicate records (for merge-based pipelines):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">primary_key</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">primary_key</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">primary_key</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">primary_key</span>
+<span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> dbt tests pass on affected models:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>&lt;model&gt;+
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>&lt;model&gt;+
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Source freshness check passes:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
 </code></pre></div>
 </li>
 <li class="task-list-item">
@@ -6262,15 +6264,15 @@
 <ol>
 <li>
 <p><strong>Snowflake Time Travel</strong> - restore tables to their pre-backfill state:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">-- Restore to state before backfill (within retention period, default 1 day)</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Restore to state before backfill (within retention period, default 1 day)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>dbt incremental models</strong> - Time Travel works here too:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
 </code></pre></div>
 </li>
 <li>
@@ -6341,6 +6343,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6384,7 +6388,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6090,237 +6092,237 @@
 <h2 id="the-schema-module">The Schema Module</h2>
 <p>The schema module creates a schema with an associated reader database role, enabling fine-grained access control.</p>
 <p>Create the schema module:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_schema
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_schema
 </code></pre></div>
 <h3 id="maintf">main.tf</h3>
 <p>Create <code>modules/snowflake_schema/main.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.sys_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.security_admin</span><span class="p">]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># Schema</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_schema"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_database</span><span class="p">)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_name</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_comment</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="na">is_managed</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_is_managed</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">  </span><span class="na">is_transient</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_is_transient</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">  </span><span class="na">data_retention_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_data_retention_days</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="p">}</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="c1"># Schema Reader Role</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="c1"># Database role for read access to this specific schema</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"schema_reader_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../snowflake_database_role"</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">  </span><span class="na">role_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"${var.schema_database}_${var.schema_name}_SCHEMA_READER"</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">  </span><span class="na">role_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Read access to ${var.schema_database}.${var.schema_name} schema."</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">  </span><span class="na">role_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_database</span><span class="p">)</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="p">}</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="c1"># Grant USAGE on the schema to the reader role</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"schema_usage"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"USAGE"</span><span class="p">]</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">  </span><span class="nb">on_schema</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">    </span><span class="na">schema_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="p">}</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="c1"># Grant SELECT on all tables in the schema</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"table_select"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">    </span><span class="nb">all</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"TABLES"</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="p">}</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a>
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="c1"># Grant SELECT on future tables in the schema</span>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"future_table_select"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="w">    </span><span class="nb">future</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"TABLES"</span>
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="p">}</span>
-<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a>
-<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="c1"># Grant SELECT on all views in the schema</span>
-<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"view_select"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
-<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a>
-<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="w">    </span><span class="nb">all</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"VIEWS"</span>
-<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
-<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="p">}</span>
-<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a>
-<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="c1"># Grant SELECT on future views in the schema</span>
-<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"future_view_select"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a><span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
-<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a>
-<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a><span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a><span class="w">    </span><span class="nb">future</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a><span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"VIEWS"</span>
-<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a><span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
-<a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-106" name="__codelineno-1-106" href="#__codelineno-1-106"></a><span class="p">}</span>
-<a id="__codelineno-1-107" name="__codelineno-1-107" href="#__codelineno-1-107"></a>
-<a id="__codelineno-1-108" name="__codelineno-1-108" href="#__codelineno-1-108"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-109" name="__codelineno-1-109" href="#__codelineno-1-109"></a><span class="c1"># Grant Schema Reader to Account Roles</span>
-<a id="__codelineno-1-110" name="__codelineno-1-110" href="#__codelineno-1-110"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-111" name="__codelineno-1-111" href="#__codelineno-1-111"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_database_role"</span><span class="w"> </span><span class="nv">"grant_schema_reader_to_account_roles"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-112" name="__codelineno-1-112" href="#__codelineno-1-112"></a><span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-113" name="__codelineno-1-113" href="#__codelineno-1-113"></a><span class="w">  </span><span class="na">for_each</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">var.grant_reader_to_account_roles</span><span class="p">)</span>
-<a id="__codelineno-1-114" name="__codelineno-1-114" href="#__codelineno-1-114"></a><span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
-<a id="__codelineno-1-115" name="__codelineno-1-115" href="#__codelineno-1-115"></a><span class="w">  </span><span class="na">parent_role_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value</span>
-<a id="__codelineno-1-116" name="__codelineno-1-116" href="#__codelineno-1-116"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
+<span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
+<span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.sys_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.security_admin</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Schema</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_schema"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">  </span><span class="na">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_database</span><span class="p">)</span>
+<span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_comment</span>
+
+<span class="w">  </span><span class="na">is_managed</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_is_managed</span>
+<span class="w">  </span><span class="na">is_transient</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_is_transient</span>
+<span class="w">  </span><span class="na">data_retention_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.schema_data_retention_days</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Schema Reader Role</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Database role for read access to this specific schema</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"schema_reader_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../snowflake_database_role"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">role_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"${var.schema_database}_${var.schema_name}_SCHEMA_READER"</span>
+<span class="w">  </span><span class="na">role_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Read access to ${var.schema_database}.${var.schema_name} schema."</span>
+<span class="w">  </span><span class="na">role_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.schema_database</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant USAGE on the schema to the reader role</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"schema_usage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"USAGE"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_schema</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">schema_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant SELECT on all tables in the schema</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"table_select"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">all</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"TABLES"</span>
+<span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant SELECT on future tables in the schema</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"future_table_select"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">future</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"TABLES"</span>
+<span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant SELECT on all views in the schema</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"view_select"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">all</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"VIEWS"</span>
+<span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant SELECT on future views in the schema</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_database_role"</span><span class="w"> </span><span class="nv">"future_view_select"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"SELECT"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_schema_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">future</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">object_type_plural</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"VIEWS"</span>
+<span class="w">      </span><span class="na">in_schema</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${snowflake_schema.this.name}\""</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Grant Schema Reader to Account Roles</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_database_role"</span><span class="w"> </span><span class="nv">"grant_schema_reader_to_account_roles"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">var.grant_reader_to_account_roles</span><span class="p">)</span>
+<span class="w">  </span><span class="na">database_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\"${upper(var.schema_database)}\".\"${module.schema_reader_role.role_name}\""</span>
+<span class="w">  </span><span class="na">parent_role_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="variablestf">variables.tf</h3>
 <p>Create <code>modules/snowflake_schema/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the schema (will be uppercased)"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_database"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The database this schema belongs to"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_comment"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the schema's purpose"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_is_managed"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether the schema is managed (prevents DDL outside Terraform)"</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="p">}</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_is_transient"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether the schema is transient (no Fail-safe)"</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="p">}</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_data_retention_days"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of days for Time Travel (0-90)"</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="p">}</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"grant_reader_to_account_roles"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account roles to grant the schema reader database role to"</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the schema (will be uppercased)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_database"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The database this schema belongs to"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_comment"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the schema's purpose"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_is_managed"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether the schema is managed (prevents DDL outside Terraform)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_is_transient"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether the schema is transient (no Fail-safe)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"schema_data_retention_days"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of days for Time Travel (0-90)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"grant_reader_to_account_roles"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account roles to grant the schema reader database role to"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="outputstf">outputs.tf</h3>
 <p>Create <code>modules/snowflake_schema/outputs.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"schema_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The fully qualified schema name"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_schema.this.name</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"schema_reader_role_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the schema reader database role"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_reader_role.role_name</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"schema_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The fully qualified schema name"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_schema.this.name</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"schema_reader_role_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the schema reader database role"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_reader_role.role_name</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-the-reporting-schema">Create the Reporting Schema</h2>
 <p>The REPORTING schema is where dbt publishes models specifically for BI tools. By managing it in Terraform, we can grant ANALYTICS_REPORTER access to just this schema rather than the entire database.</p>
 <p>Create <code>schemas.tf</code> in your root Snowflake directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Schemas</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Terraform-managed schemas for fine-grained access control.</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Note: Most schemas (staging, intermediate, marts) are created by dbt</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># and don't need Terraform management.</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># ANALYTICS.REPORTING</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># The reporting schema contains models specifically for BI tools.</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># ANALYTICS_REPORTER gets access to this schema only, not the entire database.</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"schema_analytics_reporting"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="na">schema_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="na">schema_database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_analytics.database_name</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="na">schema_comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Published models for BI tools and reporting."</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">    </span><span class="nv">module.role_analytics_reporter.role_name</span><span class="p">,</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Schemas</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Terraform-managed schemas for fine-grained access control.</span>
+<span class="c1"># Note: Most schemas (staging, intermediate, marts) are created by dbt</span>
+<span class="c1"># and don't need Terraform management.</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># ANALYTICS.REPORTING</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># The reporting schema contains models specifically for BI tools.</span>
+<span class="c1"># ANALYTICS_REPORTER gets access to this schema only, not the entire database.</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"schema_analytics_reporting"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">schema_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
+<span class="w">  </span><span class="na">schema_database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_analytics.database_name</span>
+<span class="w">  </span><span class="na">schema_comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Published models for BI tools and reporting."</span>
+
+<span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.role_analytics_reporter.role_name</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="update-database-grants">Update Database Grants</h2>
 <p>Now update <code>databases.tf</code> to remove ANALYTICS_REPORTER from the database-level reader role. The reporter will get access via the schema-level role instead:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Analytics (Production)</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"database_analytics"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS"</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Production analytics models created by dbt."</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="nv">module.role_analytics_developer.role_name</span><span class="p">,</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">    # Note: ANALYTICS_REPORTER gets schema-level access via schemas.tf</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">    </span><span class="nv">module.role_analytics_transformer.role_name</span><span class="p">,</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Analytics (Production)</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"database_analytics"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS"</span>
+<span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Production analytics models created by dbt."</span>
+
+<span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.role_analytics_developer.role_name</span><span class="p">,</span>
+<span class="c1">    # Note: ANALYTICS_REPORTER gets schema-level access via schemas.tf</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.role_analytics_transformer.role_name</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="understanding-the-access-model">Understanding the Access Model</h2>
 <p>With schema-level access, here's what ANALYTICS_REPORTER can see:</p>
@@ -6363,9 +6365,9 @@
 </ul>
 <h2 id="commit-and-deploy">Commit and Deploy</h2>
 <p>Commit your changes and push to trigger the CI/CD pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add reporting schema with schema-level reader role"</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add reporting schema with schema-level reader role"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <p>Review the plan - you should see:</p>
 <ul>
@@ -6375,18 +6377,18 @@
 </ul>
 <h2 id="verify-in-snowflake">Verify in Snowflake</h2>
 <p>After the pipeline completes, verify the schema and access:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- Check schema exists</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- Check schema reader role</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">-- Verify grants</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">ANALYTICS_REPORTING_SCHEMA_READER</span><span class="p">;</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1">-- Test as reporter (should only see REPORTING schema)</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check schema exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
+
+<span class="c1">-- Check schema reader role</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
+
+<span class="c1">-- Verify grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">ANALYTICS_REPORTING_SCHEMA_READER</span><span class="p">;</span>
+
+<span class="c1">-- Test as reporter (should only see REPORTING schema)</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've implemented fine-grained schema-level access control:</p>
@@ -6447,6 +6449,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6490,7 +6494,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

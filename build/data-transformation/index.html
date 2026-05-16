@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5853,52 +5855,52 @@
 <h2 id="overview">Overview</h2>
 <p>This section covers building the transformation layer using <a href="https://www.getdbt.com/">dbt</a> (data build tool). dbt transforms the raw data loaded by Kafka Connect, dlt, Snowpipe, and Airbyte into clean, tested, analytics-ready models.</p>
 <p>The transformation layer lives in its own repository - separate from your Prefect pipelines. This separation reflects the different ownership and release cadence of analytics engineering work (iterative model development, schema changes) versus data engineering work (pipeline reliability, infrastructure).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌────────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                       DATA TRANSFORMATION LAYER                                │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├────────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                                │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Raw Data (Snowflake)          dbt-transform repo           Analytics          │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────────────          ──────────────────           ─────────          │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                                │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────────┐          ┌──────────────────┐                            │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ STREAMING database          │ Staging models   │                            │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • purchases      │─────────▶│ stg_streaming__* │                            │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  └──────────────────┘          │ stg_dlt__*       │         ┌────────────────┐ │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                │ stg_airbyte__*   │         │  ANALYTICS     │ │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  ┌──────────────────┐          └──────────────────┘         │  database      │ │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │ DLT database     │                   │                   │                │ │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │ • currencies     │─────────▶         ▼                   │  STAGING       │ │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │ • exchange_rates │          ┌──────────────────┐         │  INTERMEDIATE  │ │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │ • products       │          │ Intermediate     │────────▶│  MARTS         │ │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  └──────────────────┘          │ int_*            │         │  REPORTING     │ │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                └──────────────────┘         └────────────────┘ │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  ┌──────────────────┐                   │                                      │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  │ SNOWPIPE database│─────────▶         ▼                                      │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  │ • exchange_rates │          ┌──────────────────┐                            │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  └──────────────────┘          │ Mart models      │                            │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                │ fct_*, dim_*     │                            │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  ┌──────────────────┐          └──────────────────┘                            │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │ AIRBYTE database │─────────▶                                                │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  │ • hubspot        │                                                          │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  └──────────────────┘                                                          │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│                                                                                │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  Orchestration                                                                 │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│  ─────────────                                                                 │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  ┌─────────────────────────────────────────────────────────────────────┐       │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  │  Prefect (data-pipelines repo)                                      │       │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │  • Waits for ingestion flows to complete                            │       │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  │  • Triggers dbt run via dbt Core CLI or dbt Cloud API               │       │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│  │  • Alerts on failure                                                │       │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│  └─────────────────────────────────────────────────────────────────────┘       │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│                                                                                │
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>└────────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌────────────────────────────────────────────────────────────────────────────────┐
+│                       DATA TRANSFORMATION LAYER                                │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│  Raw Data (Snowflake)          dbt-transform repo           Analytics          │
+│  ────────────────────          ──────────────────           ─────────          │
+│                                                                                │
+│  ┌──────────────────┐          ┌──────────────────┐                            │
+│  │ STREAMING database          │ Staging models   │                            │
+│  │ • purchases      │─────────▶│ stg_streaming__* │                            │
+│  └──────────────────┘          │ stg_dlt__*       │         ┌────────────────┐ │
+│                                │ stg_airbyte__*   │         │  ANALYTICS     │ │
+│  ┌──────────────────┐          └──────────────────┘         │  database      │ │
+│  │ DLT database     │                   │                   │                │ │
+│  │ • currencies     │─────────▶         ▼                   │  STAGING       │ │
+│  │ • exchange_rates │          ┌──────────────────┐         │  INTERMEDIATE  │ │
+│  │ • products       │          │ Intermediate     │────────▶│  MARTS         │ │
+│  └──────────────────┘          │ int_*            │         │  REPORTING     │ │
+│                                └──────────────────┘         └────────────────┘ │
+│  ┌──────────────────┐                   │                                      │
+│  │ SNOWPIPE database│─────────▶         ▼                                      │
+│  │ • exchange_rates │          ┌──────────────────┐                            │
+│  └──────────────────┘          │ Mart models      │                            │
+│                                │ fct_*, dim_*     │                            │
+│  ┌──────────────────┐          └──────────────────┘                            │
+│  │ AIRBYTE database │─────────▶                                                │
+│  │ • hubspot        │                                                          │
+│  └──────────────────┘                                                          │
+│                                                                                │
+│  Orchestration                                                                 │
+│  ─────────────                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐       │
+│  │  Prefect (data-pipelines repo)                                      │       │
+│  │  • Waits for ingestion flows to complete                            │       │
+│  │  • Triggers dbt run via dbt Core CLI or dbt Cloud API               │       │
+│  │  • Alerts on failure                                                │       │
+│  └─────────────────────────────────────────────────────────────────────┘       │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="the-transformation-repository">The Transformation Repository</h2>
 <p>The dbt project lives in a dedicated <code>dbt-transform</code> repository. This is separate from the <code>data-pipelines</code> repository that contains Prefect flows. Prefect can trigger dbt runs, but it does not own the dbt codebase.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>GitHub Organisation
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── terraform/               ← Infrastructure as code
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── data-pipelines/          ← Prefect flows (ingestion orchestration)
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>└── dbt-transform/           ← dbt project (this section)
+<div class="highlight"><pre><span></span><code>GitHub Organisation
+├── terraform/               ← Infrastructure as code
+├── data-pipelines/          ← Prefect flows (ingestion orchestration)
+└── dbt-transform/           ← dbt project (this section)
 </code></pre></div>
 <p>This separation means:</p>
 <ul>
@@ -5948,45 +5950,45 @@
 <p>The <code>REPORTING</code> schema was created in the <a href="../data-warehouse/6-schemas/">Schemas</a> page and has schema-level grants that restrict <code>ANALYTICS_REPORTER</code> to just this schema. dbt publishes final BI-ready models here.</p>
 <h2 id="what-you-will-build">What You Will Build</h2>
 <p>By the end of this section:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>dbt-transform repository
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── models/
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   ├── staging/
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│   │   ├── streaming/
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│   │   │   └── stg_streaming__purchases.sql
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│   │   ├── dlt/
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│   │   │   ├── stg_dlt__currencies.sql
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│   │   │   ├── stg_dlt__exchange_rates.sql
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│   │   │   └── stg_dlt__products.sql
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│   │   └── airbyte/
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│   │       └── stg_airbyte__contacts.sql
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│   ├── intermediate/
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>│   │   └── int_exchange_rates__unioned.sql
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│   └── marts/
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│       ├── core/
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│       │   ├── fct_purchases.sql
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>│       │   ├── fct_exchange_rates.sql
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>│       │   └── dim_products.sql
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>│       ├── crm/
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>│       │   └── dim_customers.sql
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>│       └── sales/
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>│           └── sales.sql
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>├── tests/
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>├── macros/
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>├── seeds/
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>├── dbt_project.yml
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>└── packages.yml
+<div class="highlight"><pre><span></span><code>dbt-transform repository
+├── models/
+│   ├── staging/
+│   │   ├── streaming/
+│   │   │   └── stg_streaming__purchases.sql
+│   │   ├── dlt/
+│   │   │   ├── stg_dlt__currencies.sql
+│   │   │   ├── stg_dlt__exchange_rates.sql
+│   │   │   └── stg_dlt__products.sql
+│   │   └── airbyte/
+│   │       └── stg_airbyte__contacts.sql
+│   ├── intermediate/
+│   │   └── int_exchange_rates__unioned.sql
+│   └── marts/
+│       ├── core/
+│       │   ├── fct_purchases.sql
+│       │   ├── fct_exchange_rates.sql
+│       │   └── dim_products.sql
+│       ├── crm/
+│       │   └── dim_customers.sql
+│       └── sales/
+│           └── sales.sql
+├── tests/
+├── macros/
+├── seeds/
+├── dbt_project.yml
+└── packages.yml
 </code></pre></div>
 <p>Snowflake infrastructure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Snowflake
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>├── SVC_DBT service account
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   └── SVC_DBT dedicated role
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│       └── Granted ANALYTICS_TRANSFORMER
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>└── ANALYTICS database (existing)
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    ├── STAGING schema     ← created by dbt
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    ├── INTERMEDIATE schema ← created by dbt
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    ├── MARTS schema       ← created by dbt
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    └── REPORTING schema   ← already in Terraform
+<div class="highlight"><pre><span></span><code>Snowflake
+├── SVC_DBT service account
+│   └── SVC_DBT dedicated role
+│       └── Granted ANALYTICS_TRANSFORMER
+│
+└── ANALYTICS database (existing)
+    ├── STAGING schema     ← created by dbt
+    ├── INTERMEDIATE schema ← created by dbt
+    ├── MARTS schema       ← created by dbt
+    └── REPORTING schema   ← already in Terraform
 </code></pre></div>
 <h2 id="deployment-options">Deployment Options</h2>
 <p>You have two options for running dbt:</p>
@@ -6184,6 +6186,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6227,7 +6231,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

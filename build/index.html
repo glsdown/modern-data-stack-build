@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5812,62 +5814,62 @@
 <p>This section guides you through building each component of the stack in order. By the end, you will have a fully operational data platform: data flowing from four sources, through ingestion pipelines and Snowflake, transformed by dbt, and visible in Lightdash dashboards.</p>
 <h2 id="what-gets-built">What Gets Built</h2>
 <p>Each section builds a distinct layer of the stack. Together they form a complete, production-ready data platform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    WHAT YOU BUILD IN THIS SECTION                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                                 │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ① AWS Infrastructure          S3 data lake, VPC networking                    │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ┌─────────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │  S3 (raw file archive)  │  VPC (network foundation for self-hosted) │        │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  └─────────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│                                    │                                           │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│                                    ▼                                           │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  ② Data Warehouse              Snowflake foundation                             │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  ┌─────────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │  Warehouses │ Databases │ Roles │ Users │ Schemas │ Network Policies │        │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  └─────────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                                    │                                           │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                                    ▼                                           │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ③ Orchestration               Prefect control plane                            │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  ┌─────────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │  Prefect Cloud (or self-hosted)  │  Work pools  │  CI/CD deployment │        │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  └─────────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                     │                │                    │                    │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                     ▼                ▼                    ▼                    │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  ④ Batch Ingestion  ⑤ SaaS Ingestion  ⑥ Streaming                              │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────────┐           │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │ dlt          │  │ Airbyte      │  │ Confluent Cloud / MSK        │           │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │ • products   │  │ • HubSpot    │  │ • Kafka topics               │           │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  │ • currencies │  │   (CRM)      │  │ • Kafka Connect → Snowflake  │           │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  │ • Snowpipe   │  │ • Reverse ETL│  │ • Purchase events            │           │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  └──────┬───────┘  └──────┬───────┘  └─────────────┬────────────────┘           │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│         │                │                         │                           │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│         ▼                ▼                         ▼                           │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  ┌──────────────────────────────────────────────────────────┐                   │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  │                      SNOWFLAKE                           │                   │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │  DLT database │ AIRBYTE database │ STREAMING database    │                   │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  └──────────────────────────────────┬───────────────────────┘                   │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│                                     │                                          │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│                                     ▼                                          │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│  ⑦ Data Transformation          dbt models                                     │
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│  ┌─────────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│  │  stg_* staging  │  int_* intermediate  │  fct_* / dim_* marts       │        │
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│  │  → ANALYTICS database (STAGING, INTERMEDIATE, MARTS, REPORTING)     │        │
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>│  └─────────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>│                                     │                                          │
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>│                                     ▼                                          │
-<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>│  ⑧ Data Analytics              Dashboards and notebooks                         │
-<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>│  ┌─────────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>│  │  Lightdash dashboards  │  Snowsight  │  Python notebooks            │        │
-<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>│  └─────────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>│                                                                                 │
-<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>│  ─────────────────────────────────────────────────────────────────────────────  │
-<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>│  RUNNING ACROSS ALL SECTIONS                                                    │
-<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>│                                                                                 │
-<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>│  ⑨ Observability   Elementary │ OpenMetadata │ Prefect monitoring               │
-<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>│  ⑩ Documentation   MkDocs site │ Multirepo plugin │ Runbooks                    │
-<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>│                                                                                 │
-<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>└─────────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    WHAT YOU BUILD IN THIS SECTION                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  ① AWS Infrastructure          S3 data lake, VPC networking                    │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  S3 (raw file archive)  │  VPC (network foundation for self-hosted) │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                    │                                           │
+│                                    ▼                                           │
+│  ② Data Warehouse              Snowflake foundation                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Warehouses │ Databases │ Roles │ Users │ Schemas │ Network Policies │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                    │                                           │
+│                                    ▼                                           │
+│  ③ Orchestration               Prefect control plane                            │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Prefect Cloud (or self-hosted)  │  Work pools  │  CI/CD deployment │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                     │                │                    │                    │
+│                     ▼                ▼                    ▼                    │
+│  ④ Batch Ingestion  ⑤ SaaS Ingestion  ⑥ Streaming                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────────┐           │
+│  │ dlt          │  │ Airbyte      │  │ Confluent Cloud / MSK        │           │
+│  │ • products   │  │ • HubSpot    │  │ • Kafka topics               │           │
+│  │ • currencies │  │   (CRM)      │  │ • Kafka Connect → Snowflake  │           │
+│  │ • Snowpipe   │  │ • Reverse ETL│  │ • Purchase events            │           │
+│  └──────┬───────┘  └──────┬───────┘  └─────────────┬────────────────┘           │
+│         │                │                         │                           │
+│         ▼                ▼                         ▼                           │
+│  ┌──────────────────────────────────────────────────────────┐                   │
+│  │                      SNOWFLAKE                           │                   │
+│  │  DLT database │ AIRBYTE database │ STREAMING database    │                   │
+│  └──────────────────────────────────┬───────────────────────┘                   │
+│                                     │                                          │
+│                                     ▼                                          │
+│  ⑦ Data Transformation          dbt models                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  stg_* staging  │  int_* intermediate  │  fct_* / dim_* marts       │        │
+│  │  → ANALYTICS database (STAGING, INTERMEDIATE, MARTS, REPORTING)     │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                     │                                          │
+│                                     ▼                                          │
+│  ⑧ Data Analytics              Dashboards and notebooks                         │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Lightdash dashboards  │  Snowsight  │  Python notebooks            │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  RUNNING ACROSS ALL SECTIONS                                                    │
+│                                                                                 │
+│  ⑨ Observability   Elementary │ OpenMetadata │ Prefect monitoring               │
+│  ⑩ Documentation   MkDocs site │ Multirepo plugin │ Runbooks                    │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="the-data-journey">The Data Journey</h2>
 <p>This is the specific data that flows through the stack you're building:</p>
@@ -5913,42 +5915,42 @@
 </tbody>
 </table>
 <p>All four are joined in a <code>sales</code> mart table:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>fct_purchases  ──┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>dim_products   ──┤──▶  sales  (customer totals, converted to GBP and USD)
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>fct_exchange_rates   ──┤
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>dim_customers  ──┘
+<div class="highlight"><pre><span></span><code>fct_purchases  ──┐
+dim_products   ──┤──▶  sales  (customer totals, converted to GBP and USD)
+fct_exchange_rates   ──┤
+dim_customers  ──┘
 </code></pre></div>
 <h2 id="build-order-and-dependencies">Build Order and Dependencies</h2>
 <p>Sections must be completed in order. Each section depends on what came before:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Getting Started (Terraform, accounts, local environment)
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>        │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        ▼
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>① AWS Infrastructure  ─────────────────────────────────────────────────────┐
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        │                                                                   │
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        ▼                                                                   │
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>② Data Warehouse (Snowflake: warehouses, databases, roles, users)           │
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        │                                                                   │
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        ▼                                                                   │
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>③ Orchestration (Prefect: control plane, work pools, CI/CD)                 │
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        │                                                                   │
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        ├──────────────────────┬──────────────────────┐                     │
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        ▼                      ▼                      ▼                     │
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>④ Batch Ingestion          ⑤ SaaS Ingestion       ⑥ Streaming              │
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  (dlt pipelines)           (Airbyte)               (Kafka + Connect)       │
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        │                      │                      │                     │
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        └──────────────────────┴──────────────────────┘                     │
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>                               │                                            │
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>                               ▼                                            │
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>                    ⑦ Data Transformation (dbt models)           Uses VPC ──┘
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>                               │
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>                               ▼
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>                    ⑧ Data Analytics (Lightdash, Snowsight)
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>                               │
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>                               ▼
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>                    ⑨ Observability (Elementary, OpenMetadata)
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>                               │
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>                               ▼
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>                    ⑩ Documentation (MkDocs site, runbooks)
+<div class="highlight"><pre><span></span><code>Getting Started (Terraform, accounts, local environment)
+        │
+        ▼
+① AWS Infrastructure  ─────────────────────────────────────────────────────┐
+        │                                                                   │
+        ▼                                                                   │
+② Data Warehouse (Snowflake: warehouses, databases, roles, users)           │
+        │                                                                   │
+        ▼                                                                   │
+③ Orchestration (Prefect: control plane, work pools, CI/CD)                 │
+        │                                                                   │
+        ├──────────────────────┬──────────────────────┐                     │
+        ▼                      ▼                      ▼                     │
+④ Batch Ingestion          ⑤ SaaS Ingestion       ⑥ Streaming              │
+  (dlt pipelines)           (Airbyte)               (Kafka + Connect)       │
+        │                      │                      │                     │
+        └──────────────────────┴──────────────────────┘                     │
+                               │                                            │
+                               ▼                                            │
+                    ⑦ Data Transformation (dbt models)           Uses VPC ──┘
+                               │
+                               ▼
+                    ⑧ Data Analytics (Lightdash, Snowsight)
+                               │
+                               ▼
+                    ⑨ Observability (Elementary, OpenMetadata)
+                               │
+                               ▼
+                    ⑩ Documentation (MkDocs site, runbooks)
 </code></pre></div>
 <h2 id="sections-at-a-glance">Sections at a Glance</h2>
 <table>
@@ -6082,6 +6084,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6125,7 +6129,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>

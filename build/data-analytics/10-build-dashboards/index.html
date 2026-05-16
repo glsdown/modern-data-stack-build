@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6572,29 +6574,29 @@
 <li><strong>Exchange Rates Dashboard</strong> — GBP currency trends, volatility, and comparisons</li>
 <li><strong>Product Catalogue Dashboard</strong> — Product pricing analysis and category breakdown</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                        DASHBOARD ARCHITECTURE                           │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Dashboard                         dbt Models                          │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ─────────                         ──────────                          │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────────────────────────────────────────────────────┐      │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Exchange Rates Dashboard                                     │      │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  │      │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ │ Trend Chart    │  │ Volatility     │  │ Current Rates  │  │      │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ │ (line chart)   │  │ (bar chart)    │  │ (table)        │  │      │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │ └────────────────┘  └────────────────┘  └────────────────┘  │      │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │         ▲                   ▲                   ▲           │      │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │         └───────────────────┴───────────────────┘           │      │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │                             │                               │      │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │                   fct_exchange_rates                        │      │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │                   (metrics from YAML)                       │      │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  └──────────────────────────────────────────────────────────────┘      │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                                                         │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  All charts query the same dbt model with different filters/groupings. │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                                         │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                        DASHBOARD ARCHITECTURE                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Dashboard                         dbt Models                          │
+│  ─────────                         ──────────                          │
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────┐      │
+│  │ Exchange Rates Dashboard                                     │      │
+│  │ ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  │      │
+│  │ │ Trend Chart    │  │ Volatility     │  │ Current Rates  │  │      │
+│  │ │ (line chart)   │  │ (bar chart)    │  │ (table)        │  │      │
+│  │ └────────────────┘  └────────────────┘  └────────────────┘  │      │
+│  │         ▲                   ▲                   ▲           │      │
+│  │         └───────────────────┴───────────────────┘           │      │
+│  │                             │                               │      │
+│  │                   fct_exchange_rates                        │      │
+│  │                   (metrics from YAML)                       │      │
+│  └──────────────────────────────────────────────────────────────┘      │
+│                                                                         │
+│  All charts query the same dbt model with different filters/groupings. │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="dashboard-1-exchange-rates-dashboard">Dashboard 1: Exchange Rates Dashboard</h2>
 <h3 id="step-1-create-the-dashboard">Step 1: Create the Dashboard</h3>
@@ -6725,20 +6727,20 @@
 <li>Click <strong>+ Add tile</strong> → <strong>Markdown</strong></li>
 <li>Add explanatory text:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gu">## GBP Exchange Rates Dashboard</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>This dashboard shows GBP (British Pound) exchange rates against major currencies.
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gs">**Data Sources:**</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">-</span><span class="w"> </span>European Central Bank (ECB) API
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">-</span><span class="w"> </span>Yahoo Finance API
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gs">**Refresh Schedule:**</span> Daily at 08:00 UTC
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="gs">**Key Metrics:**</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Volatility**</span>: Standard deviation of daily rates (higher = more volatile)
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Current Rates**</span>: Latest available exchange rate
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Trends**</span>: 6-month historical trends by week
+<div class="highlight"><pre><span></span><code><span class="gu">## GBP Exchange Rates Dashboard</span>
+
+This dashboard shows GBP (British Pound) exchange rates against major currencies.
+
+<span class="gs">**Data Sources:**</span>
+<span class="k">-</span><span class="w"> </span>European Central Bank (ECB) API
+<span class="k">-</span><span class="w"> </span>Yahoo Finance API
+
+<span class="gs">**Refresh Schedule:**</span> Daily at 08:00 UTC
+
+<span class="gs">**Key Metrics:**</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**Volatility**</span>: Standard deviation of daily rates (higher = more volatile)
+<span class="k">-</span><span class="w"> </span><span class="gs">**Current Rates**</span>: Latest available exchange rate
+<span class="k">-</span><span class="w"> </span><span class="gs">**Trends**</span>: 6-month historical trends by week
 </code></pre></div>
 <ol>
 <li>Save and position at the top of the dashboard</li>
@@ -6939,29 +6941,29 @@
 <li><strong>Metric labels</strong>: Business-friendly ("Average Exchange Rate", not "avg_rate")</li>
 </ul>
 <h2 id="example-dashboard-layout">Example Dashboard Layout</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│ GBP Exchange Rates Dashboard                                      │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>├────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│ ┌────────────────────────────────────────────────┐                 │
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│ │ Explanatory Text (Markdown)                   │                 │
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│ │ • Data sources: ECB, Yahoo Finance             │                 │
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│ │ • Refresh: Daily at 08:00 UTC                  │                 │
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│ └────────────────────────────────────────────────┘                 │
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│                                                                    │
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│ Filters: [Currency ▼] [Date Range ▼]                              │
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│                                                                    │
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│ ┌───────────────────────────────────┐  ┌────────────────────────┐ │
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>│ │ Exchange Rate Trends (Line Chart) │  │ Volatility (Bar Chart) │ │
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│ │                                   │  │                        │ │
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│ │ (2/3 width)                       │  │ (1/3 width)            │ │
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│ └───────────────────────────────────┘  └────────────────────────┘ │
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>│                                                                    │
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>│ ┌───────────────────────────────────┐  ┌────────────────────────┐ │
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>│ │ Current Rates (Table)             │  │ Min/Max Range          │ │
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>│ │                                   │  │ (Bar Chart)            │ │
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>│ │ (1/2 width)                       │  │ (1/2 width)            │ │
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>│ └───────────────────────────────────┘  └────────────────────────┘ │
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>└────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌────────────────────────────────────────────────────────────────────┐
+│ GBP Exchange Rates Dashboard                                      │
+├────────────────────────────────────────────────────────────────────┤
+│ ┌────────────────────────────────────────────────┐                 │
+│ │ Explanatory Text (Markdown)                   │                 │
+│ │ • Data sources: ECB, Yahoo Finance             │                 │
+│ │ • Refresh: Daily at 08:00 UTC                  │                 │
+│ └────────────────────────────────────────────────┘                 │
+│                                                                    │
+│ Filters: [Currency ▼] [Date Range ▼]                              │
+│                                                                    │
+│ ┌───────────────────────────────────┐  ┌────────────────────────┐ │
+│ │ Exchange Rate Trends (Line Chart) │  │ Volatility (Bar Chart) │ │
+│ │                                   │  │                        │ │
+│ │ (2/3 width)                       │  │ (1/3 width)            │ │
+│ └───────────────────────────────────┘  └────────────────────────┘ │
+│                                                                    │
+│ ┌───────────────────────────────────┐  ┌────────────────────────┐ │
+│ │ Current Rates (Table)             │  │ Min/Max Range          │ │
+│ │                                   │  │ (Bar Chart)            │ │
+│ │ (1/2 width)                       │  │ (1/2 width)            │ │
+│ └───────────────────────────────────┘  └────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="embedding-dashboards-optional">Embedding Dashboards (Optional)</h2>
 <p>Lightdash Cloud supports embedding dashboards in external applications (e.g., internal company portal):</p>
@@ -7061,6 +7063,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7104,7 +7108,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

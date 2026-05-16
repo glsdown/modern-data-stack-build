@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6675,44 +6677,44 @@
 <li><strong>AWS MSK</strong> (AWS-native, mid-cost, some operational burden)</li>
 <li><strong>Redpanda self-hosted</strong> (lowest cost, highest operational burden)</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    DEPLOYMENT OPTIONS COMPARISON                        │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Confluent Cloud                                                        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────────                                                       │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  ┌──────────────────────────────────────────────────────┐              │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │ Fully Managed (Kafka + Schema Registry + Connect)   │              │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ • Basic: $150/mo (1 CKU)                            │              │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • Standard: $300/mo (multi-AZ, better SLA)          │              │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ • Dedicated: $500+/mo (isolated, private network)   │              │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ • Zero ops burden                                   │              │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └──────────────────────────────────────────────────────┘              │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                                                         │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  AWS MSK                                                                │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ────────                                                               │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ┌──────────────────────────────────────────────────────┐              │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │ AWS-Native Kafka                                     │              │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │ • Serverless: ~$0.08/GB ingested + storage          │              │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │ • Provisioned: ~$250/mo (3x kafka.m5.large)         │              │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  │ • Medium ops burden (config, monitoring, upgrades)  │              │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  │ • Need separate Schema Registry (Glue or Confluent) │              │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  └──────────────────────────────────────────────────────┘              │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                                                         │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  Redpanda Self-Hosted (ECS)                                             │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  ───────────────────────                                                │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  ┌──────────────────────────────────────────────────────┐              │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  │ Kafka-Compatible, Simpler Architecture              │              │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  │ • ECS Fargate: ~$100/mo (3 nodes + ALB)             │              │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  │ • Built-in Schema Registry                          │              │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│  │ • High ops burden (deploy, scale, monitor, debug)   │              │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  │ • Full control                                      │              │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  └──────────────────────────────────────────────────────┘              │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│                                                                         │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  Recommendation: Start with Confluent Cloud Basic                       │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│  Optimise later if streaming becomes business-critical at scale         │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│                                                                         │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    DEPLOYMENT OPTIONS COMPARISON                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Confluent Cloud                                                        │
+│  ────────────────                                                       │
+│  ┌──────────────────────────────────────────────────────┐              │
+│  │ Fully Managed (Kafka + Schema Registry + Connect)   │              │
+│  │ • Basic: $150/mo (1 CKU)                            │              │
+│  │ • Standard: $300/mo (multi-AZ, better SLA)          │              │
+│  │ • Dedicated: $500+/mo (isolated, private network)   │              │
+│  │ • Zero ops burden                                   │              │
+│  └──────────────────────────────────────────────────────┘              │
+│                                                                         │
+│  AWS MSK                                                                │
+│  ────────                                                               │
+│  ┌──────────────────────────────────────────────────────┐              │
+│  │ AWS-Native Kafka                                     │              │
+│  │ • Serverless: ~$0.08/GB ingested + storage          │              │
+│  │ • Provisioned: ~$250/mo (3x kafka.m5.large)         │              │
+│  │ • Medium ops burden (config, monitoring, upgrades)  │              │
+│  │ • Need separate Schema Registry (Glue or Confluent) │              │
+│  └──────────────────────────────────────────────────────┘              │
+│                                                                         │
+│  Redpanda Self-Hosted (ECS)                                             │
+│  ───────────────────────                                                │
+│  ┌──────────────────────────────────────────────────────┐              │
+│  │ Kafka-Compatible, Simpler Architecture              │              │
+│  │ • ECS Fargate: ~$100/mo (3 nodes + ALB)             │              │
+│  │ • Built-in Schema Registry                          │              │
+│  │ • High ops burden (deploy, scale, monitor, debug)   │              │
+│  │ • Full control                                      │              │
+│  └──────────────────────────────────────────────────────┘              │
+│                                                                         │
+│  Recommendation: Start with Confluent Cloud Basic                       │
+│  Optimise later if streaming becomes business-critical at scale         │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="confluent-cloud-recommended">Confluent Cloud (Recommended)</h2>
 <h3 id="what-is-confluent-cloud">What is Confluent Cloud?</h3>
@@ -6740,12 +6742,12 @@
 - <strong>Storage:</strong> $0.08/GB/month (data retention)
 - <strong>Partition overage:</strong> $0.40/partition/month (over 100 partitions)</p>
 <p><strong>Example workload:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>1 GB/day ingress × 30 days = 30 GB ingress = $2.50
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>1 GB/day egress × 30 days = 30 GB egress = $2.50
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>30-day retention, 30 GB stored = $2.50
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>5 topics, 3 partitions each = 15 partitions (no overage)
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>Total: $150 + $2.50 + $2.50 + $2.50 = $157.50/month
+</p><div class="highlight"><pre><span></span><code>1 GB/day ingress × 30 days = 30 GB ingress = $2.50
+1 GB/day egress × 30 days = 30 GB egress = $2.50
+30-day retention, 30 GB stored = $2.50
+5 topics, 3 partitions each = 15 partitions (no overage)
+
+Total: $150 + $2.50 + $2.50 + $2.50 = $157.50/month
 </code></pre></div><p></p>
 <p><strong>Best for:</strong>
 - Getting started with streaming
@@ -6852,11 +6854,11 @@
 - <strong>Storage:</strong> $0.08/GB/month (data retained)
 - <strong>Partition hours:</strong> ~$0.0015/partition/hour = ~$1.10/partition/month</p>
 <p><strong>Example workload:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>1 GB/day ingress × 30 days = 30 GB = $2.50
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>30 GB storage × $0.08 = $2.50
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>5 topics × 3 partitions × $1.10 = $16.50
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Total: $21.50/month
+</p><div class="highlight"><pre><span></span><code>1 GB/day ingress × 30 days = 30 GB = $2.50
+30 GB storage × $0.08 = $2.50
+5 topics × 3 partitions × $1.10 = $16.50
+
+Total: $21.50/month
 </code></pre></div><p></p>
 <p><strong>Pros:</strong>
 - No base cluster cost
@@ -6877,11 +6879,11 @@
 - <strong>kafka.m5.large</strong> (2 vCPU, 8 GB RAM) — Small production (~10 GB/day)
 - <strong>kafka.m5.xlarge</strong> (4 vCPU, 16 GB RAM) — Medium production (~50 GB/day)</p>
 <p><strong>Example configuration:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>3 brokers × kafka.m5.large ($0.115/hour) × 730 hours/month = $252/month
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>+ Storage: 100 GB EBS per broker × 3 × $0.08/GB = $24/month
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>+ Data transfer: Minimal (same-AZ free)
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Total: $276/month
+</p><div class="highlight"><pre><span></span><code>3 brokers × kafka.m5.large ($0.115/hour) × 730 hours/month = $252/month
++ Storage: 100 GB EBS per broker × 3 × $0.08/GB = $24/month
++ Data transfer: Minimal (same-AZ free)
+
+Total: $276/month
 </code></pre></div><p></p>
 <p><strong>Pros:</strong>
 - Predictable pricing
@@ -6946,27 +6948,27 @@
 <li><strong>Kafka-compatible</strong> — Drop-in replacement (same APIs, same client libraries)</li>
 </ul>
 <h3 id="architecture">Architecture</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│                    REDPANDA ON ECS (3-NODE CLUSTER)                     │
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│                                                                         │
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│  ┌────────────────┐      ┌────────────────┐      ┌────────────────┐    │
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│  │ ECS Task 1     │      │ ECS Task 2     │      │ ECS Task 3     │    │
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│  │ (AZ-1)         │      │ (AZ-2)         │      │ (AZ-3)         │    │
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│  │                │      │                │      │                │    │
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│  │ Redpanda node  │◀────▶│ Redpanda node  │◀────▶│ Redpanda node  │    │
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│  │ + Schema Reg   │      │ + Schema Reg   │      │ + Schema Reg   │    │
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│  └────────────────┘      └────────────────┘      └────────────────┘    │
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│         │                         │                         │           │
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│         └─────────────────────────┼─────────────────────────┘           │
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│                                   │                                     │
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>│                                   ▼                                     │
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>│                         ┌────────────────┐                              │
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>│                         │ Application    │                              │
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>│                         │ Load Balancer  │                              │
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>│                         └────────────────┘                              │
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>│                                                                         │
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    REDPANDA ON ECS (3-NODE CLUSTER)                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌────────────────┐      ┌────────────────┐      ┌────────────────┐    │
+│  │ ECS Task 1     │      │ ECS Task 2     │      │ ECS Task 3     │    │
+│  │ (AZ-1)         │      │ (AZ-2)         │      │ (AZ-3)         │    │
+│  │                │      │                │      │                │    │
+│  │ Redpanda node  │◀────▶│ Redpanda node  │◀────▶│ Redpanda node  │    │
+│  │ + Schema Reg   │      │ + Schema Reg   │      │ + Schema Reg   │    │
+│  └────────────────┘      └────────────────┘      └────────────────┘    │
+│         │                         │                         │           │
+│         └─────────────────────────┼─────────────────────────┘           │
+│                                   │                                     │
+│                                   ▼                                     │
+│                         ┌────────────────┐                              │
+│                         │ Application    │                              │
+│                         │ Load Balancer  │                              │
+│                         └────────────────┘                              │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h3 id="infrastructure-cost">Infrastructure Cost</h3>
 <table>
@@ -7413,6 +7415,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7456,7 +7460,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

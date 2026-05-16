@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -707,6 +709,17 @@
     <span class="md-ellipsis">
       
         Write a Good Pull Request Description
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-claude-code-to-create-pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Claude Code to Create Pull Requests
       
     </span>
   </a>
@@ -6323,6 +6336,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#using-claude-code-to-create-pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Claude Code to Create Pull Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#request-reviewers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6600,117 +6624,147 @@
 <h4 id="feature-branches">Feature Branches</h4>
 <ul>
 <li><strong>Purpose</strong>: Develop new features or resources</li>
-<li><strong>Naming</strong>: <code>feature/ticket-id/short-description</code></li>
-<li><strong>Example</strong>: <code>feature/jira-123/add-analytics-warehouse</code></li>
+<li><strong>Naming</strong>: <code>feature/short-description</code> or <code>feature/ticket-id/short-description</code></li>
+<li><strong>Example</strong>: <code>feature/add-analytics-warehouse</code> or <code>feature/jira-123/add-analytics-warehouse</code></li>
 <li><strong>Lifespan</strong>: Delete after merging</li>
 </ul>
 <h4 id="fix-branches">Fix Branches</h4>
 <ul>
 <li><strong>Purpose</strong>: Bug fixes and corrections</li>
-<li><strong>Naming</strong>: <code>fix/ticket-id/short-description</code></li>
-<li><strong>Example</strong>: <code>fix/jira-123/resource-monitor-threshold</code></li>
+<li><strong>Naming</strong>: <code>fix/short-description</code> or <code>fix/ticket-id/short-description</code></li>
+<li><strong>Example</strong>: <code>fix/resource-monitor-threshold</code> or <code>fix/jira-123/resource-monitor-threshold</code></li>
 <li><strong>Lifespan</strong>: Delete after merging</li>
 </ul>
 <h4 id="documentation-branches">Documentation Branches</h4>
 <ul>
 <li><strong>Purpose</strong>: Documentation updates</li>
-<li><strong>Naming</strong>: <code>docs/ticket-id/short-description</code></li>
-<li><strong>Example</strong>: <code>docs/jira-123/update-terraform-setup</code></li>
+<li><strong>Naming</strong>: <code>docs/short-description</code> or <code>docs/ticket-id/short-description</code></li>
+<li><strong>Example</strong>: <code>docs/update-terraform-setup</code> or <code>docs/jira-123/update-terraform-setup</code></li>
 <li><strong>Lifespan</strong>: Delete after merging</li>
 </ul>
 <h4 id="refactor-branches">Refactor Branches</h4>
 <ul>
 <li><strong>Purpose</strong>: Code restructuring without changing functionality</li>
-<li><strong>Naming</strong>: <code>refactor/ticket-id/short-description</code></li>
-<li><strong>Example</strong>: <code>refactor/jira-123/database-module-structure</code></li>
+<li><strong>Naming</strong>: <code>refactor/short-description</code> or <code>refactor/ticket-id/short-description</code></li>
+<li><strong>Example</strong>: <code>refactor/database-module-structure</code> or <code>refactor/jira-123/database-module-structure</code></li>
 <li><strong>Lifespan</strong>: Delete after merging</li>
 </ul>
 <h3 id="why-this-strategy">Why This Strategy?</h3>
 <ul>
-<li><strong>Simple</strong>: Only two long-lived branches (main)</li>
+<li><strong>Simple</strong>: Only one long-lived branch (main)</li>
 <li><strong>Clear</strong>: Branch names indicate purpose</li>
 <li><strong>Safe</strong>: Protected main branch prevents accidents</li>
 <li><strong>Traceable</strong>: All changes go through pull requests</li>
-<li><strong>Ticketed</strong>: All branches are linked to specific ticketed work (if used)</li>
+<li><strong>Flexible</strong>: Ticket IDs are optional - include them if you use a ticket tracker</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Ticket IDs</p>
+<p>If you use a ticket tracker, including the ticket ID in the branch name is good practice. It links the branch to the work that motivated it, makes changes easier to trace, and gives you a quick reference when revisiting old branches.</p>
+</div>
 <h2 id="feature-development-workflow">Feature Development Workflow</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Terminal (CLI)</label><label for="__tabbed_1_2">VS Code Source Control Panel</label><label for="__tabbed_1_3">Autofetch in VS Code</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Terminal</label><label for="__tabbed_1_2">VS Code Source Control Panel</label><label for="__tabbed_1_3">Autofetch in VS Code</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p><strong>Step 1: Start from Main</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>main
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
-</code></pre></div><p></p>
-<p><strong>Step 2: Create a Feature Branch</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/add-analytics-warehouse
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>branch
-</code></pre></div><p></p>
+<p><strong>Step 1: Start from Main</strong></p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</code></pre></div>
+<p><strong>Step 2: Create a Feature Branch</strong></p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/add-analytics-warehouse
+</code></pre></div>
 <p><strong>Step 3: Make Your Changes</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Edit files, then:</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git<span class="w"> </span>status
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>git<span class="w"> </span>diff
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>git<span class="w"> </span>add<span class="w"> </span>path/to/file
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Clear description of change made"</span>
-</code></pre></div><p></p>
+You should regularly commit your changes to provide a good history. Every time you reach a checkpoint, commit the changes.</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>status<span class="w"> </span><span class="c1"># See which files have changed</span>
+git<span class="w"> </span>diff<span class="w"> </span><span class="c1"># See what has changed</span>
+git<span class="w"> </span>add<span class="w"> </span>path/to/file<span class="w"> </span><span class="c1"># Stage files for commit</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Clear description of change made"</span><span class="w"> </span><span class="c1"># Commit</span>
+</code></pre></div>
 <p><strong>Step 4: Keep Your Branch Updated</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Regularly pull main:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># If there are conflicts, resolve them and commit</span>
-</code></pre></div><p></p>
+Make sure to regularly pull any changes on the <code>main</code> branch into your feature branch to minimise divergence. If there are conflicts, resolve them and commit.</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</code></pre></div>
 <p><strong>Step 5: Run Local Checks</strong>
 <em>(Run tests, lint, etc. as appropriate)</em></p>
-<p><strong>Step 6: Push Your Branch</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/add-analytics-warehouse
-</code></pre></div><p></p>
+<p><strong>Step 6: Push Your Branch</strong></p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/add-analytics-warehouse
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Using the git plugin</p>
+<p>If you followed along with the local environment setup, you'll have installed the git plugin for Oh-My-Zsh. This comes with a number of shortcuts for these commands. You can see them all <a href="https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh">here</a>.</p>
+<div class="highlight"><pre><span></span><code>gcm<span class="w"> </span><span class="c1"># git checkout main</span>
+gl<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span><span class="c1"># git pull origin main</span>
+gcb!<span class="w"> </span>feature/add-analytics-warehouse<span class="w"> </span><span class="c1"># git checkout -b feature/add-analytics-warehouse</span>
+gst<span class="w"> </span><span class="c1"># git status</span>
+gd<span class="w"> </span><span class="c1"># git diff</span>
+ga<span class="w"> </span>path/to/file<span class="w"> </span><span class="c1"># git add path/to/file</span>
+gcmsg<span class="w"> </span><span class="s2">"Clear description of change made"</span><span class="w"> </span><span class="c1"># git commit -m "Clear description of change made"</span>
+gl<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span><span class="c1"># git pull origin main</span>
+ggpush<span class="w"> </span><span class="c1"># git push origin feature/add-analytics-warehouse</span>
+</code></pre></div>
+</div>
 </div>
 <div class="tabbed-block">
-<p><strong>Step 1: Start from Main</strong>
-- Open the Source Control panel (⌃⇧G or click the branch icon)
-- Switch to <code>main</code> branch
-- Click the "…" menu &gt; Pull (or use the pull button)</p>
-<p><strong>Step 2: Create a Feature Branch</strong>
-- Click the branch name in the status bar
-- Select "Create new branch"
-- Name it (e.g. <code>feature/add-analytics-warehouse</code>)</p>
-<p><strong>Step 3: Make Your Changes</strong>
-- Edit files as needed
-- The Source Control panel will show changed files
-- Stage files (with the + button)
-- Write a clear commit message and commit</p>
-<p><strong>Step 4: Keep Your Branch Updated</strong>
-- Click the "…" menu &gt; Pull (with branch selected)</p>
-<p><strong>Step 5: Run Local Checks</strong>
-- Use the built-in Problems panel, linters, and test runners
-- Ask Claude to do a review (if appropriate)</p>
-<p><strong>Step 6: Push Your Branch</strong>
-- Click the "…" menu &gt; Push, or use the push button</p>
+<p><strong>Step 1: Start from Main</strong></p>
+<ul>
+<li>Open the Source Control panel (⌃⇧G or click the branch icon)</li>
+<li>Switch to <code>main</code> branch</li>
+<li>Click the "…" menu &gt; Pull (or use the pull button)</li>
+</ul>
+<p><strong>Step 2: Create a Feature Branch</strong></p>
+<ul>
+<li>Click the branch name in the status bar</li>
+<li>Select "Create new branch"</li>
+<li>Name it (e.g. <code>feature/add-analytics-warehouse</code>)</li>
+</ul>
+<p><strong>Step 3: Make Your Changes</strong></p>
+<ul>
+<li>Edit files as needed</li>
+<li>The Source Control panel will show changed files</li>
+<li>Stage files (with the + button)</li>
+<li>Write a clear commit message and commit</li>
+</ul>
+<p><strong>Step 4: Keep Your Branch Updated</strong></p>
+<ul>
+<li>Click the "…" menu &gt; Pull (with branch selected)</li>
+</ul>
+<p><strong>Step 5: Run Local Checks</strong></p>
+<ul>
+<li>Use the built-in Problems panel, linters, and test runners</li>
+<li>Ask Claude to do a review (if appropriate)</li>
+</ul>
+<p><strong>Step 6: Push Your Branch</strong></p>
+<ul>
+<li>Click the "…" menu &gt; Push, or use the push button</li>
+</ul>
 </div>
 <div class="tabbed-block">
-<p>To keep your repo up to date automatically:
-1. Open Command Palette (Cmd+Shift+P)
-2. Search for <code>settings</code> and open <code>Preferences: Open Settings (UI)</code>
-3. Search for <code>git autofetch</code>
-4. Enable <strong>Git: Autofetch</strong></p>
+<p>To keep your repo up to date automatically:</p>
+<ol>
+<li>Open Command Palette (Cmd+Shift+P)</li>
+<li>Search for <code>settings</code> and open <code>Preferences: Open Settings (UI)</code></li>
+<li>Search for <code>git autofetch</code></li>
+<li>Enable <strong>Git: Autofetch</strong></li>
+</ol>
 <p>VS Code will now regularly fetch updates from the remote.</p>
 </div>
 </div>
 </div>
 <h3 id="good-commit-messages">Good Commit Messages</h3>
 <p>Follow these patterns:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># Good: Clear, specific, explains what and why
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Add analytics warehouse for dbt transformations
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a># Bad: Vague, no context
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Add warehouse
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a># Good: Multi-line with details
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>Fix resource monitor credit quota calculation
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>The previous calculation didn't account for Standard edition
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>credit rates. Updated to use correct multiplier.
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a># Bad: No explanation
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>Fix bug
+<div class="highlight"><pre><span></span><code># Good: Clear, specific, explains what and why
+Add analytics warehouse for dbt transformations
+
+# Bad: Vague, no context
+Add warehouse
+
+# Good: Multi-line with details
+Fix resource monitor credit quota calculation
+
+The previous calculation didn't account for Standard edition
+credit rates. Updated to use correct multiplier.
+
+# Bad: No explanation
+Fix bug
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Conventional Commits</p>
@@ -6729,60 +6783,94 @@
 </div>
 <div class="tabbed-block">
 <p>You can use the <a href="https://cli.github.com/">GitHub CLI</a> to create a PR from your terminal:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--base<span class="w"> </span>main<span class="w"> </span>--head<span class="w"> </span>feature/add-analytics-warehouse<span class="w"> </span>--web
+</p><div class="highlight"><pre><span></span><code>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--base<span class="w"> </span>main<span class="w"> </span>--head<span class="w"> </span>feature/add-analytics-warehouse<span class="w"> </span>--web
 </code></pre></div><p></p>
 </div>
 </div>
 </div>
 <h3 id="write-a-good-pull-request-description">Write a Good Pull Request Description</h3>
 <p>All repos should have a Pull Request template included to help developers structure their Pull Requests in <code>.github/pull_request_template.md</code> - you'll see this in use later. This is automatically populated when you go to create the PR. This should be properly populated with details of the changes and tests to provide the reviewer with as much information as possible.</p>
+<h3 id="using-claude-code-to-create-pull-requests">Using Claude Code to Create Pull Requests</h3>
+<p>If you have Claude Code installed and <code>gh</code> CLI authenticated, you can automate PR creation with a Claude skill. The skill reads your PR template, inspects the diff and commit history, and creates a fully populated PR on your behalf.</p>
+<p>Create the file <code>.claude/skills/create-pr.md</code> in your repository:</p>
+<div class="highlight"><pre><span></span><code>Create a pull request for the current branch using the repository's PR template.
+
+Steps:
+<span class="k">1.</span> Read <span class="sb">`.github/pull_request_template.md`</span> to understand the required sections
+<span class="k">2.</span> Run <span class="sb">`git log main..HEAD --oneline`</span> to see the commits on this branch
+<span class="k">3.</span> Run <span class="sb">`git diff main...HEAD --stat`</span> to understand which files changed
+<span class="k">4.</span> Infer the PR title from the branch name and commit messages
+<span class="k">5.</span> Populate the template:
+<span class="w">   </span><span class="k">-</span><span class="w"> </span><span class="gs">**Description**</span>: summarise what changed and why, based on the diff and commits
+<span class="w">   </span><span class="k">-</span><span class="w"> </span><span class="gs">**Checklist**</span>: leave all items unchecked for the author to review
+<span class="w">   </span><span class="k">-</span><span class="w"> </span><span class="gs">**Screenshots**</span>: omit this section if not applicable
+<span class="w">   </span><span class="k">-</span><span class="w"> </span><span class="gs">**Additional context**</span>: include the ticket ID from the branch name if present
+<span class="k">6.</span> Run <span class="sb">`gh pr create --base main --title "&lt;title&gt;" --body "&lt;populated template&gt;"`</span>
+<span class="k">7.</span> Output the PR URL
+</code></pre></div>
+<p>Once the file is in place, invoke it from Claude Code:</p>
+<div class="highlight"><pre><span></span><code>/create-pr
+</code></pre></div>
+<p>Claude will inspect your branch, populate the template, and open the PR - leaving the checklist for you to tick off before requesting review.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can customise the skill for each repository. For example, a dbt repository might prompt Claude to list which models were added or modified, and a Terraform repository might ask it to summarise the resources being created or changed.</p>
+</div>
 <h3 id="request-reviewers">Request Reviewers</h3>
 <p>Add at least one reviewer from your team:</p>
 <ol>
 <li>Click <strong>Reviewers</strong> in the right sidebar (GitHub Web)</li>
 <li>Or, with GitHub CLI:
-    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>edit<span class="w"> </span>--add-reviewer<span class="w"> </span>username
+    <div class="highlight"><pre><span></span><code>gh<span class="w"> </span>pr<span class="w"> </span>edit<span class="w"> </span>--add-reviewer<span class="w"> </span>username
 </code></pre></div></li>
 <li>Alternatively, send them a message to ask them to review it.</li>
 </ol>
 <h2 id="code-review-best-practices">Code Review Best Practices</h2>
 <h3 id="for-authors">For Authors</h3>
-<p><strong>Before requesting review:</strong>
-- ✅ Self-review your own changes first
-- ✅ Ensure CI checks pass
-- ✅ Write clear PR description
-- ✅ Keep changes focused and small</p>
-<p><strong>During review:</strong>
-- ✅ Respond to all comments
-- ✅ Ask for clarification if needed
-- ✅ Mark conversations as resolved when addressed
-- ✅ Be open to feedback</p>
+<p><strong>Before requesting review:</strong></p>
+<ul>
+<li>✅ Self-review your own changes first</li>
+<li>✅ Ensure CI checks pass</li>
+<li>✅ Write clear PR description</li>
+<li>✅ Keep changes focused and small</li>
+</ul>
+<p><strong>During review:</strong></p>
+<ul>
+<li>✅ Respond to all comments</li>
+<li>✅ Ask for clarification if needed</li>
+<li>✅ Mark conversations as resolved when addressed</li>
+<li>✅ Be open to feedback</li>
+</ul>
 <h3 id="for-reviewers">For Reviewers</h3>
-<p><strong>What to look for:</strong>
-- ✅ Does the code do what the PR says?
-- ✅ Are there any security issues?
-- ✅ Is the code well-structured and maintainable?
-- ✅ Is documentation updated?
-- ✅ Could this break existing infrastructure?</p>
-<p><strong>How to give feedback:</strong>
-- ✅ Be specific and constructive
-- ✅ Explain the "why" behind suggestions
-- ✅ Distinguish between "must fix" and "nice to have"
-- ✅ Appreciate good work</p>
+<p><strong>What to look for:</strong></p>
+<ul>
+<li>✅ Does the code do what the PR says?</li>
+<li>✅ Are there any security issues?</li>
+<li>✅ Is the code well-structured and maintainable?</li>
+<li>✅ Is documentation updated?</li>
+<li>✅ Could this break existing infrastructure?</li>
+</ul>
+<p><strong>How to give feedback:</strong></p>
+<ul>
+<li>✅ Be specific and constructive</li>
+<li>✅ Explain the "why" behind suggestions</li>
+<li>✅ Distinguish between "must fix" and "nice to have"</li>
+<li>✅ Appreciate good work</li>
+</ul>
 <p><strong>Example comments:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gh"># Good: Specific with explanation</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Consider using a variable for the warehouse size to make this more reusable.
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>This would allow different environments to use different sizes.
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="gh"># Bad: Vague</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>This could be better.
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="gh"># Good: Asks questions</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>Why is auto_suspend set to 300 seconds here? Is this based on expected 
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>usage patterns? Could we document the reasoning?
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="gh"># Bad: Demands without context</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>Change this to 600 seconds.
+<div class="highlight"><pre><span></span><code><span class="gh"># Good: Specific with explanation</span>
+Consider using a variable for the warehouse size to make this more reusable.
+This would allow different environments to use different sizes.
+
+<span class="gh"># Bad: Vague</span>
+This could be better.
+
+<span class="gh"># Good: Asks questions</span>
+Why is auto_suspend set to 300 seconds here? Is this based on expected
+usage patterns? Could we document the reasoning?
+
+<span class="gh"># Bad: Demands without context</span>
+Change this to 600 seconds.
 </code></pre></div>
 <h3 id="review-process">Review Process</h3>
 <ol>
@@ -6795,11 +6883,13 @@
 <h2 id="merging-changes">Merging Changes</h2>
 <p>Merging is when the code is pushed to the another branch - in this flow, we are talking about merging to the <code>main</code> branch. That is, make our code available in production.</p>
 <h3 id="when-to-merge">When to Merge</h3>
-<p>Only merge when:
-- ✅ All required approvals received
-- ✅ All CI checks pass
-- ✅ All conversations resolved
-- ✅ Branch is up to date with main</p>
+<p>Only merge when:</p>
+<ul>
+<li>✅ All required approvals received</li>
+<li>✅ All CI checks pass</li>
+<li>✅ All conversations resolved</li>
+<li>✅ Branch is up to date with main</li>
+</ul>
 <h3 id="how-to-merge">How to Merge</h3>
 <p>We use <strong>squash and merge</strong> to keep history clean:</p>
 <ol>
@@ -6841,15 +6931,15 @@
 <p>This is where two people have made changes to the same file, and git is unable to reconcile the differences. Take a look at the docs <a href="https://code.visualstudio.com/docs/sourcecontrol/merge-conflicts">here</a> to understand how resolve them in VS Code.</p>
 <h3 id="scenario-accidentally-committed-to-main">Scenario: Accidentally Committed to <code>main</code></h3>
 <p>Hopefully, your <code>main</code> branch should have protections on it so that you can't push to <code>main</code> which means that any changes you have made are only local. To "undo" the commit simply run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># BEFORE pushing, undo the commit</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>HEAD~1
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Create proper branch</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>your-branch-name
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"[your changes]"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># BEFORE pushing, undo the commit</span>
+git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>HEAD~1
+
+<span class="c1"># Create proper branch</span>
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>your-branch-name
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"[your changes]"</span>
 </code></pre></div>
 <h3 id="scenario-accidentally-pushed-secrets-to-github">Scenario: Accidentally pushed secrets to GitHub</h3>
-<p>Firstly, we've all been there, or know someone that has. Sometimes, secrets get out. You are working on a tight deadline and realise you've accidentally committed a file that contains secrets. It's about being open about the leak <em>internally</em> and mitigating it as quickly as possible. </p>
+<p>Firstly, we've all been there, or know someone that has. Sometimes, secrets get out. You are working on a tight deadline and realise you've accidentally committed a file that contains secrets. It's about being open about the leak <em>internally</em> and mitigating it as quickly as possible.</p>
 <ol>
 <li>Let your security team know - you should be working in private repos as best practice, but let them know anyway.</li>
 <li>Follow the docs <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">here</a> on how to remove the file from your local and GitHub histories.</li>
@@ -6857,13 +6947,13 @@
 </ol>
 <h3 id="scenario-want-to-split-pr-into-smaller-prs">Scenario: Want to Split PR into Smaller PRs</h3>
 <p>Sometimes, you are working on something, and realise it's become a huge change. The best approach is therefore to split the branch in two:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Create new branches from your feature branch</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>feature/large-feature
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/part-1
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Remove unwanted changes</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>git<span class="w"> </span>checkout<span class="w"> </span>feature/large-feature
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/part-2
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Remove unwanted changes from this too</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create new branches from your feature branch</span>
+git<span class="w"> </span>checkout<span class="w"> </span>feature/large-feature
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/part-1
+<span class="c1"># Remove unwanted changes</span>
+git<span class="w"> </span>checkout<span class="w"> </span>feature/large-feature
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/part-2
+<span class="c1"># Remove unwanted changes from this too</span>
 </code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">What You've Accomplished</p>
@@ -6899,7 +6989,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 17, 2026 20:02:38 UTC">January 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6926,6 +7016,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6969,7 +7061,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

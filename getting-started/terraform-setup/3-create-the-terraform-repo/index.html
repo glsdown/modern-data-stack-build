@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6369,20 +6371,20 @@
 </ul>
 <h2 id="clone-your-infrastructure-repository">Clone Your Infrastructure Repository</h2>
 <p>Navigate to your projects directory and clone the <code>data-stack-infrastructure</code> repository you created in the <a href="../../initial-setup/1-github-setup/">GitHub setup guide</a>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data<span class="w">  </span><span class="c1"># or wherever you store your projects</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:YOUR-ORG/data-stack-infrastructure.git
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>data-stack-infrastructure
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data<span class="w">  </span><span class="c1"># or wherever you store your projects</span>
+git<span class="w"> </span>clone<span class="w"> </span>git@github.com:YOUR-ORG/data-stack-infrastructure.git
+<span class="nb">cd</span><span class="w"> </span>data-stack-infrastructure
 </code></pre></div>
 <p>Replace <code>YOUR-ORG</code> with your GitHub organisation name.</p>
 <p>Verify you're in the correct repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>remote<span class="w"> </span>-v
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>remote<span class="w"> </span>-v
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (fetch)
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (push)
+<div class="highlight"><pre><span></span><code>origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (fetch)
+origin  git@github.com:YOUR-ORG/data-stack-infrastructure.git (push)
 </code></pre></div>
 <p>As we are doing a new piece of work, let's create a new branch:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/terraform-setup
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/terraform-setup
 </code></pre></div>
 <h2 id="set-up-envrc-for-environment-variables">Set Up <code>.envrc</code> for Environment Variables</h2>
 <p>We'll use <a href="https://direnv.net/">direnv</a> to automatically load environment variables when you enter the project directory. This is much better than manually exporting variables every time. You should have already installed it during <a href="../../initial-setup/2-local-environment/#install-direnv">Local Development Environment</a>.</p>
@@ -6390,67 +6392,67 @@
 <p>direnv is a tool that runs script commands whenever you <code>cd</code> into a given directory. Those commands are stored in a <code>.envrc</code> file.</p>
 <p>The <code>.envrc</code> file is already excluded by your global <code>.gitignore</code> (you set this up in <a href="../../initial-setup/2-local-environment/#set-up-a-global-gitignore">Local Development Environment</a>). However, if someone else hasn't added it to their own, they could accidentally end up committing it to git. Therefore, it's good practice to also include it in your project <code>.gitignore</code> - you can never be too careful.</p>
 <p>Add the following line to the project <code>.gitignore</code> file (if not already present):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># Secrets
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>.envrc
+<div class="highlight"><pre><span></span><code># Secrets
+.envrc
 </code></pre></div>
 <h3 id="create-envrc-file">Create .envrc File</h3>
 <p>In your repository root, create a <code>.envrc</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>touch<span class="w"> </span>~/projects/data/data-stack-infrastructure/.envrc
+<div class="highlight"><pre><span></span><code>touch<span class="w"> </span>~/projects/data/data-stack-infrastructure/.envrc
 </code></pre></div>
 <p>As we are using AWS S3 for the backend for all resources, we need to make sure that we are using the correct AWS profile from those we setup in the <a href="../../account-setup/aws/">AWS account setup</a>. Add this to your <code>.envrc</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># AWS Profile for Terraform Backend</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"data-engineer"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># AWS Profile for Terraform Backend</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"data-engineer"</span>
 </code></pre></div>
 <p>It's also useful to include a template for other developers using the repo to use for reference. This will be held under version control, so should only ever contain placeholders.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>touch<span class="w"> </span>~/projects/data/data-stack-infrastructure/.envrc.example
+<div class="highlight"><pre><span></span><code>touch<span class="w"> </span>~/projects/data/data-stack-infrastructure/.envrc.example
 </code></pre></div>
 <p>Add the templated profile above - it's useful to include details for other developers about the purpose of the variable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># AWS Profile for Terraform Backend</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Update this with the profile to use with AWS</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># or choose "default" if you don't have profiles configured</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"data-engineer"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># AWS Profile for Terraform Backend</span>
+<span class="c1"># Update this with the profile to use with AWS</span>
+<span class="c1"># or choose "default" if you don't have profiles configured</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"data-engineer"</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Using aws-vault</p>
 <p>If you configured aws-vault in <a href="../../account-setup/aws/">AWS Account Setup</a>, the <code>AWS_PROFILE</code> environment variable won't work the same way. Instead, you'll need to run Terraform commands within an aws-vault session:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>terraform<span class="w"> </span>init
+<div class="highlight"><pre><span></span><code>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>terraform<span class="w"> </span>init
 </code></pre></div>
 <p>Or start a shell session with <code>aws-vault exec data-engineer</code> and run commands from there.</p>
 </div>
 <h4 id="allow-direnv">Allow direnv</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>direnv<span class="w"> </span>allow<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code>direnv<span class="w"> </span>allow<span class="w"> </span>.
 </code></pre></div>
 <p>Now, whenever you <code>cd</code> into this directory, direnv will automatically load your environment variables. When you leave, it unloads them.</p>
 <h2 id="create-the-directory-structure">Create the Directory Structure</h2>
 <p>Terraform projects benefit from a clear, consistent structure. With multiple providers (GitHub, AWS, Snowflake), we'll organise code by provider whilst keeping shared configuration at the root level.</p>
 <h3 id="recommended-structure">Recommended Structure</h3>
 <p>Create the following directory structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>terraform/<span class="o">{</span>github,aws,snowflake,modules<span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure
+mkdir<span class="w"> </span>-p<span class="w"> </span>terraform/<span class="o">{</span>github,aws,snowflake,modules<span class="o">}</span>
 </code></pre></div>
 <p>Add <code>.gitkeep</code> files into the folders to ensure that the directory structure is committed to GitHub:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>touch<span class="w"> </span>github/.gitkeep
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>touch<span class="w"> </span>aws/.gitkeep
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>touch<span class="w"> </span>snowflake/.gitkeep
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>touch<span class="w"> </span>modules/.gitkeep
+<div class="highlight"><pre><span></span><code>touch<span class="w"> </span>github/.gitkeep
+touch<span class="w"> </span>aws/.gitkeep
+touch<span class="w"> </span>snowflake/.gitkeep
+touch<span class="w"> </span>modules/.gitkeep
 </code></pre></div>
 <p>Your repository should now look like:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>data-stack-infrastructure/
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>├── .envrc
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>├── .github/
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>│   └── CODEOWNERS
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>├── terraform/
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>│   ├── github/           # GitHub provider resources
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>|   │   └── .gitkeep
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>│   ├── aws/              # AWS provider resources
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>|   │   └── .gitkeep
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>│   ├── snowflake/        # Snowflake provider resources
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>|   │   └── .gitkeep
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>│   └── modules/          # Reusable Terraform modules (future)
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>|   │   └── .gitkeep
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>├── .gitignore
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>├── LICENSE
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>└── README.md
+<div class="highlight"><pre><span></span><code>data-stack-infrastructure/
+├── .envrc
+├── .github/
+│   └── CODEOWNERS
+├── terraform/
+│   ├── github/           # GitHub provider resources
+|   │   └── .gitkeep
+│   ├── aws/              # AWS provider resources
+|   │   └── .gitkeep
+│   ├── snowflake/        # Snowflake provider resources
+|   │   └── .gitkeep
+│   └── modules/          # Reusable Terraform modules (future)
+|   │   └── .gitkeep
+├── .gitignore
+├── LICENSE
+└── README.md
 </code></pre></div>
 <h3 id="why-split-by-provider">Why Split by Provider?</h3>
 <p>This structure provides several benefits:</p>
@@ -6474,18 +6476,18 @@
 <h2 id="update-gitignore-for-terraform-specific-files">Update .gitignore for Terraform-Specific Files</h2>
 <p>When you created the repository in the <a href="../../initial-setup/1-github-setup/">GitHub setup guide</a>, you selected the Terraform <code>.gitignore</code> template. This gives you basic Terraform exclusions at the repository root.</p>
 <p>However, we need to add a few custom rules to the <code>.gitignore</code> to handle our specific setup:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>..<span class="w">  </span><span class="c1"># Back to repository root if you're still in terraform/</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>..<span class="w">  </span><span class="c1"># Back to repository root if you're still in terraform/</span>
 </code></pre></div>
 <p>Add these lines to the existing <code>.gitignore</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a># Exclude all tfvars files which may contain sensitive data
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>*.tfvars
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>*.tfvars.json
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a># BUT include terraform.tfvars since it only has non-sensitive config
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>!terraform.tfvars
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a># Ignore lock files for now (we'll commit them later when stable)
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>.terraform.lock.hcl
+<div class="highlight"><pre><span></span><code># Exclude all tfvars files which may contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# BUT include terraform.tfvars since it only has non-sensitive config
+!terraform.tfvars
+
+# Ignore lock files for now (we'll commit them later when stable)
+.terraform.lock.hcl
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Why Ignore .terraform.lock.hcl Initially</p>
@@ -6497,41 +6499,41 @@
 </div>
 <h2 id="set-up-pre-commit-hooks">Set Up Pre-commit Hooks</h2>
 <p>Create <code>.pre-commit-config.yaml</code> in the repository root (not in <code>terraform/</code> directory):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">cd</span><span class="w"> </span>..<span class="w">  </span><span class="c1"># Back to repository root</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>..<span class="w">  </span><span class="c1"># Back to repository root</span>
 </code></pre></div>
 <p>Create <code>.pre-commit-config.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">repos</span><span class="p">:</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v4.5.0</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-yaml</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-merge-conflict</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/antonbabenko/pre-commit-terraform</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.88.0</span>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_fmt</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_validate</span>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_docs</span>
-<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">        </span><span class="nt">args</span><span class="p">:</span>
-<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--path-to-file=README.md</span>
-<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--add-to-existing-file=true</span>
-<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--create-file-if-not-exists=true</span>
-<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_tflint</span>
-<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="w">        </span><span class="nt">args</span><span class="p">:</span>
-<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--args=--config=__GIT_WORKING_DIR__/.tflint.hcl</span>
-<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>
-<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/antonbabenko/pre-commit-terraform</span>
-<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.88.0</span>
-<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_checkov</span>
-<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="w">        </span><span class="nt">args</span><span class="p">:</span>
-<a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--args=--config-file=__GIT_WORKING_DIR__/.checkov.yaml</span>
-<a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a>
-<a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a><span class="nt">default_stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v4.5.0</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-yaml</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-merge-conflict</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/antonbabenko/pre-commit-terraform</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.88.0</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_fmt</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_validate</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_docs</span>
+<span class="w">        </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--path-to-file=README.md</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--add-to-existing-file=true</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--hook-config=--create-file-if-not-exists=true</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_tflint</span>
+<span class="w">        </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--args=--config=__GIT_WORKING_DIR__/.tflint.hcl</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/antonbabenko/pre-commit-terraform</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.88.0</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform_checkov</span>
+<span class="w">        </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--args=--config-file=__GIT_WORKING_DIR__/.checkov.yaml</span>
+
+<span class="nt">default_stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p>This configuration:
 - Runs basic checks (whitespace, YAML syntax, large files)
@@ -6544,68 +6546,68 @@
 <h2 id="create-pre-commit-configuration-files">Create Pre-commit Configuration Files</h2>
 <h3 id="tflint-configuration">TFLint Configuration</h3>
 <p>Create <code>.tflint.hcl</code> in the repository root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">config</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="na">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="na">force</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="p">}</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="err">plugin</span><span class="w"> </span><span class="s2">"terraform"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="na">preset</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"recommended"</span>
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="p">}</span>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="err">plugin</span><span class="w"> </span><span class="s2">"aws"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">  </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">  </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.30.0"</span>
-<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"github.com/terraform-linters/tflint-ruleset-aws"</span>
-<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">force</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="err">plugin</span><span class="w"> </span><span class="s2">"terraform"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">preset</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"recommended"</span>
+<span class="p">}</span>
+
+<span class="err">plugin</span><span class="w"> </span><span class="s2">"aws"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.30.0"</span>
+<span class="w">  </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"github.com/terraform-linters/tflint-ruleset-aws"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="checkov-configuration">Checkov Configuration</h3>
 <p>Create <code>.checkov.yaml</code> in the repository root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">framework</span><span class="p">:</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="nt">download-external-modules</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="nt">soft-fail</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="nt">quiet</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
-<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="nt">compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
-<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="nt">skip-check</span><span class="p">:</span>
-<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">  </span><span class="c1"># Add any checks you want to skip here</span>
-<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">  </span><span class="c1"># Example: CKV_AWS_18 - S3 bucket logging</span>
+<div class="highlight"><pre><span></span><code><span class="nt">framework</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terraform</span>
+
+<span class="nt">download-external-modules</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">soft-fail</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="nt">quiet</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="nt">compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">skip-check</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Add any checks you want to skip here</span>
+<span class="w">  </span><span class="c1"># Example: CKV_AWS_18 - S3 bucket logging</span>
 </code></pre></div>
 <h3 id="terraform-docs-configuration">terraform-docs Configuration</h3>
 <p>Create <code>.terraform-docs.yml</code> in the repository root to control how module documentation is generated:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown table</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="nt">output</span><span class="p">:</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inject</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="no">&lt;!-- BEGIN_TF_DOCS --&gt;</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span><span class="no">{{ .Content }}</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="no">&lt;!-- END_TF_DOCS --&gt;</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="nt">sort</span><span class="p">:</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">  </span><span class="nt">by</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">required</span>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="nt">settings</span><span class="p">:</span>
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">  </span><span class="nt">anchor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">  </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="w">  </span><span class="nt">escape</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="w">  </span><span class="nt">hide-empty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a><span class="w">  </span><span class="nt">indent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a><span class="w">  </span><span class="nt">lockfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a><span class="w">  </span><span class="nt">read-comments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a><span class="w">  </span><span class="nt">sensitive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-20-27" name="__codelineno-20-27" href="#__codelineno-20-27"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown table</span>
+
+<span class="nt">output</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inject</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span>
+<span class="w">    </span><span class="no">&lt;!-- BEGIN_TF_DOCS --&gt;</span>
+<span class="w">    </span><span class="no">{{ .Content }}</span>
+<span class="w">    </span><span class="no">&lt;!-- END_TF_DOCS --&gt;</span>
+
+<span class="nt">sort</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">by</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">required</span>
+
+<span class="nt">settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">anchor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">escape</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">hide-empty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">indent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">lockfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">read-comments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">sensitive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <p>This configuration:</p>
 <ul>
@@ -6615,71 +6617,71 @@
 </ul>
 <h3 id="editorconfig">EditorConfig</h3>
 <p>Create <code>.editorconfig</code> in the repository root to ensure consistent formatting across editors:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="na">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">[*]</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="na">charset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">utf-8</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="na">end_of_line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">lf</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="na">insert_final_newline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="na">trim_trailing_whitespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="k">[*.{tf,tfvars}]</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2</span>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="k">[*.{md,markdown}]</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="na">trim_trailing_whitespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="k">[*.{yml,yaml}]</span>
-<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
-<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2</span>
-<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>
-<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="k">[*.py]</span>
-<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
-<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">4</span>
+<div class="highlight"><pre><span></span><code><span class="na">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+
+<span class="k">[*]</span>
+<span class="na">charset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">utf-8</span>
+<span class="na">end_of_line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">lf</span>
+<span class="na">insert_final_newline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<span class="na">trim_trailing_whitespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+
+<span class="k">[*.{tf,tfvars}]</span>
+<span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
+<span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2</span>
+
+<span class="k">[*.{md,markdown}]</span>
+<span class="na">trim_trailing_whitespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+
+<span class="k">[*.{yml,yaml}]</span>
+<span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
+<span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2</span>
+
+<span class="k">[*.py]</span>
+<span class="na">indent_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">space</span>
+<span class="na">indent_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">4</span>
 </code></pre></div>
 <h2 id="install-pre-commit-hooks">Install Pre-commit Hooks</h2>
 <p>Install the pre-commit hooks for this repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>pre-commit<span class="w"> </span>install<span class="w"> </span>--hook-type<span class="w"> </span>pre-push
+<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>install<span class="w"> </span>--hook-type<span class="w"> </span>pre-push
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>pre-commit installed at .git/hooks/pre-push
+<div class="highlight"><pre><span></span><code>pre-commit installed at .git/hooks/pre-push
 </code></pre></div>
 <p>This installs the hooks to run before you push code to the remote repository.</p>
 <div class="admonition tip">
 <p class="admonition-title">Test Pre-commit</p>
 <p>You can test pre-commit hooks manually at any time:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 </code></pre></div>
 </div>
 <h2 id="validate-the-configuration">Validate the Configuration</h2>
 <p>Run Terraform's built-in validation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>terraform<span class="w"> </span>validate
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>validate
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>Success! The configuration is valid.
+<div class="highlight"><pre><span></span><code>Success! The configuration is valid.
 </code></pre></div>
 <p>This checks:
 - Syntax is correct
 - Required variables are defined</p>
 <h2 id="format-the-code">Format the Code</h2>
 <p>Format all Terraform files to the standard style:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>terraform<span class="w"> </span>fmt<span class="w"> </span>-recursive
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w"> </span>-recursive
 </code></pre></div>
 <p>This ensures consistent formatting across all <code>.tf</code> files.</p>
 <h2 id="commit-your-work">Commit Your Work</h2>
 <p>Now commit the initial Terraform setup.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">cd</span><span class="w"> </span>../..<span class="w">  </span><span class="c1"># Back to repository root</span>
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/terraform-setup
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>git<span class="w"> </span>add<span class="w"> </span>.
-<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Initial Terraform setup</span>
-<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
-<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="s2">- Create provider-specific directory structure</span>
-<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="s2">- Add pre-commit hooks for code quality</span>
-<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="s2">- Create TFLint and Checkov configurations"</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>../..<span class="w">  </span><span class="c1"># Back to repository root</span>
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/terraform-setup
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Initial Terraform setup</span>
+
+<span class="s2">- Create provider-specific directory structure</span>
+<span class="s2">- Add pre-commit hooks for code quality</span>
+<span class="s2">- Create TFLint and Checkov configurations"</span>
 </code></pre></div>
 <p>Finally push to GitHub, and create the PR.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/terraform-setup
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/terraform-setup
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Pre-commit Will Run</p>
@@ -6694,44 +6696,44 @@
 </div>
 <h2 id="verify-your-setup">Verify Your Setup</h2>
 <p>Your <code>terraform/</code> directory structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>tree<span class="w"> </span>terraform/<span class="w"> </span>-L<span class="w"> </span><span class="m">2</span><span class="w"> </span>-a
+<div class="highlight"><pre><span></span><code>tree<span class="w"> </span>terraform/<span class="w"> </span>-L<span class="w"> </span><span class="m">2</span><span class="w"> </span>-a
 </code></pre></div>
 <p>Expected structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>terraform/
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>├── github/
-<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>│   └── .gitkeep
-<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>├── aws/
-<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>│   └── .gitkeep
-<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>├── snowflake/
-<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>│   └── .gitkeep
-<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>└── modules/
-<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>    └── .gitkeep
+<div class="highlight"><pre><span></span><code>terraform/
+├── github/
+│   └── .gitkeep
+├── aws/
+│   └── .gitkeep
+├── snowflake/
+│   └── .gitkeep
+└── modules/
+    └── .gitkeep
 </code></pre></div>
 <p>Repository root should contain:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>.checkov.yaml             # Checkov configuration
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>.editorconfig             # Editor formatting rules
-<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>.github/                  # GitHub configuration
-<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>.gitignore                # Git ignore rules
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>.pre-commit-config.yaml   # Pre-commit hooks
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>.terraform-docs.yml       # terraform-docs configuration
-<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>.tflint.hcl               # TFLint configuration
-<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>LICENSE                   # Repository license
-<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>README.md                 # Repository README
-<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a>terraform/                # Terraform configuration
+<div class="highlight"><pre><span></span><code>.checkov.yaml             # Checkov configuration
+.editorconfig             # Editor formatting rules
+.github/                  # GitHub configuration
+.gitignore                # Git ignore rules
+.pre-commit-config.yaml   # Pre-commit hooks
+.terraform-docs.yml       # terraform-docs configuration
+.tflint.hcl               # TFLint configuration
+LICENSE                   # Repository license
+README.md                 # Repository README
+terraform/                # Terraform configuration
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="pre-commit-hook-failures">Pre-commit Hook Failures</h3>
 <p>If pre-commit hooks fail:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># See what failed</span>
-<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>git<span class="w"> </span>push
-<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
-<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="c1"># Run pre-commit manually to see details</span>
-<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
-<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
-<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="c1"># Fix issues, then try again</span>
-<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>git<span class="w"> </span>add<span class="w"> </span>.
-<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>git<span class="w"> </span>commit<span class="w"> </span>--amend<span class="w"> </span>--no-edit
-<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code><span class="c1"># See what failed</span>
+git<span class="w"> </span>push
+
+<span class="c1"># Run pre-commit manually to see details</span>
+pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+
+<span class="c1"># Fix issues, then try again</span>
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>--amend<span class="w"> </span>--no-edit
+git<span class="w"> </span>push
 </code></pre></div>
 <h2 id="whats-next">What's Next</h2>
 <p>You now have a complete Terraform repository structure:</p>
@@ -6792,6 +6794,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6835,7 +6839,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

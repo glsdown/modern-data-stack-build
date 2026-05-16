@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6167,20 +6169,20 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>A runbook is a step-by-step procedure for performing a specific operational task. Runbooks turn tribal knowledge into documented, repeatable processes. When an alert fires at 2am, the on-call engineer should not need to reverse-engineer the fix from first principles - they follow the runbook.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    RUNBOOK CATEGORIES                                    │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ROUTINE OPERATIONS         INCIDENT RESPONSE         MAINTENANCE       │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────────         ─────────────────         ───────────       │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  Add a new user             Failed Terraform deploy   Rotate creds     │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  Add a data source          Pipeline backfill needed   Upgrade dbt      │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  Add a dbt model            Snowflake credit spike    Patch Prefect    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  Grant role access          Data quality alert         Review costs     │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  Configure new pipeline     Stale data detected       Prune old data   │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                                                         │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    RUNBOOK CATEGORIES                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ROUTINE OPERATIONS         INCIDENT RESPONSE         MAINTENANCE       │
+│  ──────────────────         ─────────────────         ───────────       │
+│                                                                         │
+│  Add a new user             Failed Terraform deploy   Rotate creds     │
+│  Add a data source          Pipeline backfill needed   Upgrade dbt      │
+│  Add a dbt model            Snowflake credit spike    Patch Prefect    │
+│  Grant role access          Data quality alert         Review costs     │
+│  Configure new pipeline     Stale data detected       Prune old data   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="when-to-write-a-runbook">When to Write a Runbook</h2>
 <p>Write a runbook when:</p>
@@ -6195,304 +6197,304 @@
 <h2 id="runbook-structure">Runbook Structure</h2>
 <p>Every runbook follows the same structure. Consistency makes runbooks faster to use under pressure - engineers know exactly where to find each piece of information.</p>
 <h3 id="template">Template</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gh"># Runbook: [Task Name]</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gu">## Summary</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>One or two sentences explaining what this runbook covers and when to use it.
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="gu">## When to Use</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">-</span><span class="w"> </span>Trigger condition 1 (e.g. "A new team member needs Snowflake access")
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">-</span><span class="w"> </span>Trigger condition 2 (e.g. "PagerDuty alert: snowflake_user_access_denied")
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="gu">## Prerequisites</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">- [ ]</span> Access: [what access is needed, e.g. "Terraform repository write access"]
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">- [ ]</span> Tools: [what tools are needed, e.g. "AWS CLI configured with infrastructure-admin profile"]
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">- [ ]</span> Context: [any information needed, e.g. "New user's email and role requirements"]
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="gu">## Steps</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="gu">### 1. [First Step]</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>[Detailed instructions with commands and expected output]
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="gu">### 2. [Second Step]</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>[Continue with each step]
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="gu">### 3. [Third Step]</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>[And so on]
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="gu">## Verification</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>How to confirm the task completed successfully:
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="k">- [ ]</span> Check 1
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="k">- [ ]</span> Check 2
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="gu">## Rollback</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>If something goes wrong, how to undo the changes:
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="k">1.</span> [Rollback step 1]
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="k">2.</span> [Rollback step 2]
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="gu">## Escalation</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>If the runbook does not resolve the issue:
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: [team or person, e.g. "Data Engineering team in <span class="ni">#data</span>-eng Slack"]
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: [next level, e.g. "Infrastructure team lead"]
+<div class="highlight"><pre><span></span><code><span class="gh"># Runbook: [Task Name]</span>
+
+<span class="gu">## Summary</span>
+
+One or two sentences explaining what this runbook covers and when to use it.
+
+<span class="gu">## When to Use</span>
+
+<span class="k">-</span><span class="w"> </span>Trigger condition 1 (e.g. "A new team member needs Snowflake access")
+<span class="k">-</span><span class="w"> </span>Trigger condition 2 (e.g. "PagerDuty alert: snowflake_user_access_denied")
+
+<span class="gu">## Prerequisites</span>
+
+<span class="k">- [ ]</span> Access: [what access is needed, e.g. "Terraform repository write access"]
+<span class="k">- [ ]</span> Tools: [what tools are needed, e.g. "AWS CLI configured with infrastructure-admin profile"]
+<span class="k">- [ ]</span> Context: [any information needed, e.g. "New user's email and role requirements"]
+
+<span class="gu">## Steps</span>
+
+<span class="gu">### 1. [First Step]</span>
+
+[Detailed instructions with commands and expected output]
+
+<span class="gu">### 2. [Second Step]</span>
+
+[Continue with each step]
+
+<span class="gu">### 3. [Third Step]</span>
+
+[And so on]
+
+<span class="gu">## Verification</span>
+
+How to confirm the task completed successfully:
+
+<span class="k">- [ ]</span> Check 1
+<span class="k">- [ ]</span> Check 2
+
+<span class="gu">## Rollback</span>
+
+If something goes wrong, how to undo the changes:
+
+<span class="k">1.</span> [Rollback step 1]
+<span class="k">2.</span> [Rollback step 2]
+
+<span class="gu">## Escalation</span>
+
+If the runbook does not resolve the issue:
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: [team or person, e.g. "Data Engineering team in <span class="ni">#data</span>-eng Slack"]
+<span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: [next level, e.g. "Infrastructure team lead"]
 </code></pre></div>
 <h2 id="example-runbooks">Example Runbooks</h2>
 <h3 id="terraform-adding-a-new-snowflake-user">Terraform: Adding a New Snowflake User</h3>
 <p>This example demonstrates a complete runbook for one of the most common operational tasks.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gh"># Runbook: Add a New Snowflake User</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gu">## Summary</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Add a new team member to Snowflake via Terraform, granting them appropriate
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>roles and warehouse access.
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="gu">## When to Use</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="k">-</span><span class="w"> </span>A new team member joins and needs Snowflake access
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">-</span><span class="w"> </span>An existing user needs a different access level
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="gu">## Prerequisites</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="k">- [ ]</span> Access: Write access to the terraform repository
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="k">- [ ]</span> Tools: Terraform CLI, AWS CLI with <span class="sb">`infrastructure-admin`</span> profile
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="k">- [ ]</span> Context: User's name, email, desired role (developer or admin)
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="gu">## Steps</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="gu">### 1. Determine the User Category</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>| Role | Default Role | Default Warehouse | Example |
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>|------|--------------|-------------------|---------|
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>| Admin | SYSADMIN | DEVELOPER | JBLOGGS_ADMIN |
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>| Developer | ANALYTICS_DEVELOPER | DEVELOPER | JBLOGGS |
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="gu">### 2. Add to users.auto.tfvars</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>Edit <span class="sb">`snowflake/config/users.auto.tfvars`</span> and add the user to the
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>appropriate list:
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="sb">` `</span>`hcl
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>developer_user_list = {
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>  # ... existing users ...
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>  JBLOGGS = {
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    email        = "jane.bloggs@company.com"
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>    first_name   = "Jane"
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>    last_name    = "Bloggs"
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>    display_name = "Jane Bloggs"
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>  }
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>}
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="sb">` `</span>`
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="gu">### 3. Run Terraform Plan</span>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="sb">` `</span>`sh
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>cd snowflake/config
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>terraform plan
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="gh"># Verify: should show new user resource being created</span>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="sb">` `</span>`
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="gu">### 4. Create Pull Request</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="sb">` `</span>`sh
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>git checkout -b add-user-jbloggs
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>git add snowflake/config/users.auto.tfvars
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>git commit -m "Add Jane Bloggs as Snowflake developer"
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>git push -u origin add-user-jbloggs
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="gh"># Create PR via GitHub</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="sb">` `</span>`
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="gu">### 5. After Merge</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>CI/CD runs <span class="sb">`terraform apply`</span> automatically. The user is created with a
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>temporary password.
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>
-<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="gu">### 6. Provide Credentials</span>
-<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>
-<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="k">1.</span> Set the user's initial password via Snowflake UI (as USERADMIN)
-<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="k">2.</span> Send credentials via 1Password secure sharing
-<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="k">3.</span> Ask user to change password and enable MFA on first login
-<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>
-<a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a><span class="gu">## Verification</span>
-<a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>
-<a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a><span class="k">- [ ]</span> User appears in Snowflake: <span class="sb">`SHOW USERS LIKE 'JBLOGGS';`</span>
-<a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="k">- [ ]</span> User has correct role: <span class="sb">`SHOW GRANTS TO USER JBLOGGS;`</span>
-<a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a><span class="k">- [ ]</span> User can log in and run a test query
-<a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>
-<a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a><span class="gu">## Rollback</span>
-<a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a>
-<a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a><span class="k">1.</span> Revert the PR (GitHub → PR → Revert)
-<a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a><span class="k">2.</span> Merge the revert PR — CI/CD runs <span class="sb">`terraform apply`</span> to remove the user
-<a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a><span class="k">3.</span> Or manually: <span class="sb">`DROP USER JBLOGGS;`</span> (as USERADMIN)
-<a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>
-<a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="gu">## Escalation</span>
-<a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a>
-<a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Data Engineering team in <span class="ni">#data</span>-eng Slack
-<a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: Infrastructure team lead
+<div class="highlight"><pre><span></span><code><span class="gh"># Runbook: Add a New Snowflake User</span>
+
+<span class="gu">## Summary</span>
+
+Add a new team member to Snowflake via Terraform, granting them appropriate
+roles and warehouse access.
+
+<span class="gu">## When to Use</span>
+
+<span class="k">-</span><span class="w"> </span>A new team member joins and needs Snowflake access
+<span class="k">-</span><span class="w"> </span>An existing user needs a different access level
+
+<span class="gu">## Prerequisites</span>
+
+<span class="k">- [ ]</span> Access: Write access to the terraform repository
+<span class="k">- [ ]</span> Tools: Terraform CLI, AWS CLI with <span class="sb">`infrastructure-admin`</span> profile
+<span class="k">- [ ]</span> Context: User's name, email, desired role (developer or admin)
+
+<span class="gu">## Steps</span>
+
+<span class="gu">### 1. Determine the User Category</span>
+
+| Role | Default Role | Default Warehouse | Example |
+|------|--------------|-------------------|---------|
+| Admin | SYSADMIN | DEVELOPER | JBLOGGS_ADMIN |
+| Developer | ANALYTICS_DEVELOPER | DEVELOPER | JBLOGGS |
+
+<span class="gu">### 2. Add to users.auto.tfvars</span>
+
+Edit <span class="sb">`snowflake/config/users.auto.tfvars`</span> and add the user to the
+appropriate list:
+
+<span class="sb">` `</span>`hcl
+developer_user_list = {
+  # ... existing users ...
+  JBLOGGS = {
+    email        = "jane.bloggs@company.com"
+    first_name   = "Jane"
+    last_name    = "Bloggs"
+    display_name = "Jane Bloggs"
+  }
+}
+<span class="sb">` `</span>`
+
+<span class="gu">### 3. Run Terraform Plan</span>
+
+<span class="sb">` `</span>`sh
+cd snowflake/config
+terraform plan
+<span class="gh"># Verify: should show new user resource being created</span>
+<span class="sb">` `</span>`
+
+<span class="gu">### 4. Create Pull Request</span>
+
+<span class="sb">` `</span>`sh
+git checkout -b add-user-jbloggs
+git add snowflake/config/users.auto.tfvars
+git commit -m "Add Jane Bloggs as Snowflake developer"
+git push -u origin add-user-jbloggs
+<span class="gh"># Create PR via GitHub</span>
+<span class="sb">` `</span>`
+
+<span class="gu">### 5. After Merge</span>
+
+CI/CD runs <span class="sb">`terraform apply`</span> automatically. The user is created with a
+temporary password.
+
+<span class="gu">### 6. Provide Credentials</span>
+
+<span class="k">1.</span> Set the user's initial password via Snowflake UI (as USERADMIN)
+<span class="k">2.</span> Send credentials via 1Password secure sharing
+<span class="k">3.</span> Ask user to change password and enable MFA on first login
+
+<span class="gu">## Verification</span>
+
+<span class="k">- [ ]</span> User appears in Snowflake: <span class="sb">`SHOW USERS LIKE 'JBLOGGS';`</span>
+<span class="k">- [ ]</span> User has correct role: <span class="sb">`SHOW GRANTS TO USER JBLOGGS;`</span>
+<span class="k">- [ ]</span> User can log in and run a test query
+
+<span class="gu">## Rollback</span>
+
+<span class="k">1.</span> Revert the PR (GitHub → PR → Revert)
+<span class="k">2.</span> Merge the revert PR — CI/CD runs <span class="sb">`terraform apply`</span> to remove the user
+<span class="k">3.</span> Or manually: <span class="sb">`DROP USER JBLOGGS;`</span> (as USERADMIN)
+
+<span class="gu">## Escalation</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Data Engineering team in <span class="ni">#data</span>-eng Slack
+<span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: Infrastructure team lead
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Claude Skills and Runbooks</p>
 <p>If you have the <code>add-snowflake-user</code> Claude skill configured (covered in the <a href="../../../getting-started/initial-setup/5-claude-code-setup/">Claude Code Setup</a> page), Claude can perform steps 2-4 automatically. The runbook still documents the full process for cases where Claude is not available or the task needs manual review.</p>
 </div>
 <h3 id="data-pipelines-responding-to-a-failed-pipeline">Data Pipelines: Responding to a Failed Pipeline</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gh"># Runbook: Respond to a Failed Pipeline</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gu">## Summary</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Diagnose and resolve a dlt pipeline failure reported by Prefect alerting.
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="gu">## When to Use</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">-</span><span class="w"> </span>Prefect sends a Slack/PagerDuty alert for a failed flow run
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">-</span><span class="w"> </span>Data freshness SLA is at risk
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="gu">## Prerequisites</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">- [ ]</span> Access: Prefect Cloud dashboard or self-hosted UI
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">- [ ]</span> Access: AWS CloudWatch Logs (for ECS-hosted workers)
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">- [ ]</span> Access: Snowflake (to verify data state)
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="gu">## Steps</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="gu">### 1. Check the Flow Run in Prefect</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="k">1.</span> Open Prefect UI → Flow Runs
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="k">2.</span> Find the failed run and click into it
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="k">3.</span> Read the error message and traceback
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="gu">### 2. Identify the Failure Category</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>| Error Pattern | Likely Cause | Action |
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>|---------------|-------------|--------|
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>| Connection refused / timeout | Source API down | Wait and retry |
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>| Authentication error | Credentials expired | Rotate credentials |
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>| Schema change | Source schema evolved | Update dlt schema |
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>| Rate limit exceeded | Too many API calls | Increase backoff |
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>| Snowflake error | Warehouse suspended / permissions | Check Snowflake |
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="gu">### 3. Retry the Flow Run</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>If the failure is transient (network, rate limit):
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="k">1.</span> In Prefect UI, click <span class="gs">**Retry**</span> on the failed run
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="k">2.</span> Monitor the retry
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="gu">### 4. Fix and Redeploy (if code change needed)</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="k">1.</span> Fix the issue in the pipeline code
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="k">2.</span> Test locally: <span class="sb">`python -m pipelines.&lt;pipeline_name&gt;`</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="k">3.</span> Create PR, merge, deploy via CI/CD
-<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="k">4.</span> Trigger a manual run in Prefect
-<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
-<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="gu">## Verification</span>
-<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>
-<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="k">- [ ]</span> Flow run completes successfully in Prefect
-<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="k">- [ ]</span> Data appears in Snowflake with expected row counts
-<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="k">- [ ]</span> No downstream dbt test failures
-<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>
-<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="gu">## Rollback</span>
-<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>
-<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>If the fix introduces new issues:
-<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a>
-<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="k">1.</span> Revert the PR
-<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="k">2.</span> Trigger the previous pipeline version via Prefect
-<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>
-<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="gu">## Escalation</span>
-<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>
-<a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Data Engineering team in <span class="ni">#data</span>-eng Slack
-<a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: On-call data engineer
+<div class="highlight"><pre><span></span><code><span class="gh"># Runbook: Respond to a Failed Pipeline</span>
+
+<span class="gu">## Summary</span>
+
+Diagnose and resolve a dlt pipeline failure reported by Prefect alerting.
+
+<span class="gu">## When to Use</span>
+
+<span class="k">-</span><span class="w"> </span>Prefect sends a Slack/PagerDuty alert for a failed flow run
+<span class="k">-</span><span class="w"> </span>Data freshness SLA is at risk
+
+<span class="gu">## Prerequisites</span>
+
+<span class="k">- [ ]</span> Access: Prefect Cloud dashboard or self-hosted UI
+<span class="k">- [ ]</span> Access: AWS CloudWatch Logs (for ECS-hosted workers)
+<span class="k">- [ ]</span> Access: Snowflake (to verify data state)
+
+<span class="gu">## Steps</span>
+
+<span class="gu">### 1. Check the Flow Run in Prefect</span>
+
+<span class="k">1.</span> Open Prefect UI → Flow Runs
+<span class="k">2.</span> Find the failed run and click into it
+<span class="k">3.</span> Read the error message and traceback
+
+<span class="gu">### 2. Identify the Failure Category</span>
+
+| Error Pattern | Likely Cause | Action |
+|---------------|-------------|--------|
+| Connection refused / timeout | Source API down | Wait and retry |
+| Authentication error | Credentials expired | Rotate credentials |
+| Schema change | Source schema evolved | Update dlt schema |
+| Rate limit exceeded | Too many API calls | Increase backoff |
+| Snowflake error | Warehouse suspended / permissions | Check Snowflake |
+
+<span class="gu">### 3. Retry the Flow Run</span>
+
+If the failure is transient (network, rate limit):
+
+<span class="k">1.</span> In Prefect UI, click <span class="gs">**Retry**</span> on the failed run
+<span class="k">2.</span> Monitor the retry
+
+<span class="gu">### 4. Fix and Redeploy (if code change needed)</span>
+
+<span class="k">1.</span> Fix the issue in the pipeline code
+<span class="k">2.</span> Test locally: <span class="sb">`python -m pipelines.&lt;pipeline_name&gt;`</span>
+<span class="k">3.</span> Create PR, merge, deploy via CI/CD
+<span class="k">4.</span> Trigger a manual run in Prefect
+
+<span class="gu">## Verification</span>
+
+<span class="k">- [ ]</span> Flow run completes successfully in Prefect
+<span class="k">- [ ]</span> Data appears in Snowflake with expected row counts
+<span class="k">- [ ]</span> No downstream dbt test failures
+
+<span class="gu">## Rollback</span>
+
+If the fix introduces new issues:
+
+<span class="k">1.</span> Revert the PR
+<span class="k">2.</span> Trigger the previous pipeline version via Prefect
+
+<span class="gu">## Escalation</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Data Engineering team in <span class="ni">#data</span>-eng Slack
+<span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: On-call data engineer
 </code></pre></div>
 <h3 id="dbt-running-a-full-refresh">dbt: Running a Full Refresh</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gh"># Runbook: Run a Full Refresh for a dbt Model</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="gu">## Summary</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Rebuild a dbt incremental model from scratch, replacing all data.
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="gu">## When to Use</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">-</span><span class="w"> </span>Incremental logic has changed and historical data needs reprocessing
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="k">-</span><span class="w"> </span>Source data was corrected retroactively
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">-</span><span class="w"> </span>Model has accumulated errors from incremental loads
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="gu">## Prerequisites</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">- [ ]</span> Access: dbt CLI configured with Snowflake credentials
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">- [ ]</span> Context: Model name and reason for full refresh
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="k">- [ ]</span> Timing: Schedule during low-usage window (full refresh uses more compute)
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="gu">## Steps</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="gu">### 1. Verify the Model is Incremental</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="sb">` `</span>`sh
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>dbt ls --select model_name --output json | grep materialized
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="gh"># Should show: "materialized": "incremental"</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="sb">` `</span>`
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="gu">### 2. Run the Full Refresh</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="sb">` `</span>`sh
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>dbt run --select model_name --full-refresh
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="sb">` `</span>`
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="gu">### 3. Run Tests</span>
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="sb">` `</span>`sh
-<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>dbt test --select model_name
-<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="sb">` `</span>`
-<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>
-<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="gu">### 4. Verify Row Counts</span>
-<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>
-<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="sb">` `</span>`sql
-<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>SELECT COUNT(*) FROM ANALYTICS.MARTS.MODEL_NAME;
-<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>-- Compare with expected count
-<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="sb">` `</span>`
-<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>
-<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="gu">## Verification</span>
-<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>
-<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="k">- [ ]</span> Model rebuilt successfully (no dbt errors)
-<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a><span class="k">- [ ]</span> All tests pass
-<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a><span class="k">- [ ]</span> Row count is within expected range
-<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a><span class="k">- [ ]</span> Downstream models still function correctly
-<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>
-<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a><span class="gu">## Rollback</span>
-<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>
-<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a>Incremental models retain historical data via Snowflake Time Travel:
-<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>
-<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="sb">` `</span>`sql
-<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>-- Restore to state before full refresh (within retention period)
-<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a>CREATE OR REPLACE TABLE ANALYTICS.MARTS.MODEL_NAME
-<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>  CLONE ANALYTICS.MARTS.MODEL_NAME AT (OFFSET =&gt; -3600);
-<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a><span class="sb">` `</span>`
-<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>
-<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a><span class="gu">## Escalation</span>
-<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>
-<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a><span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Analytics Engineering team in <span class="ni">#analytics</span> Slack
-<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: dbt project owner
+<div class="highlight"><pre><span></span><code><span class="gh"># Runbook: Run a Full Refresh for a dbt Model</span>
+
+<span class="gu">## Summary</span>
+
+Rebuild a dbt incremental model from scratch, replacing all data.
+
+<span class="gu">## When to Use</span>
+
+<span class="k">-</span><span class="w"> </span>Incremental logic has changed and historical data needs reprocessing
+<span class="k">-</span><span class="w"> </span>Source data was corrected retroactively
+<span class="k">-</span><span class="w"> </span>Model has accumulated errors from incremental loads
+
+<span class="gu">## Prerequisites</span>
+
+<span class="k">- [ ]</span> Access: dbt CLI configured with Snowflake credentials
+<span class="k">- [ ]</span> Context: Model name and reason for full refresh
+<span class="k">- [ ]</span> Timing: Schedule during low-usage window (full refresh uses more compute)
+
+<span class="gu">## Steps</span>
+
+<span class="gu">### 1. Verify the Model is Incremental</span>
+
+<span class="sb">` `</span>`sh
+dbt ls --select model_name --output json | grep materialized
+<span class="gh"># Should show: "materialized": "incremental"</span>
+<span class="sb">` `</span>`
+
+<span class="gu">### 2. Run the Full Refresh</span>
+
+<span class="sb">` `</span>`sh
+dbt run --select model_name --full-refresh
+<span class="sb">` `</span>`
+
+<span class="gu">### 3. Run Tests</span>
+
+<span class="sb">` `</span>`sh
+dbt test --select model_name
+<span class="sb">` `</span>`
+
+<span class="gu">### 4. Verify Row Counts</span>
+
+<span class="sb">` `</span>`sql
+SELECT COUNT(*) FROM ANALYTICS.MARTS.MODEL_NAME;
+-- Compare with expected count
+<span class="sb">` `</span>`
+
+<span class="gu">## Verification</span>
+
+<span class="k">- [ ]</span> Model rebuilt successfully (no dbt errors)
+<span class="k">- [ ]</span> All tests pass
+<span class="k">- [ ]</span> Row count is within expected range
+<span class="k">- [ ]</span> Downstream models still function correctly
+
+<span class="gu">## Rollback</span>
+
+Incremental models retain historical data via Snowflake Time Travel:
+
+<span class="sb">` `</span>`sql
+-- Restore to state before full refresh (within retention period)
+CREATE OR REPLACE TABLE ANALYTICS.MARTS.MODEL_NAME
+  CLONE ANALYTICS.MARTS.MODEL_NAME AT (OFFSET =&gt; -3600);
+<span class="sb">` `</span>`
+
+<span class="gu">## Escalation</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**First contact**</span>: Analytics Engineering team in <span class="ni">#analytics</span> Slack
+<span class="k">-</span><span class="w"> </span><span class="gs">**Escalation**</span>: dbt project owner
 </code></pre></div>
 <h2 id="including-runbooks-in-the-docs-site">Including Runbooks in the Docs Site</h2>
 <p>Runbooks live in each repository's <code>docs/runbooks/</code> directory. The <code>index.md</code> page in that directory serves as a table of contents:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gh"># Runbooks</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Operational procedures for the Terraform infrastructure repository.
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>| Runbook | When to Use |
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>|---------|------------|
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>| [<span class="nt">Add a Snowflake User</span>](<span class="na">add-snowflake-user.md</span>) | New team member needs access |
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>| [<span class="nt">Rotate Credentials</span>](<span class="na">rotate-credentials.md</span>) | Scheduled rotation or compromise |
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>| [<span class="nt">Failed Deployment</span>](<span class="na">failed-deployment.md</span>) | CI/CD terraform apply fails |
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>| [<span class="nt">Add a Data Source</span>](<span class="na">add-data-source.md</span>) | New ingestion source needed |
+<div class="highlight"><pre><span></span><code><span class="gh"># Runbooks</span>
+
+Operational procedures for the Terraform infrastructure repository.
+
+| Runbook | When to Use |
+|---------|------------|
+| [<span class="nt">Add a Snowflake User</span>](<span class="na">add-snowflake-user.md</span>) | New team member needs access |
+| [<span class="nt">Rotate Credentials</span>](<span class="na">rotate-credentials.md</span>) | Scheduled rotation or compromise |
+| [<span class="nt">Failed Deployment</span>](<span class="na">failed-deployment.md</span>) | CI/CD terraform apply fails |
+| [<span class="nt">Add a Data Source</span>](<span class="na">add-data-source.md</span>) | New ingestion source needed |
 </code></pre></div>
 <p>Update each repository's <code>docs/mkdocs.yml</code> nav to include runbook pages as they are written.</p>
 <h2 id="keeping-runbooks-current">Keeping Runbooks Current</h2>
@@ -6506,12 +6508,12 @@
 </ul>
 <h3 id="link-runbooks-to-alerts">Link Runbooks to Alerts</h3>
 <p>When creating Prefect automations, PagerDuty alerts, or Slack notifications, include a link to the relevant runbook:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># In Prefect automation</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">send_slack_notification</span><span class="p">(</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Pipeline </span><span class="si">{</span><span class="n">flow_name</span><span class="si">}</span><span class="s2"> failed. "</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="sa">f</span><span class="s2">"Runbook: https://&lt;your-org&gt;.github.io/technical-documentation/"</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="sa">f</span><span class="s2">"data-pipelines/runbooks/failed-pipeline/"</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># In Prefect automation</span>
+<span class="n">send_slack_notification</span><span class="p">(</span>
+    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Pipeline </span><span class="si">{</span><span class="n">flow_name</span><span class="si">}</span><span class="s2"> failed. "</span>
+    <span class="sa">f</span><span class="s2">"Runbook: https://&lt;your-org&gt;.github.io/technical-documentation/"</span>
+    <span class="sa">f</span><span class="s2">"data-pipelines/runbooks/failed-pipeline/"</span>
+<span class="p">)</span>
 </code></pre></div>
 <h3 id="update-after-incidents">Update After Incidents</h3>
 <p>After every incident, review the runbook used:</p>
@@ -6584,6 +6586,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6627,7 +6631,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

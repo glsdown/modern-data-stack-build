@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -2901,6 +2903,17 @@
     <span class="md-ellipsis">
       
         Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claude-code-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Code Setup
       
     </span>
   </a>
@@ -6193,6 +6206,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#claude-code-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Code Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#whats-next" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6236,60 +6260,60 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Prefect Cloud</label><label for="__tabbed_1_2">Docker Compose</label><label for="__tabbed_1_3">ECS + RDS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                          PREFECT CLOUD                                      │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│                     (Managed by Prefect)                                    │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  │  API  │  Database  │  UI  │  Scheduling  │  State Management    │        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>└─────────────────────────────────────────────────────────────────────────────┘
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                    │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    ┌───────────────┴───────────────┐
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                    ▼                               ▼
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>┌───────────────────────────────┐   ┌───────────────────────────────┐
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│       Work Pool: dev          │   │     Work Pool: production     │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│        (process)              │   │          (ecs)                │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>└───────────────┬───────────────┘   └───────────────┬───────────────┘
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                │                                   │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                ▼                                   ▼
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>┌───────────────────────────────┐   ┌───────────────────────────────┐
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│         Worker                │   │     ECS Fargate Tasks         │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│      (EC2 / Local)            │   │      (Auto-scaling)           │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>└───────────────────────────────┘   └───────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                          PREFECT CLOUD                                      │
+│                     (Managed by Prefect)                                    │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │  API  │  Database  │  UI  │  Scheduling  │  State Management    │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    ▼                               ▼
+┌───────────────────────────────┐   ┌───────────────────────────────┐
+│       Work Pool: dev          │   │     Work Pool: production     │
+│        (process)              │   │          (ecs)                │
+└───────────────┬───────────────┘   └───────────────┬───────────────┘
+                │                                   │
+                ▼                                   ▼
+┌───────────────────────────────┐   ┌───────────────────────────────┐
+│         Worker                │   │     ECS Fargate Tasks         │
+│      (EC2 / Local)            │   │      (Auto-scaling)           │
+└───────────────────────────────┘   └───────────────────────────────┘
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                         EC2 INSTANCE                                        │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│  │                      Docker Compose                             │        │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │        │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│  │  │   Prefect   │  │  PostgreSQL │  │   Worker    │              │        │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  │  │   Server    │  │             │  │             │              │        │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│  │  └─────────────┘  └─────────────┘  └─────────────┘              │        │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         EC2 INSTANCE                                        │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │                      Docker Compose                             │        │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │        │
+│  │  │   Prefect   │  │  PostgreSQL │  │   Worker    │              │        │
+│  │  │   Server    │  │             │  │             │              │        │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘              │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│                          AWS INFRASTRUCTURE                                 │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│  ┌─────────────────────────────────────────────────────────────────┐        │
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│  │                   Application Load Balancer                     │        │
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│  └───────────────────────────────┬─────────────────────────────────┘        │
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│                                  │                                          │
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│  ┌───────────────────────────────┴─────────────────────────────────┐        │
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│  │                      ECS Cluster                                │        │
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│  │  ┌─────────────────────────┐  ┌─────────────────────────┐       │        │
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│  │  │   Prefect Server        │  │   Worker Service        │       │        │
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│  │  │   (Multi-AZ)            │  │   (Auto-scaling)        │       │        │
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│  │  └─────────────────────────┘  └─────────────────────────┘       │        │
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│                                  │                                          │
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│  ┌───────────────────────────────┴─────────────────────────────────┐        │
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│  │                      RDS PostgreSQL                             │        │
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>│  └─────────────────────────────────────────────────────────────────┘        │
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                          AWS INFRASTRUCTURE                                 │
+│  ┌─────────────────────────────────────────────────────────────────┐        │
+│  │                   Application Load Balancer                     │        │
+│  └───────────────────────────────┬─────────────────────────────────┘        │
+│                                  │                                          │
+│  ┌───────────────────────────────┴─────────────────────────────────┐        │
+│  │                      ECS Cluster                                │        │
+│  │  ┌─────────────────────────┐  ┌─────────────────────────┐       │        │
+│  │  │   Prefect Server        │  │   Worker Service        │       │        │
+│  │  │   (Multi-AZ)            │  │   (Auto-scaling)        │       │        │
+│  │  └─────────────────────────┘  └─────────────────────────┘       │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+│                                  │                                          │
+│  ┌───────────────────────────────┴─────────────────────────────────┐        │
+│  │                      RDS PostgreSQL                             │        │
+│  └─────────────────────────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 </div>
 </div>
@@ -6374,73 +6398,73 @@
 </ul>
 <h2 id="file-structure">File Structure</h2>
 <p>Your project should now look like:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>data-pipelines/
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>├── flows/
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   ├── __init__.py
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   └── hello_world.py
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>├── pipelines/
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   └── __init__.py
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>├── sources/
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│   └── __init__.py
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>├── utils/
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│   ├── __init__.py
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│   └── vault_provider.py
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>├── .dlt/
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│   ├── config.toml
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│   └── secrets.toml
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>├── prefect.yaml
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>├── pyproject.toml
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>├── uv.lock
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>└── .github/
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    └── workflows/
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        └── prefect-deploy.yml
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>terraform/
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>├── prefect/                    # Prefect Cloud resources
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>│   └── config/
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>│       ├── backend.tf
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>│       ├── main.tf
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>│       ├── providers.tf
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>│       ├── variables.tf
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>│       ├── terraform.tfvars
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>│       ├── work_pools.tf
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>│       └── service_accounts.tf
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>│
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>├── prefect-server/             # Docker Compose option
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>│   ├── config/
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>│   │   └── ...
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>│   └── files/
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>│       ├── docker-compose.yml
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>│       └── user-data.sh
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>│
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>└── prefect-ecs/                # ECS + RDS option
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>    └── config/
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>        └── ...
+<div class="highlight"><pre><span></span><code>data-pipelines/
+├── flows/
+│   ├── __init__.py
+│   └── hello_world.py
+├── pipelines/
+│   └── __init__.py
+├── sources/
+│   └── __init__.py
+├── utils/
+│   ├── __init__.py
+│   └── vault_provider.py
+├── .dlt/
+│   ├── config.toml
+│   └── secrets.toml
+├── prefect.yaml
+├── pyproject.toml
+├── uv.lock
+└── .github/
+    └── workflows/
+        └── prefect-deploy.yml
+
+terraform/
+├── prefect/                    # Prefect Cloud resources
+│   └── config/
+│       ├── backend.tf
+│       ├── main.tf
+│       ├── providers.tf
+│       ├── variables.tf
+│       ├── terraform.tfvars
+│       ├── work_pools.tf
+│       └── service_accounts.tf
+│
+├── prefect-server/             # Docker Compose option
+│   ├── config/
+│   │   └── ...
+│   └── files/
+│       ├── docker-compose.yml
+│       └── user-data.sh
+│
+└── prefect-ecs/                # ECS + RDS option
+    └── config/
+        └── ...
 </code></pre></div>
 <h2 id="common-issues">Common Issues</h2>
 <h3 id="worker-not-picking-up-jobs">Worker Not Picking Up Jobs</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Check worker is running</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>prefect<span class="w"> </span>worker<span class="w"> </span>ls<span class="w"> </span>--pool<span class="w"> </span>your-pool
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Verify API URL</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$PREFECT_API_URL</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Check worker logs</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>journalctl<span class="w"> </span>-u<span class="w"> </span>prefect-worker<span class="w"> </span>-f
+<div class="highlight"><pre><span></span><code><span class="c1"># Check worker is running</span>
+prefect<span class="w"> </span>worker<span class="w"> </span>ls<span class="w"> </span>--pool<span class="w"> </span>your-pool
+
+<span class="c1"># Verify API URL</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$PREFECT_API_URL</span>
+
+<span class="c1"># Check worker logs</span>
+journalctl<span class="w"> </span>-u<span class="w"> </span>prefect-worker<span class="w"> </span>-f
 </code></pre></div>
 <h3 id="flow-deployment-fails">Flow Deployment Fails</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Verify deployment config</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>inspect<span class="w"> </span>flow-name/deployment-name
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Check for syntax errors in prefect.yaml</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--dry-run
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify deployment config</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>inspect<span class="w"> </span>flow-name/deployment-name
+
+<span class="c1"># Check for syntax errors in prefect.yaml</span>
+prefect<span class="w"> </span>deploy<span class="w"> </span>--dry-run
 </code></pre></div>
 <h3 id="secrets-not-found">Secrets Not Found</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Verify secret exists</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span>--secret-id<span class="w"> </span>your-secret
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Check IAM permissions</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify secret exists</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span>--secret-id<span class="w"> </span>your-secret
+
+<span class="c1"># Check IAM permissions</span>
+aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
 </code></pre></div>
 <h2 id="estimated-costs">Estimated Costs</h2>
 <table>
@@ -6486,6 +6510,17 @@
 <p class="admonition-title">Orchestration Complete</p>
 <p>You have a production-ready orchestration layer with automated deployment and alerting. Next, you'll build the data pipelines that Prefect will orchestrate — starting with dlt for batch ingestion.</p>
 </div>
+<h2 id="claude-code-setup">Claude Code Setup</h2>
+<p>Now that your <code>data-pipelines</code> repository has its three-layer architecture in place, add a CLAUDE.md and skill so Claude Code knows the conventions when you add pipelines later.</p>
+<p>Create the skills directory in your <code>data-pipelines</code> repository:</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>.claude/skills/add-dlt-pipeline
+</code></pre></div>
+<p>Copy the templates from the Maintain section:</p>
+<ul>
+<li><a href="../../../maintain/templates/prefect-claude/">Prefect CLAUDE.md template</a> → <code>CLAUDE.md</code> at the repository root</li>
+<li><a href="../../../maintain/templates/add-dlt-pipeline/">add-dlt-pipeline skill</a> → <code>.claude/skills/add-dlt-pipeline/SKILL.md</code></li>
+</ul>
+<p>Verify by opening the repository in Claude Code and asking it to describe the pipeline architecture - it should reference the three-layer structure and safety rules from the CLAUDE.md.</p>
 <h2 id="whats-next">What's Next</h2>
 <p>Continue to <a href="../../batch-data-ingestion/">Batch Data Ingestion</a> →</p>
 
@@ -6510,7 +6545,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6537,6 +6572,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6580,7 +6617,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

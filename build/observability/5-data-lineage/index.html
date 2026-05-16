@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6889,75 +6891,75 @@
 2. Querying Snowflake metadata for table dependencies
 3. Connecting to Lightdash for dashboard lineage
 4. Tracking Prefect pipeline execution</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                         DATA LINEAGE FLOW                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Source Systems        Pipelines         Transformations    Dashboards │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────        ─────────         ──────────────     ────────── │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────┐         ┌─────────┐       ┌──────────────┐   ┌────────┐ │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ HubSpot  │──dlt──▶ │ DLT_DB  │──────▶│ stg_contacts │──▶│ Lightd │ │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ contacts │         │.raw_    │       │              │   │ -ash   │ │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ API      │         │contacts │       └──────┬───────┘   │ KPIs   │ │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  └──────────┘         └─────────┘              │           └────────┘ │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                                 ▼                       │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  ┌──────────┐         ┌─────────┐       ┌──────────────┐   ┌────────┐ │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │ Shopify  │─Airby─▶ │ AIRBYTE │──────▶│ int_customer │──▶│ Revenue│ │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │ orders   │  te     │_DB.raw_ │       │ _orders      │   │ Dashbd │ │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │ API      │         │orders   │       └──────┬───────┘   └────────┘ │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  └──────────┘         └─────────┘              │                       │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                                 ▼                       │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                          ┌──────────────┐               │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                          │ fct_orders   │               │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                          │ (final fact) │               │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                          └──────────────┘               │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                                                         │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  Column-level lineage tracks individual columns through each step      │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│                                                                         │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                         DATA LINEAGE FLOW                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Source Systems        Pipelines         Transformations    Dashboards │
+│  ──────────────        ─────────         ──────────────     ────────── │
+│                                                                         │
+│  ┌──────────┐         ┌─────────┐       ┌──────────────┐   ┌────────┐ │
+│  │ HubSpot  │──dlt──▶ │ DLT_DB  │──────▶│ stg_contacts │──▶│ Lightd │ │
+│  │ contacts │         │.raw_    │       │              │   │ -ash   │ │
+│  │ API      │         │contacts │       └──────┬───────┘   │ KPIs   │ │
+│  └──────────┘         └─────────┘              │           └────────┘ │
+│                                                 ▼                       │
+│  ┌──────────┐         ┌─────────┐       ┌──────────────┐   ┌────────┐ │
+│  │ Shopify  │─Airby─▶ │ AIRBYTE │──────▶│ int_customer │──▶│ Revenue│ │
+│  │ orders   │  te     │_DB.raw_ │       │ _orders      │   │ Dashbd │ │
+│  │ API      │         │orders   │       └──────┬───────┘   └────────┘ │
+│  └──────────┘         └─────────┘              │                       │
+│                                                 ▼                       │
+│                                          ┌──────────────┐               │
+│                                          │ fct_orders   │               │
+│                                          │ (final fact) │               │
+│                                          └──────────────┘               │
+│                                                                         │
+│  Column-level lineage tracks individual columns through each step      │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="lineage-types">Lineage Types</h2>
 <h3 id="table-level-lineage">Table-Level Lineage</h3>
 <p><strong>What it shows:</strong> Which tables depend on which other tables.</p>
 <p><strong>Example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DLT_DB.raw_contacts
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    ↓
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>stg_contacts
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ↓
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>int_customer_contacts
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ↓
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>dim_customers
+</p><div class="highlight"><pre><span></span><code>DLT_DB.raw_contacts
+    ↓
+stg_contacts
+    ↓
+int_customer_contacts
+    ↓
+dim_customers
 </code></pre></div><p></p>
 <p><strong>Use case:</strong> Understanding overall data flow, identifying critical tables.</p>
 <h3 id="column-level-lineage">Column-Level Lineage</h3>
 <p><strong>What it shows:</strong> How individual columns transform from source to final table.</p>
 <p><strong>Example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>HubSpot API: contact.email
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    ↓ (extracted by dlt)
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>DLT_DB.raw_contacts.properties__email
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    ↓ (transformed by dbt)
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>stg_contacts.contact_email
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    ↓ (joined and enriched)
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>dim_customers.primary_email
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    ↓ (used in dashboard)
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>Lightdash: "Customer Email" metric
+</p><div class="highlight"><pre><span></span><code>HubSpot API: contact.email
+    ↓ (extracted by dlt)
+DLT_DB.raw_contacts.properties__email
+    ↓ (transformed by dbt)
+stg_contacts.contact_email
+    ↓ (joined and enriched)
+dim_customers.primary_email
+    ↓ (used in dashboard)
+Lightdash: "Customer Email" metric
 </code></pre></div><p></p>
 <p><strong>Use case:</strong> PII tracking, GDPR compliance, understanding data transformations.</p>
 <h3 id="end-to-end-lineage">End-to-End Lineage</h3>
 <p><strong>What it shows:</strong> Complete path from source API to dashboard chart.</p>
 <p><strong>Example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>HubSpot Contacts API
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    ↓ (dlt pipeline in Prefect)
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>DLT_DB.raw_contacts
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    ↓ (dbt staging model)
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>stg_contacts
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    ↓ (dbt mart model)
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>dim_customers
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    ↓ (Lightdash metric)
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>"Total Customers" KPI
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    ↓ (Lightdash dashboard)
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>"Marketing Overview" dashboard
+</p><div class="highlight"><pre><span></span><code>HubSpot Contacts API
+    ↓ (dlt pipeline in Prefect)
+DLT_DB.raw_contacts
+    ↓ (dbt staging model)
+stg_contacts
+    ↓ (dbt mart model)
+dim_customers
+    ↓ (Lightdash metric)
+"Total Customers" KPI
+    ↓ (Lightdash dashboard)
+"Marketing Overview" dashboard
 </code></pre></div><p></p>
 <p><strong>Use case:</strong> Complete visibility, stakeholder communication, debugging pipelines.</p>
 <h2 id="view-lineage-in-openmetadata">View Lineage in OpenMetadata</h2>
@@ -6976,15 +6978,15 @@
 <li><strong>Transformation logic</strong> (dbt SQL from model)</li>
 </ol>
 <p><strong>Example view:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Upstream:                    Current:              Downstream:
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>┌─────────────┐             ┌────────────┐        ┌──────────────┐
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>│ stg_orders  │────────────▶│ fct_orders │───────▶│ Lightdash:   │
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>└─────────────┘             └────────────┘        │ Revenue KPIs │
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>                                                  └──────────────┘
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>┌─────────────┐                   │
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│ stg_        │───────────────────┘
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│ customers   │
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>└─────────────┘
+<div class="highlight"><pre><span></span><code>Upstream:                    Current:              Downstream:
+┌─────────────┐             ┌────────────┐        ┌──────────────┐
+│ stg_orders  │────────────▶│ fct_orders │───────▶│ Lightdash:   │
+└─────────────┘             └────────────┘        │ Revenue KPIs │
+                                                  └──────────────┘
+┌─────────────┐                   │
+│ stg_        │───────────────────┘
+│ customers   │
+└─────────────┘
 </code></pre></div>
 <h3 id="view-column-level-lineage">View Column-Level Lineage</h3>
 <ol>
@@ -6997,19 +6999,19 @@
 <li>Usage in dashboards (if connected)</li>
 </ol>
 <p><strong>Example column lineage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Source: DLT_DB.raw_contacts.properties__email
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    ↓ [stg_contacts model]
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    SELECT properties__email AS contact_email
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    ↓
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Staging: stg_contacts.contact_email
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    ↓ [int_customer_contacts model]
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    SELECT contact_email
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    ↓
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>Intermediate: int_customer_contacts.contact_email
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    ↓ [dim_customers model]
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    SELECT contact_email AS primary_email
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    ↓
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>Final: dim_customers.primary_email
+<div class="highlight"><pre><span></span><code>Source: DLT_DB.raw_contacts.properties__email
+    ↓ [stg_contacts model]
+    SELECT properties__email AS contact_email
+    ↓
+Staging: stg_contacts.contact_email
+    ↓ [int_customer_contacts model]
+    SELECT contact_email
+    ↓
+Intermediate: int_customer_contacts.contact_email
+    ↓ [dim_customers model]
+    SELECT contact_email AS primary_email
+    ↓
+Final: dim_customers.primary_email
 </code></pre></div>
 <h3 id="expand-lineage-depth">Expand Lineage Depth</h3>
 <p>Use the <strong>+</strong> buttons on nodes to expand upstream or downstream lineage further.</p>
@@ -7088,7 +7090,7 @@
 <ol>
 <li>Navigate to <code>fct_revenue</code> in OpenMetadata</li>
 <li>View <strong>upstream lineage</strong>:
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>stg_orders → int_revenue_calculations → fct_revenue
+   <div class="highlight"><pre><span></span><code>stg_orders → int_revenue_calculations → fct_revenue
 </code></pre></div></li>
 <li>Check data quality tests in dbt:</li>
 <li><code>not_null</code> test on <code>revenue_amount</code> — ✓ Passing</li>
@@ -7128,20 +7130,20 @@
 <ol>
 <li>Navigate to <code>fct_orders</code> in OpenMetadata</li>
 <li>View upstream tables:
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>stg_orders
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>stg_customers
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>stg_order_lines
+   <div class="highlight"><pre><span></span><code>stg_orders
+stg_customers
+stg_order_lines
 </code></pre></div></li>
 </ol>
 <h4 id="step-2-row-count-comparison">Step 2: Row Count Comparison</h4>
 <p>Run row count checks in Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Source</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_orders</span><span class="p">;</span><span class="w">         </span><span class="c1">-- 10,000 rows</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_customers</span><span class="p">;</span><span class="w">      </span><span class="c1">-- 5,000 rows</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_order_lines</span><span class="p">;</span><span class="w">    </span><span class="c1">-- 25,000 rows</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">-- Fact table</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="p">;</span><span class="w">         </span><span class="c1">-- 50,000 rows (expected: 25,000)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Source</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_orders</span><span class="p">;</span><span class="w">         </span><span class="c1">-- 10,000 rows</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_customers</span><span class="p">;</span><span class="w">      </span><span class="c1">-- 5,000 rows</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">stg_order_lines</span><span class="p">;</span><span class="w">    </span><span class="c1">-- 25,000 rows</span>
+
+<span class="c1">-- Fact table</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="p">;</span><span class="w">         </span><span class="c1">-- 50,000 rows (expected: 25,000)</span>
 </code></pre></div>
 <p><strong>Finding:</strong> <code>fct_orders</code> has 2x rows expected (should match <code>stg_order_lines</code> at the grain of order line).</p>
 <h4 id="step-3-review-dbt-sql">Step 3: Review dbt SQL</h4>
@@ -7150,15 +7152,15 @@
 <li>View <strong>SQL</strong> tab (shows dbt model SQL)</li>
 <li>Identify the issue:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- WRONG: Missing DISTINCT or improper JOIN</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">ol</span><span class="p">.</span><span class="n">order_line_id</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">stg_order_lines</span><span class="w"> </span><span class="n">ol</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_orders</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ol</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_customers</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">billing_customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c2</span><span class="p">.</span><span class="n">customer_id</span><span class="w">  </span><span class="c1">-- DUPLICATE JOIN</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- WRONG: Missing DISTINCT or improper JOIN</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">ol</span><span class="p">.</span><span class="n">order_line_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">stg_order_lines</span><span class="w"> </span><span class="n">ol</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_orders</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ol</span><span class="p">.</span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_id</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">stg_customers</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">billing_customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c2</span><span class="p">.</span><span class="n">customer_id</span><span class="w">  </span><span class="c1">-- DUPLICATE JOIN</span>
 </code></pre></div>
 <p><strong>Root cause:</strong> Joining to <code>stg_customers</code> twice without proper grain management creates a Cartesian product.</p>
 <p><strong>Fix:</strong> Remove duplicate join or use a UNION approach.</p>
@@ -7174,78 +7176,78 @@
 <p>dbt automatically provides lineage through the <code>manifest.json</code> file. Ensure your dbt project follows best practices for lineage clarity.</p>
 <h3 id="use-ref-for-all-dependencies">Use <code>ref()</code> for All Dependencies</h3>
 <p><strong>Good:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- models/marts/fct_orders.sql</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="n">customer_id</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="n">order_total</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'dim_customers'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1">-- models/marts/fct_orders.sql</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">customer_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">order_total</span>
+<span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'dim_customers'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
 </code></pre></div><p></p>
 <p>dbt generates lineage:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>stg_orders → fct_orders
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>dim_customers → fct_orders
+</p><div class="highlight"><pre><span></span><code>stg_orders → fct_orders
+dim_customers → fct_orders
 </code></pre></div><p></p>
 <p><strong>Bad:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">-- AVOID: Hard-coded table references</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">customer_id</span><span class="p">,</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="n">order_total</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span><span class="w">  </span><span class="c1">-- Lineage not tracked!</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1">-- AVOID: Hard-coded table references</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">customer_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">order_total</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">analytics</span><span class="p">.</span><span class="n">staging</span><span class="p">.</span><span class="n">stg_orders</span><span class="w">  </span><span class="c1">-- Lineage not tracked!</span>
 </code></pre></div><p></p>
 <h3 id="document-column-lineage-in-schemayml">Document Column Lineage in <code>schema.yml</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># models/marts/core/fct_orders.yml</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Fact</span><span class="nv"> </span><span class="s">table</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">customer</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">product</span><span class="nv"> </span><span class="s">details"</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_id</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Unique</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">identifier</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">Shopify</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">(via</span><span class="nv"> </span><span class="s">Airbyte)"</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">          </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"AIRBYTE_DB.raw_orders.id"</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Customer</span><span class="nv"> </span><span class="s">email</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">HubSpot</span><span class="nv"> </span><span class="s">Contacts</span><span class="nv"> </span><span class="s">(via</span><span class="nv"> </span><span class="s">dlt)"</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">        </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">          </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"DLT_DB.raw_contacts.properties__email"</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">          </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Flag for GDPR compliance</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/marts/core/fct_orders.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_orders</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Fact</span><span class="nv"> </span><span class="s">table</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">customer</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">product</span><span class="nv"> </span><span class="s">details"</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">order_id</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Unique</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">identifier</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">Shopify</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">(via</span><span class="nv"> </span><span class="s">Airbyte)"</span>
+<span class="w">        </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"AIRBYTE_DB.raw_orders.id"</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Customer</span><span class="nv"> </span><span class="s">email</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">HubSpot</span><span class="nv"> </span><span class="s">Contacts</span><span class="nv"> </span><span class="s">(via</span><span class="nv"> </span><span class="s">dlt)"</span>
+<span class="w">        </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="s">"DLT_DB.raw_contacts.properties__email"</span>
+<span class="w">          </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Flag for GDPR compliance</span>
 </code></pre></div>
 <p>OpenMetadata reads these <code>meta</code> tags to enhance column lineage.</p>
 <h3 id="tag-pii-columns">Tag PII Columns</h3>
 <p>Use dbt meta tags to identify Personal Identifiable Information (PII):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">      </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">      </span><span class="nt">pii_type</span><span class="p">:</span><span class="w"> </span><span class="s">"email"</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_phone</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">      </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">      </span><span class="nt">pii_type</span><span class="p">:</span><span class="w"> </span><span class="s">"phone"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_email</span>
+<span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">pii_type</span><span class="p">:</span><span class="w"> </span><span class="s">"email"</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_phone</span>
+<span class="w">    </span><span class="nt">meta</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">pii</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">pii_type</span><span class="p">:</span><span class="w"> </span><span class="s">"phone"</span>
 </code></pre></div>
 <p>OpenMetadata can filter lineage by PII columns, useful for:
 - <strong>GDPR compliance</strong> — track where PII is stored and used
 - <strong>Data deletion</strong> — identify all locations of a customer's email for right-to-erasure requests</p>
 <h3 id="use-dbt-exposures-for-dashboards">Use dbt Exposures for Dashboards</h3>
 <p>Define dashboards as dbt exposures to include them in lineage:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># models/exposures.yml</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nt">exposures</span><span class="p">:</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marketing_kpis_dashboard</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboard</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">maturity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://lightdash.yourcompany.com/dashboards/marketing-kpis</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Key</span><span class="nv"> </span><span class="s">marketing</span><span class="nv"> </span><span class="s">metrics</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">leadership</span><span class="nv"> </span><span class="s">team"</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('fct_contacts')</span>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('fct_campaigns')</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
-<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>
-<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span>
-<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Marketing</span><span class="nv"> </span><span class="s">Analytics</span><span class="nv"> </span><span class="s">Team"</span>
-<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">      </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marketing-analytics@yourcompany.com</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># models/exposures.yml</span>
+<span class="nt">exposures</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marketing_kpis_dashboard</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dashboard</span>
+<span class="w">    </span><span class="nt">maturity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://lightdash.yourcompany.com/dashboards/marketing-kpis</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Key</span><span class="nv"> </span><span class="s">marketing</span><span class="nv"> </span><span class="s">metrics</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">leadership</span><span class="nv"> </span><span class="s">team"</span>
+
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('fct_contacts')</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('fct_campaigns')</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ref('dim_customers')</span>
+
+<span class="w">    </span><span class="nt">owner</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Marketing</span><span class="nv"> </span><span class="s">Analytics</span><span class="nv"> </span><span class="s">Team"</span>
+<span class="w">      </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marketing-analytics@yourcompany.com</span>
 </code></pre></div>
 <p>OpenMetadata imports exposures, showing complete lineage from source to dashboard.</p>
 <h2 id="best-practices-for-lineage">Best Practices for Lineage</h2>
@@ -7255,9 +7257,9 @@
 <p>Add descriptions to all models and columns in <code>schema.yml</code>. This context appears in OpenMetadata lineage views.</p>
 <h3 id="3-tag-critical-data">3. Tag Critical Data</h3>
 <p>Use dbt tags to identify critical tables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_revenue</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'critical'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'financial'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'daily'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_revenue</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'critical'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'financial'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'daily'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p>OpenMetadata can filter lineage by tags (e.g., show only <code>critical</code> tables).</p>
 <h3 id="4-keep-lineage-shallow">4. Keep Lineage Shallow</h3>
@@ -7274,13 +7276,13 @@
 3. Ensure no unexpected downstream breakage</p>
 <h3 id="6-automate-lineage-updates">6. Automate Lineage Updates</h3>
 <p>Add OpenMetadata ingestion to your Prefect pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Run after dbt to update lineage</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nd">@task</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">update_openmetadata_lineage</span><span class="p">():</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">shell_run_command</span><span class="p">(</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="n">command</span><span class="o">=</span><span class="s2">"metadata ingest -c ingestion/dbt-config.yaml"</span><span class="p">,</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>        <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run after dbt to update lineage</span>
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_openmetadata_lineage</span><span class="p">():</span>
+    <span class="n">shell_run_command</span><span class="p">(</span>
+        <span class="n">command</span><span class="o">=</span><span class="s2">"metadata ingest -c ingestion/dbt-config.yaml"</span><span class="p">,</span>
+        <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>This ensures lineage stays current after every dbt run.</p>
 <h2 id="lineage-limitations">Lineage Limitations</h2>
@@ -7364,6 +7366,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7407,7 +7411,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

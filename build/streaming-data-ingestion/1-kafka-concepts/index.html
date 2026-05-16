@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6647,31 +6649,31 @@
 <h2 id="overview">Overview</h2>
 <p>Apache Kafka is a distributed event streaming platform. Unlike traditional message queues that delete messages after consumption, Kafka treats events as a <strong>durable, replayable log</strong>. This fundamental difference enables powerful capabilities: time travel (replay old events), multiple independent consumers, and guaranteed ordering.</p>
 <p>Understanding Kafka's architecture is essential before building streaming pipelines.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                        KAFKA ARCHITECTURE                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Producers              Kafka Cluster           Consumers               │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ─────────              ─────────────           ─────────               │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────┐          ┌──────────────┐        ┌──────────┐            │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Web App  │─────────▶│ Topic: orders│───────▶│ Snowflake│            │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ (Python) │          │              │        │ Connector│            │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  └──────────┘          │ Partition 0  │        └──────────┘            │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                        │ [msg1][msg2] │                                │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  ┌──────────┐          │              │        ┌──────────┐            │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │ Mobile   │─────────▶│ Partition 1  │───────▶│ Analytics│            │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │ App      │          │ [msg3][msg4] │        │ Consumer │            │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  └──────────┘          │              │        └──────────┘            │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                        │ Partition 2  │                                │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                        │ [msg5][msg6] │        ┌──────────┐            │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                        └──────────────┘───────▶│ ML Model │            │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                                                │ Consumer │            │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                                └──────────┘            │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                                         │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  Multiple producers → One topic → Multiple independent consumers        │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                                                                         │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                        KAFKA ARCHITECTURE                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Producers              Kafka Cluster           Consumers               │
+│  ─────────              ─────────────           ─────────               │
+│                                                                         │
+│  ┌──────────┐          ┌──────────────┐        ┌──────────┐            │
+│  │ Web App  │─────────▶│ Topic: orders│───────▶│ Snowflake│            │
+│  │ (Python) │          │              │        │ Connector│            │
+│  └──────────┘          │ Partition 0  │        └──────────┘            │
+│                        │ [msg1][msg2] │                                │
+│  ┌──────────┐          │              │        ┌──────────┐            │
+│  │ Mobile   │─────────▶│ Partition 1  │───────▶│ Analytics│            │
+│  │ App      │          │ [msg3][msg4] │        │ Consumer │            │
+│  └──────────┘          │              │        └──────────┘            │
+│                        │ Partition 2  │                                │
+│                        │ [msg5][msg6] │        ┌──────────┐            │
+│                        └──────────────┘───────▶│ ML Model │            │
+│                                                │ Consumer │            │
+│                                                └──────────┘            │
+│                                                                         │
+│  Multiple producers → One topic → Multiple independent consumers        │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="topics-the-event-log">Topics: The Event Log</h2>
 <h3 id="what-is-a-topic">What is a Topic?</h3>
@@ -6687,21 +6689,21 @@
 - <strong>Multiple consumers</strong> — Different applications read the same events independently
 - <strong>Debugging</strong> — Inspect historical events to troubleshoot issues</p>
 <p><strong>Example:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Topic: order-events (retention: 7 days)
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>[Day 1] order_created → order_shipped → order_delivered
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>[Day 2] order_created → order_cancelled
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>[Day 3] order_created → order_shipped
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Day 8: Day 1 events automatically deleted
+</p><div class="highlight"><pre><span></span><code>Topic: order-events (retention: 7 days)
+
+[Day 1] order_created → order_shipped → order_delivered
+[Day 2] order_created → order_cancelled
+[Day 3] order_created → order_shipped
+
+Day 8: Day 1 events automatically deleted
 </code></pre></div><p></p>
 <h3 id="topic-configuration">Topic Configuration</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Create a topic with 3 partitions, 7-day retention</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>kafka-topics<span class="w"> </span>--create<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--topic<span class="w"> </span>order-events<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>--partitions<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--replication-factor<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>--config<span class="w"> </span>retention.ms<span class="o">=</span><span class="m">604800000</span><span class="w">  </span><span class="c1"># 7 days in milliseconds</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a topic with 3 partitions, 7-day retention</span>
+kafka-topics<span class="w"> </span>--create<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--topic<span class="w"> </span>order-events<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--partitions<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--replication-factor<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--config<span class="w"> </span>retention.ms<span class="o">=</span><span class="m">604800000</span><span class="w">  </span><span class="c1"># 7 days in milliseconds</span>
 </code></pre></div>
 <p><strong>Key settings:</strong>
 - <code>partitions</code> — Number of parallel streams (more = higher throughput)
@@ -6715,89 +6717,89 @@
 - <strong>Scalability</strong> — Distribute load across many brokers
 - <strong>Ordering</strong> — Events in the same partition are guaranteed to be in order</p>
 <h3 id="partition-structure">Partition Structure</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Topic: order-events (3 partitions)
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Partition 0:
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>[offset 0] {"order_id": 101, "status": "created"}
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>[offset 1] {"order_id": 104, "status": "shipped"}
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>[offset 2] {"order_id": 107, "status": "delivered"}
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Partition 1:
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>[offset 0] {"order_id": 102, "status": "created"}
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>[offset 1] {"order_id": 105, "status": "cancelled"}
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>Partition 2:
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>[offset 0] {"order_id": 103, "status": "created"}
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>[offset 1] {"order_id": 106, "status": "shipped"}
+<div class="highlight"><pre><span></span><code>Topic: order-events (3 partitions)
+
+Partition 0:
+[offset 0] {"order_id": 101, "status": "created"}
+[offset 1] {"order_id": 104, "status": "shipped"}
+[offset 2] {"order_id": 107, "status": "delivered"}
+
+Partition 1:
+[offset 0] {"order_id": 102, "status": "created"}
+[offset 1] {"order_id": 105, "status": "cancelled"}
+
+Partition 2:
+[offset 0] {"order_id": 103, "status": "created"}
+[offset 1] {"order_id": 106, "status": "shipped"}
 </code></pre></div>
 <p><strong>Offset</strong> — Sequential ID for each message in a partition (starts at 0)</p>
 <h3 id="partition-keys">Partition Keys</h3>
 <p>Producers use a <strong>partition key</strong> to determine which partition receives an event.</p>
 <p><strong>Strategy 1: Key-based partitioning</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># All events for order_id 101 go to the same partition</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>  <span class="c1"># Partition key</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># All events for order_id 101 go to the same partition</span>
+<span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
+    <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>  <span class="c1"># Partition key</span>
+    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="p">)</span>
 </code></pre></div><p></p>
 <p><strong>Result:</strong> All events for <code>order_id=101</code> are in the same partition, guaranteeing order.</p>
 <p><strong>Strategy 2: Round-robin (no key)</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Events distributed evenly across partitions</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>  <span class="c1"># No key</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Events distributed evenly across partitions</span>
+<span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>  <span class="c1"># No key</span>
+<span class="p">)</span>
 </code></pre></div><p></p>
 <p><strong>Result:</strong> Maximum throughput, but no ordering guarantee across partitions.</p>
 <h3 id="ordering-guarantees">Ordering Guarantees</h3>
 <p>✅ <strong>Guaranteed:</strong> Events in the <strong>same partition</strong> are ordered
 ❌ <strong>Not guaranteed:</strong> Events across <strong>different partitions</strong> may arrive out of order</p>
 <p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Order 101 events (same partition key = order_id):
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Partition 0: created → shipped → delivered ✓ Ordered
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Order 102 and 103 (different partitions):
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Partition 1: Order 102 created (timestamp 10:00:01)
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>Partition 2: Order 103 created (timestamp 10:00:00)
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>Consumer may see Order 103 before Order 102 ✗ Not globally ordered
+<div class="highlight"><pre><span></span><code>Order 101 events (same partition key = order_id):
+Partition 0: created → shipped → delivered ✓ Ordered
+
+Order 102 and 103 (different partitions):
+Partition 1: Order 102 created (timestamp 10:00:01)
+Partition 2: Order 103 created (timestamp 10:00:00)
+
+Consumer may see Order 103 before Order 102 ✗ Not globally ordered
 </code></pre></div>
 <p><strong>Best practice:</strong> Use partition keys (e.g., <code>user_id</code>, <code>order_id</code>) when event order matters.</p>
 <h2 id="producers-writing-events">Producers: Writing Events</h2>
 <h3 id="what-is-a-producer">What is a Producer?</h3>
 <p>A <strong>producer</strong> is an application that writes events to a Kafka topic.</p>
 <p><strong>Example: Python producer</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Configure producer</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="s1">'pkc-abc123.eu-west-2.aws.confluent.cloud:9092'</span><span class="p">,</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="s1">'security.protocol'</span><span class="p">:</span> <span class="s1">'SASL_SSL'</span><span class="p">,</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="s1">'sasl.mechanism'</span><span class="p">:</span> <span class="s1">'PLAIN'</span><span class="p">,</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="s1">'sasl.username'</span><span class="p">:</span> <span class="s1">'API_KEY'</span><span class="p">,</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="s1">'sasl.password'</span><span class="p">:</span> <span class="s1">'API_SECRET'</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">}</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="c1"># Produce an event</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>    <span class="s1">'customer_id'</span><span class="p">:</span> <span class="s1">'cust_456'</span><span class="p">,</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'created'</span><span class="p">,</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>    <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2026-02-20T10:00:00Z'</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="p">}</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>    <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">])</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>  <span class="c1"># Partition by order_id</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>    <span class="n">callback</span><span class="o">=</span><span class="n">delivery_report</span>  <span class="c1"># Confirm delivery</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="p">)</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># Wait for all messages to be sent</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="c1"># Configure producer</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="s1">'pkc-abc123.eu-west-2.aws.confluent.cloud:9092'</span><span class="p">,</span>
+    <span class="s1">'security.protocol'</span><span class="p">:</span> <span class="s1">'SASL_SSL'</span><span class="p">,</span>
+    <span class="s1">'sasl.mechanism'</span><span class="p">:</span> <span class="s1">'PLAIN'</span><span class="p">,</span>
+    <span class="s1">'sasl.username'</span><span class="p">:</span> <span class="s1">'API_KEY'</span><span class="p">,</span>
+    <span class="s1">'sasl.password'</span><span class="p">:</span> <span class="s1">'API_SECRET'</span>
+<span class="p">}</span>
+
+<span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+
+<span class="c1"># Produce an event</span>
+<span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+    <span class="s1">'customer_id'</span><span class="p">:</span> <span class="s1">'cust_456'</span><span class="p">,</span>
+    <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'created'</span><span class="p">,</span>
+    <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2026-02-20T10:00:00Z'</span>
+<span class="p">}</span>
+
+<span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+    <span class="n">topic</span><span class="o">=</span><span class="s1">'order-events'</span><span class="p">,</span>
+    <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">])</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>  <span class="c1"># Partition by order_id</span>
+    <span class="n">value</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span>
+    <span class="n">callback</span><span class="o">=</span><span class="n">delivery_report</span>  <span class="c1"># Confirm delivery</span>
+<span class="p">)</span>
+
+<span class="n">producer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># Wait for all messages to be sent</span>
 </code></pre></div>
 <h3 id="producer-guarantees">Producer Guarantees</h3>
 <p><strong>At-least-once delivery</strong> (default):
@@ -6807,62 +6809,62 @@
 - Idempotent producer + transactional writes
 - No duplicates, but slower</p>
 <p><strong>Configuration:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas to acknowledge</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry up to 10 times</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># Exactly-once semantics</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
+</p><div class="highlight"><pre><span></span><code><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'acks'</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>  <span class="c1"># Wait for all replicas to acknowledge</span>
+    <span class="s1">'retries'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Retry up to 10 times</span>
+    <span class="s1">'enable.idempotence'</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># Exactly-once semantics</span>
+<span class="p">}</span>
 </code></pre></div><p></p>
 <h2 id="consumers-reading-events">Consumers: Reading Events</h2>
 <h3 id="what-is-a-consumer">What is a Consumer?</h3>
 <p>A <strong>consumer</strong> is an application that reads events from a Kafka topic.</p>
 <p><strong>Example: Python consumer</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="s1">'pkc-abc123.eu-west-2.aws.confluent.cloud:9092'</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="s1">'group.id'</span><span class="p">:</span> <span class="s1">'snowflake-sink'</span><span class="p">,</span>  <span class="c1"># Consumer group</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="s1">'auto.offset.reset'</span><span class="p">:</span> <span class="s1">'earliest'</span>  <span class="c1"># Start from beginning</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">}</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">consumer</span><span class="o">.</span><span class="n">subscribe</span><span class="p">([</span><span class="s1">'order-events'</span><span class="p">])</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Poll for messages (1 second timeout)</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>    <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>        <span class="k">continue</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">error</span><span class="p">():</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">error</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>        <span class="k">continue</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>    <span class="c1"># Process event</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>    <span class="n">event</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received order </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>
-<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>    <span class="c1"># Commit offset (mark as processed)</span>
-<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>    <span class="n">consumer</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">confluent_kafka</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'bootstrap.servers'</span><span class="p">:</span> <span class="s1">'pkc-abc123.eu-west-2.aws.confluent.cloud:9092'</span><span class="p">,</span>
+    <span class="s1">'group.id'</span><span class="p">:</span> <span class="s1">'snowflake-sink'</span><span class="p">,</span>  <span class="c1"># Consumer group</span>
+    <span class="s1">'auto.offset.reset'</span><span class="p">:</span> <span class="s1">'earliest'</span>  <span class="c1"># Start from beginning</span>
+<span class="p">}</span>
+
+<span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+<span class="n">consumer</span><span class="o">.</span><span class="n">subscribe</span><span class="p">([</span><span class="s1">'order-events'</span><span class="p">])</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Poll for messages (1 second timeout)</span>
+
+    <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">error</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">error</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># Process event</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received order </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'order_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># Commit offset (mark as processed)</span>
+    <span class="n">consumer</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="offsets-tracking-progress">Offsets: Tracking Progress</h3>
 <p>An <strong>offset</strong> is the position of a consumer in a partition.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Partition 0: [0][1][2][3][4][5][6][7][8][9]
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>                        ↑
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>                  Consumer offset: 4
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>                  (Next message to read: 5)
+<div class="highlight"><pre><span></span><code>Partition 0: [0][1][2][3][4][5][6][7][8][9]
+                        ↑
+                  Consumer offset: 4
+                  (Next message to read: 5)
 </code></pre></div>
 <p><strong>Offset management:</strong></p>
 <p><strong>Auto-commit</strong> (default):
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'enable.auto.commit'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># Commit every 5 seconds</span>
+</p><div class="highlight"><pre><span></span><code><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'enable.auto.commit'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># Commit every 5 seconds</span>
 </code></pre></div><p></p>
 <p><strong>Manual commit</strong> (more control):
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'enable.auto.commit'</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Process message</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">process_event</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># Commit offset only after successful processing</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">consumer</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</p><div class="highlight"><pre><span></span><code><span class="n">conf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'enable.auto.commit'</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+<span class="c1"># Process message</span>
+<span class="n">process_event</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<span class="c1"># Commit offset only after successful processing</span>
+<span class="n">consumer</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </code></pre></div><p></p>
 <p><strong>Best practice:</strong> Use manual commit to avoid losing messages if consumer crashes mid-processing.</p>
 <h2 id="consumer-groups-load-balancing">Consumer Groups: Load Balancing</h2>
@@ -6872,58 +6874,58 @@
 - Each partition is consumed by exactly one consumer in the group
 - If a consumer fails, its partitions are reassigned to others</p>
 <h3 id="example-3-consumers-3-partitions">Example: 3 Consumers, 3 Partitions</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Topic: order-events (3 partitions)
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Consumer Group: snowflake-sink
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>┌──────────────┐       ┌──────────────┐       ┌──────────────┐
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>│ Consumer 1   │       │ Consumer 2   │       │ Consumer 3   │
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>│ reads        │       │ reads        │       │ reads        │
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>│ Partition 0  │       │ Partition 1  │       │ Partition 2  │
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>└──────────────┘       └──────────────┘       └──────────────┘
+<div class="highlight"><pre><span></span><code>Topic: order-events (3 partitions)
+
+Consumer Group: snowflake-sink
+
+┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+│ Consumer 1   │       │ Consumer 2   │       │ Consumer 3   │
+│ reads        │       │ reads        │       │ reads        │
+│ Partition 0  │       │ Partition 1  │       │ Partition 2  │
+└──────────────┘       └──────────────┘       └──────────────┘
 </code></pre></div>
 <p><strong>Benefits:</strong>
 - <strong>Parallel processing</strong> — 3 consumers = 3× throughput
 - <strong>Fault tolerance</strong> — If Consumer 1 crashes, Partition 0 is reassigned to Consumer 2 or 3</p>
 <h3 id="example-more-consumers-than-partitions">Example: More Consumers Than Partitions</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Topic: order-events (3 partitions)
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>Consumer Group: snowflake-sink (5 consumers)
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>┌──────────────┐       ┌──────────────┐       ┌──────────────┐
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>│ Consumer 1   │       │ Consumer 2   │       │ Consumer 3   │
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>│ Partition 0  │       │ Partition 1  │       │ Partition 2  │
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>└──────────────┘       └──────────────┘       └──────────────┘
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>┌──────────────┐       ┌──────────────┐
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>│ Consumer 4   │       │ Consumer 5   │
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>│ (idle)       │       │ (idle)       │
-<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>└──────────────┘       └──────────────┘
+<div class="highlight"><pre><span></span><code>Topic: order-events (3 partitions)
+
+Consumer Group: snowflake-sink (5 consumers)
+
+┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+│ Consumer 1   │       │ Consumer 2   │       │ Consumer 3   │
+│ Partition 0  │       │ Partition 1  │       │ Partition 2  │
+└──────────────┘       └──────────────┘       └──────────────┘
+
+┌──────────────┐       ┌──────────────┐
+│ Consumer 4   │       │ Consumer 5   │
+│ (idle)       │       │ (idle)       │
+└──────────────┘       └──────────────┘
 </code></pre></div>
 <p><strong>Result:</strong> Consumers 4 and 5 are idle. You can't have more active consumers than partitions.</p>
 <p><strong>Best practice:</strong> Number of consumers ≤ number of partitions for optimal utilisation.</p>
 <h3 id="multiple-consumer-groups">Multiple Consumer Groups</h3>
 <p>Different applications can read the same topic independently:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Topic: order-events
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>Consumer Group 1: snowflake-sink (writes to Snowflake)
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>Consumer Group 2: analytics-engine (real-time aggregations)
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>Consumer Group 3: fraud-detector (ML model scoring)
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>Each group maintains its own offsets independently.
+<div class="highlight"><pre><span></span><code>Topic: order-events
+
+Consumer Group 1: snowflake-sink (writes to Snowflake)
+Consumer Group 2: analytics-engine (real-time aggregations)
+Consumer Group 3: fraud-detector (ML model scoring)
+
+Each group maintains its own offsets independently.
 </code></pre></div>
 <h2 id="schema-registry-data-contracts">Schema Registry: Data Contracts</h2>
 <h3 id="why-schema-registry">Why Schema Registry?</h3>
 <p><strong>Problem:</strong> Producers and consumers need to agree on event structure.</p>
 <p><strong>Without Schema Registry:</strong>
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Producer changes event structure</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span> <span class="s1">'total'</span><span class="p">:</span> <span class="mf">99.99</span><span class="p">})</span>  <span class="c1"># Old format</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span> <span class="s1">'total_amount'</span><span class="p">:</span> <span class="mf">120.50</span><span class="p">})</span>  <span class="c1"># New format</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="c1"># Consumer breaks on new format</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">event</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'total'</span><span class="p">])</span>  <span class="c1"># KeyError: 'total' (field renamed!)</span>
+</p><div class="highlight"><pre><span></span><code><span class="c1"># Producer changes event structure</span>
+<span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span> <span class="s1">'total'</span><span class="p">:</span> <span class="mf">99.99</span><span class="p">})</span>  <span class="c1"># Old format</span>
+
+<span class="n">producer</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">'order_id'</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span> <span class="s1">'total_amount'</span><span class="p">:</span> <span class="mf">120.50</span><span class="p">})</span>  <span class="c1"># New format</span>
+
+<span class="c1"># Consumer breaks on new format</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'total'</span><span class="p">])</span>  <span class="c1"># KeyError: 'total' (field renamed!)</span>
 </code></pre></div><p></p>
 <p><strong>With Schema Registry:</strong>
 - Schemas are versioned and stored centrally
@@ -6933,18 +6935,18 @@
 <h3 id="schema-formats">Schema Formats</h3>
 <h4 id="avro-recommended">Avro (Recommended)</h4>
 <p><strong>Binary format, compact, schema evolution support</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">{</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"record"</span><span class="p">,</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Order"</span><span class="p">,</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="nt">"namespace"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.company.orders"</span><span class="p">,</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">},</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"total"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">},</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created_at"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">,</span><span class="w"> </span><span class="nt">"logicalType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timestamp-millis"</span><span class="p">}</span>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"record"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Order"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"namespace"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.company.orders"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"total"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created_at"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">,</span><span class="w"> </span><span class="nt">"logicalType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timestamp-millis"</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Pros:</strong>
 - Compact (binary encoding, ~40% smaller than JSON)
@@ -6956,15 +6958,15 @@
 <p><strong>Use when:</strong> Production workloads with high throughput</p>
 <h4 id="protobuf">Protobuf</h4>
 <p><strong>Google's binary format, similar to Avro</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">syntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"proto3"</span><span class="p">;</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="kd">message</span><span class="w"> </span><span class="nc">Order</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="kt">int64</span><span class="w"> </span><span class="na">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="na">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="kt">int64</span><span class="w"> </span><span class="na">created_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">syntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"proto3"</span><span class="p">;</span>
+
+<span class="kd">message</span><span class="w"> </span><span class="nc">Order</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int64</span><span class="w"> </span><span class="na">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="na">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int64</span><span class="w"> </span><span class="na">created_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Pros:</strong>
 - Backward/forward compatible
@@ -6976,18 +6978,18 @@
 <p><strong>Use when:</strong> Already using Protobuf elsewhere, need code generation</p>
 <h4 id="json-schema">JSON Schema</h4>
 <p><strong>JSON with schema validation</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="nt">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">},</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="nt">"customer_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">    </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">},</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">    </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"date-time"</span><span class="p">}</span>
-<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">  </span><span class="nt">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"order_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"customer_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"total"</span><span class="p">]</span>
-<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"customer_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"date-time"</span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"order_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"customer_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"total"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Pros:</strong>
 - Human-readable
@@ -7000,22 +7002,22 @@
 <p><strong>Use when:</strong> Development/debugging, low throughput, human inspection required</p>
 <h3 id="schema-evolution">Schema Evolution</h3>
 <p><strong>Backward compatibility:</strong> New consumers can read old events</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>// Old schema (v1)
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>{
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>  "fields": [
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    {"name": "order_id", "type": "long"},
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    {"name": "total", "type": "double"}
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>  ]
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>}
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>// New schema (v2) - backward compatible
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>{
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>  "fields": [
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>    {"name": "order_id", "type": "long"},
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>    {"name": "total", "type": "double"},
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>    {"name": "currency", "type": "string", "default": "GBP"}  // New field with default
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>  ]
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>}
+<div class="highlight"><pre><span></span><code>// Old schema (v1)
+{
+  "fields": [
+    {"name": "order_id", "type": "long"},
+    {"name": "total", "type": "double"}
+  ]
+}
+
+// New schema (v2) - backward compatible
+{
+  "fields": [
+    {"name": "order_id", "type": "long"},
+    {"name": "total", "type": "double"},
+    {"name": "currency", "type": "string", "default": "GBP"}  // New field with default
+  ]
+}
 </code></pre></div>
 <p><strong>Forward compatibility:</strong> Old consumers can read new events (new fields ignored)</p>
 <p><strong>Schema Registry enforces these rules</strong>, preventing breaking changes.</p>
@@ -7031,22 +7033,22 @@
 - Elasticsearch
 - S3 (data lake)</p>
 <h3 id="example-snowflake-sink-connector">Example: Snowflake Sink Connector</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p">{</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"snowflake-sink"</span><span class="p">,</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="nt">"connector.class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.snowflake.kafka.connector.SnowflakeSinkConnector"</span><span class="p">,</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="nt">"topics"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order-events"</span><span class="p">,</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="nt">"snowflake.url.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="p">,</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="nt">"snowflake.user.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span><span class="p">,</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">    </span><span class="nt">"snowflake.private.key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">    </span><span class="nt">"snowflake.database.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STREAMING"</span><span class="p">,</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">    </span><span class="nt">"snowflake.schema.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PUBLIC"</span><span class="p">,</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">    </span><span class="nt">"buffer.count.records"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000"</span><span class="p">,</span>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">    </span><span class="nt">"buffer.flush.time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"60"</span><span class="p">,</span>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">    </span><span class="nt">"key.converter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"org.apache.kafka.connect.storage.StringConverter"</span><span class="p">,</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="w">    </span><span class="nt">"value.converter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"io.confluent.connect.avro.AvroConverter"</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"snowflake-sink"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"connector.class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.snowflake.kafka.connector.SnowflakeSinkConnector"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"topics"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order-events"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"snowflake.url.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-account.snowflakecomputing.com"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"snowflake.user.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_KAFKA_CONNECTOR"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"snowflake.private.key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"snowflake.database.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STREAMING"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"snowflake.schema.name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PUBLIC"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"buffer.count.records"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"buffer.flush.time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"60"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"key.converter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"org.apache.kafka.connect.storage.StringConverter"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"value.converter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"io.confluent.connect.avro.AvroConverter"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Benefits:</strong>
 - No custom code needed
@@ -7174,6 +7176,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7217,7 +7221,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

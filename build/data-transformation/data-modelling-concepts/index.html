@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6517,23 +6519,23 @@ tables that are performant for analytics queries and intuitive for BI tool users
 <strong>dimensions</strong> — arranged in a pattern called a <strong>star schema</strong>. This approach
 was popularised by Ralph Kimball and remains the standard for analytics
 warehouses.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    ┌──────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    │  dim_currencies  │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                    │                  │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                    │  currency_code   │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                    │  currency_name   │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                    │  symbol          │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                    └────────┬─────────┘
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                             │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>┌──────────────┐    ┌────────┴──────────┐    ┌──────────────┐
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│ dim_products  │    │ fct_exchange_rates│    │  dim_dates   │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│               │────│                  │────│              │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│ product_id    │    │ base_currency    │    │ date_key     │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│ product_name  │    │ target_currency  │    │ day_of_week  │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│ category      │    │ rate             │    │ month_name   │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│ price         │    │ rate_date        │    │ quarter      │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>└──────────────┘    │ loaded_at        │    │ is_weekend   │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                    └───────────────────┘    └──────────────┘
+<div class="highlight"><pre><span></span><code>                    ┌──────────────────┐
+                    │  dim_currencies  │
+                    │                  │
+                    │  currency_code   │
+                    │  currency_name   │
+                    │  symbol          │
+                    └────────┬─────────┘
+                             │
+┌──────────────┐    ┌────────┴──────────┐    ┌──────────────┐
+│ dim_products  │    │ fct_exchange_rates│    │  dim_dates   │
+│               │────│                  │────│              │
+│ product_id    │    │ base_currency    │    │ date_key     │
+│ product_name  │    │ target_currency  │    │ day_of_week  │
+│ category      │    │ rate             │    │ month_name   │
+│ price         │    │ rate_date        │    │ quarter      │
+└──────────────┘    │ loaded_at        │    │ is_weekend   │
+                    └───────────────────┘    └──────────────┘
 </code></pre></div>
 <p>The fact table sits at the centre. Dimension tables surround it like points of a
 star — hence the name.</p>
@@ -6688,9 +6690,9 @@ query results.</p>
 <h3 id="star-schema">Star Schema</h3>
 <p>Dimensions connect directly to the fact table. Denormalised — dimension tables
 may contain redundant data.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>dim_customer ──── fct_orders ──── dim_product
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                      │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                  dim_date
+<div class="highlight"><pre><span></span><code>dim_customer ──── fct_orders ──── dim_product
+                      │
+                  dim_date
 </code></pre></div>
 <p><strong>Advantages</strong>: Simpler queries (fewer joins), better query performance,
 easier for BI tools to navigate.</p>
@@ -6698,9 +6700,9 @@ easier for BI tools to navigate.</p>
 <h3 id="snowflake-schema">Snowflake Schema</h3>
 <p>Dimensions are normalised into sub-dimensions. For example, <code>dim_product</code> links
 to <code>dim_category</code>, which links to <code>dim_department</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>dim_category ── dim_product ── fct_orders ── dim_customer ── dim_region
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                                   │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>                               dim_date
+<div class="highlight"><pre><span></span><code>dim_category ── dim_product ── fct_orders ── dim_customer ── dim_region
+                                   │
+                               dim_date
 </code></pre></div>
 <p><strong>Advantages</strong>: Less data redundancy, cleaner for data stewards.</p>
 <p><strong>Disadvantage</strong>: More joins, slower queries, harder for BI tools.</p>
@@ -6751,16 +6753,16 @@ metrics will be incorrect.</p>
 <p>If your grain is "one order" but you accidentally join to a table that creates
 multiple rows per order (e.g. order lines), your aggregates will be inflated.
 Always document the grain in your dbt model YAML:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="no">Daily exchange rates from base currency to target currencies.</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">      </span><span class="no">Grain: one row per base_currency + target_currency + rate_date.</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"The</span><span class="nv"> </span><span class="s">date</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">exchange</span><span class="nv"> </span><span class="s">rate."</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<div class="highlight"><pre><span></span><code><span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fct_exchange_rates</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Daily exchange rates from base currency to target currencies.</span>
+<span class="w">      </span><span class="no">Grain: one row per base_currency + target_currency + rate_date.</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate_date</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"The</span><span class="nv"> </span><span class="s">date</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">exchange</span><span class="nv"> </span><span class="s">rate."</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
 </code></pre></div>
 <h2 id="slowly-changing-dimensions">Slowly Changing Dimensions</h2>
 <p>Dimension attributes change over time. A product's price increases. A customer
@@ -6865,15 +6867,15 @@ when they placed the order?").</p>
 contains <code>valid_from</code> and <code>valid_to</code> columns. The intermediate model
 <code>int_products__current</code> extracts the current state (where <code>is_current = true</code>)
 for the <code>dim_products</code> dimension:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- models/intermediate/int_products__current.sql</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">select</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">product_id</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">product_name</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">category</span><span class="p">,</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">price</span><span class="p">,</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">valid_from</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">current_since</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__products'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">where</span><span class="w"> </span><span class="n">is_current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- models/intermediate/int_products__current.sql</span>
+<span class="k">select</span>
+<span class="w">    </span><span class="n">product_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">product_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">category</span><span class="p">,</span>
+<span class="w">    </span><span class="n">price</span><span class="p">,</span>
+<span class="w">    </span><span class="n">valid_from</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">current_since</span>
+<span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__products'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">where</span><span class="w"> </span><span class="n">is_current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
 </code></pre></div>
 <p>See <a href="../6-intermediate-models/">Intermediate Models</a> for the full implementation.</p>
 <h2 id="mapping-to-dbt-layers">Mapping to dbt Layers</h2>
@@ -6914,17 +6916,17 @@ for the <code>dim_products</code> dimension:</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Source Data          Staging              Intermediate          Marts
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>──────────          ───────              ────────────          ─────
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>exchange_rates  ──▶ stg_snowpipe__       (none needed)   ──▶  fct_exchange_rates
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>                    exchange_rates
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>products        ──▶ stg_dlt__products ──▶ int_products__  ──▶  dim_products
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>                                          current
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>contacts        ──▶ stg_airbyte__    ──▶ int_contacts__  ──▶  fct_contacts
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>                    contacts              enriched
+<div class="highlight"><pre><span></span><code>Source Data          Staging              Intermediate          Marts
+──────────          ───────              ────────────          ─────
+
+exchange_rates  ──▶ stg_snowpipe__       (none needed)   ──▶  fct_exchange_rates
+                    exchange_rates
+
+products        ──▶ stg_dlt__products ──▶ int_products__  ──▶  dim_products
+                                          current
+
+contacts        ──▶ stg_airbyte__    ──▶ int_contacts__  ──▶  fct_contacts
+                    contacts              enriched
 </code></pre></div>
 <h2 id="conformed-dimensions">Conformed Dimensions</h2>
 <p>When multiple fact tables share the same dimension (e.g. <code>dim_currencies</code> is
@@ -7035,6 +7037,8 @@ fact table — that leads to inconsistent reporting.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7078,7 +7082,7 @@ fact table — that leads to inconsistent reporting.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

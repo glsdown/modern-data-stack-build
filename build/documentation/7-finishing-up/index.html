@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6133,36 +6135,36 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>You have built a unified documentation site that aggregates content from all your platform repositories into a single, searchable site. This final page verifies everything works end-to-end and provides guidance for ongoing maintenance.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    COMPLETE DOCUMENTATION SETUP                          │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Source Repositories              Central Repo          Live Site        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────────────             ────────────          ─────────       │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  terraform/docs/                                                        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  ├── index.md            ──┐                                            │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  ├── getting-started.md    │                                            │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  ├── conventions.md        │   technical-documentation/                 │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  └── runbooks/             ├──▶ mkdocs.yml              GitHub Pages   │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                            │    + multirepo plugin  ──▶ Unified site   │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  data-pipelines/docs/      │    + Material theme        + Search       │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  ├── index.md            ──┤    + CI/CD workflows       + All repos    │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ├── getting-started.md    │                                            │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ├── conventions.md        │                            ┌────────────┐ │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  └── runbooks/             │                            │ dbt Docs   │ │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                            │                            │ (linked)   │ │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  dbt-transform/docs/       │                            └────────────┘ │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  ├── index.md            ──┘                                            │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  ├── getting-started.md                                                 │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  ├── conventions.md                                                     │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  └── runbooks/                                                          │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                         │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  CI: Reusable workflow validates each repo's docs on PRs                │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  CD: Deploys unified site on merge (any repo triggers rebuild)          │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  Skill: Shared Claude skill writes docs in correct repo                 │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│                                                                         │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    COMPLETE DOCUMENTATION SETUP                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Source Repositories              Central Repo          Live Site        │
+│  ────────────────────             ────────────          ─────────       │
+│                                                                         │
+│  terraform/docs/                                                        │
+│  ├── index.md            ──┐                                            │
+│  ├── getting-started.md    │                                            │
+│  ├── conventions.md        │   technical-documentation/                 │
+│  └── runbooks/             ├──▶ mkdocs.yml              GitHub Pages   │
+│                            │    + multirepo plugin  ──▶ Unified site   │
+│  data-pipelines/docs/      │    + Material theme        + Search       │
+│  ├── index.md            ──┤    + CI/CD workflows       + All repos    │
+│  ├── getting-started.md    │                                            │
+│  ├── conventions.md        │                            ┌────────────┐ │
+│  └── runbooks/             │                            │ dbt Docs   │ │
+│                            │                            │ (linked)   │ │
+│  dbt-transform/docs/       │                            └────────────┘ │
+│  ├── index.md            ──┘                                            │
+│  ├── getting-started.md                                                 │
+│  ├── conventions.md                                                     │
+│  └── runbooks/                                                          │
+│                                                                         │
+│  CI: Reusable workflow validates each repo's docs on PRs                │
+│  CD: Deploys unified site on merge (any repo triggers rebuild)          │
+│  Skill: Shared Claude skill writes docs in correct repo                 │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="verification-checklist">Verification Checklist</h2>
 <h3 id="central-repository">Central Repository</h3>
@@ -6175,8 +6177,8 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> <code>data-stack.code-workspace</code> file includes all repositories</li>
 </ul>
 <p>Verify the unified site builds:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>~/src/technical-documentation
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/src/technical-documentation
+uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </code></pre></div>
 <h3 id="source-repositories">Source Repositories</h3>
 <p>For each repository (terraform, data-pipelines, dbt-transform):</p>
@@ -6187,9 +6189,9 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> MkDocs dependencies added (<code>uv add --dev mkdocs mkdocs-material mkdocs-glightbox</code>)</li>
 </ul>
 <p>Verify each repository builds independently:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>~/src/terraform/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>~/src/data-pipelines/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">cd</span><span class="w"> </span>~/src/dbt-transform/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/src/terraform/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<span class="nb">cd</span><span class="w"> </span>~/src/data-pipelines/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<span class="nb">cd</span><span class="w"> </span>~/src/dbt-transform/docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </code></pre></div>
 <h3 id="cicd">CI/CD</h3>
 <ul class="task-list">
@@ -6215,8 +6217,8 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Workspace file gives Claude access to all repositories</li>
 </ul>
 <p>Test the skill:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>/add-documentation-page Create a runbook for adding a new dlt pipeline
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>source in the data-pipelines repository
+<div class="highlight"><pre><span></span><code>/add-documentation-page Create a runbook for adding a new dlt pipeline
+source in the data-pipelines repository
 </code></pre></div>
 <p>Verify Claude writes the file to <code>data-pipelines/docs/runbooks/</code> and follows the template.</p>
 <h2 id="cost-summary">Cost Summary</h2>
@@ -6309,12 +6311,12 @@
 </ol>
 <h3 id="when-upgrading-mkdocs">When Upgrading MkDocs</h3>
 <p>Update dependencies in the central repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>~/src/technical-documentation
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>mkdocs@latest<span class="w"> </span>mkdocs-material@latest
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/src/technical-documentation
+uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>mkdocs@latest<span class="w"> </span>mkdocs-material@latest
 </code></pre></div>
 <p>Then update each source repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>~/src/terraform
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>mkdocs@latest<span class="w"> </span>mkdocs-material@latest
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/src/terraform
+uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>mkdocs@latest<span class="w"> </span>mkdocs-material@latest
 </code></pre></div>
 <p>The reusable CI workflow ensures all repositories use the same build process, so version mismatches between local preview and the unified site are rare.</p>
 <h2 id="extending-to-additional-repositories">Extending to Additional Repositories</h2>
@@ -6322,8 +6324,8 @@
 <ol>
 <li>Add <code>docs/</code> to the repository following the same structure</li>
 <li>Add an <code>!import</code> to the central <code>mkdocs.yml</code>:
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ML Pipelines</span><span class="p">:</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'!import</span><span class="nv"> </span><span class="s">https://github.com/&lt;your-org&gt;/ml-pipelines?branch=main&amp;docs_dir=docs'</span>
+   <div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ML Pipelines</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'!import</span><span class="nv"> </span><span class="s">https://github.com/&lt;your-org&gt;/ml-pipelines?branch=main&amp;docs_dir=docs'</span>
 </code></pre></div></li>
 <li>Add CI and dispatch workflows</li>
 <li>The Claude skill already handles arbitrary repositories - update its write location list</li>
@@ -6394,6 +6396,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6437,7 +6441,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

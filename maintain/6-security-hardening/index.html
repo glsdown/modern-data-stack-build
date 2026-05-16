@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6437,27 +6439,27 @@
 <ol>
 <li>
 <p><strong>Generate a new key pair:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>new_key.pem<span class="w"> </span>-nocrypt
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>new_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>new_key.pub
+<div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>new_key.pem<span class="w"> </span>-nocrypt
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>new_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>new_key.pub
 </code></pre></div>
 </li>
 <li>
 <p><strong>Set the new key as the secondary key:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key content&gt;'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key content&gt;'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Update AWS Secrets Manager</strong> with the new private key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Read existing secret, update the private_key field</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s2">      \"account\": \"YOUR_ACCOUNT\",</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s2">      \"user\": \"SVC_DLT\",</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s2">      \"private_key\": \"</span><span class="k">$(</span>cat<span class="w"> </span>new_key.pem<span class="k">)</span><span class="s2">\"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># Read existing secret, update the private_key field</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
+<span class="s2">      \"account\": \"YOUR_ACCOUNT\",</span>
+<span class="s2">      \"user\": \"SVC_DLT\",</span>
+<span class="s2">      \"private_key\": \"</span><span class="k">$(</span>cat<span class="w"> </span>new_key.pem<span class="k">)</span><span class="s2">\"</span>
+<span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </li>
 <li>
@@ -6465,16 +6467,16 @@
 </li>
 <li>
 <p><strong>Promote the new key to primary and remove the old key:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">-- Copy key 2 to key 1</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key content&gt;'</span><span class="p">;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">-- Remove key 2</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="n">UNSET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY_2</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="c1">-- Copy key 2 to key 1</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key content&gt;'</span><span class="p">;</span>
+<span class="c1">-- Remove key 2</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="n">UNSET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY_2</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Delete local key files:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>rm<span class="w"> </span>new_key.pem<span class="w"> </span>new_key.pub
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>new_key.pem<span class="w"> </span>new_key.pub
 </code></pre></div>
 </li>
 </ol>
@@ -6486,31 +6488,31 @@
 <h3 id="2-review-user-access">2. Review User Access</h3>
 <p>Run a quarterly access review to ensure users have appropriate permissions.</p>
 <h4 id="list-all-users-and-roles">List All Users and Roles</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1">-- All users with their default roles</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">SELECT</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">name</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">login_name</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">display_name</span><span class="p">,</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="n">default_role</span><span class="p">,</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="n">default_warehouse</span><span class="p">,</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="n">disabled</span><span class="p">,</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="n">last_success_login</span><span class="p">,</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="n">created_on</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="n">NULLS</span><span class="w"> </span><span class="k">LAST</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+
+<span class="c1">-- All users with their default roles</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">login_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">display_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">default_role</span><span class="p">,</span>
+<span class="w">    </span><span class="n">default_warehouse</span><span class="p">,</span>
+<span class="w">    </span><span class="n">disabled</span><span class="p">,</span>
+<span class="w">    </span><span class="n">last_success_login</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_on</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="n">NULLS</span><span class="w"> </span><span class="k">LAST</span><span class="p">;</span>
 </code></pre></div>
 <h4 id="find-inactive-users">Find Inactive Users</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Users who haven't logged in for 90+ days</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="n">default_role</span><span class="p">,</span><span class="w"> </span><span class="n">last_success_login</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">disabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'false'</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">last_success_login</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">()))</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="k">ASC</span><span class="w"> </span><span class="n">NULLS</span><span class="w"> </span><span class="k">FIRST</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Users who haven't logged in for 90+ days</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="n">default_role</span><span class="p">,</span><span class="w"> </span><span class="n">last_success_login</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">disabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'false'</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">last_success_login</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">()))</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">last_success_login</span><span class="w"> </span><span class="k">ASC</span><span class="w"> </span><span class="n">NULLS</span><span class="w"> </span><span class="k">FIRST</span><span class="p">;</span>
 </code></pre></div>
 <p>For each inactive user, determine whether to:</p>
 <ul>
@@ -6518,15 +6520,15 @@
 <li><strong>Remove</strong> the user via Terraform (permanent)</li>
 </ul>
 <h4 id="review-role-grants">Review Role Grants</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- All role grants to users</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">grantee_name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="k">role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">granted_role</span><span class="p">,</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="n">granted_by</span><span class="p">,</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="n">created_on</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">GRANTS_TO_USERS</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">grantee_name</span><span class="p">,</span><span class="w"> </span><span class="k">role</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- All role grants to users</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">grantee_name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">granted_role</span><span class="p">,</span>
+<span class="w">    </span><span class="n">granted_by</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_on</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">GRANTS_TO_USERS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">grantee_name</span><span class="p">,</span><span class="w"> </span><span class="k">role</span><span class="p">;</span>
 </code></pre></div>
 <p>Check that:</p>
 <ul>
@@ -6536,14 +6538,14 @@
 </ul>
 <h3 id="3-review-network-policies">3. Review Network Policies</h3>
 <h4 id="check-current-policies">Check Current Policies</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICIES</span><span class="p">;</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">-- Check which users are assigned to which policy</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">FROM</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">POLICY_REFERENCES</span><span class="p">(</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">POLICY_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'&lt;POLICY_NAME&gt;'</span><span class="p">,</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="n">REF_ENTITY_DOMAIN</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'USER'</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICIES</span><span class="p">;</span>
+
+<span class="c1">-- Check which users are assigned to which policy</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">POLICY_REFERENCES</span><span class="p">(</span>
+<span class="w">    </span><span class="n">POLICY_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'&lt;POLICY_NAME&gt;'</span><span class="p">,</span>
+<span class="w">    </span><span class="n">REF_ENTITY_DOMAIN</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'USER'</span>
+<span class="p">));</span>
 </code></pre></div>
 <h4 id="ensure-all-service-accounts-have-policies">Ensure All Service Accounts Have Policies</h4>
 <p>Service accounts should be restricted to known IP ranges:</p>
@@ -6580,83 +6582,83 @@
 <p>Update <code>snowflake/config/network_policies.auto.tfvars</code> if any service accounts lack network policy assignments.</p>
 <h3 id="4-audit-snowflake-activity">4. Audit Snowflake Activity</h3>
 <h4 id="review-login-history">Review Login History</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- Failed login attempts in the last 7 days</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="n">client_ip</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="n">reported_client_type</span><span class="p">,</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="n">error_code</span><span class="p">,</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="n">event_timestamp</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">is_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NO'</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Failed login attempts in the last 7 days</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">client_ip</span><span class="p">,</span>
+<span class="w">    </span><span class="n">reported_client_type</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_code</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">event_timestamp</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">is_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NO'</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <h4 id="review-privilege-grants">Review Privilege Grants</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- Recent privilege changes</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="n">grant_option</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="n">grantee_name</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="n">granted_by</span><span class="p">,</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="n">privilege</span><span class="p">,</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="n">table_catalog</span><span class="p">,</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="n">table_schema</span><span class="p">,</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">object_name</span><span class="p">,</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="n">created_on</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">GRANTS_TO_ROLES</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">created_on</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_on</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Recent privilege changes</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">grant_option</span><span class="p">,</span>
+<span class="w">    </span><span class="n">grantee_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">granted_by</span><span class="p">,</span>
+<span class="w">    </span><span class="n">privilege</span><span class="p">,</span>
+<span class="w">    </span><span class="n">table_catalog</span><span class="p">,</span>
+<span class="w">    </span><span class="n">table_schema</span><span class="p">,</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">object_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_on</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">GRANTS_TO_ROLES</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">created_on</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_on</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
 </code></pre></div>
 <h4 id="review-sensitive-operations">Review Sensitive Operations</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- Account-level changes (roles, users, integrations)</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="n">role_name</span><span class="p">,</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="n">start_time</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">QUERY_HISTORY</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE USER%'</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%ALTER USER%'</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%DROP USER%'</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE ROLE%'</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%GRANT%ACCOUNTADMIN%'</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE INTEGRATION%'</span><span class="p">)</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Account-level changes (roles, users, integrations)</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">role_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">QUERY_HISTORY</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE USER%'</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%ALTER USER%'</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%DROP USER%'</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE ROLE%'</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%GRANT%ACCOUNTADMIN%'</span>
+<span class="w">       </span><span class="k">OR</span><span class="w"> </span><span class="n">query_text</span><span class="w"> </span><span class="k">ILIKE</span><span class="w"> </span><span class="s1">'%CREATE INTEGRATION%'</span><span class="p">)</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="5-harden-aws-configuration">5. Harden AWS Configuration</h3>
 <h4 id="review-secrets-manager-access">Review Secrets Manager Access</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># List all secrets</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Check who accessed secrets recently</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>aws<span class="w"> </span>cloudtrail<span class="w"> </span>lookup-events<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span>--lookup-attributes<span class="w"> </span><span class="nv">AttributeKey</span><span class="o">=</span>EventName,AttributeValue<span class="o">=</span>GetSecretValue<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span>--start-time<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>-v-7d<span class="w"> </span><span class="s1">'+%Y-%m-%dT%H:%M:%SZ'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># List all secrets</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># Check who accessed secrets recently</span>
+aws<span class="w"> </span>cloudtrail<span class="w"> </span>lookup-events<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--lookup-attributes<span class="w"> </span><span class="nv">AttributeKey</span><span class="o">=</span>EventName,AttributeValue<span class="o">=</span>GetSecretValue<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--start-time<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>-v-7d<span class="w"> </span><span class="s1">'+%Y-%m-%dT%H:%M:%SZ'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h4 id="review-iam-role-usage">Review IAM Role Usage</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Check recent role assumptions</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>aws<span class="w"> </span>cloudtrail<span class="w"> </span>lookup-events<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span>--lookup-attributes<span class="w"> </span><span class="nv">AttributeKey</span><span class="o">=</span>EventName,AttributeValue<span class="o">=</span>AssumeRole<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span>--start-time<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>-v-7d<span class="w"> </span><span class="s1">'+%Y-%m-%dT%H:%M:%SZ'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># Check recent role assumptions</span>
+aws<span class="w"> </span>cloudtrail<span class="w"> </span>lookup-events<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--lookup-attributes<span class="w"> </span><span class="nv">AttributeKey</span><span class="o">=</span>EventName,AttributeValue<span class="o">=</span>AssumeRole<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--start-time<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>-v-7d<span class="w"> </span><span class="s1">'+%Y-%m-%dT%H:%M:%SZ'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="6-enable-mfa-for-human-users">6. Enable MFA for Human Users</h3>
 <p>Ensure all human Snowflake users have MFA enabled:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">-- Check MFA status</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="n">has_mfa_token</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_%'</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">has_mfa_token</span><span class="w"> </span><span class="k">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check MFA status</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="n">has_mfa_token</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">deleted_on</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_%'</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">has_mfa_token</span><span class="w"> </span><span class="k">ASC</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
 </code></pre></div>
 <p>For users without MFA, require them to enable it at next login:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="o">&lt;</span><span class="n">USERNAME</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">MINS_TO_BYPASS_MFA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="o">&lt;</span><span class="n">USERNAME</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">MINS_TO_BYPASS_MFA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="verification">Verification</h2>
 <ul class="task-list">
@@ -6675,9 +6677,9 @@
 <li><strong>Network policy too restrictive</strong> - modify the policy via Snowflake UI or SQL using an unaffected admin account</li>
 <li>
 <p><strong>Key rotation broke a pipeline</strong> - restore the previous key from the Secrets Manager version history:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secret-version-ids<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secret-version-ids<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </li>
 </ol>
@@ -6747,6 +6749,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6790,7 +6794,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

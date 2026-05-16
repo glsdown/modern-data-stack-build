@@ -39,10 +39,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5907,43 +5909,43 @@
 <p>There is a skill available to help with adding new pipelines - <code>add-dlt-pipeline</code>.</p>
 <hr>
 <h2 id="repository-structure">Repository Structure</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>data-pipelines/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── sources/                    # dlt source definitions (extraction logic)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── __init__.py
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── currencies/
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   │   ├── __init__.py
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   │   └── source.py
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── exchange_rates/
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   │   ├── __init__.py
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   │   └── source.py
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── products/
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   │   ├── __init__.py
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   │   └── source.py
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   └── hubspot/
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│       ├── __init__.py
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│       └── source.py
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>├── pipelines/                  # dlt pipeline configurations
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   ├── __init__.py
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   ├── currencies.py
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   ├── exchange_rates.py
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   ├── products.py
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   └── hubspot.py
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>├── flows/                      # Prefect flow definitions (orchestration)
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── __init__.py
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   ├── currencies.py
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   ├── exchange_rates.py
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│   ├── products.py
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   └── hubspot.py
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>├── utils/                      # Shared utilities
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ├── __init__.py
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   └── vault_provider.py       # AWS Secrets Manager provider for dlt
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>├── .dlt/
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│   ├── config.toml             # dlt runtime configuration
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   └── secrets.toml            # Local credentials (gitignored)
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>├── prefect.yaml                # Prefect deployment configuration
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>├── pyproject.toml              # Dependencies (managed by uv)
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>├── .envrc.example              # Template for local environment
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>└── .github/workflows/          # CI/CD for deploying flows
+<div class="highlight"><pre><span></span><code>data-pipelines/
+├── sources/                    # dlt source definitions (extraction logic)
+│   ├── __init__.py
+│   ├── currencies/
+│   │   ├── __init__.py
+│   │   └── source.py
+│   ├── exchange_rates/
+│   │   ├── __init__.py
+│   │   └── source.py
+│   ├── products/
+│   │   ├── __init__.py
+│   │   └── source.py
+│   └── hubspot/
+│       ├── __init__.py
+│       └── source.py
+├── pipelines/                  # dlt pipeline configurations
+│   ├── __init__.py
+│   ├── currencies.py
+│   ├── exchange_rates.py
+│   ├── products.py
+│   └── hubspot.py
+├── flows/                      # Prefect flow definitions (orchestration)
+│   ├── __init__.py
+│   ├── currencies.py
+│   ├── exchange_rates.py
+│   ├── products.py
+│   └── hubspot.py
+├── utils/                      # Shared utilities
+│   ├── __init__.py
+│   └── vault_provider.py       # AWS Secrets Manager provider for dlt
+├── .dlt/
+│   ├── config.toml             # dlt runtime configuration
+│   └── secrets.toml            # Local credentials (gitignored)
+├── prefect.yaml                # Prefect deployment configuration
+├── pyproject.toml              # Dependencies (managed by uv)
+├── .envrc.example              # Template for local environment
+└── .github/workflows/          # CI/CD for deploying flows
 </code></pre></div>
 <hr>
 <h2 id="three-layer-architecture">Three-Layer Architecture</h2>
@@ -5978,15 +5980,15 @@
 <h2 id="key-conventions">Key Conventions</h2>
 <h3 id="source-pattern">Source Pattern</h3>
 <p>Each source is a Python package under <code>sources/</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"</span><span class="si">{source_name}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">source_name</span><span class="p">():</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="sd">"""Extract data from Source Name."""</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="n">resource_name</span><span class="p">()</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"</span><span class="si">{disposition}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">resource_name</span><span class="p">():</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="sd">"""Fetch data."""</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">yield</span> <span class="n">data</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"</span><span class="si">{source_name}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">source_name</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Extract data from Source Name."""</span>
+    <span class="k">return</span> <span class="n">resource_name</span><span class="p">()</span>
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"</span><span class="si">{disposition}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">resource_name</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Fetch data."""</span>
+    <span class="k">yield</span> <span class="n">data</span>
 </code></pre></div>
 <ul>
 <li>Use <code>@dlt.source(section=)</code> to group configuration in <code>.dlt/secrets.toml</code></li>
@@ -5995,13 +5997,13 @@
 </ul>
 <h3 id="pipeline-pattern">Pipeline Pattern</h3>
 <p>Each pipeline configures destination and dataset:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"</span><span class="si">{name}</span><span class="s2">"</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"</span><span class="si">{SCHEMA_NAME}</span><span class="s2">"</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"</span><span class="si">{name}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"</span><span class="si">{SCHEMA_NAME}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">())</span>
 </code></pre></div>
 <ul>
 <li>Use DuckDB for local testing via <code>DLT__DESTINATION=duckdb</code> environment variable</li>
@@ -6009,14 +6011,14 @@
 </ul>
 <h3 id="flow-pattern">Flow Pattern</h3>
 <p>Each flow wraps pipeline execution in Prefect tasks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">():</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.name</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_name_pipeline</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">return</span> <span class="n">run_name_pipeline</span><span class="p">()</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"pipeline-name"</span><span class="p">)</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">pipeline_flow</span><span class="p">():</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">run_pipeline</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.name</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_name_pipeline</span>
+    <span class="k">return</span> <span class="n">run_name_pipeline</span><span class="p">()</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"pipeline-name"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pipeline_flow</span><span class="p">():</span>
+    <span class="n">run_pipeline</span><span class="p">()</span>
 </code></pre></div>
 <ul>
 <li><strong>Always</strong> include retries: minimum 3 with exponential backoff</li>
@@ -6097,14 +6099,14 @@
 <li>Deploy via CI/CD</li>
 </ol>
 <h3 id="running-locally">Running Locally</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Test a pipeline with DuckDB (no Snowflake needed)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">DLT__DESTINATION</span><span class="o">=</span>duckdb<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from pipelines.name import run; run()"</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Test a Prefect flow</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>python<span class="w"> </span>flows/name.py
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Deploy all flows</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
+<div class="highlight"><pre><span></span><code><span class="c1"># Test a pipeline with DuckDB (no Snowflake needed)</span>
+<span class="nv">DLT__DESTINATION</span><span class="o">=</span>duckdb<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from pipelines.name import run; run()"</span>
+
+<span class="c1"># Test a Prefect flow</span>
+python<span class="w"> </span>flows/name.py
+
+<span class="c1"># Deploy all flows</span>
+prefect<span class="w"> </span>deploy<span class="w"> </span>--all
 </code></pre></div>
 <p>Use bare <code>prefect</code> and <code>dbt</code> commands - direnv activates <code>.venv</code> automatically.</p>
 <hr>
@@ -6196,6 +6198,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6239,7 +6243,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

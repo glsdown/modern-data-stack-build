@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6006,9 +6008,9 @@
 <p>The rest of this page assumes you have a working understanding of models, sources, <code>ref()</code>, <code>source()</code>, tests, and materialisations.</p>
 <h2 id="how-dbt-fits-in-this-stack">How dbt Fits in This Stack</h2>
 <p>dbt transforms raw data that has already been loaded into Snowflake by dlt, Snowpipe, and Airbyte. It does not move data between systems.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>DLT database        ┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>SNOWPIPE database   ├──▶  dbt (dbt-transform repo)  ──▶  ANALYTICS database
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>AIRBYTE database    ┘          SELECT statements              clean models
+<div class="highlight"><pre><span></span><code>DLT database        ┐
+SNOWPIPE database   ├──▶  dbt (dbt-transform repo)  ──▶  ANALYTICS database
+AIRBYTE database    ┘          SELECT statements              clean models
 </code></pre></div>
 <p>dbt runs in a <code>dbt-transform</code> repository — separate from the <code>data-pipelines</code> repository that contains Prefect flows. Prefect triggers dbt after ingestion completes; it does not own the dbt codebase.</p>
 <h2 id="layer-structure">Layer Structure</h2>
@@ -6097,28 +6099,28 @@
 <p>The double underscore (<code>__</code>) separates the source or entity name from the qualifier. This makes it immediately clear where a model sits in the lineage.</p>
 <h2 id="ref-and-source-project-rules"><code>ref()</code> and <code>source()</code> — Project Rules</h2>
 <p>All models in this project must use <code>ref()</code> to reference other models and <code>source()</code> to reference raw tables. Hard-coded database and schema names are not permitted.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- ✅ Correct</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'dlt_open_exchange_rates'</span><span class="p">,</span><span class="w"> </span><span class="s1">'exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">-- ❌ Not permitted</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DLT</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">ANALYTICS_DEV</span><span class="p">.</span><span class="n">STAGING</span><span class="p">.</span><span class="n">STG_DLT__EXCHANGE_RATES</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- ✅ Correct</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'dlt_open_exchange_rates'</span><span class="p">,</span><span class="w"> </span><span class="s1">'exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__exchange_rates'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="c1">-- ❌ Not permitted</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">DLT</span><span class="p">.</span><span class="n">OPEN_EXCHANGE_RATES</span><span class="p">.</span><span class="n">EXCHANGE_RATES</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">ANALYTICS_DEV</span><span class="p">.</span><span class="n">STAGING</span><span class="p">.</span><span class="n">STG_DLT__EXCHANGE_RATES</span>
 </code></pre></div>
 <p>This rule is enforced automatically by <code>dbt_project_evaluator</code> in CI.</p>
 <h2 id="the-dag">The DAG</h2>
 <p>dbt builds a directed acyclic graph (DAG) from all <code>ref()</code> and <code>source()</code> calls. Models run in dependency order — dbt never builds a model before its upstream dependencies are ready.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>source: DLT.exchange_rates     source: SNOWPIPE.exchange_rates
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>         │                               │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>         ▼                               ▼
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>stg_dlt__exchange_rates    stg_snowpipe__exchange_rates
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>         │                               │
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>         └─────────────┬─────────────────┘
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>                       ▼
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>           int_exchange_rates__unioned
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>                       │
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>                       ▼
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>           fct_exchange_rates  (mart)
+<div class="highlight"><pre><span></span><code>source: DLT.exchange_rates     source: SNOWPIPE.exchange_rates
+         │                               │
+         ▼                               ▼
+stg_dlt__exchange_rates    stg_snowpipe__exchange_rates
+         │                               │
+         └─────────────┬─────────────────┘
+                       ▼
+           int_exchange_rates__unioned
+                       │
+                       ▼
+           fct_exchange_rates  (mart)
 </code></pre></div>
 <p>The full DAG is visible in the dbt docs site and the dbt Cloud IDE.</p>
 <h2 id="packages">Packages</h2>
@@ -6205,6 +6207,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6248,7 +6252,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

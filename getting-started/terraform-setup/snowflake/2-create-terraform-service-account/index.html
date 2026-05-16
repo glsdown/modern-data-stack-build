@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6138,14 +6140,14 @@
 </ul>
 <h2 id="generate-rsa-key-pair">Generate RSA Key Pair</h2>
 <p>First, generate an RSA key pair for the service account. Snowflake requires at least 2048-bit keys.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Create a directory for Snowflake keys (if it doesn't exist)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.snowflake
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Generate a 4096-bit private key (no passphrase for automation)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">4096</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="w"> </span>-nocrypt
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Extract the public key</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>~/.snowflake/svc_terraform_key.pub
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a directory for Snowflake keys (if it doesn't exist)</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/.snowflake
+
+<span class="c1"># Generate a 4096-bit private key (no passphrase for automation)</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">4096</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="w"> </span>-nocrypt
+
+<span class="c1"># Extract the public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>~/.snowflake/svc_terraform_key.pub
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Key Security</p>
@@ -6167,17 +6169,17 @@
 </div>
 <h2 id="create-the-service-account-in-snowflake">Create the Service Account in Snowflake</h2>
 <p>Connect to Snowflake with your admin user and create the service account:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">-- Create the service account user</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="k">TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SERVICE</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">DEFAULT_ROLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">MUST_CHANGE_PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">COMMENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Service account for Terraform infrastructure management'</span><span class="p">;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">-- Grant ACCOUNTADMIN role</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+
+<span class="c1">-- Create the service account user</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span>
+<span class="w">    </span><span class="k">TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SERVICE</span>
+<span class="w">    </span><span class="n">DEFAULT_ROLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span>
+<span class="w">    </span><span class="n">MUST_CHANGE_PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span>
+<span class="w">    </span><span class="k">COMMENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Service account for Terraform infrastructure management'</span><span class="p">;</span>
+
+<span class="c1">-- Grant ACCOUNTADMIN role</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">User Type</p>
@@ -6189,15 +6191,15 @@
 </ul>
 </div>
 <p>Now set the public key for authentication. First, extract the key content:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Extract just the key content (no headers, single line)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"PUBLIC KEY"</span><span class="w"> </span>~/.snowflake/svc_terraform_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Extract just the key content (no headers, single line)</span>
+grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"PUBLIC KEY"</span><span class="w"> </span>~/.snowflake/svc_terraform_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
 </code></pre></div>
 <p>This outputs a long base64 string like:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1234...5678IDAQAB
+<div class="highlight"><pre><span></span><code>MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1234...5678IDAQAB
 </code></pre></div>
 <p>Copy the entire output and use it in the SQL command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Set the public key on the user (replace with YOUR actual key output)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;paste-your-entire-key-here&gt;'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Set the public key on the user (replace with YOUR actual key output)</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;paste-your-entire-key-here&gt;'</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Replace the Entire String</p>
@@ -6206,7 +6208,7 @@
 <div class="admonition tip">
 <p class="admonition-title">Verify the Key</p>
 <p>After setting the public key, verify it was assigned:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">DESC</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_TERRAFORM</span><span class="p">;</span>
 </code></pre></div>
 <p>Look for <code>RSA_PUBLIC_KEY_FP</code> - this is the fingerprint of the assigned public key.</p>
 </div>
@@ -6232,40 +6234,40 @@
 </div>
 <h3 id="store-in-aws-secrets-manager-cicd">Store in AWS Secrets Manager (CI/CD)</h3>
 <p>First, create the secret container via Terraform. Add this resource to your AWS Terraform configuration (<code>terraform/aws/secrets.tf</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Snowflake credentials for Terraform</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for Terraform (SVC_TERRAFORM service account)"</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="na">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Snowflake credentials for Terraform</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for Terraform (SVC_TERRAFORM service account)"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Apply the AWS configuration to create the secret container:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>../aws
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>terraform<span class="w"> </span>apply
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nb">cd</span><span class="w"> </span>../snowflake
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>../aws
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
+<span class="nb">cd</span><span class="w"> </span>../snowflake
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Local plan</p>
 <p>Remember, we are only using <code>terraform plan</code> locally during this initial bootstrapping phase - all changes should be done via GitHub actions.</p>
 </div>
 <p>Now set the secret value via CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Read the private key into a variable (preserving newlines)</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="k">)</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Set the secret value</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="s2">        \"organization_name\": \"MYORG\",</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="s2">        \"account_name\": \"MYACCOUNT\",</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="s2">        \"user\": \"SVC_TERRAFORM\",</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="s2">        \"private_key\": </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-Rs<span class="w"> </span>.<span class="k">)</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># Read the private key into a variable (preserving newlines)</span>
+<span class="nv">PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="k">)</span>
+
+<span class="c1"># Set the secret value</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"{</span>
+<span class="s2">        \"organization_name\": \"MYORG\",</span>
+<span class="s2">        \"account_name\": \"MYACCOUNT\",</span>
+<span class="s2">        \"user\": \"SVC_TERRAFORM\",</span>
+<span class="s2">        \"private_key\": </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-Rs<span class="w"> </span>.<span class="k">)</span>
+<span class="s2">    }"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Replace Values</p>
@@ -6276,64 +6278,64 @@
 <p>The <code>jq -Rs .</code> command properly escapes the private key for JSON. The private key contains newlines which must be escaped as <code>\n</code> in JSON format.</p>
 </div>
 <p>Verify the secret was created:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>describe-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>describe-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h2 id="update-the-terraform-provider">Update the Terraform Provider</h2>
 <p>Now update <code>providers.tf</code> to use key-pair authentication instead of password:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Snowflake Provider - key-pair authentication</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="na">authenticator</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"JWT"</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="na">private_key</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PRIVATE_KEY</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Snowflake Provider - key-pair authentication</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"snowflake"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">organization_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_organization_name</span>
+<span class="w">  </span><span class="na">account_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.snowflake_account_name</span>
+<span class="w">  </span><span class="na">user</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
+<span class="w">  </span><span class="na">authenticator</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"JWT"</span>
+<span class="w">  </span><span class="na">private_key</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.SNOWFLAKE_PRIVATE_KEY</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Update <code>variables.tf</code> to add the private key variable (and remove the password variable):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Snowflake Variables</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">}</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="p">}</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"SNOWFLAKE_PRIVATE_KEY"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Private key for SVC_TERRAFORM service account"</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Snowflake Variables</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_organization_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake organization name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"snowflake_account_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake account name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"SNOWFLAKE_PRIVATE_KEY"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Private key for SVC_TERRAFORM service account"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Remove the <code>snowflake_password</code> variable if you added it in the previous page.</p>
 <h2 id="set-up-local-authentication">Set Up Local Authentication</h2>
 <p>For local development, set the private key as an environment variable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Add to your .envrc file</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Add to your .envrc file</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>~/.snowflake/svc_terraform_key.p8<span class="k">)</span>
 </code></pre></div>
 <p>After updating <code>.envrc</code>, reload it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>direnv<span class="w"> </span>allow
+<div class="highlight"><pre><span></span><code>direnv<span class="w"> </span>allow
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">1Password CLI Alternative</p>
 <p>If you stored the key in 1Password, you can retrieve it directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake SVC_TERRAFORM/Private Key"</span><span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake SVC_TERRAFORM/Private Key"</span><span class="k">)</span>
 </code></pre></div>
 <p>Or use a 1Password reference in <code>.envrc</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake SVC_TERRAFORM/Private Key"</span><span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_SNOWFLAKE_PRIVATE_KEY</span><span class="o">=</span><span class="k">$(</span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="s2">"op://Vault/Snowflake SVC_TERRAFORM/Private Key"</span><span class="k">)</span>
 </code></pre></div>
 </div>
 <h2 id="test-the-new-authentication">Test the New Authentication</h2>
 <p>Verify the service account can authenticate:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
+terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>No changes. Your infrastructure matches the configuration.
+<div class="highlight"><pre><span></span><code>No changes. Your infrastructure matches the configuration.
 </code></pre></div>
 <p>If you see authentication errors, check:</p>
 <ul>
@@ -6344,17 +6346,17 @@
 <div class="admonition tip">
 <p class="admonition-title">Debug Authentication</p>
 <p>To see more details about authentication, you can enable provider logging:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_LOG</span><span class="o">=</span>DEBUG
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TF_LOG</span><span class="o">=</span>DEBUG
+terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Look for lines about authentication and JWT token generation.</p>
 </div>
 <h2 id="clean-up-local-key-files">Clean Up Local Key Files</h2>
 <p>Once you've stored the keys securely in 1Password and AWS Secrets Manager, you can optionally remove the local key files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Keep the keys for now during setup</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="c1"># After everything is working, you can remove them:</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># rm ~/.snowflake/svc_terraform_key.p8</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># rm ~/.snowflake/svc_terraform_key.pub</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Keep the keys for now during setup</span>
+<span class="c1"># After everything is working, you can remove them:</span>
+<span class="c1"># rm ~/.snowflake/svc_terraform_key.p8</span>
+<span class="c1"># rm ~/.snowflake/svc_terraform_key.pub</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Keep Backups</p>
@@ -6369,18 +6371,18 @@
 <h2 id="update-github-actions-permissions">Update GitHub Actions Permissions</h2>
 <p>The <code>TerraformGitHubActionsRole</code> needs permission to read the new Snowflake credentials secret. If you followed the AWS setup correctly, it should already have this permission through the <code>SecretsManagerAccess</code> statement that grants read access to <code>terraform/*</code> secrets.</p>
 <p>Verify by checking your <code>iam_roles.tf</code> in the AWS Terraform directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># This statement should exist in your terraform_github_actions policy</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="na">sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerAccess"</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="na">actions</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">]</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"</span><span class="p">]</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># This statement should exist in your terraform_github_actions policy</span>
+<span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerAccess"</span>
+<span class="w">  </span><span class="na">actions</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">]</span>
+<span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>If this statement doesn't exist, add it to the <code>terraform_github_actions</code> policy document in <code>terraform/aws/iam_roles.tf</code>.</p>
 <h2 id="commit-your-work">Commit Your Work</h2>
 <p>Commit your progress:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Configure SVC_TERRAFORM service account with key-pair auth"</span>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Configure SVC_TERRAFORM service account with key-pair auth"</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Double-Check Before Committing</p>
@@ -6480,6 +6482,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6523,7 +6527,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

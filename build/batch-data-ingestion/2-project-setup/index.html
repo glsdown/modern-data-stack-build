@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6155,172 +6157,172 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Your data pipelines live in the <code>data-pipelines</code> repository you created in the <a href="../../orchestration/7-first-flow/">Orchestration</a> section. Now you'll expand it with dlt sources, pipelines, and utilities alongside the existing Prefect flows. This structure follows the <a href="https://dlthub.com/docs/walkthroughs/deploy-a-pipeline/deploy-with-prefect">dlt deployment guide</a> recommendation of keeping dlt and Prefect code together.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                     data-pipelines Repository                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  sources/                  dlt source definitions                           │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ├── exchange_rates/       API extraction logic                             │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  ├── currencies/           API extraction logic                             │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  └── products/             Database extraction logic                        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│                                                                             │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  pipelines/                dlt pipeline configurations                      │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  ├── exchange_rates.py     Pipeline: API → S3 → Snowpipe → Snowflake       │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  ├── currencies.py         Pipeline: API → Snowflake                        │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └── products.py           Pipeline: PostgreSQL → Snowflake                 │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                                                             │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  flows/                    Prefect flow definitions                         │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ├── exchange_rates.py     Scheduled flow for exchange rates                │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ├── currencies.py         Scheduled flow for currencies                    │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  └── products.py           Scheduled flow for products                      │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                                                             │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  utils/                    Shared utilities                                 │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  └── vault_provider.py     AWS Secrets Manager provider for dlt             │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                                                             │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  prefect.yaml              Prefect deployment configuration                 │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  pyproject.toml            Project dependencies (managed by uv)             │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                             │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                     data-pipelines Repository                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  sources/                  dlt source definitions                           │
+│  ├── exchange_rates/       API extraction logic                             │
+│  ├── currencies/           API extraction logic                             │
+│  └── products/             Database extraction logic                        │
+│                                                                             │
+│  pipelines/                dlt pipeline configurations                      │
+│  ├── exchange_rates.py     Pipeline: API → S3 → Snowpipe → Snowflake       │
+│  ├── currencies.py         Pipeline: API → Snowflake                        │
+│  └── products.py           Pipeline: PostgreSQL → Snowflake                 │
+│                                                                             │
+│  flows/                    Prefect flow definitions                         │
+│  ├── exchange_rates.py     Scheduled flow for exchange rates                │
+│  ├── currencies.py         Scheduled flow for currencies                    │
+│  └── products.py           Scheduled flow for products                      │
+│                                                                             │
+│  utils/                    Shared utilities                                 │
+│  └── vault_provider.py     AWS Secrets Manager provider for dlt             │
+│                                                                             │
+│  prefect.yaml              Prefect deployment configuration                 │
+│  pyproject.toml            Project dependencies (managed by uv)             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="use-the-existing-repository">Use the Existing Repository</h2>
 <p>You already created the <code>data-pipelines</code> repository and deployed your first flow in <a href="../../orchestration/7-first-flow/">Your First Flow</a>. Navigate to it now:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>data-pipelines
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>data-pipelines
 </code></pre></div>
 <p>The repository currently has a basic <code>flows/</code> directory and <code>prefect.yaml</code>. You'll expand it with dlt sources, pipelines, and utilities.</p>
 <h2 id="project-structure">Project Structure</h2>
 <p>Create the directory structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>sources/exchange_rates<span class="w"> </span>sources/currencies<span class="w"> </span>sources/products
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>pipelines<span class="w"> </span>flows<span class="w"> </span>utils
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>touch<span class="w"> </span>sources/__init__.py<span class="w"> </span>sources/exchange_rates/__init__.py
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>touch<span class="w"> </span>sources/currencies/__init__.py<span class="w"> </span>sources/products/__init__.py
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>touch<span class="w"> </span>pipelines/__init__.py<span class="w"> </span>flows/__init__.py<span class="w"> </span>utils/__init__.py
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>sources/exchange_rates<span class="w"> </span>sources/currencies<span class="w"> </span>sources/products
+mkdir<span class="w"> </span>-p<span class="w"> </span>pipelines<span class="w"> </span>flows<span class="w"> </span>utils
+touch<span class="w"> </span>sources/__init__.py<span class="w"> </span>sources/exchange_rates/__init__.py
+touch<span class="w"> </span>sources/currencies/__init__.py<span class="w"> </span>sources/products/__init__.py
+touch<span class="w"> </span>pipelines/__init__.py<span class="w"> </span>flows/__init__.py<span class="w"> </span>utils/__init__.py
 </code></pre></div>
 <p>Your structure should look like:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>data-pipelines/
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>├── sources/
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   ├── __init__.py
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   ├── exchange_rates/
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│   │   ├── __init__.py
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   │   └── source.py
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│   ├── currencies/
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│   │   ├── __init__.py
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│   │   └── source.py
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│   └── products/
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│       ├── __init__.py
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>│       └── source.py
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>├── pipelines/
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│   ├── __init__.py
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>│   ├── exchange_rates.py
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>│   ├── currencies.py
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>│   └── products.py
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>├── flows/
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>│   ├── __init__.py
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>│   ├── exchange_rates.py
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>│   ├── currencies.py
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>│   └── products.py
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>├── utils/
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>│   ├── __init__.py
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>│   └── vault_provider.py
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>├── .dlt/
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>│   ├── config.toml
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>│   └── secrets.toml.example
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>├── prefect.yaml
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>├── pyproject.toml
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>├── uv.lock
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>├── .gitignore
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>└── README.md
+<div class="highlight"><pre><span></span><code>data-pipelines/
+├── sources/
+│   ├── __init__.py
+│   ├── exchange_rates/
+│   │   ├── __init__.py
+│   │   └── source.py
+│   ├── currencies/
+│   │   ├── __init__.py
+│   │   └── source.py
+│   └── products/
+│       ├── __init__.py
+│       └── source.py
+├── pipelines/
+│   ├── __init__.py
+│   ├── exchange_rates.py
+│   ├── currencies.py
+│   └── products.py
+├── flows/
+│   ├── __init__.py
+│   ├── exchange_rates.py
+│   ├── currencies.py
+│   └── products.py
+├── utils/
+│   ├── __init__.py
+│   └── vault_provider.py
+├── .dlt/
+│   ├── config.toml
+│   └── secrets.toml.example
+├── prefect.yaml
+├── pyproject.toml
+├── uv.lock
+├── .gitignore
+└── README.md
 </code></pre></div>
 <h2 id="dependencies">Dependencies</h2>
 <p>This project uses <a href="https://docs.astral.sh/uv/">uv</a> for dependency management. If you followed the orchestration section, uv is already installed and a <code>pyproject.toml</code> exists. Add the dlt dependencies:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># dlt with Snowflake and S3 (filesystem) destinations</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"dlt[snowflake]"</span><span class="w"> </span><span class="s2">"dlt[filesystem]"</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># dlt SQL database source (for PostgreSQL extraction)</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"dlt[sql_database]"</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Prefect orchestration (already installed if you followed the orchestration section)</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>uv<span class="w"> </span>add<span class="w"> </span>prefect<span class="w"> </span>prefect-aws<span class="w"> </span>prefect-snowflake
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># AWS SDK for Secrets Manager</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>uv<span class="w"> </span>add<span class="w"> </span>boto3
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># PostgreSQL driver</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>uv<span class="w"> </span>add<span class="w"> </span>psycopg2-binary
+<div class="highlight"><pre><span></span><code><span class="c1"># dlt with Snowflake and S3 (filesystem) destinations</span>
+uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"dlt[snowflake]"</span><span class="w"> </span><span class="s2">"dlt[filesystem]"</span>
+
+<span class="c1"># dlt SQL database source (for PostgreSQL extraction)</span>
+uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"dlt[sql_database]"</span>
+
+<span class="c1"># Prefect orchestration (already installed if you followed the orchestration section)</span>
+uv<span class="w"> </span>add<span class="w"> </span>prefect<span class="w"> </span>prefect-aws<span class="w"> </span>prefect-snowflake
+
+<span class="c1"># AWS SDK for Secrets Manager</span>
+uv<span class="w"> </span>add<span class="w"> </span>boto3
+
+<span class="c1"># PostgreSQL driver</span>
+uv<span class="w"> </span>add<span class="w"> </span>psycopg2-binary
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Why <code>uv add</code> Instead of <code>pip install</code>?</p>
 <p><code>uv add</code> updates your <code>pyproject.toml</code> and <code>uv.lock</code> files, ensuring reproducible installs. The lock file pins exact versions so every environment — local, CI/CD, and production — uses the same dependency tree. You never need to activate a virtual environment manually; <code>uv run</code> handles it automatically.</p>
 </div>
 <p>For local testing with DuckDB (a lightweight in-process database):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span><span class="s2">"dlt[duckdb]"</span>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span><span class="s2">"dlt[duckdb]"</span>
 </code></pre></div>
 <p>The <code>--dev</code> flag adds DuckDB as a development-only dependency. It won't be installed in production.</p>
 <p>Your <code>pyproject.toml</code> dependencies section should look similar to:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[project]</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-pipelines"</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.11"</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="s2">"boto3&gt;=1.34.0"</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="s2">"dlt[filesystem]&gt;=0.4.0"</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="s2">"dlt[snowflake]&gt;=0.4.0"</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="s2">"dlt[sql_database]&gt;=0.4.0"</span><span class="p">,</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="s2">"prefect&gt;=3.0.0"</span><span class="p">,</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="s2">"prefect-aws&gt;=0.5.0"</span><span class="p">,</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="s2">"prefect-snowflake&gt;=0.3.0"</span><span class="p">,</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="s2">"psycopg2-binary&gt;=2.9.0"</span><span class="p">,</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="p">]</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="s2">"dlt[duckdb]&gt;=0.4.0"</span><span class="p">,</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-pipelines"</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.11"</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"boto3&gt;=1.34.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"dlt[filesystem]&gt;=0.4.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"dlt[snowflake]&gt;=0.4.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"dlt[sql_database]&gt;=0.4.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"prefect&gt;=3.0.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"prefect-aws&gt;=0.5.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"prefect-snowflake&gt;=0.3.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"psycopg2-binary&gt;=2.9.0"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">[dependency-groups]</span>
+<span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"dlt[duckdb]&gt;=0.4.0"</span><span class="p">,</span>
+<span class="p">]</span>
 </code></pre></div>
 <h2 id="dlt-configuration">dlt Configuration</h2>
 <p>Create the dlt configuration directory and files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>.dlt
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>.dlt
 </code></pre></div>
 <p>Create <code>.dlt/config.toml</code> for non-sensitive configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[runtime]</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">log_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"INFO"</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">[normalize]</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># Flatten nested JSON structures</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">max_table_nesting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<div class="highlight"><pre><span></span><code><span class="k">[runtime]</span>
+<span class="n">log_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"INFO"</span>
+
+<span class="k">[normalize]</span>
+<span class="c1"># Flatten nested JSON structures</span>
+<span class="n">max_table_nesting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
 <p>Create <code>.dlt/secrets.toml.example</code> as a template (the actual <code>secrets.toml</code> should not be committed):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Copy this file to secrets.toml and fill in your values.</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># DO NOT commit secrets.toml to version control.</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">#</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># For local development, use your own Snowflake credentials</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># (not the service account). This gives you ANALYTICS_DEVELOPER</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># permissions for testing.</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">[destination.snowflake.credentials]</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT"</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="n">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS_DEVELOPER"</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"YOUR_SNOWFLAKE_USERNAME"</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-password"</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"orgname-accountname.snowflakecomputing.com"</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="k">[destination.filesystem]</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="n">bucket_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3://your-data-lake-bucket/dlt"</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="k">[destination.filesystem.credentials]</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="n">aws_access_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-access-key"</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="n">aws_secret_access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-secret-key"</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="n">region_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="k">[sources.open_exchange_rates]</span>
-<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="n">api_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-api-key-here"</span>
-<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
-<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="k">[sources.clever_cloud]</span>
-<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx.postgresql.clever-cloud.com"</span>
-<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5432</span>
-<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
-<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
-<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Copy this file to secrets.toml and fill in your values.</span>
+<span class="c1"># DO NOT commit secrets.toml to version control.</span>
+<span class="c1">#</span>
+<span class="c1"># For local development, use your own Snowflake credentials</span>
+<span class="c1"># (not the service account). This gives you ANALYTICS_DEVELOPER</span>
+<span class="c1"># permissions for testing.</span>
+
+<span class="k">[destination.snowflake.credentials]</span>
+<span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT"</span>
+<span class="n">warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
+<span class="n">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS_DEVELOPER"</span>
+<span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"YOUR_SNOWFLAKE_USERNAME"</span>
+<span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-password"</span>
+<span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"orgname-accountname.snowflakecomputing.com"</span>
+
+<span class="k">[destination.filesystem]</span>
+<span class="n">bucket_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"s3://your-data-lake-bucket/dlt"</span>
+
+<span class="k">[destination.filesystem.credentials]</span>
+<span class="n">aws_access_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-access-key"</span>
+<span class="n">aws_secret_access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-secret-key"</span>
+<span class="n">region_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span>
+
+<span class="k">[sources.open_exchange_rates]</span>
+<span class="n">api_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-api-key-here"</span>
+
+<span class="k">[sources.clever_cloud]</span>
+<span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx.postgresql.clever-cloud.com"</span>
+<span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5432</span>
+<span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
+<span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
+<span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Local Credentials vs Production</p>
@@ -6359,238 +6361,238 @@
 <p>In production, your pipelines run on ephemeral infrastructure (Prefect workers, ECS tasks) where local <code>secrets.toml</code> files don't exist. Rather than setting dozens of environment variables, you can integrate dlt directly with AWS Secrets Manager using a custom configuration provider.</p>
 <p>dlt's configuration system supports custom providers that plug into its resolution chain. When dlt needs a configuration value (like <code>destination.snowflake.credentials.password</code>), it queries each registered provider in order until one returns a value.</p>
 <p>Create <code>utils/vault_provider.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="sd">"""Custom dlt configuration provider for AWS Secrets Manager."""</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">botocore.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientError</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProvider</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="c1"># Maps dlt config paths to AWS Secrets Manager secret names.</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1"># When dlt resolves a config value, it passes the section path</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="c1"># (e.g. "destination", "snowflake", "credentials") and the key</span>
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="c1"># (e.g. "password"). This map matches section paths to secrets.</span>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="n">SECRET_MAP</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>    <span class="s2">"destination.snowflake.credentials"</span><span class="p">:</span> <span class="s2">"dlt/snowflake-credentials"</span><span class="p">,</span>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    <span class="s2">"destination.filesystem.credentials"</span><span class="p">:</span> <span class="s2">"dlt/s3-credentials"</span><span class="p">,</span>
-<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>    <span class="s2">"sources.open_exchange_rates"</span><span class="p">:</span> <span class="s2">"dlt/open-exchange-rates"</span><span class="p">,</span>
-<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    <span class="s2">"sources.clever_cloud"</span><span class="p">:</span> <span class="s2">"dlt/clever-cloud-postgres"</span><span class="p">,</span>
-<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>    <span class="s2">"sources.hubspot"</span><span class="p">:</span> <span class="s2">"dlt/hubspot-api-key"</span><span class="p">,</span>
-<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="p">}</span>
-<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
-<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
-<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="k">def</span><span class="w"> </span><span class="nf">_fetch_secret</span><span class="p">(</span><span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="sd">"""Fetch and cache a secret from AWS Secrets Manager.</span>
-<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>
-<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="sd">    Results are cached for the lifetime of the process to avoid</span>
-<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="sd">    repeated API calls within a single pipeline run.</span>
-<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="sd">    """</span>
-<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
-<a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
-<a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>    <span class="n">secret_string</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">]</span>
-<a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">secret_string</span><span class="p">)</span>
-<a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
-<a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="n">secret_string</span><span class="p">}</span>
-<a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a>
-<a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a>
-<a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="k">class</span><span class="w"> </span><span class="nc">AWSSecretsManagerProvider</span><span class="p">(</span><span class="n">ConfigProvider</span><span class="p">):</span>
-<a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="w">    </span><span class="sd">"""Resolves dlt configuration values from AWS Secrets Manager.</span>
-<a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>
-<a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="sd">    This provider maps dlt's dotted config paths to secret names</span>
-<a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="sd">    in AWS Secrets Manager. For example, when dlt looks up</span>
-<a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="sd">    ``destination.snowflake.credentials.password``, this provider:</span>
-<a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a>
-<a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="sd">    1. Joins the sections into ``destination.snowflake.credentials``</span>
-<a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a><span class="sd">    2. Looks up the secret name in SECRET_MAP → ``dlt/snowflake-credentials``</span>
-<a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="sd">    3. Fetches the secret JSON from AWS</span>
-<a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="sd">    4. Returns the ``password`` field from that JSON</span>
-<a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="sd">    """</span>
-<a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a>
-<a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"eu-west-2"</span><span class="p">):</span>
-<a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">region</span>
-<a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-<a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a>
-<a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a>    <span class="nd">@property</span>
-<a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a>        <span class="k">return</span> <span class="s2">"AWS Secrets Manager"</span>
-<a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a>
-<a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a>    <span class="nd">@property</span>
-<a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_secrets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a>        <span class="k">return</span> <span class="kc">True</span>
-<a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a>
-<a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span>
-<a id="__codelineno-10-69" name="__codelineno-10-69" href="#__codelineno-10-69"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hint</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">sections</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-10-70" name="__codelineno-10-70" href="#__codelineno-10-70"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-10-71" name="__codelineno-10-71" href="#__codelineno-10-71"></a><span class="w">        </span><span class="sd">"""Look up a configuration value in AWS Secrets Manager.</span>
-<a id="__codelineno-10-72" name="__codelineno-10-72" href="#__codelineno-10-72"></a>
-<a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="sd">        Args:</span>
-<a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a><span class="sd">            key: The config key (e.g. "password", "api_key")</span>
-<a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a><span class="sd">            hint: Type hint for the value</span>
-<a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="sd">            pipeline_name: Current pipeline name (unused)</span>
-<a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="sd">            *sections: Config path sections (e.g. "destination", "snowflake", "credentials")</span>
-<a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a>
-<a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="sd">            Tuple of (value, secret_name) or (None, None) if not found</span>
-<a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="sd">        """</span>
-<a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a>        <span class="n">full_path</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span>
-<a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a>        <span class="n">secret_name</span> <span class="o">=</span> <span class="n">SECRET_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
-<a id="__codelineno-10-84" name="__codelineno-10-84" href="#__codelineno-10-84"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">secret_name</span><span class="p">:</span>
-<a id="__codelineno-10-85" name="__codelineno-10-85" href="#__codelineno-10-85"></a>            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<a id="__codelineno-10-86" name="__codelineno-10-86" href="#__codelineno-10-86"></a>
-<a id="__codelineno-10-87" name="__codelineno-10-87" href="#__codelineno-10-87"></a>        <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-10-88" name="__codelineno-10-88" href="#__codelineno-10-88"></a>            <span class="n">secret_data</span> <span class="o">=</span> <span class="n">_fetch_secret</span><span class="p">(</span><span class="n">secret_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
-<a id="__codelineno-10-89" name="__codelineno-10-89" href="#__codelineno-10-89"></a>        <span class="k">except</span> <span class="n">ClientError</span><span class="p">:</span>
-<a id="__codelineno-10-90" name="__codelineno-10-90" href="#__codelineno-10-90"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Secret '</span><span class="si">%s</span><span class="s2">' not found in AWS Secrets Manager"</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">)</span>
-<a id="__codelineno-10-91" name="__codelineno-10-91" href="#__codelineno-10-91"></a>            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<a id="__codelineno-10-92" name="__codelineno-10-92" href="#__codelineno-10-92"></a>
-<a id="__codelineno-10-93" name="__codelineno-10-93" href="#__codelineno-10-93"></a>        <span class="n">value</span> <span class="o">=</span> <span class="n">secret_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<a id="__codelineno-10-94" name="__codelineno-10-94" href="#__codelineno-10-94"></a>        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-10-95" name="__codelineno-10-95" href="#__codelineno-10-95"></a>            <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">secret_name</span>
-<a id="__codelineno-10-96" name="__codelineno-10-96" href="#__codelineno-10-96"></a>
-<a id="__codelineno-10-97" name="__codelineno-10-97" href="#__codelineno-10-97"></a>        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<a id="__codelineno-10-98" name="__codelineno-10-98" href="#__codelineno-10-98"></a>
-<a id="__codelineno-10-99" name="__codelineno-10-99" href="#__codelineno-10-99"></a>
-<a id="__codelineno-10-100" name="__codelineno-10-100" href="#__codelineno-10-100"></a><span class="k">def</span><span class="w"> </span><span class="nf">register_aws_secrets</span><span class="p">(</span><span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"eu-west-2"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-10-101" name="__codelineno-10-101" href="#__codelineno-10-101"></a><span class="w">    </span><span class="sd">"""Register the AWS Secrets Manager provider with dlt.</span>
-<a id="__codelineno-10-102" name="__codelineno-10-102" href="#__codelineno-10-102"></a>
-<a id="__codelineno-10-103" name="__codelineno-10-103" href="#__codelineno-10-103"></a><span class="sd">    Call this at the start of any pipeline that should resolve</span>
-<a id="__codelineno-10-104" name="__codelineno-10-104" href="#__codelineno-10-104"></a><span class="sd">    secrets from AWS. The provider is added to the end of the</span>
-<a id="__codelineno-10-105" name="__codelineno-10-105" href="#__codelineno-10-105"></a><span class="sd">    chain, so local secrets.toml and environment variables still</span>
-<a id="__codelineno-10-106" name="__codelineno-10-106" href="#__codelineno-10-106"></a><span class="sd">    take priority (useful for development overrides).</span>
-<a id="__codelineno-10-107" name="__codelineno-10-107" href="#__codelineno-10-107"></a><span class="sd">    """</span>
-<a id="__codelineno-10-108" name="__codelineno-10-108" href="#__codelineno-10-108"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.container</span><span class="w"> </span><span class="kn">import</span> <span class="n">Container</span>
-<a id="__codelineno-10-109" name="__codelineno-10-109" href="#__codelineno-10-109"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProvidersContext</span>
-<a id="__codelineno-10-110" name="__codelineno-10-110" href="#__codelineno-10-110"></a>
-<a id="__codelineno-10-111" name="__codelineno-10-111" href="#__codelineno-10-111"></a>    <span class="n">provider</span> <span class="o">=</span> <span class="n">AWSSecretsManagerProvider</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
-<a id="__codelineno-10-112" name="__codelineno-10-112" href="#__codelineno-10-112"></a>    <span class="n">ctx</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()[</span><span class="n">ConfigProvidersContext</span><span class="p">]</span>
-<a id="__codelineno-10-113" name="__codelineno-10-113" href="#__codelineno-10-113"></a>    <span class="n">ctx</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">provider</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Custom dlt configuration provider for AWS Secrets Manager."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">botocore.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProvider</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Maps dlt config paths to AWS Secrets Manager secret names.</span>
+<span class="c1"># When dlt resolves a config value, it passes the section path</span>
+<span class="c1"># (e.g. "destination", "snowflake", "credentials") and the key</span>
+<span class="c1"># (e.g. "password"). This map matches section paths to secrets.</span>
+<span class="n">SECRET_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"destination.snowflake.credentials"</span><span class="p">:</span> <span class="s2">"dlt/snowflake-credentials"</span><span class="p">,</span>
+    <span class="s2">"destination.filesystem.credentials"</span><span class="p">:</span> <span class="s2">"dlt/s3-credentials"</span><span class="p">,</span>
+    <span class="s2">"sources.open_exchange_rates"</span><span class="p">:</span> <span class="s2">"dlt/open-exchange-rates"</span><span class="p">,</span>
+    <span class="s2">"sources.clever_cloud"</span><span class="p">:</span> <span class="s2">"dlt/clever-cloud-postgres"</span><span class="p">,</span>
+    <span class="s2">"sources.hubspot"</span><span class="p">:</span> <span class="s2">"dlt/hubspot-api-key"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fetch_secret</span><span class="p">(</span><span class="n">secret_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Fetch and cache a secret from AWS Secrets Manager.</span>
+
+<span class="sd">    Results are cached for the lifetime of the process to avoid</span>
+<span class="sd">    repeated API calls within a single pipeline run.</span>
+<span class="sd">    """</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="n">secret_name</span><span class="p">)</span>
+    <span class="n">secret_string</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">secret_string</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="n">secret_string</span><span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AWSSecretsManagerProvider</span><span class="p">(</span><span class="n">ConfigProvider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Resolves dlt configuration values from AWS Secrets Manager.</span>
+
+<span class="sd">    This provider maps dlt's dotted config paths to secret names</span>
+<span class="sd">    in AWS Secrets Manager. For example, when dlt looks up</span>
+<span class="sd">    ``destination.snowflake.credentials.password``, this provider:</span>
+
+<span class="sd">    1. Joins the sections into ``destination.snowflake.credentials``</span>
+<span class="sd">    2. Looks up the secret name in SECRET_MAP → ``dlt/snowflake-credentials``</span>
+<span class="sd">    3. Fetches the secret JSON from AWS</span>
+<span class="sd">    4. Returns the ``password`` field from that JSON</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"eu-west-2"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">region</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"AWS Secrets Manager"</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_secrets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hint</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">sections</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Look up a configuration value in AWS Secrets Manager.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: The config key (e.g. "password", "api_key")</span>
+<span class="sd">            hint: Type hint for the value</span>
+<span class="sd">            pipeline_name: Current pipeline name (unused)</span>
+<span class="sd">            *sections: Config path sections (e.g. "destination", "snowflake", "credentials")</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (value, secret_name) or (None, None) if not found</span>
+<span class="sd">        """</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span>
+        <span class="n">secret_name</span> <span class="o">=</span> <span class="n">SECRET_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">secret_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">secret_data</span> <span class="o">=</span> <span class="n">_fetch_secret</span><span class="p">(</span><span class="n">secret_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Secret '</span><span class="si">%s</span><span class="s2">' not found in AWS Secrets Manager"</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">secret_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">secret_name</span>
+
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_aws_secrets</span><span class="p">(</span><span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"eu-west-2"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Register the AWS Secrets Manager provider with dlt.</span>
+
+<span class="sd">    Call this at the start of any pipeline that should resolve</span>
+<span class="sd">    secrets from AWS. The provider is added to the end of the</span>
+<span class="sd">    chain, so local secrets.toml and environment variables still</span>
+<span class="sd">    take priority (useful for development overrides).</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.container</span><span class="w"> </span><span class="kn">import</span> <span class="n">Container</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dlt.common.configuration.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigProvidersContext</span>
+
+    <span class="n">provider</span> <span class="o">=</span> <span class="n">AWSSecretsManagerProvider</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
+    <span class="n">ctx</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()[</span><span class="n">ConfigProvidersContext</span><span class="p">]</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">provider</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="how-it-works">How It Works</h3>
 <p>When a pipeline calls <code>register_aws_secrets()</code>, the provider is added to dlt's configuration resolution chain:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>│                    dlt Configuration Resolution Order                       │
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>│                                                                             │
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>│  1. Environment variables      DESTINATION__SNOWFLAKE__CREDENTIALS__PASSWORD│
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>│  2. secrets.toml               [destination.snowflake.credentials]          │
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>│  3. config.toml                [runtime] log_level                          │
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>│  4. AWS Secrets Manager ★      dlt/snowflake-credentials → {"password":..} │
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>│                                                                             │
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>│  dlt queries each provider in order. The first to return a value wins.     │
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>│  This means local secrets.toml always overrides AWS for development.       │
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>│                                                                             │
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    dlt Configuration Resolution Order                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  1. Environment variables      DESTINATION__SNOWFLAKE__CREDENTIALS__PASSWORD│
+│  2. secrets.toml               [destination.snowflake.credentials]          │
+│  3. config.toml                [runtime] log_level                          │
+│  4. AWS Secrets Manager ★      dlt/snowflake-credentials → {"password":..} │
+│                                                                             │
+│  dlt queries each provider in order. The first to return a value wins.     │
+│  This means local secrets.toml always overrides AWS for development.       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p>In production (no <code>secrets.toml</code> present), dlt falls through to the AWS provider. In local development, your <code>secrets.toml</code> values take priority — you never need to configure AWS credentials on your laptop.</p>
 <h3 id="using-the-provider">Using the Provider</h3>
 <p>In your pipeline code, register the provider before creating the pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utils.vault_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_aws_secrets</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Register AWS Secrets Manager (no-op locally if secrets.toml exists)</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">register_aws_secrets</span><span class="p">()</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"currencies"</span><span class="p">,</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">utils.vault_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_aws_secrets</span>
+
+<span class="c1"># Register AWS Secrets Manager (no-op locally if secrets.toml exists)</span>
+<span class="n">register_aws_secrets</span><span class="p">()</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"currencies"</span><span class="p">,</span>
+    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span><span class="p">,</span>
+<span class="p">)</span>
 </code></pre></div>
 <p>The secret JSON stored in AWS Secrets Manager should match the dlt configuration keys. For example, the <code>dlt/snowflake-credentials</code> secret:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DLT"</span><span class="p">,</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LOADING"</span><span class="p">,</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_DLT"</span><span class="p">,</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_DLT"</span><span class="p">,</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"the-password"</span><span class="p">,</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="nt">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orgname-accountname.snowflakecomputing.com"</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"database"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DLT"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"warehouse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LOADING"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_DLT"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SVC_DLT"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"the-password"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orgname-accountname.snowflakecomputing.com"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>You'll create these secrets in <a href="../3-snowflake-infrastructure/">Snowflake Infrastructure</a>.</p>
 <h2 id="prefect-configuration">Prefect Configuration</h2>
 <p>Create <code>prefect.yaml</code> for deployment configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-pipelines</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># How Prefect retrieves flow code</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nt">pull</span><span class="p">:</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.git_clone</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/YOUR-ORG/data-pipelines.git</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">      </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1"># Deployments are defined in later pages</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="nt">deployments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-pipelines</span>
+
+<span class="c1"># How Prefect retrieves flow code</span>
+<span class="nt">pull</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.git_clone</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/YOUR-ORG/data-pipelines.git</span>
+<span class="w">      </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="c1"># Deployments are defined in later pages</span>
+<span class="nt">deployments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 </code></pre></div>
 <p>We'll add deployments in the <a href="../8-prefect-orchestration/">Prefect Orchestration</a> page.</p>
 <h2 id="git-configuration">Git Configuration</h2>
 <p>Create <code>.gitignore</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a># Python
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>__pycache__/
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>*.py[cod]
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>*$py.class
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>.venv/
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>venv/
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>*.egg-info/
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a># dlt
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>.dlt/secrets.toml
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>.dlt/pipeline_*/
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
-<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a># Environment
-<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>.env
-<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>.envrc
-<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
-<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a># IDE
-<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>.idea/
-<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>.vscode/
-<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>*.swp
-<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
-<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a># OS
-<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>.DS_Store
-<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>Thumbs.db
+<div class="highlight"><pre><span></span><code># Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# dlt
+.dlt/secrets.toml
+.dlt/pipeline_*/
+
+# Environment
+.env
+.envrc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
 </code></pre></div>
 <h2 id="local-development">Local Development</h2>
 <p>For local development, create a <code>.dlt/secrets.toml</code> file with your credentials (this file is gitignored):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cp<span class="w"> </span>.dlt/secrets.toml.example<span class="w"> </span>.dlt/secrets.toml
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># Edit .dlt/secrets.toml with your actual credentials</span>
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>.dlt/secrets.toml.example<span class="w"> </span>.dlt/secrets.toml
+<span class="c1"># Edit .dlt/secrets.toml with your actual credentials</span>
 </code></pre></div>
 <p>Test that dlt is working with a local DuckDB pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># test_dlt.py</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_data</span><span class="p">():</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">}</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>    <span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"another test"</span><span class="p">}</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"test"</span><span class="p">,</span>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>    <span class="n">destination</span><span class="o">=</span><span class="s2">"duckdb"</span><span class="p">,</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"test_data"</span><span class="p">,</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="p">)</span>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
-<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">test_data</span><span class="p">())</span>
-<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
-<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"dlt is working!"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># test_dlt.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_data</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">}</span>
+    <span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"another test"</span><span class="p">}</span>
+
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"test"</span><span class="p">,</span>
+    <span class="n">destination</span><span class="o">=</span><span class="s2">"duckdb"</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"test_data"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">test_data</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"dlt is working!"</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>python<span class="w"> </span>test_dlt.py
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>test_dlt.py
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Pipeline test completed in 0.XX seconds
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>1 load package(s) were loaded to destination duckdb and target schema test_data
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>The duckdb destination used duckdb:////...data-pipelines/test.duckdb location to store data
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>dlt is working!
+<div class="highlight"><pre><span></span><code>Pipeline test completed in 0.XX seconds
+1 load package(s) were loaded to destination duckdb and target schema test_data
+The duckdb destination used duckdb:////...data-pipelines/test.duckdb location to store data
+dlt is working!
 </code></pre></div>
 <p>Clean up the test file and DuckDB database:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>rm<span class="w"> </span>test_dlt.py<span class="w"> </span>test.duckdb
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>test_dlt.py<span class="w"> </span>test.duckdb
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Switching Destinations</p>
@@ -6598,9 +6600,9 @@
 </div>
 <h2 id="initial-commit">Initial Commit</h2>
 <p>Commit the project structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>git<span class="w"> </span>add<span class="w"> </span>.
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add dlt project structure and dependencies"</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add dlt project structure and dependencies"</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've expanded the data pipelines repository:</p>
@@ -6664,6 +6666,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6707,7 +6711,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

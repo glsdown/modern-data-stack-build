@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6731,38 +6733,38 @@
 <li>"Which dashboards use this table?"</li>
 </ul>
 <p><strong>OpenMetadata</strong> is an open source data catalog that integrates with dbt, Snowflake, Prefect, and BI tools to provide a unified view of your data platform.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    OPENMETADATA ARCHITECTURE                            │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Data Sources              OpenMetadata              Users              │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────────              ────────────              ─────              │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐          ┌──────────────┐         ┌──────────────┐  │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Snowflake    │─────────▶│ Metadata DB  │────────▶│ Data         │  │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • Tables     │          │ (PostgreSQL) │         │ Analysts     │  │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ • Views      │          │              │         │              │  │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ • Usage      │          │ ┌──────────┐ │         │ Search:      │  │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └──────────────┘          │ │ Lineage  │ │         │ "customer"   │  │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                            │ │ Docs     │ │         │              │  │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  ┌──────────────┐          │ │ Quality  │ │         │ Results:     │  │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │ dbt          │─────────▶│ │ Owners   │ │         │ • dim_       │  │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │ • Models     │          │ └──────────┘ │         │   customers  │  │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │ • Tests      │          │              │         │ • fct_orders │  │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │ • Lineage    │          └──────────────┘         └──────────────┘  │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  └──────────────┘                  │                                   │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                                    │                                   │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  ┌──────────────┐          ┌──────────────┐                           │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  │ Prefect      │─────────▶│ OpenMetadata │                           │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  │ • Flows      │          │ UI           │                           │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │ • Tasks      │          │ • Search     │                           │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │ • Runs       │          │ • Lineage    │                           │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  └──────────────┘          │ • Quality    │                           │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│                            └──────────────┘                           │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│                                                                         │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  Ingestion runs daily: Extract metadata → Store in OpenMetadata        │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│                                                                         │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    OPENMETADATA ARCHITECTURE                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Data Sources              OpenMetadata              Users              │
+│  ────────────              ────────────              ─────              │
+│                                                                         │
+│  ┌──────────────┐          ┌──────────────┐         ┌──────────────┐  │
+│  │ Snowflake    │─────────▶│ Metadata DB  │────────▶│ Data         │  │
+│  │ • Tables     │          │ (PostgreSQL) │         │ Analysts     │  │
+│  │ • Views      │          │              │         │              │  │
+│  │ • Usage      │          │ ┌──────────┐ │         │ Search:      │  │
+│  └──────────────┘          │ │ Lineage  │ │         │ "customer"   │  │
+│                            │ │ Docs     │ │         │              │  │
+│  ┌──────────────┐          │ │ Quality  │ │         │ Results:     │  │
+│  │ dbt          │─────────▶│ │ Owners   │ │         │ • dim_       │  │
+│  │ • Models     │          │ └──────────┘ │         │   customers  │  │
+│  │ • Tests      │          │              │         │ • fct_orders │  │
+│  │ • Lineage    │          └──────────────┘         └──────────────┘  │
+│  └──────────────┘                  │                                   │
+│                                    │                                   │
+│  ┌──────────────┐          ┌──────────────┐                           │
+│  │ Prefect      │─────────▶│ OpenMetadata │                           │
+│  │ • Flows      │          │ UI           │                           │
+│  │ • Tasks      │          │ • Search     │                           │
+│  │ • Runs       │          │ • Lineage    │                           │
+│  └──────────────┘          │ • Quality    │                           │
+│                            └──────────────┘                           │
+│                                                                         │
+│  Ingestion runs daily: Extract metadata → Store in OpenMetadata        │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="what-openmetadata-provides">What OpenMetadata Provides</h2>
 <h3 id="1-data-discovery">1. Data Discovery</h3>
@@ -6888,228 +6890,228 @@
 <p>All three run as Docker containers on ECS.</p>
 <h3 id="create-rds-postgresql-for-metadata">Create RDS PostgreSQL for Metadata</h3>
 <p>OpenMetadata stores metadata in PostgreSQL.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># terraform/aws/openmetadata-rds.tf</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_subnet_group"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-db-subnet-group"</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="na">subnet_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata DB Subnet Group"</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"openmetadata_rds"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-rds-sg"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for OpenMetadata RDS"</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL from ECS"</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_ecs.id</span><span class="p">]</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata RDS SG"</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="p">}</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"random_password"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">  </span><span class="na">length</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">32</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">  </span><span class="na">special</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="p">}</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata/database-password"</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="p">}</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_version"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">  </span><span class="na">secret_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.openmetadata_db_password.id</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">  </span><span class="na">secret_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.openmetadata_db_password.result</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="p">}</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_instance"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">  </span><span class="na">identifier</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-db"</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">  </span><span class="na">engine</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"postgres"</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">  </span><span class="na">engine_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"15.4"</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">  </span><span class="na">instance_class</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"db.t3.small"</span><span class="c1">  # Larger than Lightdash (more metadata)</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="w">  </span><span class="na">allocated_storage</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">50</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">  </span><span class="na">max_allocated_storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">  </span><span class="na">storage_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"gp3"</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">  </span><span class="na">storage_encrypted</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="w">  </span><span class="na">db_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">  </span><span class="na">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.openmetadata_db_password.result</span>
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">  </span><span class="na">db_subnet_group_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_subnet_group.openmetadata.name</span>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w">  </span><span class="na">vpc_security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_rds.id</span><span class="p">]</span>
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">  </span><span class="na">backup_retention_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">  </span><span class="na">backup_window</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"03:00-04:00"</span>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="w">  </span><span class="na">maintenance_window</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"sun:04:00-sun:05:00"</span>
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w">  </span><span class="na">skip_final_snapshot</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="w">  </span><span class="na">final_snapshot_identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-final-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"</span>
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a>
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata PostgreSQL"</span>
-<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/openmetadata-rds.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_subnet_group"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-db-subnet-group"</span>
+<span class="w">  </span><span class="na">subnet_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata DB Subnet Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"openmetadata_rds"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-rds-sg"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for OpenMetadata RDS"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+
+<span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL from ECS"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_ecs.id</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata RDS SG"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"random_password"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">length</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">32</span>
+<span class="w">  </span><span class="na">special</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata/database-password"</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_version"</span><span class="w"> </span><span class="nv">"openmetadata_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">secret_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.openmetadata_db_password.id</span>
+<span class="w">  </span><span class="na">secret_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.openmetadata_db_password.result</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_instance"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">identifier</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-db"</span>
+<span class="w">  </span><span class="na">engine</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"postgres"</span>
+<span class="w">  </span><span class="na">engine_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"15.4"</span>
+<span class="w">  </span><span class="na">instance_class</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"db.t3.small"</span><span class="c1">  # Larger than Lightdash (more metadata)</span>
+
+<span class="w">  </span><span class="na">allocated_storage</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">50</span>
+<span class="w">  </span><span class="na">max_allocated_storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span>
+<span class="w">  </span><span class="na">storage_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"gp3"</span>
+<span class="w">  </span><span class="na">storage_encrypted</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">db_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
+<span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
+<span class="w">  </span><span class="na">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.openmetadata_db_password.result</span>
+
+<span class="w">  </span><span class="na">db_subnet_group_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_subnet_group.openmetadata.name</span>
+<span class="w">  </span><span class="na">vpc_security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_rds.id</span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">backup_retention_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
+<span class="w">  </span><span class="na">backup_window</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"03:00-04:00"</span>
+<span class="w">  </span><span class="na">maintenance_window</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"sun:04:00-sun:05:00"</span>
+
+<span class="w">  </span><span class="na">skip_final_snapshot</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">final_snapshot_identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-final-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata PostgreSQL"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="deploy-openmetadata-server-ecs">Deploy OpenMetadata Server (ECS)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># terraform/aws/openmetadata-ecs.tf</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_cluster"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-cluster"</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nb">setting</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"containerInsights"</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"enabled"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_task_definition"</span><span class="w"> </span><span class="nv">"openmetadata_server"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">family</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="na">network_mode</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"awsvpc"</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="na">requires_compatibilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"FARGATE"</span><span class="p">]</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="na">cpu</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">"2048"</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="na">memory</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"4096"</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="na">execution_role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.arn</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="na">task_role_arn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.openmetadata_task_role.arn</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">  </span><span class="na">container_definitions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">([{</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata/server:1.3.0"</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">    </span><span class="na">portMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">      </span><span class="na">containerPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">      </span><span class="na">protocol</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">    </span><span class="p">}]</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">    </span><span class="na">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_DRIVER_CLASS", value = "org.postgresql.Driver"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_SCHEME", value = "postgresql"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_HOST"</span><span class="p">,</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.openmetadata.address</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_PORT", value = "5432"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_DATABASE", value = "openmetadata"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_USER", value = "openmetadata"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AUTHENTICATION_PROVIDER", value = "basic"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AUTHORIZER_CLASS_NAME", value = "org.openmetadata.service.security.DefaultAuthorizer"</span><span class="w"> </span><span class="p">}</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="na">secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_USER_PASSWORD"</span>
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.openmetadata_db_password.arn</span>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">    </span><span class="nb">logConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">      </span><span class="na">logDriver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"awslogs"</span>
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">      </span><span class="nb">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">        </span><span class="s2">"awslogs-group"</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudwatch_log_group.openmetadata.name</span>
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">        </span><span class="s2">"awslogs-region"</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_region.current.name</span>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">        </span><span class="s2">"awslogs-stream-prefix"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"server"</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">    </span><span class="nb">healthCheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">      </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8585/api/v1/health || exit 1"</span><span class="p">]</span>
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">      </span><span class="na">interval</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">      </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">      </span><span class="na">retries</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="w">      </span><span class="na">startPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">120</span>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">  </span><span class="p">}])</span>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="p">}</span>
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_service"</span><span class="w"> </span><span class="nv">"openmetadata_server"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="w">  </span><span class="na">name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
-<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">  </span><span class="na">cluster</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_cluster.openmetadata.id</span>
-<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="w">  </span><span class="na">task_definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_task_definition.openmetadata_server.arn</span>
-<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">  </span><span class="na">desired_count</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="w">  </span><span class="na">launch_type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"FARGATE"</span>
-<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>
-<a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a><span class="w">  </span><span class="nb">network_configuration</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a><span class="w">    </span><span class="na">subnets</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
-<a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a><span class="w">    </span><span class="na">security_groups</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_ecs.id</span><span class="p">]</span>
-<a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="w">    </span><span class="na">assign_public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>
-<a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a><span class="w">  </span><span class="nb">load_balancer</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a><span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.openmetadata.arn</span>
-<a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a><span class="w">    </span><span class="na">container_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
-<a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a><span class="w">    </span><span class="na">container_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
-<a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/openmetadata-ecs.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_cluster"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-cluster"</span>
+
+<span class="w">  </span><span class="nb">setting</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"containerInsights"</span>
+<span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"enabled"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_task_definition"</span><span class="w"> </span><span class="nv">"openmetadata_server"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">family</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
+<span class="w">  </span><span class="na">network_mode</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"awsvpc"</span>
+<span class="w">  </span><span class="na">requires_compatibilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"FARGATE"</span><span class="p">]</span>
+<span class="w">  </span><span class="na">cpu</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">"2048"</span>
+<span class="w">  </span><span class="na">memory</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"4096"</span>
+
+<span class="w">  </span><span class="na">execution_role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.arn</span>
+<span class="w">  </span><span class="na">task_role_arn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.openmetadata_task_role.arn</span>
+
+<span class="w">  </span><span class="na">container_definitions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">([{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
+<span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata/server:1.3.0"</span>
+
+<span class="w">    </span><span class="na">portMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="na">containerPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
+<span class="w">      </span><span class="na">protocol</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="p">}]</span>
+
+<span class="w">    </span><span class="na">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_DRIVER_CLASS", value = "org.postgresql.Driver"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_SCHEME", value = "postgresql"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_HOST"</span><span class="p">,</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.openmetadata.address</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_PORT", value = "5432"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_DATABASE", value = "openmetadata"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_USER", value = "openmetadata"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AUTHENTICATION_PROVIDER", value = "basic"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AUTHORIZER_CLASS_NAME", value = "org.openmetadata.service.security.DefaultAuthorizer"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+
+<span class="w">    </span><span class="na">secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"DB_USER_PASSWORD"</span>
+<span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.openmetadata_db_password.arn</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+
+<span class="w">    </span><span class="nb">logConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">logDriver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"awslogs"</span>
+<span class="w">      </span><span class="nb">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">"awslogs-group"</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudwatch_log_group.openmetadata.name</span>
+<span class="w">        </span><span class="s2">"awslogs-region"</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_region.current.name</span>
+<span class="w">        </span><span class="s2">"awslogs-stream-prefix"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"server"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nb">healthCheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8585/api/v1/health || exit 1"</span><span class="p">]</span>
+<span class="w">      </span><span class="na">interval</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
+<span class="w">      </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">      </span><span class="na">retries</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">      </span><span class="na">startPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">120</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}])</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_service"</span><span class="w"> </span><span class="nv">"openmetadata_server"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
+<span class="w">  </span><span class="na">cluster</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_cluster.openmetadata.id</span>
+<span class="w">  </span><span class="na">task_definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_task_definition.openmetadata_server.arn</span>
+<span class="w">  </span><span class="na">desired_count</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">  </span><span class="na">launch_type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"FARGATE"</span>
+
+<span class="w">  </span><span class="nb">network_configuration</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">subnets</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
+<span class="w">    </span><span class="na">security_groups</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_ecs.id</span><span class="p">]</span>
+<span class="w">    </span><span class="na">assign_public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">load_balancer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.openmetadata.arn</span>
+<span class="w">    </span><span class="na">container_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-server"</span>
+<span class="w">    </span><span class="na">container_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="create-alb-for-https-access">Create ALB for HTTPS Access</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># terraform/aws/openmetadata-alb.tf</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-alb"</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="na">internal</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="na">load_balancer_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"application"</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="na">security_groups</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_alb.id</span><span class="p">]</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="na">subnets</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.public_subnet_ids</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata ALB"</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">}</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_target_group"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-tg"</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ip"</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">  </span><span class="nb">health_check</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">    </span><span class="na">path</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"/api/v1/health"</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">    </span><span class="na">interval</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="na">timeout</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">    </span><span class="na">healthy_threshold</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">    </span><span class="na">unhealthy_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="na">matcher</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"200"</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="p">}</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"openmetadata_https"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.openmetadata.arn</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">  </span><span class="na">ssl_policy</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"ELBSecurityPolicy-TLS13-1-2-2021-06"</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">  </span><span class="na">certificate_arn</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_acm_certificate.openmetadata.arn</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">    </span><span class="na">type</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"forward"</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.openmetadata.arn</span>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="p">}</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"openmetadata_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">  </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_lb.openmetadata.dns_name}"</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/openmetadata-alb.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-alb"</span>
+<span class="w">  </span><span class="na">internal</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">load_balancer_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"application"</span>
+<span class="w">  </span><span class="na">security_groups</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.openmetadata_alb.id</span><span class="p">]</span>
+<span class="w">  </span><span class="na">subnets</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.public_subnet_ids</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"OpenMetadata ALB"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_target_group"</span><span class="w"> </span><span class="nv">"openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata-tg"</span>
+<span class="w">  </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">8585</span>
+<span class="w">  </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+<span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ip"</span>
+
+<span class="w">  </span><span class="nb">health_check</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">path</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"/api/v1/health"</span>
+<span class="w">    </span><span class="na">interval</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
+<span class="w">    </span><span class="na">timeout</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">    </span><span class="na">healthy_threshold</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="na">unhealthy_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">    </span><span class="na">matcher</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"200"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"openmetadata_https"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.openmetadata.arn</span>
+<span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
+<span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
+<span class="w">  </span><span class="na">ssl_policy</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"ELBSecurityPolicy-TLS13-1-2-2021-06"</span>
+<span class="w">  </span><span class="na">certificate_arn</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_acm_certificate.openmetadata.arn</span>
+
+<span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"forward"</span>
+<span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.openmetadata.arn</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"openmetadata_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_lb.openmetadata.dns_name}"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="apply-terraform">Apply Terraform</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/aws
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/aws
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>Once provisioning completes, OpenMetadata is accessible at the ALB URL.</p>
 <p>Navigate to <code>https://openmetadata-alb-xxxxx.eu-west-2.elb.amazonaws.com</code> and log in with default credentials:
@@ -7118,40 +7120,40 @@
 <p><strong>Change the password immediately</strong> in Settings → Users.</p>
 <h2 id="step-2-create-svc_openmetadata-service-account">Step 2: Create SVC_OPENMETADATA Service Account</h2>
 <p>OpenMetadata needs read-only access to Snowflake's <code>ACCOUNT_USAGE</code> schema for metadata extraction.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># terraform/snowflake/service-accounts/openmetadata.tf</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"service_user_openmetadata"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_service_user"</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="na">username</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_OPENMETADATA"</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="na">comment</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for OpenMetadata data catalog"</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="na">email</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform@yourcompany.com"</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.svc_openmetadata_public_key</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">  </span><span class="na">dedicated_role_grants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="s2">"ANALYTICS_REPORTER"</span><span class="c1">  # Read REPORTING schema for table metadata</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">  </span><span class="na">default_namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS.REPORTING"</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_OPENMETADATA"</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">    </span><span class="na">Service</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="p">}</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="c1"># Grant access to ACCOUNT_USAGE for query history and metadata</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"openmetadata_account_usage"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.service_user_openmetadata.dedicated_role_name</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">  </span><span class="na">privileges</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"IMPORTED PRIVILEGES"</span><span class="p">]</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DATABASE"</span>
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SNOWFLAKE"</span>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/service-accounts/openmetadata.tf</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"service_user_openmetadata"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../modules/snowflake_service_user"</span>
+
+<span class="w">  </span><span class="na">username</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_OPENMETADATA"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for OpenMetadata data catalog"</span>
+<span class="w">  </span><span class="na">email</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-platform@yourcompany.com"</span>
+<span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.svc_openmetadata_public_key</span>
+
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">dedicated_role_grants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"ANALYTICS_REPORTER"</span><span class="c1">  # Read REPORTING schema for table metadata</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
+<span class="w">  </span><span class="na">default_namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ANALYTICS.REPORTING"</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_OPENMETADATA"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Service</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"openmetadata"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Grant access to ACCOUNT_USAGE for query history and metadata</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"openmetadata_account_usage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.service_user_openmetadata.dedicated_role_name</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"IMPORTED PRIVILEGES"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DATABASE"</span>
+<span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SNOWFLAKE"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This grants <code>SVC_OPENMETADATA</code>:
 - Read access to <code>ANALYTICS.REPORTING</code> (table metadata, column names, types)
@@ -7433,46 +7435,46 @@
 <h2 id="step-7-automate-ingestion-via-cli">Step 7: Automate Ingestion via CLI</h2>
 <p>Run OpenMetadata ingestion from the command line (for CI/CD integration).</p>
 <h3 id="install-openmetadata-cli">Install OpenMetadata CLI</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"openmetadata-ingestion[snowflake,dbt]"</span>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"openmetadata-ingestion[snowflake,dbt]"</span>
 </code></pre></div>
 <h3 id="create-ingestion-config">Create Ingestion Config</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># ingestion/snowflake-config.yaml</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">source</span><span class="p">:</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake-analytics</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nt">serviceConnection</span><span class="p">:</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Snowflake</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_OPENMETADATA</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="nt">privateKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/svc_openmetadata_rsa_key.pem</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="nt">snowflakeAccount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-account.snowflakecomputing.com</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REPORTING</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="nt">sourceConfig</span><span class="p">:</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DatabaseMetadata</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">      </span><span class="nt">schemaFilterPattern</span><span class="p">:</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">        </span><span class="nt">includes</span><span class="p">:</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REPORTING</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MARTS</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="nt">sink</span><span class="p">:</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata-rest</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">  </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">    </span><span class="nt">workflowConfig</span><span class="p">:</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">      </span><span class="nt">openMetadataServerConfig</span><span class="p">:</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">        </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://your-openmetadata-url.com</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">        </span><span class="nt">authProvider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openmetadata</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">        </span><span class="nt">securityConfig</span><span class="p">:</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">          </span><span class="nt">jwtToken</span><span class="p">:</span><span class="w"> </span><span class="s">"YOUR_JWT_TOKEN"</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="nt">workflowConfig</span><span class="p">:</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="w">  </span><span class="nt">loggerLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">  </span><span class="nt">openMetadataServerConfig</span><span class="p">:</span>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">    </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://your-openmetadata-url.com</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># ingestion/snowflake-config.yaml</span>
+<span class="nt">source</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
+<span class="w">  </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake-analytics</span>
+<span class="w">  </span><span class="nt">serviceConnection</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Snowflake</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_OPENMETADATA</span>
+<span class="w">      </span><span class="nt">privateKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/svc_openmetadata_rsa_key.pem</span>
+<span class="w">      </span><span class="nt">snowflakeAccount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">your-account.snowflakecomputing.com</span>
+<span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REPORTING</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
+<span class="w">  </span><span class="nt">sourceConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DatabaseMetadata</span>
+<span class="w">      </span><span class="nt">schemaFilterPattern</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">includes</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REPORTING</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MARTS</span>
+
+<span class="nt">sink</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata-rest</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">workflowConfig</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">openMetadataServerConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://your-openmetadata-url.com</span>
+<span class="w">        </span><span class="nt">authProvider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openmetadata</span>
+<span class="w">        </span><span class="nt">securityConfig</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">jwtToken</span><span class="p">:</span><span class="w"> </span><span class="s">"YOUR_JWT_TOKEN"</span>
+
+<span class="nt">workflowConfig</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">loggerLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">  </span><span class="nt">openMetadataServerConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://your-openmetadata-url.com</span>
 </code></pre></div>
 <h3 id="run-ingestion">Run Ingestion</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>metadata<span class="w"> </span>ingest<span class="w"> </span>-c<span class="w"> </span>ingestion/snowflake-config.yaml
+<div class="highlight"><pre><span></span><code>metadata<span class="w"> </span>ingest<span class="w"> </span>-c<span class="w"> </span>ingestion/snowflake-config.yaml
 </code></pre></div>
 <p>This can be added to Prefect as a task to run after dbt.</p>
 <h2 id="cost-summary">Cost Summary</h2>
@@ -7566,6 +7568,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7609,7 +7613,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

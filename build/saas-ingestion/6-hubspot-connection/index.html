@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6467,19 +6469,19 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>With Airbyte deployed and Snowflake infrastructure in place, you can now create the HubSpot-to-Snowflake connection.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                      HUBSPOT CONNECTION                                     │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌─────────────┐       ┌─────────────────┐       ┌─────────────────┐        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │   HubSpot   │       │   Connection    │       │   Snowflake     │        │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │   Source    │──────▶│   (contacts)    │──────▶│   Destination   │        │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │             │       │                 │       │                 │        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ API Token   │       │ Incremental     │       │ AIRBYTE.HUBSPOT │        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ Contacts    │       │ Append + Dedup  │       │ .CONTACTS       │        │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  └─────────────┘       └─────────────────┘       └─────────────────┘        │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                                                             │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                      HUBSPOT CONNECTION                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────┐       ┌─────────────────┐       ┌─────────────────┐        │
+│  │   HubSpot   │       │   Connection    │       │   Snowflake     │        │
+│  │   Source    │──────▶│   (contacts)    │──────▶│   Destination   │        │
+│  │             │       │                 │       │                 │        │
+│  │ API Token   │       │ Incremental     │       │ AIRBYTE.HUBSPOT │        │
+│  │ Contacts    │       │ Append + Dedup  │       │ .CONTACTS       │        │
+│  └─────────────┘       └─────────────────┘       └─────────────────┘        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul class="task-list">
@@ -6541,21 +6543,21 @@
 </ol>
 <h3 id="via-airbyte-api">Via Airbyte API</h3>
 <p>For programmatic setup, use the Airbyte API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/sources"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s1">        "name": "hubspot-production",</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s1">        "workspaceId": "YOUR_WORKSPACE_ID",</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s1">        "configuration": {</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s1">            "sourceType": "hubspot",</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s1">            "credentials": {</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="s1">                "credentials_title": "Private App Credentials",</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s1">                "access_token": "YOUR_ACCESS_TOKEN"</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s1">            },</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="s1">            "start_date": "2026-01-01T00:00:00Z"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s1">        }</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="s1">    }'</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/sources"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "name": "hubspot-production",</span>
+<span class="s1">        "workspaceId": "YOUR_WORKSPACE_ID",</span>
+<span class="s1">        "configuration": {</span>
+<span class="s1">            "sourceType": "hubspot",</span>
+<span class="s1">            "credentials": {</span>
+<span class="s1">                "credentials_title": "Private App Credentials",</span>
+<span class="s1">                "access_token": "YOUR_ACCESS_TOKEN"</span>
+<span class="s1">            },</span>
+<span class="s1">            "start_date": "2026-01-01T00:00:00Z"</span>
+<span class="s1">        }</span>
+<span class="s1">    }'</span>
 </code></pre></div>
 <p>Save the returned <code>sourceId</code> — you will need it to create the connection.</p>
 <h2 id="configure-the-snowflake-destination">Configure the Snowflake Destination</h2>
@@ -6621,26 +6623,26 @@
 <p>When entering the private key in Airbyte, paste the key content without the <code>-----BEGIN PRIVATE KEY-----</code> and <code>-----END PRIVATE KEY-----</code> headers. Remove all newlines so it is a single line.</p>
 </div>
 <h3 id="via-airbyte-api_1">Via Airbyte API</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/destinations"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s1">        "name": "snowflake-airbyte",</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s1">        "workspaceId": "YOUR_WORKSPACE_ID",</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s1">        "configuration": {</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s1">            "destinationType": "snowflake",</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s1">            "host": "xxx.eu-west-2.snowflakecomputing.com",</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s1">            "role": "SVC_AIRBYTE",</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s1">            "warehouse": "LOADING",</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s1">            "database": "AIRBYTE",</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s1">            "schema": "HUBSPOT",</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s1">            "credentials": {</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="s1">                "auth_type": "Key Pair Authentication",</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="s1">                "private_key": "YOUR_BASE64_PRIVATE_KEY"</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="s1">            },</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="s1">            "username": "SVC_AIRBYTE"</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="s1">        }</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="s1">    }'</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/destinations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "name": "snowflake-airbyte",</span>
+<span class="s1">        "workspaceId": "YOUR_WORKSPACE_ID",</span>
+<span class="s1">        "configuration": {</span>
+<span class="s1">            "destinationType": "snowflake",</span>
+<span class="s1">            "host": "xxx.eu-west-2.snowflakecomputing.com",</span>
+<span class="s1">            "role": "SVC_AIRBYTE",</span>
+<span class="s1">            "warehouse": "LOADING",</span>
+<span class="s1">            "database": "AIRBYTE",</span>
+<span class="s1">            "schema": "HUBSPOT",</span>
+<span class="s1">            "credentials": {</span>
+<span class="s1">                "auth_type": "Key Pair Authentication",</span>
+<span class="s1">                "private_key": "YOUR_BASE64_PRIVATE_KEY"</span>
+<span class="s1">            },</span>
+<span class="s1">            "username": "SVC_AIRBYTE"</span>
+<span class="s1">        }</span>
+<span class="s1">    }'</span>
 </code></pre></div>
 <h2 id="create-the-connection">Create the Connection</h2>
 <h3 id="via-airbyte-ui_2">Via Airbyte UI</h3>
@@ -6702,42 +6704,42 @@
 <p>Set the schedule to <strong>Manual</strong> because Prefect will trigger syncs via the Airbyte API. This avoids double-scheduling and gives Prefect full control over orchestration.</p>
 </div>
 <h3 id="via-airbyte-api_2">Via Airbyte API</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/connections"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s1">        "name": "hubspot-to-snowflake",</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s1">        "sourceId": "YOUR_SOURCE_ID",</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s1">        "destinationId": "YOUR_DESTINATION_ID",</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s1">        "configurations": {</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s1">            "streams": [</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="s1">                {</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="s1">                    "name": "contacts",</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="s1">                    "syncMode": "incremental_deduped_history",</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="s1">                    "primaryKey": [["id"]],</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="s1">                    "cursorField": ["updatedAt"]</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="s1">                }</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="s1">            ]</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="s1">        },</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="s1">        "schedule": {</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="s1">            "scheduleType": "manual"</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="s1">        },</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="s1">        "namespaceDefinition": "destination",</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="s1">        "namespaceFormat": "HUBSPOT"</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="s1">    }'</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/connections"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "name": "hubspot-to-snowflake",</span>
+<span class="s1">        "sourceId": "YOUR_SOURCE_ID",</span>
+<span class="s1">        "destinationId": "YOUR_DESTINATION_ID",</span>
+<span class="s1">        "configurations": {</span>
+<span class="s1">            "streams": [</span>
+<span class="s1">                {</span>
+<span class="s1">                    "name": "contacts",</span>
+<span class="s1">                    "syncMode": "incremental_deduped_history",</span>
+<span class="s1">                    "primaryKey": [["id"]],</span>
+<span class="s1">                    "cursorField": ["updatedAt"]</span>
+<span class="s1">                }</span>
+<span class="s1">            ]</span>
+<span class="s1">        },</span>
+<span class="s1">        "schedule": {</span>
+<span class="s1">            "scheduleType": "manual"</span>
+<span class="s1">        },</span>
+<span class="s1">        "namespaceDefinition": "destination",</span>
+<span class="s1">        "namespaceFormat": "HUBSPOT"</span>
+<span class="s1">    }'</span>
 </code></pre></div>
 <p>Save the returned <code>connectionId</code> — Prefect needs this to trigger syncs.</p>
 <h3 id="store-connection-id">Store Connection ID</h3>
 <p>Store the connection ID in AWS Secrets Manager for Prefect:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>update-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/api-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s1">        "api_key": "YOUR_API_KEY",</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s1">        "workspace_id": "YOUR_WORKSPACE_ID",</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s1">        "api_url": "https://api.airbyte.com/v1",</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s1">        "hubspot_connection_id": "YOUR_CONNECTION_ID"</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span>--region<span class="w"> </span>eu-west-2
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>update-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/api-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "api_key": "YOUR_API_KEY",</span>
+<span class="s1">        "workspace_id": "YOUR_WORKSPACE_ID",</span>
+<span class="s1">        "api_url": "https://api.airbyte.com/v1",</span>
+<span class="s1">        "hubspot_connection_id": "YOUR_CONNECTION_ID"</span>
+<span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--region<span class="w"> </span>eu-west-2
 </code></pre></div>
 <h2 id="run-the-first-sync">Run the First Sync</h2>
 <h3 id="via-airbyte-ui_3">Via Airbyte UI</h3>
@@ -6748,44 +6750,44 @@
 <li>Wait for the sync to complete</li>
 </ol>
 <h3 id="via-airbyte-api_3">Via Airbyte API</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="s1">        "connectionId": "YOUR_CONNECTION_ID",</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="s1">        "jobType": "sync"</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s1">    }'</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "connectionId": "YOUR_CONNECTION_ID",</span>
+<span class="s1">        "jobType": "sync"</span>
+<span class="s1">    }'</span>
 </code></pre></div>
 <p>Check sync status:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs?connectionId=YOUR_CONNECTION_ID&amp;limit=1"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.data[0].status'</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">"https://api.airbyte.com/v1/jobs?connectionId=YOUR_CONNECTION_ID&amp;limit=1"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer YOUR_API_KEY"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.data[0].status'</span>
 </code></pre></div>
 <h2 id="verify-in-snowflake">Verify in Snowflake</h2>
 <p>After the first sync completes, verify data in Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- Check tables were created</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">;</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- View contacts</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">SELECT</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="n">id</span><span class="p">,</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="n">firstname</span><span class="p">,</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="n">lastname</span><span class="p">,</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="n">email</span><span class="p">,</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="n">createdate</span><span class="p">,</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="n">lastmodifieddate</span><span class="p">,</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="n">_airbyte_raw_id</span><span class="p">,</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">    </span><span class="n">_airbyte_extracted_at</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">lastmodifieddate</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="c1">-- Count contacts</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1">-- Check analyst access via role hierarchy</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check tables were created</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">;</span>
+
+<span class="c1">-- View contacts</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">firstname</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lastname</span><span class="p">,</span>
+<span class="w">    </span><span class="n">email</span><span class="p">,</span>
+<span class="w">    </span><span class="n">createdate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lastmodifieddate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_airbyte_raw_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">_airbyte_extracted_at</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">lastmodifieddate</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- Count contacts</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="p">;</span>
+
+<span class="c1">-- Check analyst access via role hierarchy</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">HUBSPOT</span><span class="p">.</span><span class="n">CONTACTS</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="understanding-airbyte-tables">Understanding Airbyte Tables</h3>
 <p>Airbyte creates two types of tables per stream:</p>
@@ -6842,11 +6844,11 @@
 <p>This keeps sync duration short and minimises API calls to HubSpot.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="source-connection-failed">Source Connection Failed</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Error: Unable to connect to HubSpot
+<div class="highlight"><pre><span></span><code>Error: Unable to connect to HubSpot
 </code></pre></div>
 <p><strong>Solution</strong>: Verify the private app token has <code>crm.objects.contacts.read</code> scope and has not been revoked.</p>
 <h3 id="destination-connection-failed">Destination Connection Failed</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Error: Snowflake authentication failed
+<div class="highlight"><pre><span></span><code>Error: Snowflake authentication failed
 </code></pre></div>
 <p><strong>Solution</strong>: Check:</p>
 <ol>
@@ -6855,10 +6857,10 @@
 <li>Account identifier format is correct (e.g., <code>xxx.eu-west-2</code>)</li>
 </ol>
 <h3 id="sync-failed-with-permission-error">Sync Failed with Permission Error</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Error: Insufficient privileges to operate on schema 'HUBSPOT'
+<div class="highlight"><pre><span></span><code>Error: Insufficient privileges to operate on schema 'HUBSPOT'
 </code></pre></div>
 <p><strong>Solution</strong>: Verify that <code>AIRBYTE_DB_WRITER</code> is granted to the <code>SVC_AIRBYTE</code> role:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="no-data-after-sync">No Data After Sync</h3>
 <p><strong>Solution</strong>: Check:</p>
@@ -6927,6 +6929,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6970,7 +6974,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

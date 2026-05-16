@@ -41,10 +41,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6578,43 +6580,43 @@
 </tbody>
 </table>
 <h4 id="permission-errors">Permission Errors</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Insufficient privileges to operate on &lt;object&gt;
+<div class="highlight"><pre><span></span><code>Insufficient privileges to operate on &lt;object&gt;
 </code></pre></div>
 <ol>
 <li>
 <p><strong>Check the user's current role:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">CURRENT_USER</span><span class="p">(),</span><span class="w"> </span><span class="k">CURRENT_ROLE</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="k">CURRENT_USER</span><span class="p">(),</span><span class="w"> </span><span class="k">CURRENT_ROLE</span><span class="p">();</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Check what roles are granted:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="o">&lt;</span><span class="n">username</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="o">&lt;</span><span class="n">username</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Check what the role can access:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">role_name</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">role_name</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Common fix</strong> - the user needs a different role. Either switch roles or update Terraform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Temporary fix</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">correct_role</span><span class="o">&gt;</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- Permanent fix via Terraform</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1">-- Add the role to user_additional_roles in users.tf or users.auto.tfvars</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Temporary fix</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">correct_role</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="c1">-- Permanent fix via Terraform</span>
+<span class="c1">-- Add the role to user_additional_roles in users.tf or users.auto.tfvars</span>
 </code></pre></div>
 </li>
 </ol>
 <h4 id="query-timeouts">Query Timeouts</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Statement reached its maximum execution time of 300 seconds
+<div class="highlight"><pre><span></span><code>Statement reached its maximum execution time of 300 seconds
 </code></pre></div>
 <ol>
 <li><strong>Check the query profile</strong> in Snowsight → Activity → Query History</li>
 <li><strong>Identify the bottleneck</strong> (spilling, full scan, exploding JOIN)</li>
 <li>
 <p><strong>Temporary fix</strong> - increase timeout:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">STATEMENT_TIMEOUT_IN_SECONDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">600</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">STATEMENT_TIMEOUT_IN_SECONDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">600</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6622,23 +6624,23 @@
 </li>
 </ol>
 <h4 id="warehouse-suspended">Warehouse Suspended</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Warehouse is suspended. Resume warehouse to execute queries.
+<div class="highlight"><pre><span></span><code>Warehouse is suspended. Resume warehouse to execute queries.
 </code></pre></div>
 <p>If <code>AUTO_RESUME = TRUE</code> (which it should be), this error usually indicates a resource monitor has suspended the warehouse:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITORS</span><span class="p">;</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">-- Check if any monitor has hit its credit limit</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITORS</span><span class="p">;</span>
+<span class="c1">-- Check if any monitor has hit its credit limit</span>
 </code></pre></div>
 <p>To resume temporarily:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">warehouse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">RESUME</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">warehouse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">RESUME</span><span class="p">;</span>
 </code></pre></div>
 <p>To increase the credit limit:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITOR</span><span class="w"> </span><span class="o">&lt;</span><span class="n">monitor</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">CREDIT_QUOTA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="n">new_limit</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITOR</span><span class="w"> </span><span class="o">&lt;</span><span class="n">monitor</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">CREDIT_QUOTA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="n">new_limit</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="3-dbt-issues">3. dbt Issues</h3>
 <h4 id="model-compilation-errors">Model Compilation Errors</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Compilation Error in model &lt;model_name&gt;
+<div class="highlight"><pre><span></span><code>Compilation Error in model &lt;model_name&gt;
 </code></pre></div>
 <ol>
 <li><strong>Check the error details</strong> - usually a missing ref, source, or macro</li>
@@ -6650,18 +6652,18 @@
 </li>
 </ol>
 <h4 id="test-failures">Test Failures</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Failure in test &lt;test_name&gt;
+<div class="highlight"><pre><span></span><code>Failure in test &lt;test_name&gt;
 </code></pre></div>
 <ol>
 <li>
 <p><strong>Check what data failed:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>&lt;test_name&gt;<span class="w"> </span>--store-failures
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>&lt;test_name&gt;<span class="w"> </span>--store-failures
 </code></pre></div>
 <p>Failed rows are stored in the <code>dbt_test__audit</code> schema.</p>
 </li>
 <li>
 <p><strong>Query the failures:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS_DEV</span><span class="p">.</span><span class="n">DBT_TEST__AUDIT</span><span class="p">.</span><span class="o">&lt;</span><span class="n">test_name</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS_DEV</span><span class="p">.</span><span class="n">DBT_TEST__AUDIT</span><span class="p">.</span><span class="o">&lt;</span><span class="n">test_name</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6678,7 +6680,7 @@
 <ol>
 <li>
 <p><strong>Run a full refresh</strong> to rebuild from scratch:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>&lt;model&gt;<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>--select<span class="w"> </span>&lt;model&gt;<span class="w"> </span>--full-refresh
 </code></pre></div>
 </li>
 <li>
@@ -6687,13 +6689,13 @@
 <li><strong>If the issue recurs</strong>, check the <code>is_incremental()</code> filter logic</li>
 </ol>
 <h4 id="schema-changes">Schema Changes</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Compilation Error: column "new_column" does not exist
+<div class="highlight"><pre><span></span><code>Compilation Error: column "new_column" does not exist
 </code></pre></div>
 <p>Source schemas evolve. When upstream tools add or rename columns:</p>
 <ol>
 <li>
 <p><strong>Check what changed</strong> in the source table:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6746,7 +6748,7 @@
 <li>In Prefect UI, click <strong>Retry</strong> on the failed run</li>
 <li>
 <p>Or trigger a new run via CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>&lt;deployment-name&gt;/production
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>&lt;deployment-name&gt;/production
 </code></pre></div>
 </li>
 </ul>
@@ -6761,7 +6763,7 @@
 <li><strong>Prefect Cloud</strong>: Check ECS service or the machine running the worker</li>
 <li>
 <p><strong>Self-hosted</strong>: Check the worker container:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>prefect-worker
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>prefect-worker
 </code></pre></div>
 </li>
 </ul>
@@ -6771,21 +6773,21 @@
 </li>
 </ol>
 <h4 id="deployment-not-found">Deployment Not Found</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Deployment not found
+<div class="highlight"><pre><span></span><code>Deployment not found
 </code></pre></div>
 <p>The deployment was deleted or never created. Redeploy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
+prefect<span class="w"> </span>deploy<span class="w"> </span>--all
 </code></pre></div>
 <h3 id="5-dlt-issues">5. dlt Issues</h3>
 <h4 id="schema-evolution-errors">Schema Evolution Errors</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Schema has changed
+<div class="highlight"><pre><span></span><code>Schema has changed
 </code></pre></div>
 <p>dlt detects schema changes automatically. If a source API returns new fields:</p>
 <ol>
 <li>
 <p><strong>Check the schema file</strong> in <code>.dlt/schemas/</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>cat<span class="w"> </span>.dlt/schemas/&lt;pipeline_name&gt;/schema.json
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>.dlt/schemas/&lt;pipeline_name&gt;/schema.json
 </code></pre></div>
 </li>
 <li>
@@ -6794,7 +6796,7 @@
 <li><strong>If the change is unexpected</strong>, investigate the source API for breaking changes</li>
 </ol>
 <h4 id="credential-resolution-failures">Credential Resolution Failures</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ConfigFieldMissingException: Missing config field
+<div class="highlight"><pre><span></span><code>ConfigFieldMissingException: Missing config field
 </code></pre></div>
 <p>dlt resolves credentials in this order: environment variables → <code>secrets.toml</code> → <code>config.toml</code> → custom providers (e.g. AWS Secrets Manager).</p>
 <ol>
@@ -6804,20 +6806,20 @@
 </ol>
 <h3 id="6-infrastructure-issues">6. Infrastructure Issues</h3>
 <h4 id="terraform-state-lock">Terraform State Lock</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Error acquiring the state lock
+<div class="highlight"><pre><span></span><code>Error acquiring the state lock
 </code></pre></div>
 <p>Another Terraform operation is running, or a previous operation was interrupted.</p>
 <ol>
 <li>
 <p><strong>Check who holds the lock:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>scan<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">    </span>--table-name<span class="w"> </span>your-org-terraform-locks<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>scan<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--table-name<span class="w"> </span>your-org-terraform-locks<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </li>
 <li>
 <p><strong>If the lock is stale</strong> (the operation is no longer running):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>terraform<span class="w"> </span>force-unlock<span class="w"> </span>&lt;LOCK_ID&gt;
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>force-unlock<span class="w"> </span>&lt;LOCK_ID&gt;
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">Force Unlock</p>
@@ -6950,6 +6952,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6993,7 +6997,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

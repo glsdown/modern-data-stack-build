@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -4506,6 +4508,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#claude-code-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Code Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6305,6 +6318,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#claude-code-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Code Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6345,67 +6369,67 @@
 </ul>
 <h2 id="verification-checklist">Verification Checklist</h2>
 <h3 id="snowflake-infrastructure">Snowflake Infrastructure</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- Service account exists</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_DBT'</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">-- default_warehouse should be TRANSFORMING</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">-- default_role should be SVC_DBT</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">-- Role grants</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">-- Should include: SVC_DBT role, ANALYTICS_TRANSFORMER (inherited)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">-- dbt-created schemas exist in ANALYTICS</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1">-- Should include: STAGING, INTERMEDIATE (if not ephemeral), MARTS, REPORTING</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1">-- Models exist</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">MARTS</span><span class="p">;</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1">-- Should include: FCT_EXCHANGE_RATES, DIM_CURRENCIES, FCT_CONTACTS</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">REPORTING</span><span class="p">;</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">VIEWS</span><span class="p">;</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1">-- Should include: RPT_CONTACTS</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Service account exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_DBT'</span><span class="p">;</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="c1">-- default_warehouse should be TRANSFORMING</span>
+<span class="c1">-- default_role should be SVC_DBT</span>
+
+<span class="c1">-- Role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="c1">-- Should include: SVC_DBT role, ANALYTICS_TRANSFORMER (inherited)</span>
+
+<span class="c1">-- dbt-created schemas exist in ANALYTICS</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="p">;</span>
+<span class="c1">-- Should include: STAGING, INTERMEDIATE (if not ephemeral), MARTS, REPORTING</span>
+
+<span class="c1">-- Models exist</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">MARTS</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span>
+<span class="c1">-- Should include: FCT_EXCHANGE_RATES, DIM_CURRENCIES, FCT_CONTACTS</span>
+
+<span class="n">USE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">REPORTING</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">VIEWS</span><span class="p">;</span>
+<span class="c1">-- Should include: RPT_CONTACTS</span>
 </code></pre></div>
 <h3 id="role-based-access">Role-Based Access</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- ANALYTICS_DEVELOPER can read MARTS</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_CONTACTS</span><span class="p">;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">-- ANALYTICS_REPORTER can only read REPORTING</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">REPORTING</span><span class="p">.</span><span class="n">RPT_CONTACTS</span><span class="p">;</span><span class="w">    </span><span class="c1">-- should succeed</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_CONTACTS</span><span class="p">;</span><span class="w">         </span><span class="c1">-- should fail</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1">-- SVC_DBT can write to ANALYTICS</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span><span class="w">   </span><span class="c1">-- should succeed</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- ANALYTICS_DEVELOPER can read MARTS</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_CONTACTS</span><span class="p">;</span>
+
+<span class="c1">-- ANALYTICS_REPORTER can only read REPORTING</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_REPORTER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">REPORTING</span><span class="p">.</span><span class="n">RPT_CONTACTS</span><span class="p">;</span><span class="w">    </span><span class="c1">-- should succeed</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_CONTACTS</span><span class="p">;</span><span class="w">         </span><span class="c1">-- should fail</span>
+
+<span class="c1">-- SVC_DBT can write to ANALYTICS</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span><span class="w">   </span><span class="c1">-- should succeed</span>
 </code></pre></div>
 <h3 id="dbt-build">dbt Build</h3>
 <p>Run a full build locally to confirm everything is working:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>dbt-transform
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>dbt<span class="w"> </span>deps
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>dbt<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>dbt-transform
+dbt<span class="w"> </span>deps
+dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness
+dbt<span class="w"> </span>build
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Running with dbt=1.8.x
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Found 8 models, 4 sources, 25 tests, 3 seeds
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Concurrency: 4 threads
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>1 of 8 START sql view model ANALYTICS_DEV.STAGING.STG_DLT__EXCHANGE_RATES ........ [RUN]
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>1 of 8 OK created sql view model ANALYTICS_DEV.STAGING.STG_DLT__EXCHANGE_RATES .. [CREATE VIEW in 0.8s]
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>...
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>Finished running 8 models, 25 tests in 45.2s.
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>PASS=33 WARN=0 ERROR=0 SKIP=0 TOTAL=33
+<div class="highlight"><pre><span></span><code>Running with dbt=1.8.x
+
+Found 8 models, 4 sources, 25 tests, 3 seeds
+
+Concurrency: 4 threads
+
+1 of 8 START sql view model ANALYTICS_DEV.STAGING.STG_DLT__EXCHANGE_RATES ........ [RUN]
+1 of 8 OK created sql view model ANALYTICS_DEV.STAGING.STG_DLT__EXCHANGE_RATES .. [CREATE VIEW in 0.8s]
+...
+
+Finished running 8 models, 25 tests in 45.2s.
+
+PASS=33 WARN=0 ERROR=0 SKIP=0 TOTAL=33
 </code></pre></div>
 <h3 id="cicd">CI/CD</h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">dbt Core</label><label for="__tabbed_1_2">dbt Cloud</label></div>
@@ -6437,7 +6461,7 @@
 </div>
 <h3 id="prefect-end-to-end">Prefect End-to-End</h3>
 <p>Trigger the full daily pipeline manually and confirm it runs ingestion followed by transformation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>daily-pipeline/production
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>daily-pipeline/production
 </code></pre></div>
 <p>In the Prefect UI, you should see:</p>
 <ul>
@@ -6446,43 +6470,43 @@
 <li><code>dbt-transformation</code> (or <code>dbt-cloud-transformation</code>) — Completed</li>
 </ul>
 <p>Check that the mart tables were updated after the dbt run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">-- Should be today</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">loaded_at</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ANALYTICS</span><span class="p">.</span><span class="n">MARTS</span><span class="p">.</span><span class="n">FCT_EXCHANGE_RATES</span><span class="p">;</span>
+<span class="c1">-- Should be today</span>
 </code></pre></div>
 <h2 id="architecture-summary">Architecture Summary</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│                    COMPLETE DATA TRANSFORMATION STACK                       │
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│                                                                             │
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│  Source Systems                                                             │
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│  ──────────────                                                             │
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│  Open Exchange Rates API ──▶ dlt ──▶ DLT.OPEN_EXCHANGE_RATES                │
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│  Open Exchange Rates API ──▶ dlt ──▶ S3 ──▶ Snowpipe ──▶ SNOWPIPE.*         │
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>│  HubSpot CRM ──▶ Airbyte ──────────────────────────────▶ AIRBYTE.HUBSPOT    │
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│                                                                             │
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>│  Transformation (dbt-transform repo)                                        │
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>│  ───────────────────────────────────                                        │
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>│                                                                             │
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>│  STAGING             INTERMEDIATE         MARTS           REPORTING         │
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>│  ───────             ────────────         ─────           ─────────         │
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>│  stg_dlt__*    ───▶  int_exchange         fct_exchange    rpt_contacts      │
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>│  stg_snowpipe__* ──▶   _rates__unioned ─▶   _rates                          │
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>│  stg_airbyte__* ──▶  int_contacts__    ─▶ fct_contacts ─▶ (ANALYTICS_       │
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>│                         enriched          dim_currencies    REPORTER        │
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>│                                                             access)         │
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>│                                                                             │
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>│  Orchestration (data-pipelines repo)                                        │
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>│  ────────────────────────────────────                                       │
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>│  Prefect daily pipeline                                                     │
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>│  ├── Ingestion: dlt + Airbyte flows (parallel)                              │
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>│  └── Transformation: dbt Core CLI or dbt Cloud API                          │
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>│                                                                             │
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>│  CI/CD                                                                      │
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>│  ─────                                                                      │
-<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>│  dbt-transform PRs ──▶ slim CI (changed models only, defer to prod)         │
-<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>│  dbt-transform main ──▶ full build + manifest → S3 + docs → CloudFront      │
-<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>│                                                                             │
-<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    COMPLETE DATA TRANSFORMATION STACK                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Source Systems                                                             │
+│  ──────────────                                                             │
+│  Open Exchange Rates API ──▶ dlt ──▶ DLT.OPEN_EXCHANGE_RATES                │
+│  Open Exchange Rates API ──▶ dlt ──▶ S3 ──▶ Snowpipe ──▶ SNOWPIPE.*         │
+│  HubSpot CRM ──▶ Airbyte ──────────────────────────────▶ AIRBYTE.HUBSPOT    │
+│                                                                             │
+│  Transformation (dbt-transform repo)                                        │
+│  ───────────────────────────────────                                        │
+│                                                                             │
+│  STAGING             INTERMEDIATE         MARTS           REPORTING         │
+│  ───────             ────────────         ─────           ─────────         │
+│  stg_dlt__*    ───▶  int_exchange         fct_exchange    rpt_contacts      │
+│  stg_snowpipe__* ──▶   _rates__unioned ─▶   _rates                          │
+│  stg_airbyte__* ──▶  int_contacts__    ─▶ fct_contacts ─▶ (ANALYTICS_       │
+│                         enriched          dim_currencies    REPORTER        │
+│                                                             access)         │
+│                                                                             │
+│  Orchestration (data-pipelines repo)                                        │
+│  ────────────────────────────────────                                       │
+│  Prefect daily pipeline                                                     │
+│  ├── Ingestion: dlt + Airbyte flows (parallel)                              │
+│  └── Transformation: dbt Core CLI or dbt Cloud API                          │
+│                                                                             │
+│  CI/CD                                                                      │
+│  ─────                                                                      │
+│  dbt-transform PRs ──▶ slim CI (changed models only, defer to prod)         │
+│  dbt-transform main ──▶ full build + manifest → S3 + docs → CloudFront      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h3 id="repository-summary">Repository Summary</h3>
 <table>
@@ -6556,8 +6580,8 @@
 <p>The Snowflake <code>TRANSFORMING</code> warehouse is the main variable cost. With auto-suspend (60 seconds recommended) and typical daily batch runs, expect 1-2 credits per day for small to medium data volumes.</p>
 <h2 id="common-operations">Common Operations</h2>
 <h3 id="backfill-a-model">Backfill a Model</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Re-run a model and all downstream models</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
+<div class="highlight"><pre><span></span><code><span class="c1"># Re-run a model and all downstream models</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates+<span class="w"> </span>--full-refresh
 </code></pre></div>
 <h3 id="add-a-new-source">Add a New Source</h3>
 <ol>
@@ -6569,30 +6593,30 @@
 <li>Open a pull request — CI will build and test the new models</li>
 </ol>
 <h3 id="debug-a-failing-test">Debug a Failing Test</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Compile the test SQL to inspect it</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates<span class="w"> </span>--store-failures
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Check the stored failures table</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>ANALYTICS_DEV.DBT_TEST__AUDIT.FCT_EXCHANGE_RATES_EXCHANGE_RATE_NOT_NULL<span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Compile the test SQL to inspect it</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>fct_exchange_rates<span class="w"> </span>--store-failures
+
+<span class="c1"># Check the stored failures table</span>
+SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>ANALYTICS_DEV.DBT_TEST__AUDIT.FCT_EXCHANGE_RATES_EXCHANGE_RATE_NOT_NULL<span class="p">;</span>
 </code></pre></div>
 <h3 id="update-a-models-materialisation">Update a Model's Materialisation</h3>
 <p>To change a view to a table (e.g. for a frequently-queried staging model):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># In the model's .yml file or dbt_project.yml</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_dlt__exchange_rates</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">      </span><span class="nt">materialised</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># In the model's .yml file or dbt_project.yml</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_dlt__exchange_rates</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">materialised</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="object-analyticsstagingstg_dbt__-does-not-exist"><code>Object 'ANALYTICS.STAGING.STG_DBT__*' does not exist</code></h3>
 <p>dbt-created schemas in <code>ANALYTICS</code> are lowercase in the compiled SQL but uppercase in Snowflake. Confirm the <code>generate_schema_name</code> macro is in place and returning uppercase schema names. Check with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>dbt<span class="w"> </span>compile<span class="w"> </span>--select<span class="w"> </span>stg_dlt__exchange_rates
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>cat<span class="w"> </span>target/compiled/dbt_transform/models/staging/dlt/stg_dlt__exchange_rates.sql
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>compile<span class="w"> </span>--select<span class="w"> </span>stg_dlt__exchange_rates
+cat<span class="w"> </span>target/compiled/dbt_transform/models/staging/dlt/stg_dlt__exchange_rates.sql
 </code></pre></div>
 <h3 id="insufficient-privileges-to-operate-on-schema-staging"><code>Insufficient privileges to operate on schema 'STAGING'</code></h3>
 <p>The <code>SVC_DBT</code> user does not have <code>CREATE SCHEMA</code> privileges on <code>ANALYTICS</code>. Check:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_TRANSFORMER</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_TRANSFORMER</span><span class="p">;</span>
 </code></pre></div>
 <p><code>ANALYTICS_TRANSFORMER</code> should include <code>CREATE SCHEMA ON DATABASE ANALYTICS</code>. If missing, this was not set in the database module's grants — check <code>terraform/snowflake/modules/snowflake_database/main.tf</code>.</p>
 <h3 id="git-clone-failed-dbt-core-prefect-flow"><code>Git clone failed</code> (dbt Core Prefect flow)</h3>
@@ -6628,6 +6652,19 @@
 <li><code>build/data-analytics/</code> — BI tool setup and dashboard development</li>
 <li><code>build/observability/</code> — Data quality monitoring and alerting</li>
 </ul>
+<h2 id="claude-code-setup">Claude Code Setup</h2>
+<p>Now that your <code>dbt-transform</code> repository has its model layers, naming conventions, and testing patterns established, add a CLAUDE.md and skills so Claude Code can help add sources and models correctly.</p>
+<p>Create the skills directory structure in your <code>dbt-transform</code> repository:</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>.claude/skills/add-source-and-staging
+mkdir<span class="w"> </span>-p<span class="w"> </span>.claude/skills/add-mart-model
+</code></pre></div>
+<p>Copy the templates from the Maintain section:</p>
+<ul>
+<li><a href="../../../maintain/templates/dbt-claude/">dbt CLAUDE.md template</a> → <code>CLAUDE.md</code> at the repository root</li>
+<li><a href="../../../maintain/templates/add-source-and-staging/">add-source-and-staging skill</a> → <code>.claude/skills/add-source-and-staging/SKILL.md</code></li>
+<li><a href="../../../maintain/templates/add-mart-model/">add-mart-model skill</a> → <code>.claude/skills/add-mart-model/SKILL.md</code></li>
+</ul>
+<p>Verify by opening the repository in Claude Code and asking it to describe the model layer conventions - it should reference double underscores, materialisation rules, and the one-YAML-per-model pattern.</p>
 <h2 id="feedback">Feedback</h2>
 <p>Found an issue or have suggestions? Open an issue in the repository.</p>
 
@@ -6652,7 +6689,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -6679,6 +6716,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6722,7 +6761,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6066,7 +6068,7 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" checked><span class="task-list-indicator"></span></label> Set up the GitHub provider</li>
 </ul>
 <h2 id="navigate-to-your-terraform-directory">Navigate to Your Terraform Directory</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/github
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/github
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Working Directory</p>
@@ -6075,15 +6077,15 @@
 <h3 id="configure-the-remote-state-backend">Configure the Remote State Backend</h3>
 <p>The remote state backend is where the current "state" of the infrastructure as terraform sees it is stored. You set it up as part of the <a href="../../1-set-up-terraform-remote-state/">Terraform Remote State setup steps</a>. We need to configure our GH provider to use it.</p>
 <p>Create <code>backend.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="kr">backend</span><span class="w"> </span><span class="nv">"s3"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="na">bucket</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-123456789012"</span><span class="c1">  # Replace with your bucket name</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="na">key</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"github/terraform.tfstate"</span><span class="c1">       # GitHub-specific state file</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="na">region</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span><span class="c1">                      # Replace with your region</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">encrypt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">backend</span><span class="w"> </span><span class="nv">"s3"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">bucket</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-123456789012"</span><span class="c1">  # Replace with your bucket name</span>
+<span class="w">    </span><span class="na">key</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"github/terraform.tfstate"</span><span class="c1">       # GitHub-specific state file</span>
+<span class="w">    </span><span class="na">region</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-west-2"</span><span class="c1">                      # Replace with your region</span>
+<span class="w">    </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span>
+<span class="w">    </span><span class="na">encrypt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Replace:
 - <code>terraform-state-123456789012</code> with your S3 bucket name (from page 1)
@@ -6091,7 +6093,7 @@
 <div class="admonition warning">
 <p class="admonition-title">Bucket Name Must Match</p>
 <p>Use the exact bucket name you created in <a href="../../1-set-up-terraform-remote-state/">Set Up Terraform Remote State</a>. You can verify it with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>terraform-state
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>terraform-state
 </code></pre></div>
 </div>
 <div class="admonition tip">
@@ -6100,16 +6102,16 @@
 </div>
 <h3 id="configure-terraform-and-provider-versions">Configure Terraform and Provider Versions</h3>
 <p>Create <code>main.tf</code> to specify Terraform version requirements and the GitHub provider:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;= 1.14.0"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nb">github</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"integrations/github"</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 6.0"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;= 1.14.0"</span>
+
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">github</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"integrations/github"</span>
+<span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 6.0"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This configuration:
 - Requires Terraform 1.14.0 or later
@@ -6125,17 +6127,17 @@
 </div>
 <h3 id="create-variables">Create Variables</h3>
 <p>Create <code>variables.tf</code> to define the organisation variable needed by the provider:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># GitHub Variables</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub organisation name"</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Variables</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_organization"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub organisation name"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This is the only variable needed for now - it tells Terraform which GitHub organisation to manage. We'll add more variables in the next page when we start managing actual resources.</p>
 <h2 id="create-variable-values">Create Variable Values</h2>
 <p>Create <code>terraform.tfvars</code> to provide the value for your organisation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># GitHub Configuration</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="na">github_organization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-org-name"</span><span class="c1"> # Replace with your GitHub org slug</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Configuration</span>
+<span class="na">github_organization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"your-org-name"</span><span class="c1"> # Replace with your GitHub org slug</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Variables vs tfvars</p>
@@ -6148,11 +6150,11 @@
 <h2 id="configure-the-github-provider">Configure the GitHub Provider</h2>
 <p>Now that we've defined the variable, we can configure the GitHub provider to use it.</p>
 <p>Create <code>providers.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># GitHub Provider</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># This sets the organisation context for all GitHub resources</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="na">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Provider</span>
+<span class="c1"># This sets the organisation context for all GitHub resources</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This configuration:
 - Sets the organisation context - all GitHub resources (teams, repositories, etc.) will be created in this organisation
@@ -6166,44 +6168,44 @@
 <p class="admonition-title">GitHub Enterprise</p>
 </div>
 <p>If you are working on GitHub Enterprise (self hosted), you'll need to ensure that you also set <code>base_url</code> alongside the owner. This is so that terraform knows where to send requests to. The value must end with a slash e.g.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># providers.tf</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="na">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="na">base_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_base_url</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># variables.tf</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"github_base_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Target GitHub base API endpoint"</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">}</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="c1"># terraform.tfvars</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="na">github_base_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://github.yourcompany.com/api/v3/"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># providers.tf</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_organization</span>
+<span class="w">  </span><span class="na">base_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.github_base_url</span>
+<span class="p">}</span>
+
+<span class="c1"># variables.tf</span>
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"github_base_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Target GitHub base API endpoint"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="c1"># terraform.tfvars</span>
+<span class="na">github_base_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://github.yourcompany.com/api/v3/"</span>
 </code></pre></div>
 <h2 id="create-outputs">Create Outputs</h2>
 <p>Create <code>outputs.tf</code> as a placeholder for future outputs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Outputs for GitHub resources</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Add outputs here as you create resources in the next page</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Outputs for GitHub resources</span>
+<span class="c1"># Add outputs here as you create resources in the next page</span>
 </code></pre></div>
 <p>This file is empty for now but provides a place to add outputs as we create resources in the next page.</p>
 <h2 id="initialise-terraform">Initialise Terraform</h2>
 <p>Now that everything is configured, initialise Terraform for the GitHub provider:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/github
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>terraform<span class="w"> </span>init
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/github
+terraform<span class="w"> </span>init
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Initializing the backend...
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Successfully configured the backend "s3"! Terraform will automatically
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>use this backend unless the backend configuration changes.
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>Initializing provider plugins...
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>- Finding integrations/github versions matching "~&gt; 6.0"...
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>- Installing integrations/github v6.0.0...
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>- Installed integrations/github v6.0.0
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>Terraform has been successfully initialized!
+<div class="highlight"><pre><span></span><code>Initializing the backend...
+
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+- Finding integrations/github versions matching "~&gt; 6.0"...
+- Installing integrations/github v6.0.0...
+- Installed integrations/github v6.0.0
+
+Terraform has been successfully initialized!
 </code></pre></div>
 <p>This command:
 - Configures the S3 backend with key <code>github/terraform.tfstate</code>
@@ -6212,10 +6214,10 @@
 - Creates a <code>.terraform.lock.hcl</code> file</p>
 <h3 id="verify-backend-configuration">Verify Backend Configuration</h3>
 <p>Check that Terraform created the state file in S3:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://terraform-state-123456789012/github/<span class="w"> </span>--profile<span class="w"> </span>data-engineer
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://terraform-state-123456789012/github/<span class="w"> </span>--profile<span class="w"> </span>data-engineer
 </code></pre></div>
 <p>You should see an empty state file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>2026-01-17 22:00:00         0 terraform.tfstate
+<div class="highlight"><pre><span></span><code>2026-01-17 22:00:00         0 terraform.tfstate
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Empty State is Normal</p>
@@ -6275,6 +6277,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6318,7 +6322,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

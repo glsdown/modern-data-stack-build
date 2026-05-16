@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6323,118 +6325,118 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Rather than using Airbyte's built-in scheduler, you trigger syncs from Prefect. This provides a single orchestration layer for both dlt and Airbyte pipelines, with consistent alerting, retries, and monitoring.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    PREFECT + AIRBYTE ORCHESTRATION                          │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Prefect Flows                                                              │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ─────────────                                                              │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                             │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌───────────────────────────┐     ┌───────────────────────────┐            │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │  hubspot-airbyte-daily    │     │  retl-contacts-daily      │            │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │                           │     │                           │            │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │  Schedule: 07:00 UTC      │     │  Schedule: 08:00 UTC      │            │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │  Retries: 2               │     │  (after dbt transforms)   │            │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │  Timeout: 30 min          │     │  Retries: 2               │            │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  └─────────────┬─────────────┘     └─────────────┬─────────────┘            │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                │                                 │                          │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│                ▼                                 ▼                          │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  ┌─────────────────────────────────────────────────────────────┐            │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │                    Airbyte API                              │            │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │  POST /v1/jobs  (trigger sync)                              │            │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │  GET  /v1/jobs  (check status)                              │            │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  └─────────────────────────────────────────────────────────────┘            │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                │                                                            │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                ▼                                                            │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  ┌───────────────────────────────────────┐                                  │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │  On Failure: Slack notification       │                                  │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │  Same automations as dlt pipelines    │                                  │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  └───────────────────────────────────────┘                                  │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│                                                                             │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PREFECT + AIRBYTE ORCHESTRATION                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Prefect Flows                                                              │
+│  ─────────────                                                              │
+│                                                                             │
+│  ┌───────────────────────────┐     ┌───────────────────────────┐            │
+│  │  hubspot-airbyte-daily    │     │  retl-contacts-daily      │            │
+│  │                           │     │                           │            │
+│  │  Schedule: 07:00 UTC      │     │  Schedule: 08:00 UTC      │            │
+│  │  Retries: 2               │     │  (after dbt transforms)   │            │
+│  │  Timeout: 30 min          │     │  Retries: 2               │            │
+│  └─────────────┬─────────────┘     └─────────────┬─────────────┘            │
+│                │                                 │                          │
+│                ▼                                 ▼                          │
+│  ┌─────────────────────────────────────────────────────────────┐            │
+│  │                    Airbyte API                              │            │
+│  │  POST /v1/jobs  (trigger sync)                              │            │
+│  │  GET  /v1/jobs  (check status)                              │            │
+│  └─────────────────────────────────────────────────────────────┘            │
+│                │                                                            │
+│                ▼                                                            │
+│  ┌───────────────────────────────────────┐                                  │
+│  │  On Failure: Slack notification       │                                  │
+│  │  Same automations as dlt pipelines    │                                  │
+│  └───────────────────────────────────────┘                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="install-dependencies">Install Dependencies</h2>
 <p>Add the <code>prefect-airbyte</code> integration package to your <code>data-pipelines</code> project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>add<span class="w"> </span>prefect-airbyte
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>prefect-airbyte
 </code></pre></div>
 <h2 id="project-structure">Project Structure</h2>
 <p>Add Airbyte flows to the existing data-pipelines repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>data-pipelines/
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── flows/
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   ├── exchange_rates.py       # dlt flow
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│   ├── currencies.py           # dlt flow
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│   ├── products.py             # dlt flow
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│   ├── hubspot_airbyte.py      # Airbyte flow
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│   └── retl_contacts.py        # Reverse ETL flow
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>├── pyproject.toml
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>├── uv.lock
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>└── prefect.yaml
+<div class="highlight"><pre><span></span><code>data-pipelines/
+├── flows/
+│   ├── exchange_rates.py       # dlt flow
+│   ├── currencies.py           # dlt flow
+│   ├── products.py             # dlt flow
+│   ├── hubspot_airbyte.py      # Airbyte flow
+│   └── retl_contacts.py        # Reverse ETL flow
+├── pyproject.toml
+├── uv.lock
+└── prefect.yaml
 </code></pre></div>
 <h2 id="hubspot-airbyte-flow">HubSpot Airbyte Flow</h2>
 <p>The <code>prefect-airbyte</code> package provides built-in tasks for triggering Airbyte syncs and waiting for completion.</p>
 <p>Create <code>flows/hubspot_airbyte.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">"""Prefect flow for HubSpot sync via Airbyte."""</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_airbyte</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirbyteConnection</span><span class="p">,</span> <span class="n">AirbyteServer</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">AIRBYTE_SERVER</span> <span class="o">=</span> <span class="n">AirbyteServer</span><span class="p">(</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">server_host</span><span class="o">=</span><span class="s2">"api.airbyte.com"</span><span class="p">,</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">server_port</span><span class="o">=</span><span class="mi">443</span><span class="p">,</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">api_version</span><span class="o">=</span><span class="s2">"v1"</span><span class="p">,</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">)</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nd">@task</span><span class="p">(</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"trigger-hubspot-sync"</span><span class="p">,</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="p">)</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="k">def</span><span class="w"> </span><span class="nf">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">    </span><span class="sd">"""Trigger an Airbyte sync and wait for completion."""</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Triggering Airbyte sync for connection </span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="n">connection</span> <span class="o">=</span> <span class="n">AirbyteConnection</span><span class="p">(</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="n">airbyte_server</span><span class="o">=</span><span class="n">AIRBYTE_SERVER</span><span class="p">,</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>        <span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>        <span class="n">poll_interval_s</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>        <span class="n">status_updates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>        <span class="n">timeout</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>  <span class="c1"># 30 minutes</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>    <span class="p">)</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sync completed: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">job_id</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"hubspot-airbyte-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="k">def</span><span class="w"> </span><span class="nf">hubspot_airbyte_daily_flow</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="sd">    Daily flow to sync HubSpot contacts via Airbyte.</span>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="sd">    Runs at 07:00 UTC each day. Triggers the Airbyte connection</span>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="sd">    and waits for completion.</span>
-<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="sd">    """</span>
-<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>    <span class="n">job_id</span> <span class="o">=</span> <span class="n">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
-<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HubSpot Airbyte sync completed. Job ID: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"job_id"</span><span class="p">:</span> <span class="n">job_id</span><span class="p">}</span>
-<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
-<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a>
-<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>    <span class="n">hubspot_airbyte_daily_flow</span><span class="p">(</span>
-<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a>        <span class="n">connection_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"AIRBYTE_HUBSPOT_CONNECTION_ID"</span><span class="p">]</span>
-<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Prefect flow for HubSpot sync via Airbyte."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_airbyte</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirbyteConnection</span><span class="p">,</span> <span class="n">AirbyteServer</span>
+
+
+<span class="n">AIRBYTE_SERVER</span> <span class="o">=</span> <span class="n">AirbyteServer</span><span class="p">(</span>
+    <span class="n">server_host</span><span class="o">=</span><span class="s2">"api.airbyte.com"</span><span class="p">,</span>
+    <span class="n">server_port</span><span class="o">=</span><span class="mi">443</span><span class="p">,</span>
+    <span class="n">api_version</span><span class="o">=</span><span class="s2">"v1"</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="nd">@task</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"trigger-hubspot-sync"</span><span class="p">,</span>
+    <span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Trigger an Airbyte sync and wait for completion."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Triggering Airbyte sync for connection </span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AirbyteConnection</span><span class="p">(</span>
+        <span class="n">airbyte_server</span><span class="o">=</span><span class="n">AIRBYTE_SERVER</span><span class="p">,</span>
+        <span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">status_updates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>  <span class="c1"># 30 minutes</span>
+    <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sync completed: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">job_id</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"hubspot-airbyte-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hubspot_airbyte_daily_flow</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Daily flow to sync HubSpot contacts via Airbyte.</span>
+
+<span class="sd">    Runs at 07:00 UTC each day. Triggers the Airbyte connection</span>
+<span class="sd">    and waits for completion.</span>
+<span class="sd">    """</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HubSpot Airbyte sync completed. Job ID: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"job_id"</span><span class="p">:</span> <span class="n">job_id</span><span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="n">hubspot_airbyte_daily_flow</span><span class="p">(</span>
+        <span class="n">connection_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"AIRBYTE_HUBSPOT_CONNECTION_ID"</span><span class="p">]</span>
+    <span class="p">)</span>
 </code></pre></div>
 <h3 id="authenticating-with-airbyte-cloud">Authenticating with Airbyte Cloud</h3>
 <p>The <code>prefect-airbyte</code> package reads the Airbyte API key from the <code>AIRBYTE_API_KEY</code> environment variable. In CI/CD, fetch it from Secrets Manager before running the flow:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AIRBYTE_API_KEY</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/api-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--query<span class="w"> </span><span class="s1">'SecretString'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">'.api_key'</span><span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">AIRBYTE_API_KEY</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/api-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--query<span class="w"> </span><span class="s1">'SecretString'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">'.api_key'</span><span class="k">)</span>
 </code></pre></div>
 <p>For local development, set it in your shell environment or <code>.env</code> file (not committed to git).</p>
 <h3 id="key-design-decisions">Key Design Decisions</h3>
@@ -6446,56 +6448,56 @@
 </ol>
 <h2 id="reverse-etl-flow">Reverse ETL Flow</h2>
 <p>Create <code>flows/retl_contacts.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="sd">"""Prefect flow for reverse ETL: Snowflake → HubSpot via Airbyte."""</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">flows.hubspot_airbyte</span><span class="w"> </span><span class="kn">import</span> <span class="n">trigger_airbyte_sync</span><span class="p">,</span> <span class="n">AIRBYTE_SERVER</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"retl-contacts-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">retl_contacts_daily_flow</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="sd">    Daily flow to sync enriched contacts from Snowflake to HubSpot.</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="sd">    Runs at 08:00 UTC, after dbt transformations complete.</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="sd">    Triggers the reverse ETL Airbyte connection.</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="sd">    """</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">job_id</span> <span class="o">=</span> <span class="n">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Reverse ETL sync completed. Job ID: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"job_id"</span><span class="p">:</span> <span class="n">job_id</span><span class="p">}</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>    <span class="n">retl_contacts_daily_flow</span><span class="p">(</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>        <span class="n">connection_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"AIRBYTE_RETL_CONNECTION_ID"</span><span class="p">]</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Prefect flow for reverse ETL: Snowflake → HubSpot via Airbyte."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">flows.hubspot_airbyte</span><span class="w"> </span><span class="kn">import</span> <span class="n">trigger_airbyte_sync</span><span class="p">,</span> <span class="n">AIRBYTE_SERVER</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"retl-contacts-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">retl_contacts_daily_flow</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Daily flow to sync enriched contacts from Snowflake to HubSpot.</span>
+
+<span class="sd">    Runs at 08:00 UTC, after dbt transformations complete.</span>
+<span class="sd">    Triggers the reverse ETL Airbyte connection.</span>
+<span class="sd">    """</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">trigger_airbyte_sync</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Reverse ETL sync completed. Job ID: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"job_id"</span><span class="p">:</span> <span class="n">job_id</span><span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="n">retl_contacts_daily_flow</span><span class="p">(</span>
+        <span class="n">connection_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"AIRBYTE_RETL_CONNECTION_ID"</span><span class="p">]</span>
+    <span class="p">)</span>
 </code></pre></div>
 <h2 id="manual-api-approach-alternative">Manual API Approach (Alternative)</h2>
 <p>If you need more control than <code>prefect-airbyte</code> provides (custom error handling, detailed logging), you can call the Airbyte API directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="sd">"""Alternative: call the Airbyte API directly."""</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">_get_airbyte_credentials</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="sd">"""Fetch Airbyte API credentials from AWS Secrets Manager."""</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-2"</span><span class="p">)</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"airbyte/api-credentials"</span><span class="p">)</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">])</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">trigger_airbyte_sync_manual</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>    <span class="n">creds</span> <span class="o">=</span> <span class="n">_get_airbyte_credentials</span><span class="p">()</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">creds</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">base_url</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">"api_url"</span><span class="p">]</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    <span class="c1"># ... trigger and poll</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Alternative: call the Airbyte API directly."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_airbyte_credentials</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Fetch Airbyte API credentials from AWS Secrets Manager."""</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"secretsmanager"</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s2">"eu-west-2"</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="s2">"airbyte/api-credentials"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s2">"SecretString"</span><span class="p">])</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trigger_airbyte_sync_manual</span><span class="p">(</span><span class="n">connection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">creds</span> <span class="o">=</span> <span class="n">_get_airbyte_credentials</span><span class="p">()</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">creds</span><span class="p">[</span><span class="s1">'api_key'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">"api_url"</span><span class="p">]</span>
+    <span class="c1"># ... trigger and poll</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Choose One Approach</p>
@@ -6503,36 +6505,36 @@
 </div>
 <h2 id="deployment-configuration">Deployment Configuration</h2>
 <p>Add to <code>prefect.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="w">  </span><span class="c1"># =========================================================================</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="c1"># Airbyte Syncs</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="c1"># =========================================================================</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hubspot-airbyte-daily</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/hubspot_airbyte.py:hubspot_airbyte_daily_flow</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">HubSpot</span><span class="nv"> </span><span class="s">contacts</span><span class="nv"> </span><span class="s">sync</span><span class="nv"> </span><span class="s">via</span><span class="nv"> </span><span class="s">Airbyte"</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airbyte</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hubspot</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">retl-contacts-daily</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/retl_contacts.py:retl_contacts_daily_flow</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">reverse</span><span class="nv"> </span><span class="s">ETL:</span><span class="nv"> </span><span class="s">enriched</span><span class="nv"> </span><span class="s">contacts</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">HubSpot"</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">  </span><span class="c1"># After dbt transformations</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airbyte</span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reverse-etl</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># =========================================================================</span>
+<span class="w">  </span><span class="c1"># Airbyte Syncs</span>
+<span class="w">  </span><span class="c1"># =========================================================================</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hubspot-airbyte-daily</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/hubspot_airbyte.py:hubspot_airbyte_daily_flow</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">HubSpot</span><span class="nv"> </span><span class="s">contacts</span><span class="nv"> </span><span class="s">sync</span><span class="nv"> </span><span class="s">via</span><span class="nv"> </span><span class="s">Airbyte"</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airbyte</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hubspot</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">retl-contacts-daily</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/retl_contacts.py:retl_contacts_daily_flow</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">reverse</span><span class="nv"> </span><span class="s">ETL:</span><span class="nv"> </span><span class="s">enriched</span><span class="nv"> </span><span class="s">contacts</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">HubSpot"</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span><span class="w">  </span><span class="c1"># After dbt transformations</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airbyte</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reverse-etl</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
 </code></pre></div>
 <h3 id="schedule-ordering">Schedule Ordering</h3>
 <p>The flows should run in sequence:</p>
@@ -6577,19 +6579,19 @@
 <p>The schedule above uses time-based ordering. For strict dependency ordering (e.g., reverse ETL only runs after dbt completes), consider using Prefect's event-based triggers or flow dependencies.</p>
 </div>
 <h2 id="deploy">Deploy</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
 </code></pre></div>
 <h2 id="test">Test</h2>
 <h3 id="trigger-manual-run">Trigger Manual Run</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Test HubSpot forward sync</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hubspot-airbyte-daily/production
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Test reverse ETL</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>retl-contacts-daily/production
+<div class="highlight"><pre><span></span><code><span class="c1"># Test HubSpot forward sync</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hubspot-airbyte-daily/production
+
+<span class="c1"># Test reverse ETL</span>
+prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>retl-contacts-daily/production
 </code></pre></div>
 <h3 id="check-status">Check Status</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>prefect<span class="w"> </span>flow-run<span class="w"> </span>ls<span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>prefect<span class="w"> </span>flow-run<span class="w"> </span>logs<span class="w"> </span>&lt;run-id&gt;
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>flow-run<span class="w"> </span>ls<span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span>
+prefect<span class="w"> </span>flow-run<span class="w"> </span>logs<span class="w"> </span>&lt;run-id&gt;
 </code></pre></div>
 <h2 id="failure-alerting">Failure Alerting</h2>
 <p>Airbyte flows use the same alerting patterns as dlt flows. The <code>airbyte</code> and <code>reverse-etl</code> tags allow filtering in Prefect automations.</p>
@@ -6603,28 +6605,28 @@
 <li><strong>Action</strong>: Send Slack notification</li>
 </ol>
 <p>Or via Terraform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># terraform/prefect/automations.tf</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"airbyte_failure_alert"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"Airbyte Sync Failure Alert"</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alert on any Airbyte sync failure"</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="na">type</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="na">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"airbyte"</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.slack_webhook_alerts.id</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Airbyte sync failed: {{ flow.name }} - {{ flow_run.state.message }}"</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/prefect/automations.tf</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"airbyte_failure_alert"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"Airbyte Sync Failure Alert"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alert on any Airbyte sync failure"</span>
+
+<span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
+<span class="w">    </span><span class="na">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
+<span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"airbyte"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
+<span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.slack_webhook_alerts.id</span>
+<span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Airbyte sync failed: {{ flow.name }} - {{ flow_run.state.message }}"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="monitoring">Monitoring</h2>
 <h3 id="combined-dashboard">Combined Dashboard</h3>
@@ -6719,6 +6721,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6762,7 +6766,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

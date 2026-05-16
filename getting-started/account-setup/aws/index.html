@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6757,7 +6759,7 @@
 </ul>
 <div class="admonition info">
 <p class="admonition-title">About the Root User</p>
-<p>The email you provide creates the <strong>root user</strong> - the most powerful account in AWS with unrestricted access to all services and billing. You should rarely use this account for day-to-day operations.</p>
+<p>The email you provide creates the <strong>root user</strong> - the most powerful account in AWS with unrestricted access to all services and billing. You should not use this account for day-to-day operations.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Store Credentials in 1Password</p>
@@ -6834,7 +6836,7 @@
 <p>For all other tasks, use IAM users or roles (which we'll create next).</p>
 <h2 id="account-alias">Account alias</h2>
 <p>Your account can be referenced by both an ID and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/console-account-alias.html">an alias</a>. The name should be something human-readable and memorable, for example <code>my-company-name</code>.</p>
-<p>To change the account alias, when logged in as the root user, open the IAM console at https://console.aws.amazon.com/iam/. In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.</p>
+<p>To change the account alias, when logged in as the root user, open the IAM console at <a href="https://console.aws.amazon.com/iam/">console.aws.amazon.com/iam</a>. In the navigation pane, choose Dashboard. In the AWS Account section, next to Account Alias, choose Create. In the dialog box, enter the name you want to use for your alias, then choose Save changes.</p>
 <h2 id="enable-iam-access-to-billing">Enable IAM Access to Billing</h2>
 <p>By default, IAM users cannot access billing information, even with admin permissions. Enable this so your admin users can manage costs:</p>
 <ol>
@@ -6939,18 +6941,18 @@
 <li>Click "Edit trust policy"</li>
 <li>The policy should look like this:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">"Principal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">"AWS"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:root"</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="p">},</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Principal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AWS"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:root"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <ol>
 <li>Replace <code>ACCOUNT_ID</code> with your actual AWS account ID (visible in the top-right corner)</li>
@@ -7002,8 +7004,9 @@
 </ul>
 </div>
 <h3 id="enable-mfa-for-your-user">Enable MFA for Your User</h3>
+<p>You're still signed in as root and viewing the IAM user you just created — root can assign MFA to any IAM user directly from the user's profile page, without needing to sign in as that user first.</p>
 <ol>
-<li>Still in Security credentials, scroll to "Multi-factor authentication (MFA)"</li>
+<li>Still on the IAM user's "Security credentials" tab, scroll to "Multi-factor authentication (MFA)"</li>
 <li>Click "Assign MFA device"</li>
 <li>Choose device name (e.g., <code>jbloggs-phone</code>)</li>
 <li>Select your MFA type (1Password or authenticator app)</li>
@@ -7016,27 +7019,27 @@
 <p>Every IAM user should have MFA enabled, especially those with role assumption permissions. This is a critical security control.</p>
 </div>
 <h3 id="allow-user-to-assume-roles">Allow User to Assume Roles</h3>
-<p>We need to grant your user permission to assume the roles we created:</p>
+<p>We need to grant your user permission to assume the roles we created. In the later terraform section, we'll set this up programmatically, but for now, we'll simply add an in-line policy</p>
 <ol>
 <li>While viewing your user, click the "Permissions" tab</li>
 <li>Click "Add permissions" → "Create inline policy"</li>
 <li>Click the JSON tab</li>
 <li>Paste the following policy (replace <code>ACCOUNT_ID</code> with your account ID):</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/AdminRole"</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole"</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole"</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="p">]</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/AdminRole"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <ol>
 <li>Click "Next"</li>
@@ -7081,6 +7084,10 @@
 </div>
 <h2 id="set-up-cost-based-alerts">Set Up Cost-Based Alerts</h2>
 <p>AWS can notify you when spending exceeds thresholds. This is critical to avoid unexpected bills.</p>
+<div class="admonition note">
+<p class="admonition-title">Switch to AdminRole first</p>
+<p>Budgets and billing preferences require billing permissions. Switch to <code>AdminRole</code> before continuing: click your username (top-right) → "Switch role" → enter <code>AdminRole</code>.</p>
+</div>
 <h3 id="create-a-budget">Create a Budget</h3>
 <ol>
 <li>Navigate to <strong>AWS Budgets</strong> (search "Budgets" or go through Billing Dashboard)</li>
@@ -7128,11 +7135,11 @@
 <p>The AWS CLI allows you to interact with AWS services from your terminal. We'll configure it to use your IAM user credentials and support role assumption.</p>
 <h3 id="install-aws-cli">Install AWS CLI</h3>
 <p>On macOS (using Homebrew):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>brew<span class="w"> </span>install<span class="w"> </span>awscli
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>awscli
 </code></pre></div>
 <p>Verify installation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aws<span class="w"> </span>--version
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Expected output: aws-cli/2.x.x Python/3.x.x Darwin/23.x.x</span>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>--version
+<span class="c1"># Expected output: aws-cli/2.x.x Python/3.x.x Darwin/23.x.x</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Other Installation Methods</p>
@@ -7171,41 +7178,41 @@
 </div>
 <h3 id="configure-aws-cli">Configure AWS CLI</h3>
 <p>Configure the CLI with your access keys:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>configure<span class="w"> </span>--profile<span class="w"> </span>default
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>configure<span class="w"> </span>--profile<span class="w"> </span>default
 </code></pre></div>
 <p>When prompted, enter:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>AWS Access Key ID: [your access key]
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>AWS Secret Access Key: [your secret key]
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Default region name: eu-west-2  # or your preferred region
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Default output format: json
+<div class="highlight"><pre><span></span><code>AWS Access Key ID: [your access key]
+AWS Secret Access Key: [your secret key]
+Default region name: eu-west-2  # or your preferred region
+Default output format: json
 </code></pre></div>
 <p>This creates <code>~/.aws/credentials</code> and <code>~/.aws/config</code> files with your configuration.</p>
 <h3 id="configure-role-profiles">Configure Role Profiles</h3>
 <p>To easily switch between roles, add profiles to your AWS config. Edit <code>~/.aws/config</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>code<span class="w"> </span>~/.aws/config<span class="w">  </span><span class="c1"># or use your preferred editor</span>
+<div class="highlight"><pre><span></span><code>code<span class="w"> </span>~/.aws/config<span class="w">  </span><span class="c1"># or use your preferred editor</span>
 </code></pre></div>
 <p>Add the following configurations (replace <code>ACCOUNT_ID</code> with your account ID):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[default]</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">[profile data-engineer]</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="k">[profile infrastructure-admin]</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="k">[profile admin]</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/AdminRole</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
+<div class="highlight"><pre><span></span><code><span class="k">[default]</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+<span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
+
+<span class="k">[profile data-engineer]</span>
+<span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/DataEngineerRole</span>
+<span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+<span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
+
+<span class="k">[profile infrastructure-admin]</span>
+<span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/InfrastructureAdminRole</span>
+<span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+<span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
+
+<span class="k">[profile admin]</span>
+<span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">arn:aws:iam::ACCOUNT_ID:role/AdminRole</span>
+<span class="na">source_profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">default</span>
+<span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">eu-west-2</span>
+<span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">json</span>
 </code></pre></div>
 <p>This configuration:</p>
 <ul>
@@ -7217,55 +7224,55 @@
 </ul>
 <h3 id="test-your-configuration">Test Your Configuration</h3>
 <p>Test the default profile (your IAM user with no role):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AIDAEXAMPLEUSERID"</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:iam::123456789012:user/jane.bloggs"</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AIDAEXAMPLEUSERID"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:iam::123456789012:user/jane.bloggs"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Test the data-engineer profile:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>data-engineer
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>data-engineer
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLEROLEID:aws-cli-session"</span><span class="p">,</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/DataEngineerRole/aws-cli-session"</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLEROLEID:aws-cli-session"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/DataEngineerRole/aws-cli-session"</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Notice the ARN shows you're using the assumed role, not your base user.</p>
 <h3 id="set-default-profile">Set Default Profile</h3>
 <p>By default, AWS CLI uses the <code>default</code> profile. To use a different profile by default, set an environment variable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Use data-engineer role by default</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
+<div class="highlight"><pre><span></span><code><span class="c1"># Use data-engineer role by default</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
 </code></pre></div>
 <p>Add this to your shell configuration file (<code>~/.zshrc</code>) to persist:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'export AWS_PROFILE=data-engineer'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">source</span><span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">'export AWS_PROFILE=data-engineer'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<span class="nb">source</span><span class="w"> </span>~/.zshrc
 </code></pre></div>
 <h3 id="switch-between-profiles">Switch Between Profiles</h3>
 <p>To temporarily use a different profile for a single command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Use admin role for this command only</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>admin
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Use data-engineer role for this command only</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># Use base user (no role) for this command only</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>default
+<div class="highlight"><pre><span></span><code><span class="c1"># Use admin role for this command only</span>
+aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>admin
+
+<span class="c1"># Use data-engineer role for this command only</span>
+aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>data-engineer
+
+<span class="c1"># Use base user (no role) for this command only</span>
+aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>--profile<span class="w"> </span>default
 </code></pre></div>
 <p>Or change the environment variable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Switch to admin role for subsequent commands</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>admin
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Verify</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Switch back to data-engineer</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
+<div class="highlight"><pre><span></span><code><span class="c1"># Switch to admin role for subsequent commands</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>admin
+
+<span class="c1"># Verify</span>
+aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+
+<span class="c1"># Switch back to data-engineer</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>data-engineer
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Verify Your Role</p>
@@ -7275,41 +7282,41 @@
 <p>For enhanced security, consider using <a href="https://github.com/99designs/aws-vault">aws-vault</a> to manage AWS credentials. It stores credentials encrypted in your operating system's keychain and generates temporary session credentials.</p>
 <h3 id="install-aws-vault">Install aws-vault</h3>
 <p>On macOS:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>brew<span class="w"> </span>install<span class="w"> </span>aws-vault
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>aws-vault
 </code></pre></div>
 <h3 id="configure-aws-vault">Configure aws-vault</h3>
 <p>Import your existing credentials:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aws-vault<span class="w"> </span>add<span class="w"> </span>default
+<div class="highlight"><pre><span></span><code>aws-vault<span class="w"> </span>add<span class="w"> </span>default
 </code></pre></div>
 <p>When prompted, enter your Access Key ID and Secret Access Key. These are stored encrypted in your macOS Keychain.</p>
 <p>You can now remove credentials from <code>~/.aws/credentials</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Back up first</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>cp<span class="w"> </span>~/.aws/credentials<span class="w"> </span>~/.aws/credentials.backup
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># Remove credentials (keep config)</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>rm<span class="w"> </span>~/.aws/credentials
+<div class="highlight"><pre><span></span><code><span class="c1"># Back up first</span>
+cp<span class="w"> </span>~/.aws/credentials<span class="w"> </span>~/.aws/credentials.backup
+
+<span class="c1"># Remove credentials (keep config)</span>
+rm<span class="w"> </span>~/.aws/credentials
 </code></pre></div>
 <h3 id="use-aws-vault">Use aws-vault</h3>
 <p>Execute commands with aws-vault:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Using base IAM user</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>default<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># Using data-engineer role</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># Using admin role</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code><span class="c1"># Using base IAM user</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>default<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
+
+<span class="c1"># Using data-engineer role</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
+
+<span class="c1"># Using admin role</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>ls
 </code></pre></div>
 <p>For interactive sessions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Start a shell with data-engineer credentials</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># All subsequent aws commands use those credentials</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="c1"># Exit the session</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="nb">exit</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start a shell with data-engineer credentials</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer
+
+<span class="c1"># All subsequent aws commands use those credentials</span>
+aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+aws<span class="w"> </span>s3<span class="w"> </span>ls
+
+<span class="c1"># Exit the session</span>
+<span class="nb">exit</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why Use aws-vault?</p>
@@ -7325,17 +7332,17 @@
 <h3 id="configure-aws-vault-with-profiles">Configure aws-vault with Profiles</h3>
 <p>Your <code>~/.aws/config</code> remains the same as before. aws-vault reads these profiles and uses the encrypted credentials from the Keychain.</p>
 <p>Test your setup:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Verify base user</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>default<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># Verify data-engineer role</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="c1"># Verify admin role</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="c1"># Verify infrastructure admin role</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify base user</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>default<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+
+<span class="c1"># Verify data-engineer role</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>data-engineer<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+
+<span class="c1"># Verify admin role</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
+
+<span class="c1"># Verify infrastructure admin role</span>
+aws-vault<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>infrastructure-admin<span class="w"> </span>--<span class="w"> </span>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity
 </code></pre></div>
 <h2 id="best-practices-summary">Best Practices Summary</h2>
 <div class="admonition success">
@@ -7389,7 +7396,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 21:47:32 UTC">March 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 16, 2026 18:45:50 UTC">May 16, 2026</span>
   </span>
 
     
@@ -7416,6 +7423,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7459,7 +7468,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

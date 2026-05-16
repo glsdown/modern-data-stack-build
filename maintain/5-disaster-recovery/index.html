@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6337,29 +6339,29 @@
 <h4 id="using-time-travel">Using Time Travel</h4>
 <p>Snowflake retains historical data for the retention period (1 day Standard, up to 90 days Enterprise):</p>
 <p><strong>Restore a dropped table:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">UNDROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+<span class="n">UNDROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Restore a table to a point in time:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Restore to 1 hour ago</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">-- Restore to a specific timestamp</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'2026-03-01 12:00:00'</span><span class="p">::</span><span class="k">TIMESTAMP</span><span class="p">);</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">-- Restore to before a specific query</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">BEFORE</span><span class="w"> </span><span class="p">(</span><span class="k">STATEMENT</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'&lt;query_id&gt;'</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Restore to 1 hour ago</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
+
+<span class="c1">-- Restore to a specific timestamp</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'2026-03-01 12:00:00'</span><span class="p">::</span><span class="k">TIMESTAMP</span><span class="p">);</span>
+
+<span class="c1">-- Restore to before a specific query</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">BEFORE</span><span class="w"> </span><span class="p">(</span><span class="k">STATEMENT</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'&lt;query_id&gt;'</span><span class="p">);</span>
 </code></pre></div>
 <p><strong>Restore an entire schema:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SCHEMA</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
 </code></pre></div>
 <p><strong>Restore an entire database:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">AT</span><span class="w"> </span><span class="p">(</span><span class="k">OFFSET</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">-</span><span class="mi">3600</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Time Travel Limits</p>
@@ -6367,45 +6369,45 @@
 </div>
 <h4 id="using-clones-as-backups">Using Clones as Backups</h4>
 <p>For critical operations (large backfills, schema migrations), create a backup clone first:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Create a backup before a risky operation</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BACKUP</span><span class="w"> </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- If something goes wrong, swap back</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">RENAME</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BROKEN</span><span class="p">;</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BACKUP</span><span class="w"> </span><span class="k">RENAME</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">;</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1">-- Clean up after confirming recovery</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BROKEN</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Create a backup before a risky operation</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BACKUP</span><span class="w"> </span><span class="n">CLONE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="c1">-- If something goes wrong, swap back</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">RENAME</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BROKEN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BACKUP</span><span class="w"> </span><span class="k">RENAME</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="c1">-- Clean up after confirming recovery</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="k">DATABASE</span><span class="o">&gt;</span><span class="n">_BROKEN</span><span class="p">;</span>
 </code></pre></div>
 <p>Zero-copy clones are free (they share storage until data diverges).</p>
 <h3 id="3-recover-terraform-state">3. Recover Terraform State</h3>
 <h4 id="corrupted-state-file">Corrupted State File</h4>
 <p>S3 versioning is enabled on the Terraform state bucket. Restore a previous version:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># List state file versions</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aws<span class="w"> </span>s3api<span class="w"> </span>list-object-versions<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--bucket<span class="w"> </span>your-org-terraform-state<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>--prefix<span class="w"> </span>snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Download a specific version</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-object<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span>--bucket<span class="w"> </span>your-org-terraform-state<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span>--key<span class="w"> </span>snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span>--version-id<span class="w"> </span>&lt;VERSION_ID&gt;<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span>restored-state.tfstate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1"># Upload the restored state</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>restored-state.tfstate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span>s3://your-org-terraform-state/snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># List state file versions</span>
+aws<span class="w"> </span>s3api<span class="w"> </span>list-object-versions<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bucket<span class="w"> </span>your-org-terraform-state<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--prefix<span class="w"> </span>snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># Download a specific version</span>
+aws<span class="w"> </span>s3api<span class="w"> </span>get-object<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bucket<span class="w"> </span>your-org-terraform-state<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--key<span class="w"> </span>snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--version-id<span class="w"> </span>&lt;VERSION_ID&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>restored-state.tfstate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># Upload the restored state</span>
+aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>restored-state.tfstate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>s3://your-org-terraform-state/snowflake/terraform.tfstate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">DynamoDB Lock</p>
 <p>If a Terraform operation was interrupted, the DynamoDB lock may be stuck. Check and remove it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>scan<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span>--table-name<span class="w"> </span>your-org-terraform-locks<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>scan<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--table-name<span class="w"> </span>your-org-terraform-locks<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>If a stale lock exists, delete it via the AWS Console or CLI. Only do this if you are certain no other Terraform operation is running.</p>
 </div>
@@ -6430,13 +6432,13 @@
 </ol>
 <h4 id="dlt-pipeline-state">dlt Pipeline State</h4>
 <p>dlt tracks pipeline state (last loaded record, incremental cursors) in its state store. If this is corrupted:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Reset pipeline state (forces full reload on next run)</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="s2">import dlt</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s2">pipeline = dlt.pipeline(pipeline_name='&lt;pipeline_name&gt;')</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s2">pipeline.drop()</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Reset pipeline state (forces full reload on next run)</span>
+<span class="nb">cd</span><span class="w"> </span>~/projects/data/data-pipelines
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<span class="s2">import dlt</span>
+<span class="s2">pipeline = dlt.pipeline(pipeline_name='&lt;pipeline_name&gt;')</span>
+<span class="s2">pipeline.drop()</span>
+<span class="s2">"</span>
 </code></pre></div>
 <p>Then run a full reload or backfill.</p>
 <h3 id="5-recover-from-aws-outages">5. Recover from AWS Outages</h3>
@@ -6478,17 +6480,17 @@
 <ol>
 <li>
 <p><strong>Rotate all service account credentials immediately:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Generate new key pairs for each service account</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>new_key.pem<span class="w"> </span>-nocrypt
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>new_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>new_key.pub
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate new key pairs for each service account</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>new_key.pem<span class="w"> </span>-nocrypt
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>new_key.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>new_key.pub
 </code></pre></div>
 </li>
 <li>
 <p><strong>Update Snowflake public keys:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SECURITYADMIN</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DLT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;new public key&gt;'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6496,10 +6498,10 @@
 </li>
 <li>
 <p><strong>Review Snowflake access history</strong> for suspicious activity:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">event_timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li>
@@ -6585,6 +6587,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6628,7 +6632,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

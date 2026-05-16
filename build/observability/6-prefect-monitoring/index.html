@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6683,33 +6685,33 @@
 - <strong>"Why did this task fail?"</strong> (logs and error tracking)
 - <strong>"How long does this pipeline take?"</strong> (duration metrics)
 - <strong>"Is this pipeline getting slower?"</strong> (performance trends)</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                     PREFECT MONITORING STACK                            │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Flow Execution         Monitoring             Alerts                  │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ───────────────        ──────────             ──────                  │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐      ┌──────────────┐       ┌──────────────┐        │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ dbt daily    │─────▶│ Prefect      │──────▶│ Slack        │        │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ pipeline     │      │ Cloud UI     │       │ #data-alerts │        │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │              │      │ • States     │       └──────────────┘        │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ Tasks:       │      │ • Logs       │              │                │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │ • Extract    │      │ • Duration   │       ┌──────▼───────┐        │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │ • Transform  │      │ • Retries    │       │ PagerDuty    │        │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │ • Load       │      └──────────────┘       │ (Critical)   │        │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  └──────────────┘              │              └──────────────┘        │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│         │                      │                                       │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│         │                      ▼                                       │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│         │              ┌──────────────┐                                │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│         └─────────────▶│ Automation   │                                │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                        │ Rules        │                                │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                        │ • Retry 3x   │                                │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                        │ • Alert if   │                                │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                        │   failed     │                                │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                        └──────────────┘                                │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│                                                                         │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                     PREFECT MONITORING STACK                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Flow Execution         Monitoring             Alerts                  │
+│  ───────────────        ──────────             ──────                  │
+│                                                                         │
+│  ┌──────────────┐      ┌──────────────┐       ┌──────────────┐        │
+│  │ dbt daily    │─────▶│ Prefect      │──────▶│ Slack        │        │
+│  │ pipeline     │      │ Cloud UI     │       │ #data-alerts │        │
+│  │              │      │ • States     │       └──────────────┘        │
+│  │ Tasks:       │      │ • Logs       │              │                │
+│  │ • Extract    │      │ • Duration   │       ┌──────▼───────┐        │
+│  │ • Transform  │      │ • Retries    │       │ PagerDuty    │        │
+│  │ • Load       │      └──────────────┘       │ (Critical)   │        │
+│  └──────────────┘              │              └──────────────┘        │
+│         │                      │                                       │
+│         │                      ▼                                       │
+│         │              ┌──────────────┐                                │
+│         └─────────────▶│ Automation   │                                │
+│                        │ Rules        │                                │
+│                        │ • Retry 3x   │                                │
+│                        │ • Alert if   │                                │
+│                        │   failed     │                                │
+│                        └──────────────┘                                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="flow-and-task-states">Flow and Task States</h2>
 <p>Prefect tracks the state of every flow run and task run.</p>
@@ -6808,12 +6810,12 @@
 </tbody>
 </table>
 <h3 id="state-transitions">State Transitions</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Scheduled → Pending → Running → Completed ✓
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                          │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                          ├─▶ Failed → Retrying → Running → Completed ✓
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                          │                    └─▶ Failed ✗
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                          │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>                          └─▶ Crashed ✗ (infrastructure issue)
+<div class="highlight"><pre><span></span><code>Scheduled → Pending → Running → Completed ✓
+                          │
+                          ├─▶ Failed → Retrying → Running → Completed ✓
+                          │                    └─▶ Failed ✗
+                          │
+                          └─▶ Crashed ✗ (infrastructure issue)
 </code></pre></div>
 <h3 id="view-states-in-prefect-cloud">View States in Prefect Cloud</h3>
 <ol>
@@ -6844,87 +6846,87 @@
 <li>Copy webhook URL: <code>https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXX</code></li>
 </ol>
 <h3 id="step-2-store-webhook-in-prefect">Step 2: Store Webhook in Prefect</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Store as Prefect Secret</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect_slack
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>webhook<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"slack-data-alerts"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>--url<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/..."</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Store as Prefect Secret</span>
+prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect_slack
+
+prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>webhook<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"slack-data-alerts"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--url<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/..."</span>
 </code></pre></div>
 <p>Or create via Python:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">slack_webhook</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="p">(</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">url</span><span class="o">=</span><span class="s2">"https://hooks.slack.com/services/..."</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">slack_webhook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"slack-data-alerts"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+
+<span class="n">slack_webhook</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="p">(</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">"https://hooks.slack.com/services/..."</span>
+<span class="p">)</span>
+<span class="n">slack_webhook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"slack-data-alerts"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="step-3-send-notifications-from-flows">Step 3: Send Notifications from Flows</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-daily-pipeline"</span><span class="p">)</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">slack_webhook</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"slack-data-alerts"</span><span class="p">)</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="c1"># Run your pipeline tasks</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="n">run_dbt_build</span><span class="p">()</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="n">run_dbt_tests</span><span class="p">()</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="c1"># Success notification</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"✅ dbt pipeline completed successfully at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        <span class="p">)</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>        <span class="c1"># Failure notification</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"❌ dbt pipeline failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Check logs: https://app.prefect.cloud"</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>        <span class="p">)</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>        <span class="k">raise</span>  <span class="c1"># Re-raise to mark flow as failed</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"dbt-daily-pipeline"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="n">slack_webhook</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"slack-data-alerts"</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Run your pipeline tasks</span>
+        <span class="n">run_dbt_build</span><span class="p">()</span>
+        <span class="n">run_dbt_tests</span><span class="p">()</span>
+
+        <span class="c1"># Success notification</span>
+        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"✅ dbt pipeline completed successfully at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Failure notification</span>
+        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"❌ dbt pipeline failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Check logs: https://app.prefect.cloud"</span>
+        <span class="p">)</span>
+        <span class="k">raise</span>  <span class="c1"># Re-raise to mark flow as failed</span>
 </code></pre></div>
 <h3 id="step-4-customise-notification-format">Step 4: Customise Notification Format</h3>
 <p>Send richer notifications with Slack blocks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">blocks</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        <span class="p">{</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>                <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"❌ Pipeline Failure Alert"</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>            <span class="p">}</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        <span class="p">},</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="p">{</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>                <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Flow:* dbt-daily-pipeline</span><span class="se">\n</span><span class="s2">*Status:* Failed</span><span class="se">\n</span><span class="s2">*Time:* </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>            <span class="p">}</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        <span class="p">},</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="p">{</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>                <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Error:* </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>            <span class="p">}</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>        <span class="p">},</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>        <span class="p">{</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"actions"</span><span class="p">,</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>            <span class="s2">"elements"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>                <span class="p">{</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>                    <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>                        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>                        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"View Logs"</span>
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>                    <span class="p">},</span>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>                    <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://app.prefect.cloud/flow-runs/..."</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>                <span class="p">}</span>
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>            <span class="p">]</span>
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>        <span class="p">}</span>
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>    <span class="p">]</span>
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+    <span class="n">blocks</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span>
+            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"❌ Pipeline Failure Alert"</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
+            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Flow:* dbt-daily-pipeline</span><span class="se">\n</span><span class="s2">*Status:* Failed</span><span class="se">\n</span><span class="s2">*Time:* </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
+            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Error:* </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"actions"</span><span class="p">,</span>
+            <span class="s2">"elements"</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span>
+                    <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span>
+                        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"View Logs"</span>
+                    <span class="p">},</span>
+                    <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://app.prefect.cloud/flow-runs/..."</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </code></pre></div>
 <h2 id="automation-rules">Automation Rules</h2>
 <p>Prefect automations allow you to define rules that trigger actions based on flow states.</p>
@@ -6939,100 +6941,100 @@
 <p><strong>Trigger:</strong> Flow run enters <code>Failed</code> state
 <strong>Action:</strong> Retry the flow run (max 3 times)</p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">trigger</span><span class="p">:</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">match</span><span class="p">:</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">prefect.resource.name</span><span class="p">:</span><span class="w"> </span><span class="s">"dbt-daily-pipeline"</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">expect</span><span class="p">:</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"prefect.flow-run.Failed"</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="nt">actions</span><span class="p">:</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">retry-flow-run</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="nt">max_retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w">  </span><span class="c1"># 5 minutes</span>
+<div class="highlight"><pre><span></span><code><span class="nt">trigger</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">prefect.resource.name</span><span class="p">:</span><span class="w"> </span><span class="s">"dbt-daily-pipeline"</span>
+<span class="w">  </span><span class="nt">expect</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"prefect.flow-run.Failed"</span>
+
+<span class="nt">actions</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">retry-flow-run</span>
+<span class="w">    </span><span class="nt">max_retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">    </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w">  </span><span class="c1"># 5 minutes</span>
 </code></pre></div>
 <p>Create via Python API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Automation</span><span class="p">,</span> <span class="n">EventTrigger</span><span class="p">,</span> <span class="n">RetryFlowRun</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_retry_automation</span><span class="p">():</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">"Retry failed dbt pipeline"</span><span class="p">,</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>                <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>                <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">]</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>            <span class="p">),</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>            <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>                <span class="n">RetryFlowRun</span><span class="p">(</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>                    <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>                    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">300</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>                <span class="p">)</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>            <span class="p">]</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="p">)</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">create_automation</span><span class="p">(</span><span class="n">automation</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Automation</span><span class="p">,</span> <span class="n">EventTrigger</span><span class="p">,</span> <span class="n">RetryFlowRun</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_retry_automation</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"Retry failed dbt pipeline"</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
+                <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
+                <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">RetryFlowRun</span><span class="p">(</span>
+                    <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">300</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">create_automation</span><span class="p">(</span><span class="n">automation</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="2-alert-on-repeated-failures">2. Alert on Repeated Failures</h4>
 <p><strong>Trigger:</strong> Flow run fails 3 times in a row
 <strong>Action:</strong> Send Slack alert + page on-call engineer</p>
 <p><strong>Configuration:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Alert on repeated dbt failures"</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">],</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Trigger after 3 failures</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        <span class="n">within</span><span class="o">=</span><span class="mi">3600</span>   <span class="c1"># Within 1 hour</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="p">),</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="n">SendSlackNotification</span><span class="p">(</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>            <span class="n">webhook</span><span class="o">=</span><span class="s2">"slack-data-alerts"</span><span class="p">,</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>            <span class="n">message</span><span class="o">=</span><span class="s2">"🚨 dbt pipeline has failed 3 times in the last hour. Immediate attention required."</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="p">),</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        <span class="n">SendPagerDutyAlert</span><span class="p">(</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>            <span class="n">severity</span><span class="o">=</span><span class="s2">"high"</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>        <span class="p">)</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    <span class="p">]</span>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Alert on repeated dbt failures"</span><span class="p">,</span>
+    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
+        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
+        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">],</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Trigger after 3 failures</span>
+        <span class="n">within</span><span class="o">=</span><span class="mi">3600</span>   <span class="c1"># Within 1 hour</span>
+    <span class="p">),</span>
+    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">SendSlackNotification</span><span class="p">(</span>
+            <span class="n">webhook</span><span class="o">=</span><span class="s2">"slack-data-alerts"</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">"🚨 dbt pipeline has failed 3 times in the last hour. Immediate attention required."</span>
+        <span class="p">),</span>
+        <span class="n">SendPagerDutyAlert</span><span class="p">(</span>
+            <span class="n">severity</span><span class="o">=</span><span class="s2">"high"</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </code></pre></div>
 <h4 id="3-scale-resources-on-long-running-flows">3. Scale Resources on Long-Running Flows</h4>
 <p><strong>Trigger:</strong> Flow run duration &gt; 30 minutes
 <strong>Action:</strong> Scale up worker pool</p>
 <p><strong>Use case:</strong> Automatically allocate more resources if pipeline is slow.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Scale up for slow pipelines"</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Running"</span><span class="p">],</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>        <span class="n">posture</span><span class="o">=</span><span class="s2">"Proactive"</span><span class="p">,</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="n">threshold_duration</span><span class="o">=</span><span class="mi">1800</span>  <span class="c1"># 30 minutes</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="p">),</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="n">ScaleWorkPool</span><span class="p">(</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>            <span class="n">work_pool</span><span class="o">=</span><span class="s2">"data-pipelines"</span><span class="p">,</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>            <span class="n">target_concurrency</span><span class="o">=</span><span class="mi">10</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="p">)</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="p">]</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Scale up for slow pipelines"</span><span class="p">,</span>
+    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
+        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
+        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Running"</span><span class="p">],</span>
+        <span class="n">posture</span><span class="o">=</span><span class="s2">"Proactive"</span><span class="p">,</span>
+        <span class="n">threshold_duration</span><span class="o">=</span><span class="mi">1800</span>  <span class="c1"># 30 minutes</span>
+    <span class="p">),</span>
+    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">ScaleWorkPool</span><span class="p">(</span>
+            <span class="n">work_pool</span><span class="o">=</span><span class="s2">"data-pipelines"</span><span class="p">,</span>
+            <span class="n">target_concurrency</span><span class="o">=</span><span class="mi">10</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </code></pre></div>
 <h4 id="4-pause-downstream-flows-on-failure">4. Pause Downstream Flows on Failure</h4>
 <p><strong>Trigger:</strong> Upstream flow fails
 <strong>Action:</strong> Pause downstream flows</p>
 <p><strong>Use case:</strong> If dbt fails, pause Lightdash dashboard refresh (no point refreshing if data is stale).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Pause downstream on dbt failure"</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">]</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="p">),</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="n">PauseDeployment</span><span class="p">(</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>            <span class="n">deployment_name</span><span class="o">=</span><span class="s2">"lightdash-refresh"</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        <span class="p">),</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="n">SendSlackNotification</span><span class="p">(</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>            <span class="n">message</span><span class="o">=</span><span class="s2">"⏸ Lightdash refresh paused due to dbt failure. Fix dbt, then manually resume."</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>        <span class="p">)</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="p">]</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Pause downstream on dbt failure"</span><span class="p">,</span>
+    <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
+        <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">"prefect.resource.name"</span><span class="p">:</span> <span class="s2">"dbt-daily-pipeline"</span><span class="p">},</span>
+        <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed"</span><span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">PauseDeployment</span><span class="p">(</span>
+            <span class="n">deployment_name</span><span class="o">=</span><span class="s2">"lightdash-refresh"</span>
+        <span class="p">),</span>
+        <span class="n">SendSlackNotification</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">"⏸ Lightdash refresh paused due to dbt failure. Fix dbt, then manually resume."</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </code></pre></div>
 <h2 id="custom-metrics">Custom Metrics</h2>
 <p>Track custom metrics to monitor pipeline performance beyond default Prefect metrics.</p>
@@ -7045,20 +7047,20 @@
 <p>View in <strong>Prefect Cloud</strong> → <strong>Insights</strong> → <strong>Metrics</strong></p>
 <h3 id="custom-metrics-with-logging">Custom Metrics with Logging</h3>
 <p>Log custom metrics within tasks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nd">@task</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">():</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="c1"># Your extraction logic</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">row_count</span> <span class="o">=</span> <span class="n">fetch_data_from_api</span><span class="p">()</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="c1"># Log custom metric</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extracted </span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2"> rows from API"</span><span class="p">)</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"METRIC: rows_extracted=</span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="k">return</span> <span class="n">row_count</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+
+    <span class="c1"># Your extraction logic</span>
+    <span class="n">row_count</span> <span class="o">=</span> <span class="n">fetch_data_from_api</span><span class="p">()</span>
+
+    <span class="c1"># Log custom metric</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extracted </span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2"> rows from API"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"METRIC: rows_extracted=</span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">row_count</span>
 </code></pre></div>
 <p>These logs are searchable in Prefect Cloud:
 1. Navigate to <strong>Flow Runs</strong> → Select run → <strong>Logs</strong>
@@ -7066,70 +7068,70 @@
 3. Export to external monitoring (Datadog, CloudWatch)</p>
 <h3 id="custom-metrics-with-prefect-blocks">Custom Metrics with Prefect Blocks</h3>
 <p>Store metrics in Prefect KV store for trend analysis:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSON</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nd">@task</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">record_pipeline_metrics</span><span class="p">(</span><span class="n">row_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="c1"># Load existing metrics</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>        <span class="n">metrics_block</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">)</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>        <span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics_block</span><span class="o">.</span><span class="n">value</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="k">except</span><span class="p">:</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>    <span class="c1"># Append new metric</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>    <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>        <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>        <span class="s2">"row_count"</span><span class="p">:</span> <span class="n">row_count</span><span class="p">,</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>        <span class="s2">"duration_seconds"</span><span class="p">:</span> <span class="n">duration</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>    <span class="p">})</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>    <span class="c1"># Save updated metrics</span>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="n">metrics_block</span> <span class="o">=</span> <span class="n">JSON</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
-<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>    <span class="n">metrics_block</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">record_pipeline_metrics</span><span class="p">(</span><span class="n">row_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="c1"># Load existing metrics</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">metrics_block</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">)</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics_block</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Append new metric</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">"row_count"</span><span class="p">:</span> <span class="n">row_count</span><span class="p">,</span>
+        <span class="s2">"duration_seconds"</span><span class="p">:</span> <span class="n">duration</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Save updated metrics</span>
+    <span class="n">metrics_block</span> <span class="o">=</span> <span class="n">JSON</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+    <span class="n">metrics_block</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Query metrics later:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">metrics</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">recent_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s1">'timestamp'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="s1">'2026-02-01'</span><span class="p">]</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">avg_duration</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s1">'duration_seconds'</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">recent_metrics</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent_metrics</span><span class="p">)</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average duration: </span><span class="si">{</span><span class="n">avg_duration</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">metrics</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"pipeline-metrics"</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+<span class="n">recent_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s1">'timestamp'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="s1">'2026-02-01'</span><span class="p">]</span>
+<span class="n">avg_duration</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s1">'duration_seconds'</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">recent_metrics</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent_metrics</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average duration: </span><span class="si">{</span><span class="n">avg_duration</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="send-metrics-to-cloudwatch">Send Metrics to CloudWatch</h3>
 <p>For enterprise monitoring, send metrics to AWS CloudWatch:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nd">@task</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">send_cloudwatch_metric</span><span class="p">(</span><span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'cloudwatch'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_metric_data</span><span class="p">(</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>        <span class="n">Namespace</span><span class="o">=</span><span class="s1">'DataPipelines'</span><span class="p">,</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        <span class="n">MetricData</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>            <span class="p">{</span>
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>                <span class="s1">'MetricName'</span><span class="p">:</span> <span class="n">metric_name</span><span class="p">,</span>
-<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>                <span class="s1">'Value'</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
-<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>                <span class="s1">'Unit'</span><span class="p">:</span> <span class="s1">'Count'</span><span class="p">,</span>
-<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>                <span class="s1">'Timestamp'</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>            <span class="p">}</span>
-<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>        <span class="p">]</span>
-<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">send_cloudwatch_metric</span><span class="p">(</span><span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="n">cloudwatch</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'cloudwatch'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s1">'eu-west-2'</span><span class="p">)</span>
+
+    <span class="n">cloudwatch</span><span class="o">.</span><span class="n">put_metric_data</span><span class="p">(</span>
+        <span class="n">Namespace</span><span class="o">=</span><span class="s1">'DataPipelines'</span><span class="p">,</span>
+        <span class="n">MetricData</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">'MetricName'</span><span class="p">:</span> <span class="n">metric_name</span><span class="p">,</span>
+                <span class="s1">'Value'</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+                <span class="s1">'Unit'</span><span class="p">:</span> <span class="s1">'Count'</span><span class="p">,</span>
+                <span class="s1">'Timestamp'</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>Usage in flow:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nd">@flow</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="c1"># Run dbt</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">row_count</span> <span class="o">=</span> <span class="n">run_dbt_build</span><span class="p">()</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="c1"># Calculate duration</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="c1"># Send metrics</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>    <span class="n">send_cloudwatch_metric</span><span class="p">(</span><span class="s2">"dbt_row_count"</span><span class="p">,</span> <span class="n">row_count</span><span class="p">)</span>
-<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>    <span class="n">send_cloudwatch_metric</span><span class="p">(</span><span class="s2">"dbt_duration_seconds"</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># Run dbt</span>
+    <span class="n">row_count</span> <span class="o">=</span> <span class="n">run_dbt_build</span><span class="p">()</span>
+
+    <span class="c1"># Calculate duration</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+    <span class="c1"># Send metrics</span>
+    <span class="n">send_cloudwatch_metric</span><span class="p">(</span><span class="s2">"dbt_row_count"</span><span class="p">,</span> <span class="n">row_count</span><span class="p">)</span>
+    <span class="n">send_cloudwatch_metric</span><span class="p">(</span><span class="s2">"dbt_duration_seconds"</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
 </code></pre></div>
 <p>View metrics in AWS CloudWatch:
 - Navigate to <strong>CloudWatch</strong> → <strong>Metrics</strong> → <strong>DataPipelines</strong>
@@ -7145,10 +7147,10 @@
 <li>Look for tasks that take &gt;50% of total time</li>
 </ol>
 <p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Timeline:
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>[extract_data]────────────────────────── 5m (bottleneck!)
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    [transform_data]─────── 30s
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>        [load_data]──── 15s
+<div class="highlight"><pre><span></span><code>Timeline:
+[extract_data]────────────────────────── 5m (bottleneck!)
+    [transform_data]─────── 30s
+        [load_data]──── 15s
 </code></pre></div>
 <p><strong>Action:</strong> Optimise <code>extract_data</code> task (parallel fetching, batch size tuning).</p>
 <h3 id="track-duration-trends">Track Duration Trends</h3>
@@ -7160,14 +7162,14 @@
 <li>Are specific days slower (e.g., month-end spikes)?</li>
 </ol>
 <p><strong>Example chart:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Duration (minutes)
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>60 │                                               ╱─
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>50 │                                           ╱───
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>40 │                                       ╱───
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>30 │                               ╱───────
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>20 │───────────────────────────────
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>   └────────────────────────────────────────────────
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>   Jan 1          Jan 15          Feb 1    Today
+<div class="highlight"><pre><span></span><code>Duration (minutes)
+60 │                                               ╱─
+50 │                                           ╱───
+40 │                                       ╱───
+30 │                               ╱───────
+20 │───────────────────────────────
+   └────────────────────────────────────────────────
+   Jan 1          Jan 15          Feb 1    Today
 </code></pre></div>
 <p><strong>Finding:</strong> Pipeline duration increasing 2x per month → investigate data volume growth.</p>
 <h3 id="analyse-task-retry-patterns">Analyse Task Retry Patterns</h3>
@@ -7183,27 +7185,27 @@
 - Transient database locks → Add retry with delay</p>
 <h3 id="set-performance-baselines">Set Performance Baselines</h3>
 <p>Define SLOs (Service Level Objectives) for pipelines:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Expected performance</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">DBT_PIPELINE_SLO</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="s2">"max_duration_minutes"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="s2">"max_row_count"</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="s2">"min_success_rate_pct"</span><span class="p">:</span> <span class="mi">99</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="p">}</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="nd">@flow</span>
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
-<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="c1"># Run pipeline</span>
-<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>    <span class="n">row_count</span> <span class="o">=</span> <span class="n">run_dbt_build</span><span class="p">()</span>
-<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
-<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="c1"># Check SLO</span>
-<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>    <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">60</span>
-<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>
-<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>    <span class="k">if</span> <span class="n">duration</span> <span class="o">&gt;</span> <span class="n">DBT_PIPELINE_SLO</span><span class="p">[</span><span class="s2">"max_duration_minutes"</span><span class="p">]:</span>
-<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"⚠️ SLO violation: dbt pipeline took </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> minutes (SLO: </span><span class="si">{</span><span class="n">DBT_PIPELINE_SLO</span><span class="p">[</span><span class="s1">'max_duration_minutes'</span><span class="p">]</span><span class="si">}</span><span class="s2"> minutes)"</span>
-<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>        <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Expected performance</span>
+<span class="n">DBT_PIPELINE_SLO</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"max_duration_minutes"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s2">"max_row_count"</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">"min_success_rate_pct"</span><span class="p">:</span> <span class="mi">99</span>
+<span class="p">}</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># Run pipeline</span>
+    <span class="n">row_count</span> <span class="o">=</span> <span class="n">run_dbt_build</span><span class="p">()</span>
+
+    <span class="c1"># Check SLO</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">60</span>
+
+    <span class="k">if</span> <span class="n">duration</span> <span class="o">&gt;</span> <span class="n">DBT_PIPELINE_SLO</span><span class="p">[</span><span class="s2">"max_duration_minutes"</span><span class="p">]:</span>
+        <span class="n">slack_webhook</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"⚠️ SLO violation: dbt pipeline took </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> minutes (SLO: </span><span class="si">{</span><span class="n">DBT_PIPELINE_SLO</span><span class="p">[</span><span class="s1">'max_duration_minutes'</span><span class="p">]</span><span class="si">}</span><span class="s2"> minutes)"</span>
+        <span class="p">)</span>
 </code></pre></div>
 <h2 id="monitoring-best-practices">Monitoring Best Practices</h2>
 <h3 id="1-set-alerts-for-critical-failures">1. Set Alerts for Critical Failures</h3>
@@ -7217,17 +7219,17 @@
 - Alert only if repeated failures</p>
 <h3 id="2-monitor-success-rate-over-time">2. Monitor Success Rate Over Time</h3>
 <p>Track success rate as a KPI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">-- Query Prefect database (if self-hosted) or export logs</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="n">DATE_TRUNC</span><span class="p">(</span><span class="s1">'day'</span><span class="p">,</span><span class="w"> </span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_runs</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Completed'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">successful_runs</span><span class="p">,</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="p">(</span><span class="n">successful_runs</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_runs</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">success_rate_pct</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">flow_runs</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">flow_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dbt-daily-pipeline'</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span>
-<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span>
-<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Query Prefect database (if self-hosted) or export logs</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">DATE_TRUNC</span><span class="p">(</span><span class="s1">'day'</span><span class="p">,</span><span class="w"> </span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">run_date</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_runs</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Completed'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">successful_runs</span><span class="p">,</span>
+<span class="w">    </span><span class="p">(</span><span class="n">successful_runs</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_runs</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">success_rate_pct</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">flow_runs</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">flow_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'dbt-daily-pipeline'</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30 days'</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_date</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Target SLO:</strong> ≥ 99% success rate over 30 days.</p>
 <h3 id="3-review-logs-regularly">3. Review Logs Regularly</h3>
@@ -7237,12 +7239,12 @@
 - Identify slow tasks for optimisation</p>
 <h3 id="4-use-tags-for-filtering">4. Use Tags for Filtering</h3>
 <p>Tag flows by criticality, team, or data domain:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nd">@flow</span><span class="p">(</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"dbt-daily-pipeline"</span><span class="p">,</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"critical"</span><span class="p">,</span> <span class="s2">"dbt"</span><span class="p">,</span> <span class="s2">"daily"</span><span class="p">,</span> <span class="s2">"data-engineering"</span><span class="p">]</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="p">)</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="o">...</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"dbt-daily-pipeline"</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"critical"</span><span class="p">,</span> <span class="s2">"dbt"</span><span class="p">,</span> <span class="s2">"daily"</span><span class="p">,</span> <span class="s2">"data-engineering"</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="o">...</span>
 </code></pre></div>
 <p>Filter in Prefect Cloud:
 - <strong>Critical flows</strong> → monitor closely
@@ -7252,22 +7254,22 @@
 <p>Prefect Cloud Free tier retains 7 days of flow run history. For longer retention:</p>
 <p><strong>Option A:</strong> Upgrade to Prefect Cloud Pro ($450/month) for 30-day retention</p>
 <p><strong>Option B:</strong> Export logs to S3/CloudWatch:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">export_logs_to_s3</span><span class="p">])</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>    <span class="o">...</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">export_logs_to_s3</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="sd">"""Export flow run logs to S3 for long-term storage"""</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>    <span class="n">logs</span> <span class="o">=</span> <span class="n">get_flow_run_logs</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>    <span class="n">s3</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>        <span class="n">Bucket</span><span class="o">=</span><span class="s1">'data-pipeline-logs'</span><span class="p">,</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>        <span class="n">Key</span><span class="o">=</span><span class="sa">f</span><span class="s2">"flow-runs/</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.json"</span><span class="p">,</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>        <span class="n">Body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>    <span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">export_logs_to_s3</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dbt_pipeline</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export_logs_to_s3</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Export flow run logs to S3 for long-term storage"""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+
+    <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">get_flow_run_logs</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="n">s3</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
+        <span class="n">Bucket</span><span class="o">=</span><span class="s1">'data-pipeline-logs'</span><span class="p">,</span>
+        <span class="n">Key</span><span class="o">=</span><span class="sa">f</span><span class="s2">"flow-runs/</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.json"</span><span class="p">,</span>
+        <span class="n">Body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
+    <span class="p">)</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've configured Prefect monitoring:</p>
@@ -7331,6 +7333,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7374,7 +7378,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

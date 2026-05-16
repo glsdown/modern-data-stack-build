@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6189,38 +6191,38 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>Airbyte needs a Snowflake database to load data into, and a service account to authenticate with. This follows the same Terraform module patterns used in the <a href="../../data-warehouse/">Data Warehouse</a> section.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    SNOWFLAKE INFRASTRUCTURE FOR AIRBYTE                     │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Database                    Roles                    Access                │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ────────                    ─────                    ──────                │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                             │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌─────────────────┐         ┌──────────────────┐                           │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ AIRBYTE         │         │ SVC_AIRBYTE      │  (dedicated role)         │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ ├── HUBSPOT     │◀────────│ (service account)│                           │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ │   └─ CONTACTS │  write  └──────────────────┘                           │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ └── (future)    │                │                                       │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └─────────────────┘                │ granted                               │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│         │                           ▼                                       │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│         │              ┌──────────────────────┐                             │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│         │              │ AIRBYTE_DB_WRITER    │  (database role)            │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│         │              └──────────────────────┘                             │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│         │                                                                   │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│         │              ┌──────────────────────┐                             │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│         └──────────────│ AIRBYTE_DB_READER    │  (database role)            │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│              read      └──────────┬───────────┘                             │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                                   │ granted to                              │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                                   ▼                                         │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                        ┌──────────────────────┐                             │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                        │ ANALYTICS_SOURCES_   │  (account role)             │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│                        │ READER               │                             │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│                        └──────────────────────┘                             │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│                                   │                                         │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│                                   ▼                                         │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│                        All analytics roles can read Airbyte data            │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│                                                                             │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SNOWFLAKE INFRASTRUCTURE FOR AIRBYTE                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Database                    Roles                    Access                │
+│  ────────                    ─────                    ──────                │
+│                                                                             │
+│  ┌─────────────────┐         ┌──────────────────┐                           │
+│  │ AIRBYTE         │         │ SVC_AIRBYTE      │  (dedicated role)         │
+│  │ ├── HUBSPOT     │◀────────│ (service account)│                           │
+│  │ │   └─ CONTACTS │  write  └──────────────────┘                           │
+│  │ └── (future)    │                │                                       │
+│  └─────────────────┘                │ granted                               │
+│         │                           ▼                                       │
+│         │              ┌──────────────────────┐                             │
+│         │              │ AIRBYTE_DB_WRITER    │  (database role)            │
+│         │              └──────────────────────┘                             │
+│         │                                                                   │
+│         │              ┌──────────────────────┐                             │
+│         └──────────────│ AIRBYTE_DB_READER    │  (database role)            │
+│              read      └──────────┬───────────┘                             │
+│                                   │ granted to                              │
+│                                   ▼                                         │
+│                        ┌──────────────────────┐                             │
+│                        │ ANALYTICS_SOURCES_   │  (account role)             │
+│                        │ READER               │                             │
+│                        └──────────────────────┘                             │
+│                                   │                                         │
+│                                   ▼                                         │
+│                        All analytics roles can read Airbyte data            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Ensure you have:</p>
@@ -6231,30 +6233,30 @@
 </ul>
 <h2 id="create-the-airbyte-database">Create the AIRBYTE Database</h2>
 <p>Use the existing database module to create the AIRBYTE database. The module automatically creates <code>AIRBYTE_DB_READER</code> and <code>AIRBYTE_DB_WRITER</code> database roles.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># terraform/snowflake/databases.tf</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"database_airbyte"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"AIRBYTE"</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Raw data loaded by Airbyte connectors."</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1">  # Grant AIRBYTE_DB_READER to ANALYTICS_SOURCES_READER</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1">  # so all analytics roles can read Airbyte-loaded data</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nv">module.role_analytics_sources_reader.role_name</span><span class="p">,</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">  # Grant AIRBYTE_DB_WRITER to SVC_AIRBYTE's dedicated role</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="nv">module.user_svc_airbyte.user_default_role</span><span class="p">,</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/databases.tf</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">"database_airbyte"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"AIRBYTE"</span>
+<span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Raw data loaded by Airbyte connectors."</span>
+
+<span class="c1">  # Grant AIRBYTE_DB_READER to ANALYTICS_SOURCES_READER</span>
+<span class="c1">  # so all analytics roles can read Airbyte-loaded data</span>
+<span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.role_analytics_sources_reader.role_name</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+
+<span class="c1">  # Grant AIRBYTE_DB_WRITER to SVC_AIRBYTE's dedicated role</span>
+<span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.user_svc_airbyte.user_default_role</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This creates:</p>
 <table>
@@ -6286,25 +6288,25 @@
 <p>The <code>grant_reader_to_account_roles</code> parameter grants <code>AIRBYTE_DB_READER</code> to <code>ANALYTICS_SOURCES_READER</code>. This means all roles in the analytics hierarchy (e.g., <code>ANALYTICS_DEVELOPER</code>, <code>ANALYTICS_ANALYST</code>) can read Airbyte data without any additional grants.</p>
 <h2 id="create-the-svc_airbyte-service-account">Create the SVC_AIRBYTE Service Account</h2>
 <p>Use the user module with <code>user_create_dedicated_role = true</code> to create a service account with its own role.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># terraform/snowflake/users.tf</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_airbyte"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="na">user_name</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_AIRBYTE"</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Airbyte data loading"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_AIRBYTE"</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="na">user_is_service_account</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Creates SVC_AIRBYTE role automatically</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="c1">  # user_default_role is set automatically to the dedicated role (SVC_AIRBYTE)</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/users.tf</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_airbyte"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_AIRBYTE"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Airbyte data loading"</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_AIRBYTE"</span>
+<span class="w">  </span><span class="na">user_is_service_account</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Creates SVC_AIRBYTE role automatically</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
+<span class="c1">  # user_default_role is set automatically to the dedicated role (SVC_AIRBYTE)</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The <code>user_create_dedicated_role = true</code> flag:</p>
 <ol>
@@ -6314,35 +6316,35 @@
 </ol>
 <h3 id="grant-warehouse-usage">Grant Warehouse Usage</h3>
 <p>The service account needs warehouse access to execute queries:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># terraform/snowflake/users.tf</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"svc_airbyte_warehouse"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="na">provider</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_airbyte.user_default_role</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="na">privileges</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"USAGE"</span><span class="p">]</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"WAREHOUSE"</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/users.tf</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"svc_airbyte_warehouse"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.user_svc_airbyte.user_default_role</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"USAGE"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"WAREHOUSE"</span>
+<span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="add-the-hubspot-schema">Add the HUBSPOT Schema</h2>
 <p>Create the HUBSPOT schema in the AIRBYTE database:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># terraform/snowflake/schemas.tf</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"schema_airbyte_hubspot"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="na">schema_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HUBSPOT"</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="na">schema_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AIRBYTE"</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="na">schema_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"HubSpot CRM data loaded via Airbyte."</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/snowflake/schemas.tf</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">"schema_airbyte_hubspot"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">schema_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HUBSPOT"</span>
+<span class="w">  </span><span class="na">schema_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"AIRBYTE"</span>
+<span class="w">  </span><span class="na">schema_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"HubSpot CRM data loaded via Airbyte."</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Schema Pre-creation</p>
@@ -6350,14 +6352,14 @@
 </div>
 <h2 id="generate-key-pair-for-svc_airbyte">Generate Key Pair for SVC_AIRBYTE</h2>
 <p>Generate an RSA key pair for the service account, following the same pattern as SVC_DLT from <a href="../../batch-data-ingestion/3-snowflake-infrastructure/">Snowflake Infrastructure</a>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Generate private key</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>-nocrypt
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Generate public key</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_airbyte_rsa_key.pub
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate private key</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>-nocrypt
+
+<span class="c1"># Generate public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_airbyte_rsa_key.pub
 </code></pre></div>
 <p>Set the public key on the Snowflake user:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'MIIBIjANBgkqhki...'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'MIIBIjANBgkqhki...'</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Remove Headers</p>
@@ -6365,89 +6367,89 @@
 </div>
 <h3 id="store-credentials-in-aws-secrets-manager">Store Credentials in AWS Secrets Manager</h3>
 <p>The <code>airbyte/snowflake-credentials</code> secret container was created in <a href="../3-airbyte-cloud-setup/">Airbyte Cloud Setup</a>. Set the value with the generated private key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="s1">        "account": "orgname-accountname",</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s1">        "username": "SVC_AIRBYTE",</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s1">        "private_key": "'</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="k">)</span><span class="s2">"</span><span class="s1">'",</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="s1">        "database": "AIRBYTE",</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="s1">        "warehouse": "LOADING",</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="s1">        "role": "SVC_AIRBYTE"</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-id<span class="w"> </span><span class="s2">"airbyte/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "account": "orgname-accountname",</span>
+<span class="s1">        "username": "SVC_AIRBYTE",</span>
+<span class="s1">        "private_key": "'</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="k">)</span><span class="s2">"</span><span class="s1">'",</span>
+<span class="s1">        "database": "AIRBYTE",</span>
+<span class="s1">        "warehouse": "LOADING",</span>
+<span class="s1">        "role": "SVC_AIRBYTE"</span>
+<span class="s1">    }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Delete local key files after storing:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>rm<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>svc_airbyte_rsa_key.pub
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>svc_airbyte_rsa_key.p8<span class="w"> </span>svc_airbyte_rsa_key.pub
 </code></pre></div>
 <h2 id="deploy">Deploy</h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">CI/CD</label><label for="__tabbed_1_2">Local</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Commit and push the changes to trigger the Snowflake Terraform CI/CD pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add AIRBYTE database, SVC_AIRBYTE service account, and HUBSPOT schema"</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add AIRBYTE database, SVC_AIRBYTE service account, and HUBSPOT schema"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <p>Create a PR to review the plan. After merging, Terraform applies the changes automatically.</p>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/snowflake
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
 </code></pre></div>
 </div>
 </div>
 </div>
 <h2 id="verify">Verify</h2>
 <h3 id="check-database-and-schema">Check Database and Schema</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- Database exists</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'AIRBYTE'</span><span class="p">;</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1">-- Schema exists</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">-- Should show: HUBSPOT</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1">-- Database roles exist</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1">-- Should show: AIRBYTE_DB_READER, AIRBYTE_DB_WRITER</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Database exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'AIRBYTE'</span><span class="p">;</span>
+
+<span class="c1">-- Schema exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should show: HUBSPOT</span>
+
+<span class="c1">-- Database roles exist</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should show: AIRBYTE_DB_READER, AIRBYTE_DB_WRITER</span>
 </code></pre></div>
 <h3 id="check-service-account">Check Service Account</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">-- User exists</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">-- default_role should be SVC_AIRBYTE</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">-- default_warehouse should be LOADING</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1">-- Role exists</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="c1">-- Role grants</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="c1">-- Should include AIRBYTE_DB_WRITER and LOADING warehouse</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- User exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">USERS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- default_role should be SVC_AIRBYTE</span>
+<span class="c1">-- default_warehouse should be LOADING</span>
+
+<span class="c1">-- Role exists</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">ROLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'SVC_AIRBYTE'</span><span class="p">;</span>
+
+<span class="c1">-- Role grants</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SVC_AIRBYTE</span><span class="p">;</span>
+<span class="c1">-- Should include AIRBYTE_DB_WRITER and LOADING warehouse</span>
 </code></pre></div>
 <h3 id="check-reader-access-chain">Check Reader Access Chain</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- AIRBYTE_DB_READER is granted to ANALYTICS_SOURCES_READER</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">AIRBYTE_DB_READER</span><span class="p">;</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1">-- Should show: ANALYTICS_SOURCES_READER</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">-- Verify analyst can read (once data is loaded)</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">CURRENT_ROLE</span><span class="p">();</span><span class="w">  </span><span class="c1">-- Should show ANALYTICS_DEVELOPER</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1">-- The following will work once Airbyte loads data:</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="c1">-- SELECT * FROM AIRBYTE.HUBSPOT.CONTACTS LIMIT 5;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- AIRBYTE_DB_READER is granted to ANALYTICS_SOURCES_READER</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">AIRBYTE</span><span class="p">.</span><span class="n">AIRBYTE_DB_READER</span><span class="p">;</span>
+<span class="c1">-- Should show: ANALYTICS_SOURCES_READER</span>
+
+<span class="c1">-- Verify analyst can read (once data is loaded)</span>
+<span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">CURRENT_ROLE</span><span class="p">();</span><span class="w">  </span><span class="c1">-- Should show ANALYTICS_DEVELOPER</span>
+<span class="c1">-- The following will work once Airbyte loads data:</span>
+<span class="c1">-- SELECT * FROM AIRBYTE.HUBSPOT.CONTACTS LIMIT 5;</span>
 </code></pre></div>
 <h2 id="role-hierarchy-summary">Role Hierarchy Summary</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ACCOUNTADMIN
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>└── SYSADMIN
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    └── SVC_AIRBYTE (dedicated role, created by user module)
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>        └── AIRBYTE_DB_WRITER (database role, created by database module)
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>            └── Write access to AIRBYTE database
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>ANALYTICS_SOURCES_READER (account role)
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>└── AIRBYTE_DB_READER (database role, granted by database module)
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    └── Read access to AIRBYTE database
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        └── ANALYTICS_DEVELOPER, ANALYTICS_ANALYST inherit this
+<div class="highlight"><pre><span></span><code>ACCOUNTADMIN
+└── SYSADMIN
+    └── SVC_AIRBYTE (dedicated role, created by user module)
+        └── AIRBYTE_DB_WRITER (database role, created by database module)
+            └── Write access to AIRBYTE database
+
+ANALYTICS_SOURCES_READER (account role)
+└── AIRBYTE_DB_READER (database role, granted by database module)
+    └── Read access to AIRBYTE database
+        └── ANALYTICS_DEVELOPER, ANALYTICS_ANALYST inherit this
 </code></pre></div>
 <p>This mirrors the pattern used for the DLT database:</p>
 <table>
@@ -6536,6 +6538,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6579,7 +6583,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

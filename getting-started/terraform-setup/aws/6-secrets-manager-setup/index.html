@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6387,7 +6389,7 @@
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" checked><span class="task-list-indicator"></span></label> Establish a pattern for adding new secrets</li>
 </ul>
 <h2 id="navigate-to-your-terraform-directory">Navigate to Your Terraform Directory</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/aws
 </code></pre></div>
 <h2 id="understanding-secrets-in-terraform">Understanding Secrets in Terraform</h2>
 <p>AWS Secrets Manager stores sensitive values like API keys, database passwords, and service credentials. When managing secrets with Terraform, you face an important decision: should Terraform manage the secret values, or just the secret containers?</p>
@@ -6428,62 +6430,62 @@
 </tbody>
 </table>
 <p>Terraform creates and manages the secret "container" - the AWS resource itself. The actual secret value is set separately using the AWS CLI or Console, keeping it out of Terraform state entirely.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌─────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                     Secret Management                           |
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├─────────────────────────────────┬───────────────────────────────┤
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│         Terraform               │           AWS CLI             │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├─────────────────────────────────┼───────────────────────────────┤
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│ • Creates secret resource       │ • Sets initial secret value   │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│ • Manages resource policies     │ • Updates secret values       │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│ • Configures rotation schedule  │ • Rotates values manually     │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│ • Sets tags and metadata        │ • Retrieves values for use    │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>└─────────────────────────────────┴───────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────┐
+│                     Secret Management                           |
+├─────────────────────────────────┬───────────────────────────────┤
+│         Terraform               │           AWS CLI             │
+├─────────────────────────────────┼───────────────────────────────┤
+│ • Creates secret resource       │ • Sets initial secret value   │
+│ • Manages resource policies     │ • Updates secret values       │
+│ • Configures rotation schedule  │ • Rotates values manually     │
+│ • Sets tags and metadata        │ • Retrieves values for use    │
+└─────────────────────────────────┴───────────────────────────────┘
 </code></pre></div>
 <h2 id="review-existing-secrets">Review Existing Secrets</h2>
 <p>You created the <code>terraform/github-token</code> secret in <a href="../../4-terraform-deployment/">Terraform Deployment</a>. Let's check what secrets currently exist:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">"SecretList"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">            </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"terraform/github-token"</span><span class="p">,</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">            </span><span class="nt">"Description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GitHub PAT for Terraform provider"</span><span class="p">,</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">            </span><span class="err">...</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"SecretList"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"terraform/github-token"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"Description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GitHub PAT for Terraform provider"</span><span class="p">,</span>
+<span class="w">            </span><span class="err">...</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-secrets-configuration">Create Secrets Configuration</h2>
 <p>Create <code>secrets.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># AWS Secrets Manager</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">#</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># This file manages secret containers only. Secret values are set via CLI</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># to keep them out of Terraform state.</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">#</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># To set a secret value:</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">#   aws secretsmanager put-secret-value \</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">#     --secret-id "secret-name" \</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">#     --secret-string "value" \</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">#     --profile infrastructure-admin</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="c1"># Terraform Secrets - Used by CI/CD pipelines</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"github_token"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub PAT for Terraform provider"</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="na">Name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">    </span><span class="na">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"all"</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># AWS Secrets Manager</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1">#</span>
+<span class="c1"># This file manages secret containers only. Secret values are set via CLI</span>
+<span class="c1"># to keep them out of Terraform state.</span>
+<span class="c1">#</span>
+<span class="c1"># To set a secret value:</span>
+<span class="c1">#   aws secretsmanager put-secret-value \</span>
+<span class="c1">#     --secret-id "secret-name" \</span>
+<span class="c1">#     --secret-string "value" \</span>
+<span class="c1">#     --profile infrastructure-admin</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Terraform Secrets - Used by CI/CD pipelines</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"github_token"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub PAT for Terraform provider"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">    </span><span class="na">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"all"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why No Secret Values?</p>
@@ -6491,29 +6493,29 @@
 </div>
 <h2 id="add-import-block-for-existing-secret">Add Import Block for Existing Secret</h2>
 <p>Add to <code>imports.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Secrets Manager</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.github_token</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Secrets Manager</span>
+<span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.github_token</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/github-token"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="plan-and-apply">Plan and Apply</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Review the output. You should see:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
+<div class="highlight"><pre><span></span><code>Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 </code></pre></div>
 <p>The existing <code>terraform/github-token</code> secret will be imported into Terraform state.</p>
 <p>Apply the changes:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
 </code></pre></div>
 <h2 id="cicd-permissions">CI/CD Permissions</h2>
 <p>The <code>TerraformGitHubActionsRole</code> already has permission to read secrets with the <code>terraform/</code> prefix. The policy document in <code>oidc.tf</code> uses a wildcard pattern:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="na">sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerAccess"</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="na">actions</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">]</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"</span><span class="p">]</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">statement</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerAccess"</span>
+<span class="w">  </span><span class="na">actions</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">]</span>
+<span class="w">  </span><span class="na">resources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:terraform/*"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This pattern covers any secret with the <code>terraform/</code> prefix. When you add new secrets with this prefix, no policy changes are needed.</p>
 <h2 id="secret-naming-convention">Secret Naming Convention</h2>
@@ -6550,16 +6552,16 @@
 <ol>
 <li>
 <p><strong>Add the resource to <code>secrets.tf</code></strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake service account credentials for Terraform provider"</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="na">Name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="na">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"all"</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake service account credentials for Terraform provider"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">    </span><span class="na">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"all"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 </li>
 <li>
@@ -6567,10 +6569,10 @@
 </li>
 <li>
 <p><strong>Set the secret value via CLI</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--secret-string<span class="w"> </span><span class="s1">'{"account": "your-account", "user": "TERRAFORM_SVC", "private_key": "..."}'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-string<span class="w"> </span><span class="s1">'{"account": "your-account", "user": "TERRAFORM_SVC", "private_key": "..."}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </li>
 <li>
@@ -6580,10 +6582,10 @@
 <div class="admonition tip">
 <p class="admonition-title">Avoid Shell History</p>
 <p>To keep secrets out of your shell history, pipe the value from a password manager:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s1">'Snowflake Terraform'</span><span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-c<span class="w"> </span><span class="s1">'...'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/snowflake-credentials"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s1">'Snowflake Terraform'</span><span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-c<span class="w"> </span><span class="s1">'...'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </div>
 <h2 id="secret-rotation">Secret Rotation</h2>
@@ -6592,10 +6594,10 @@
 <li><strong>Generate a new token</strong> in GitHub</li>
 <li>
 <p><strong>Update the secret value</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/github-token"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--secret-string<span class="w"> </span><span class="s2">"ghp_new_token_value"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>put-secret-value<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-id<span class="w"> </span><span class="s2">"terraform/github-token"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret-string<span class="w"> </span><span class="s2">"ghp_new_token_value"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </li>
 <li>
@@ -6608,37 +6610,37 @@
 </div>
 <h2 id="add-outputs">Add Outputs</h2>
 <p>Update <code>outputs.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Secrets Manager outputs</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"github_token_secret_arn"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ARN of the GitHub token secret"</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.github_token.arn</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Secrets Manager outputs</span>
+<span class="kr">output</span><span class="w"> </span><span class="nv">"github_token_secret_arn"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ARN of the GitHub token secret"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.github_token.arn</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="verify-the-setup">Verify the Setup</h2>
 <p>Check that secrets are properly configured:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># List all secrets</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Verify Terraform state</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>terraform<span class="w"> </span>state<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>aws_secretsmanager
+<div class="highlight"><pre><span></span><code><span class="c1"># List all secrets</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>list-secrets<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># Verify Terraform state</span>
+terraform<span class="w"> </span>state<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>aws_secretsmanager
 </code></pre></div>
 <p>Expected state output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aws_secretsmanager_secret.github_token
+<div class="highlight"><pre><span></span><code>aws_secretsmanager_secret.github_token
 </code></pre></div>
 <h2 id="commit-your-work">Commit Your Work</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/aws/
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Secrets Manager configuration for Terraform secrets"</span>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/aws/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add Secrets Manager configuration for Terraform secrets"</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="error-secret-already-exists">Error: Secret Already Exists</h3>
 <p>If you get an error when creating a secret that already exists:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Error: creating Secrets Manager Secret: ResourceExistsException
+<div class="highlight"><pre><span></span><code>Error: creating Secrets Manager Secret: ResourceExistsException
 </code></pre></div>
 <p>Add an import block instead of letting Terraform create it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.existing_secret</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"secret-name"</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.existing_secret</span>
+<span class="w">  </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"secret-name"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="error-access-denied-when-setting-value">Error: Access Denied When Setting Value</h3>
 <p>If the CLI command to set a secret value fails with access denied:</p>
@@ -6659,48 +6661,48 @@
 <h3 id="separate-read-and-write-access">Separate Read and Write Access</h3>
 <p>Not everyone who creates secrets needs to read them. Use separate IAM policies:</p>
 <p><strong>Write-only policy</strong> — for administrators who set secret values:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_policy"</span><span class="w"> </span><span class="nv">"secrets_writer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerWriter"</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow creating and updating secret values"</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">        </span><span class="na">Sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"WriteSecrets"</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">        </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">        </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">          </span><span class="s2">"secretsmanager:PutSecretValue"</span><span class="p">,</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">          </span><span class="s2">"secretsmanager:UpdateSecret"</span><span class="p">,</span>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">          </span><span class="s2">"secretsmanager:CreateSecret"</span><span class="p">,</span>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">          </span><span class="s2">"secretsmanager:TagResource"</span><span class="p">,</span>
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">        </span><span class="p">]</span>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">        </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:*"</span>
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_policy"</span><span class="w"> </span><span class="nv">"secrets_writer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"SecretsManagerWriter"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow creating and updating secret values"</span>
+
+<span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">Sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"WriteSecrets"</span>
+<span class="w">        </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">        </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"secretsmanager:PutSecretValue"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"secretsmanager:UpdateSecret"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"secretsmanager:CreateSecret"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"secretsmanager:TagResource"</span><span class="p">,</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">        </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:*"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Read-only policy</strong> — scoped by prefix for services that consume secrets:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_policy"</span><span class="w"> </span><span class="nv">"dlt_secrets_reader"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DltSecretsReader"</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow reading dlt pipeline secrets"</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">        </span><span class="na">Sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ReadDltSecrets"</span>
-<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">        </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">        </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">          </span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">,</span>
-<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">          </span><span class="s2">"secretsmanager:DescribeSecret"</span><span class="p">,</span>
-<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="w">        </span><span class="p">]</span>
-<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="w">        </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:dlt/*"</span>
-<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_policy"</span><span class="w"> </span><span class="nv">"dlt_secrets_reader"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DltSecretsReader"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow reading dlt pipeline secrets"</span>
+
+<span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">Sid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"ReadDltSecrets"</span>
+<span class="w">        </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">        </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"secretsmanager:GetSecretValue"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"secretsmanager:DescribeSecret"</span><span class="p">,</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">        </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:dlt/*"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="prefix-based-access-control">Prefix-Based Access Control</h3>
 <p>Use secret name prefixes to scope access:</p>
@@ -6738,31 +6740,31 @@
 <p>This ensures that, for example, the Prefect worker can read <code>dlt/*</code> secrets to run pipelines but cannot read <code>terraform/*</code> secrets that control infrastructure.</p>
 <h3 id="resource-policies">Resource Policies</h3>
 <p>For additional protection, attach resource policies to individual secrets to restrict access even if an IAM policy would otherwise allow it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_policy"</span><span class="w"> </span><span class="nv">"restrict_dlt_secrets"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="na">secret_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.dlt_snowflake_credentials.arn</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">        </span><span class="na">Sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"RestrictToWorkerRole"</span>
-<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">        </span><span class="na">Effect</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">        </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">          </span><span class="na">AWS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.prefect_worker_role_arn</span>
-<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">        </span><span class="na">Action</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"secretsmanager:GetSecretValue"</span>
-<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">        </span><span class="na">Resource</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
-<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_policy"</span><span class="w"> </span><span class="nv">"restrict_dlt_secrets"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">secret_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.dlt_snowflake_credentials.arn</span>
+
+<span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">Sid</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"RestrictToWorkerRole"</span>
+<span class="w">        </span><span class="na">Effect</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">        </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="na">AWS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.prefect_worker_role_arn</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="na">Action</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"secretsmanager:GetSecretValue"</span>
+<span class="w">        </span><span class="na">Resource</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="encryption">Encryption</h3>
 <p>AWS Secrets Manager encrypts all secrets at rest using AWS KMS. By default, this uses the AWS-managed key (<code>aws/secretsmanager</code>). For stricter control, use a customer-managed KMS key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"sensitive_secret"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="na">kms_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_kms_key.secrets_key.arn</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"sensitive_secret"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt/snowflake-credentials"</span>
+<span class="w">  </span><span class="na">kms_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_kms_key.secrets_key.arn</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This lets you control who can decrypt secrets independently of who can call the Secrets Manager API.</p>
 <h2 id="whats-next">What's Next</h2>
@@ -6824,6 +6826,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6867,7 +6871,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

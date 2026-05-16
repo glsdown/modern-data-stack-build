@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6640,53 +6642,53 @@
 <li><strong>Capacity planning</strong> — Right-size warehouses for workload demands</li>
 <li><strong>Usage attribution</strong> — Track who is using what resources</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    SNOWFLAKE MONITORING LAYERS                          │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  Query Performance      Warehouse Usage         Cost Monitoring        │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────────     ───────────────         ───────────────        │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌─────────────────┐   ┌─────────────────┐     ┌─────────────────┐    │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ QUERY_HISTORY   │   │ WAREHOUSE_      │     │ Resource        │    │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • Duration      │   │ METERING_       │     │ Monitors        │    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ • Bytes scanned │   │ HISTORY         │     │ • Budget alerts │    │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ │ Partitions    │   │ • Credit usage  │     │ • Auto-suspend  │    │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │   pruned        │   │ • Utilisation   │     │ • Notifications │    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  └─────────────────┘   └─────────────────┘     └─────────────────┘    │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│         │                       │                       │              │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│         └───────────────────────┴───────────────────────┘              │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                                 │                                      │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                                 ▼                                      │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                      ┌────────────────────┐                            │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│                      │ ACCOUNT_USAGE      │                            │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│                      │ (System Views)     │                            │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                      │ • 1 year retention │                            │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                      │ • All accounts     │                            │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│                      └────────────────────┘                            │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│                                                                         │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                    SNOWFLAKE MONITORING LAYERS                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Query Performance      Warehouse Usage         Cost Monitoring        │
+│  ──────────────────     ───────────────         ───────────────        │
+│                                                                         │
+│  ┌─────────────────┐   ┌─────────────────┐     ┌─────────────────┐    │
+│  │ QUERY_HISTORY   │   │ WAREHOUSE_      │     │ Resource        │    │
+│  │ • Duration      │   │ METERING_       │     │ Monitors        │    │
+│  │ • Bytes scanned │   │ HISTORY         │     │ • Budget alerts │    │
+│  │ │ Partitions    │   │ • Credit usage  │     │ • Auto-suspend  │    │
+│  │   pruned        │   │ • Utilisation   │     │ • Notifications │    │
+│  └─────────────────┘   └─────────────────┘     └─────────────────┘    │
+│         │                       │                       │              │
+│         └───────────────────────┴───────────────────────┘              │
+│                                 │                                      │
+│                                 ▼                                      │
+│                      ┌────────────────────┐                            │
+│                      │ ACCOUNT_USAGE      │                            │
+│                      │ (System Views)     │                            │
+│                      │ • 1 year retention │                            │
+│                      │ • All accounts     │                            │
+│                      └────────────────────┘                            │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="query-profiling">Query Profiling</h2>
 <p>Snowflake's <code>QUERY_HISTORY</code> view shows all queries executed, with performance metrics.</p>
 <h3 id="view-recent-queries">View Recent Queries</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">SELECT</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">bytes_scanned</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">rows_produced</span><span class="p">,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">credits_used_cloud_services</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="n">start_time</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">query_text</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span><span class="p">,</span>
+<span class="w">    </span><span class="n">bytes_scanned</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rows_produced</span><span class="p">,</span>
+<span class="w">    </span><span class="n">credits_used_cloud_services</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Key columns:</strong>
 - <code>total_elapsed_time</code> — Query duration in milliseconds
@@ -6696,20 +6698,20 @@
 - <code>partitions_total</code> — Total micro-partitions in table (for pruning ratio)</p>
 <h3 id="identify-slow-queries">Identify Slow Queries</h3>
 <p>Find queries taking &gt;60 seconds:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_preview</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span><span class="p">,</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="n">bytes_scanned</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">POW</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">gb_scanned</span><span class="p">,</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">start_time</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">60000</span><span class="w">  </span><span class="c1">-- 60 seconds</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">query_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">LEFT</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_preview</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration_seconds</span><span class="p">,</span>
+<span class="w">    </span><span class="n">bytes_scanned</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">POW</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">gb_scanned</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_time</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">60000</span><span class="w">  </span><span class="c1">-- 60 seconds</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Example output:</strong></p>
 <table>
@@ -6760,32 +6762,32 @@
 <p><strong>Symptom:</strong> <code>partitions_scanned</code> = <code>partitions_total</code> (no pruning)</p>
 <p><strong>Cause:</strong> Query lacks filtering on clustering key or partition column.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- BAD: Full table scan</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Alice'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- customer_name not clustered</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">-- Scans all partitions (e.g., 1000 partitions for 1GB table)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- BAD: Full table scan</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">customer_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Alice'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- customer_name not clustered</span>
+
+<span class="c1">-- Scans all partitions (e.g., 1000 partitions for 1GB table)</span>
 </code></pre></div>
 <p><strong>Fix:</strong> Add clustering key or filter on partition column:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- GOOD: Partition pruning</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="w">  </span><span class="c1">-- order_date is clustering key</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">customer_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Alice'</span><span class="p">;</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">-- Scans only partitions for Jan 2026+ (e.g., 50 partitions)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- GOOD: Partition pruning</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="w">  </span><span class="c1">-- order_date is clustering key</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">customer_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Alice'</span><span class="p">;</span>
+
+<span class="c1">-- Scans only partitions for Jan 2026+ (e.g., 50 partitions)</span>
 </code></pre></div>
 <h4 id="issue-2-excessive-data-spilling">Issue 2: Excessive Data Spilling</h4>
 <p><strong>Symptom:</strong> Query Profile shows "Bytes spilled to local storage" or "Bytes spilled to remote storage"</p>
 <p><strong>Cause:</strong> Warehouse too small for query's memory requirements.</p>
 <p><strong>Fix:</strong> Use a larger warehouse:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">-- Temporarily use larger warehouse for this query</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_LARGE</span><span class="p">;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">-- Run query</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="p">...;</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1">-- Switch back</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Temporarily use larger warehouse for this query</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_LARGE</span><span class="p">;</span>
+
+<span class="c1">-- Run query</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="p">...;</span>
+
+<span class="c1">-- Switch back</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span><span class="p">;</span>
 </code></pre></div>
 <p>Or optimise the query:
 - Reduce window function complexity
@@ -6795,28 +6797,28 @@
 <p><strong>Symptom:</strong> Long duration on "Join" operator in Query Profile</p>
 <p><strong>Cause:</strong> Joining large tables without proper filters</p>
 <p><strong>Fix:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- BAD: Unrestricted join</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="n">o</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">dim_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span><span class="p">;</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">-- GOOD: Filter before joining</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="n">o</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">dim_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- Reduces fct_orders rows first</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- BAD: Unrestricted join</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="n">o</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">dim_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span><span class="p">;</span>
+
+<span class="c1">-- GOOD: Filter before joining</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="n">o</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">dim_customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">order_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- Reduces fct_orders rows first</span>
 </code></pre></div>
 <h4 id="issue-4-select">Issue 4: SELECT *</h4>
 <p><strong>Symptom:</strong> High <code>bytes_scanned</code> for simple queries</p>
 <p><strong>Cause:</strong> Selecting all columns when only a few are needed</p>
 <p><strong>Fix:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- BAD: Reads all columns</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- GOOD: Only read needed columns</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span><span class="p">,</span><span class="w"> </span><span class="n">order_total</span><span class="p">,</span><span class="w"> </span><span class="n">order_date</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- BAD: Reads all columns</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
+
+<span class="c1">-- GOOD: Only read needed columns</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">order_id</span><span class="p">,</span><span class="w"> </span><span class="n">order_total</span><span class="p">,</span><span class="w"> </span><span class="n">order_date</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
 </code></pre></div>
 <p>Snowflake stores data in columnar format, so reading fewer columns = less data scanned.</p>
 <h2 id="warehouse-sizing">Warehouse Sizing</h2>
@@ -6876,16 +6878,16 @@
 - Medium: 4 credits/hr × 8 hrs/day × 22 days = 704 credits/month = ~$1,760/month</p>
 <h3 id="monitor-warehouse-utilisation">Monitor Warehouse Utilisation</h3>
 <p>Query warehouse credit usage:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_credits</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">estimated_cost_usd</span><span class="p">,</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">start_time</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">days_active</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">days_active</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_credits_per_day</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">warehouse_metering_history</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">month</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_credits</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_credits</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">estimated_cost_usd</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">start_time</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">days_active</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">days_active</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_credits_per_day</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">warehouse_metering_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">month</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_credits</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Example output:</strong></p>
 <table>
@@ -6925,59 +6927,59 @@
 <h3 id="right-sizing-strategies">Right-Sizing Strategies</h3>
 <h4 id="strategy-1-monitor-query-queueing">Strategy 1: Monitor Query Queueing</h4>
 <p>If queries are queueing (waiting for warehouse capacity):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- Check for queueing</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">queued_queries</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">queued_overload_time</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_queue_seconds</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">queued_overload_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">queued_queries</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check for queueing</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">queued_queries</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">queued_overload_time</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_queue_seconds</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">queued_overload_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">queued_queries</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>If queueing is frequent:</strong> Increase warehouse size or add multi-cluster scaling.</p>
 <h4 id="strategy-2-monitor-warehouse-load">Strategy 2: Monitor Warehouse Load</h4>
 <p>Check average query concurrency:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">WITH</span><span class="w"> </span><span class="n">hourly_concurrency</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="k">SELECT</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">        </span><span class="n">DATE_TRUNC</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span><span class="w"> </span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">hour</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">queries_in_hour</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">hour</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="p">)</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">SELECT</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">queries_in_hour</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_queries_per_hour</span><span class="p">,</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">    </span><span class="k">MAX</span><span class="p">(</span><span class="n">queries_in_hour</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">peak_queries_per_hour</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="k">FROM</span><span class="w"> </span><span class="n">hourly_concurrency</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">WITH</span><span class="w"> </span><span class="n">hourly_concurrency</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">        </span><span class="n">DATE_TRUNC</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span><span class="w"> </span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">hour</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">queries_in_hour</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">hour</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">queries_in_hour</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_queries_per_hour</span><span class="p">,</span>
+<span class="w">    </span><span class="k">MAX</span><span class="p">(</span><span class="n">queries_in_hour</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">peak_queries_per_hour</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">hourly_concurrency</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>If peak concurrency is high:</strong> Enable multi-cluster scaling.</p>
 <h4 id="strategy-3-test-warehouse-sizes">Strategy 3: Test Warehouse Sizes</h4>
 <p>Run the same query on different warehouse sizes and compare:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- Run on X-Small</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_XSMALL</span><span class="p">;</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="cm">/* query */</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...;</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1">-- Note duration and cost</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">-- Run on Small</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_SMALL</span><span class="p">;</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="cm">/* same query */</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...;</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c1">-- Compare duration and cost</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Run on X-Small</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_XSMALL</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="cm">/* query */</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...;</span>
+<span class="c1">-- Note duration and cost</span>
+
+<span class="c1">-- Run on Small</span>
+<span class="n">USE</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING_SMALL</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="cm">/* same query */</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">fct_orders</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...;</span>
+<span class="c1">-- Compare duration and cost</span>
 </code></pre></div>
 <p><strong>Rule of thumb:</strong>
 - Doubling warehouse size = ~2x cost, ~1.5x faster (not linear due to overhead)
 - If query finishes in 5 minutes on Small and 10 minutes on X-Small, Small is more cost-effective</p>
 <h3 id="multi-cluster-warehouses">Multi-Cluster Warehouses</h3>
 <p>For workloads with variable concurrency (e.g., BI dashboards with many users):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">ANALYTICS_WH</span><span class="w"> </span><span class="k">SET</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="n">MIN_CLUSTER_COUNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="n">MAX_CLUSTER_COUNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">SCALING_POLICY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'STANDARD'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- or 'ECONOMY'</span>
+<div class="highlight"><pre><span></span><code><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">ANALYTICS_WH</span><span class="w"> </span><span class="k">SET</span>
+<span class="w">    </span><span class="n">MIN_CLUSTER_COUNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">MAX_CLUSTER_COUNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">    </span><span class="n">SCALING_POLICY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'STANDARD'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- or 'ECONOMY'</span>
 </code></pre></div>
 <p><strong>Scaling policies:</strong>
 - <strong>STANDARD</strong> — Starts additional clusters immediately when queue depth increases (favour performance)
@@ -6986,40 +6988,40 @@
 <h2 id="resource-monitors">Resource Monitors</h2>
 <p>Resource Monitors prevent budget overruns by setting credit limits and alerting when thresholds are crossed.</p>
 <h3 id="create-a-resource-monitor">Create a Resource Monitor</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITOR</span><span class="w"> </span><span class="n">monthly_budget</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">WITH</span><span class="w"> </span><span class="n">CREDIT_QUOTA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w">  </span><span class="c1">-- 500 credits per month (~$1,250)</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="n">FREQUENCY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MONTHLY</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="n">START_TIMESTAMP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">IMMEDIATELY</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="n">TRIGGERS</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">75</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">NOTIFY</span><span class="w">  </span><span class="c1">-- Alert at 75% usage</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">NOTIFY</span><span class="w">  </span><span class="c1">-- Alert at 90% usage</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="n">SUSPEND</span><span class="w">  </span><span class="c1">-- Suspend warehouses at 100%</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">110</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="n">SUSPEND_IMMEDIATE</span><span class="p">;</span><span class="w">  </span><span class="c1">-- Immediately suspend (kill running queries)</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="n">RESOURCE</span><span class="w"> </span><span class="n">MONITOR</span><span class="w"> </span><span class="n">monthly_budget</span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">CREDIT_QUOTA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w">  </span><span class="c1">-- 500 credits per month (~$1,250)</span>
+<span class="w">    </span><span class="n">FREQUENCY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MONTHLY</span>
+<span class="w">    </span><span class="n">START_TIMESTAMP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">IMMEDIATELY</span>
+<span class="w">    </span><span class="n">TRIGGERS</span>
+<span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">75</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">NOTIFY</span><span class="w">  </span><span class="c1">-- Alert at 75% usage</span>
+<span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">NOTIFY</span><span class="w">  </span><span class="c1">-- Alert at 90% usage</span>
+<span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="n">SUSPEND</span><span class="w">  </span><span class="c1">-- Suspend warehouses at 100%</span>
+<span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="mi">110</span><span class="w"> </span><span class="n">PERCENT</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="n">SUSPEND_IMMEDIATE</span><span class="p">;</span><span class="w">  </span><span class="c1">-- Immediately suspend (kill running queries)</span>
 </code></pre></div>
 <p><strong>Trigger actions:</strong>
 - <strong>NOTIFY</strong> — Send email alert to account admins
 - <strong>SUSPEND</strong> — Prevent new queries, allow running queries to finish
 - <strong>SUSPEND_IMMEDIATE</strong> — Kill all running queries and suspend</p>
 <h3 id="assign-monitor-to-warehouses">Assign Monitor to Warehouses</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">-- Apply to specific warehouse</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">SET</span><span class="w"> </span><span class="n">RESOURCE_MONITOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_budget</span><span class="p">;</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">-- Apply to all warehouses (account-level)</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">ALTER</span><span class="w"> </span><span class="n">ACCOUNT</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">SET</span><span class="w"> </span><span class="n">RESOURCE_MONITOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_budget</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Apply to specific warehouse</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">WAREHOUSE</span><span class="w"> </span><span class="n">TRANSFORMING</span>
+<span class="k">SET</span><span class="w"> </span><span class="n">RESOURCE_MONITOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_budget</span><span class="p">;</span>
+
+<span class="c1">-- Apply to all warehouses (account-level)</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">ACCOUNT</span>
+<span class="k">SET</span><span class="w"> </span><span class="n">RESOURCE_MONITOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_budget</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="view-resource-monitor-status">View Resource Monitor Status</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">monitor_name</span><span class="p">,</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">credit_quota</span><span class="p">,</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">used_credits</span><span class="p">,</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="n">remaining_credits</span><span class="p">,</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="p">(</span><span class="n">used_credits</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">credit_quota</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">percent_used</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">resource_monitors</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'monthly_budget'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">monitor_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">credit_quota</span><span class="p">,</span>
+<span class="w">    </span><span class="n">used_credits</span><span class="p">,</span>
+<span class="w">    </span><span class="n">remaining_credits</span><span class="p">,</span>
+<span class="w">    </span><span class="p">(</span><span class="n">used_credits</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">credit_quota</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">percent_used</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">resource_monitors</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'monthly_budget'</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Example output:</strong></p>
 <table>
@@ -7056,37 +7058,37 @@
 <li>Lambda function formats message and sends to Slack</li>
 </ol>
 <p><strong>Lambda function:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">urllib3</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="c1"># Parse Snowflake notification</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">notification</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'body'</span><span class="p">])</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="c1"># Format Slack message</span>
-<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>        <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"🚨 Snowflake Resource Monitor Alert"</span><span class="p">,</span>
-<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>        <span class="s2">"blocks"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>            <span class="p">{</span>
-<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
-<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>                <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
-<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>                    <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Monitor:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'monitor_name'</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">*Usage:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'percent_used'</span><span class="p">]</span><span class="si">}</span><span class="s2">%</span><span class="se">\n</span><span class="s2">*Threshold:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'threshold'</span><span class="p">]</span><span class="si">}</span><span class="s2">%"</span>
-<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>                <span class="p">}</span>
-<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>            <span class="p">}</span>
-<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>        <span class="p">]</span>
-<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>    <span class="p">}</span>
-<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
-<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>    <span class="c1"># Send to Slack</span>
-<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>    <span class="n">http</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">()</span>
-<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>        <span class="s1">'POST'</span><span class="p">,</span>
-<a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>        <span class="s1">'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'</span><span class="p">,</span>
-<a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>        <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">),</span>
-<a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">}</span>
-<a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>    <span class="p">)</span>
-<a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a>
-<a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">'statusCode'</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib3</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># Parse Snowflake notification</span>
+    <span class="n">notification</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">'body'</span><span class="p">])</span>
+
+    <span class="c1"># Format Slack message</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"🚨 Snowflake Resource Monitor Alert"</span><span class="p">,</span>
+        <span class="s2">"blocks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span>
+                    <span class="s2">"text"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"*Monitor:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'monitor_name'</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">*Usage:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'percent_used'</span><span class="p">]</span><span class="si">}</span><span class="s2">%</span><span class="se">\n</span><span class="s2">*Threshold:* </span><span class="si">{</span><span class="n">notification</span><span class="p">[</span><span class="s1">'threshold'</span><span class="p">]</span><span class="si">}</span><span class="s2">%"</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Send to Slack</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s1">'POST'</span><span class="p">,</span>
+        <span class="s1">'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'</span><span class="p">,</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">),</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">'statusCode'</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
 </code></pre></div>
 <h3 id="best-practices-for-resource-monitors">Best Practices for Resource Monitors</h3>
 <ol>
@@ -7098,15 +7100,15 @@
 </ol>
 <h2 id="credit-consumption-by-warehouse">Credit Consumption by Warehouse</h2>
 <p>Track which warehouses consume the most credits:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nb">DATE</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">usage_date</span><span class="p">,</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">daily_credits</span><span class="p">,</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">daily_cost_usd</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">warehouse_metering_history</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">usage_date</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">usage_date</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="nb">DATE</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">usage_date</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">daily_credits</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">daily_cost_usd</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">warehouse_metering_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">usage_date</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">,</span><span class="w"> </span><span class="n">usage_date</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Visualise in Snowsight:</strong></p>
 <ol>
@@ -7118,32 +7120,32 @@
 <li>Group by: <code>warehouse_name</code></li>
 </ol>
 <p><strong>Example chart:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Credits/Day
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>20 │                                    ╱──TRANSFORMING
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>   │                                ╱───
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>15 │                            ╱───
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>   │                        ╱───
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>10 │                    ╱───
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>   │    ANALYTICS_WH───────────────────────────────
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a> 5 │────LOADING───────────────────────────────────
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>   └────────────────────────────────────────────────
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>   Jan 1         Jan 15         Feb 1       Today
+<div class="highlight"><pre><span></span><code>Credits/Day
+20 │                                    ╱──TRANSFORMING
+   │                                ╱───
+15 │                            ╱───
+   │                        ╱───
+10 │                    ╱───
+   │    ANALYTICS_WH───────────────────────────────
+ 5 │────LOADING───────────────────────────────────
+   └────────────────────────────────────────────────
+   Jan 1         Jan 15         Feb 1       Today
 </code></pre></div>
 <p><strong>Insight:</strong> <code>TRANSFORMING</code> warehouse credit usage spiking in February → investigate if due to data volume growth or inefficient queries.</p>
 <h2 id="credit-consumption-by-user">Credit Consumption by User</h2>
 <p>Attribute costs to users or teams:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used_cloud_services</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cloud_services_credits</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_count</span><span class="p">,</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">total_elapsed_time</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_duration_seconds</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
-<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">user_name</span><span class="p">,</span><span class="w"> </span><span class="n">warehouse_name</span>
-<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">cloud_services_credits</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">user_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">credits_used_cloud_services</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cloud_services_credits</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">query_count</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="n">total_elapsed_time</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avg_duration_seconds</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">user_name</span><span class="p">,</span><span class="w"> </span><span class="n">warehouse_name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">cloud_services_credits</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Example output:</strong></p>
 <table>
@@ -7190,23 +7192,23 @@
 <li><strong>Cache hit rate</strong> — percentage of queries served from cache</li>
 </ol>
 <h3 id="p95-query-duration">P95 Query Duration</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="n">APPROX_PERCENTILE</span><span class="p">(</span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">95</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">p95_duration_seconds</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">warehouse_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">APPROX_PERCENTILE</span><span class="p">(</span><span class="n">total_elapsed_time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">95</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">p95_duration_seconds</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">())</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">execution_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SUCCESS'</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">warehouse_name</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Target SLO:</strong> P95 duration &lt; 10 seconds for BI queries, &lt; 30 minutes for dbt runs.</p>
 <h3 id="cache-hit-rate">Cache Hit Rate</h3>
 <p>Snowflake caches query results. Repeated identical queries return instantly from cache.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">SELECT</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">query_result_used_from_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cached_queries</span><span class="p">,</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_queries</span><span class="p">,</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="p">(</span><span class="n">cached_queries</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_queries</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cache_hit_rate_pct</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
-<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">());</span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">query_result_used_from_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cached_queries</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_queries</span><span class="p">,</span>
+<span class="w">    </span><span class="p">(</span><span class="n">cached_queries</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_queries</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cache_hit_rate_pct</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">snowflake</span><span class="p">.</span><span class="n">account_usage</span><span class="p">.</span><span class="n">query_history</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">start_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DATEADD</span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">());</span>
 </code></pre></div>
 <p><strong>High cache hit rate (&gt;30%):</strong> Good — users are running similar queries (dashboards, reports)
 <strong>Low cache hit rate (&lt;10%):</strong> Queries are unique (exploratory analysis, one-off queries)</p>
@@ -7272,6 +7274,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7315,7 +7319,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

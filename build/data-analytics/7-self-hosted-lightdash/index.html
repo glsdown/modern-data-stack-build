@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6356,48 +6358,48 @@
 - No vendor support (community support only)
 - 6-10 hours/month maintenance overhead</p>
 <p>This page covers deploying Lightdash to <strong>AWS ECS Fargate</strong> with <strong>RDS PostgreSQL</strong>. This is the recommended self-hosted setup for most teams.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                  SELF-HOSTED LIGHTDASH ARCHITECTURE                     │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                         │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  AWS Infrastructure                                                     │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  ──────────────────                                                     │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│                                                                         │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Application Load Balancer (ALB)                                │    │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ • HTTPS termination (ACM certificate)                          │    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │ • Health checks                                                │    │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │ • Path-based routing                                           │    │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  └────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                             │                                           │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│                             ▼                                           │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ┌────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │ ECS Fargate Cluster                                            │    │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │ ┌──────────────────┐                                           │    │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  │ │ Lightdash Server │   (2 vCPUs, 4GB RAM, auto-scaling 1-3)    │    │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  │ └──────────────────┘                                           │    │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  └────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│                             │                                           │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│                             ▼                                           │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  ┌────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  │ RDS PostgreSQL (db.t3.micro)                                   │    │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │ • Lightdash metadata (dashboards, users, queries)              │    │
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  │ • Automated backups (7-day retention)                          │    │
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  └────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│                                                                         │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  ┌────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│  │ Secrets Manager                                                │    │
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  │ • Lightdash secret key                                         │    │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  │ • Snowflake credentials (SVC_LIGHTDASH)                        │    │
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │ • GitHub token                                                 │    │
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  └────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│                                                                         │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│  External Dependencies                                                  │
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│  ─────────────────────                                                  │
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│  • GitHub: dbt-transform repository                                     │
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│  • Snowflake: ANALYTICS.REPORTING schema                                │
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│                                                                         │
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>└─────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                  SELF-HOSTED LIGHTDASH ARCHITECTURE                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  AWS Infrastructure                                                     │
+│  ──────────────────                                                     │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │ Application Load Balancer (ALB)                                │    │
+│  │ • HTTPS termination (ACM certificate)                          │    │
+│  │ • Health checks                                                │    │
+│  │ • Path-based routing                                           │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+│                             │                                           │
+│                             ▼                                           │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │ ECS Fargate Cluster                                            │    │
+│  │ ┌──────────────────┐                                           │    │
+│  │ │ Lightdash Server │   (2 vCPUs, 4GB RAM, auto-scaling 1-3)    │    │
+│  │ └──────────────────┘                                           │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+│                             │                                           │
+│                             ▼                                           │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │ RDS PostgreSQL (db.t3.micro)                                   │    │
+│  │ • Lightdash metadata (dashboards, users, queries)              │    │
+│  │ • Automated backups (7-day retention)                          │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │ Secrets Manager                                                │    │
+│  │ • Lightdash secret key                                         │    │
+│  │ • Snowflake credentials (SVC_LIGHTDASH)                        │    │
+│  │ • GitHub token                                                 │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+│  External Dependencies                                                  │
+│  ─────────────────────                                                  │
+│  • GitHub: dbt-transform repository                                     │
+│  • Snowflake: ANALYTICS.REPORTING schema                                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="cost-comparison-self-hosted-vs-cloud">Cost Comparison: Self-Hosted vs Cloud</h2>
 <table>
@@ -6472,466 +6474,466 @@
 <p>Lightdash stores metadata (dashboards, users, queries, cached results) in PostgreSQL.</p>
 <h3 id="terraform-module-for-rds">Terraform Module for RDS</h3>
 <p>Create a Terraform module for the RDS instance:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># terraform/aws/lightdash-rds.tf</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_subnet_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db-subnet-group"</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="na">subnet_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span><span class="c1">  # Reference your VPC module</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash DB Subnet Group"</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_rds"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-rds-sg"</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash RDS instance"</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL from ECS tasks"</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_ecs.id</span><span class="p">]</span><span class="c1">  # Only ECS can connect</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound"</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash RDS Security Group"</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="p">}</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"random_password"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">  </span><span class="na">length</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">32</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">  </span><span class="na">special</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="p">}</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/database-password"</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL password for Lightdash database"</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="p">}</span>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_version"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">  </span><span class="na">secret_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.id</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">  </span><span class="na">secret_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.lightdash_db_password.result</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="p">}</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_instance"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">  </span><span class="na">identifier</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db"</span>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">  </span><span class="na">engine</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"postgres"</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">  </span><span class="na">engine_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"15.4"</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="w">  </span><span class="na">instance_class</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"db.t3.micro"</span>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">  </span><span class="na">allocated_storage</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">  </span><span class="na">max_allocated_storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="c1">  # Auto-scaling storage</span>
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">  </span><span class="na">storage_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"gp3"</span>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">  </span><span class="na">storage_encrypted</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a>
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">  </span><span class="na">db_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">  </span><span class="na">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.lightdash_db_password.result</span>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="w">  </span><span class="na">db_subnet_group_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_subnet_group.lightdash.name</span>
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w">  </span><span class="na">vpc_security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_rds.id</span><span class="p">]</span>
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="w">  </span><span class="na">backup_retention_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">  </span><span class="na">backup_window</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"03:00-04:00"</span><span class="c1">  # UTC</span>
-<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="w">  </span><span class="na">maintenance_window</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"sun:04:00-sun:05:00"</span><span class="c1">  # UTC</span>
-<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a>
-<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="w">  </span><span class="na">skip_final_snapshot</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="w">  </span><span class="na">final_snapshot_identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db-final-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"</span>
-<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a>
-<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="w">  </span><span class="na">enabled_cloudwatch_logs_exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"postgresql", "upgrade"</span><span class="p">]</span>
-<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a>
-<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash PostgreSQL Database"</span>
-<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="p">}</span>
-<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a>
-<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"lightdash_db_endpoint"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash RDS endpoint"</span>
-<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.lightdash.endpoint</span>
-<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-rds.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_subnet_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db-subnet-group"</span>
+<span class="w">  </span><span class="na">subnet_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span><span class="c1">  # Reference your VPC module</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash DB Subnet Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_rds"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-rds-sg"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash RDS instance"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+
+<span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL from ECS tasks"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">5432</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_ecs.id</span><span class="p">]</span><span class="c1">  # Only ECS can connect</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash RDS Security Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"random_password"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">length</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">32</span>
+<span class="w">  </span><span class="na">special</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/database-password"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PostgreSQL password for Lightdash database"</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_secretsmanager_secret_version"</span><span class="w"> </span><span class="nv">"lightdash_db_password"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">secret_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.id</span>
+<span class="w">  </span><span class="na">secret_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.lightdash_db_password.result</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_db_instance"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">identifier</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db"</span>
+<span class="w">  </span><span class="na">engine</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"postgres"</span>
+<span class="w">  </span><span class="na">engine_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"15.4"</span>
+<span class="w">  </span><span class="na">instance_class</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"db.t3.micro"</span>
+
+<span class="w">  </span><span class="na">allocated_storage</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>
+<span class="w">  </span><span class="na">max_allocated_storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="c1">  # Auto-scaling storage</span>
+<span class="w">  </span><span class="na">storage_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"gp3"</span>
+<span class="w">  </span><span class="na">storage_encrypted</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">db_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">  </span><span class="na">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">  </span><span class="na">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">random_password.lightdash_db_password.result</span>
+
+<span class="w">  </span><span class="na">db_subnet_group_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_subnet_group.lightdash.name</span>
+<span class="w">  </span><span class="na">vpc_security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_rds.id</span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">backup_retention_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
+<span class="w">  </span><span class="na">backup_window</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"03:00-04:00"</span><span class="c1">  # UTC</span>
+<span class="w">  </span><span class="na">maintenance_window</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"sun:04:00-sun:05:00"</span><span class="c1">  # UTC</span>
+
+<span class="w">  </span><span class="na">skip_final_snapshot</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">final_snapshot_identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-db-final-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"</span>
+
+<span class="w">  </span><span class="na">enabled_cloudwatch_logs_exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"postgresql", "upgrade"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash PostgreSQL Database"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"lightdash_db_endpoint"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash RDS endpoint"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.lightdash.endpoint</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Apply Terraform:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/aws
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/aws
+terraform<span class="w"> </span>plan
+terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>The database password is stored in AWS Secrets Manager at <code>lightdash/database-password</code>.</p>
 <h2 id="step-2-create-ecs-cluster-and-task-definition">Step 2: Create ECS Cluster and Task Definition</h2>
 <h3 id="security-group-for-ecs-tasks">Security Group for ECS Tasks</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># terraform/aws/lightdash-ecs-sg.tf</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_ecs"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-ecs-sg"</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash ECS tasks"</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP from ALB"</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span><span class="c1">  # Lightdash listens on 8080</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_alb.id</span><span class="p">]</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound (GitHub, Snowflake, Docker Hub)"</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Security Group"</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-ecs-sg.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_ecs"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-ecs-sg"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash ECS tasks"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+
+<span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP from ALB"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span><span class="c1">  # Lightdash listens on 8080</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="na">security_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_alb.id</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound (GitHub, Snowflake, Docker Hub)"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Security Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="ecs-cluster">ECS Cluster</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># terraform/aws/lightdash-ecs.tf</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_cluster"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-cluster"</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nb">setting</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"containerInsights"</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"enabled"</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Cluster"</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-ecs.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_cluster"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-cluster"</span>
+
+<span class="w">  </span><span class="nb">setting</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"containerInsights"</span>
+<span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"enabled"</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Cluster"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="task-definition">Task Definition</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># terraform/aws/lightdash-task-definition.tf</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_task_definition"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="na">family</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="na">network_mode</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"awsvpc"</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="na">requires_compatibilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"FARGATE"</span><span class="p">]</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="na">cpu</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">"2048"</span><span class="c1">  # 2 vCPUs</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="na">memory</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"4096"</span><span class="c1">  # 4GB</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="na">execution_role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.arn</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="na">task_role_arn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.lightdash_task_role.arn</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span><span class="na">container_definitions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">([{</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/lightdash:latest"</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="na">portMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">      </span><span class="na">containerPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">      </span><span class="na">protocol</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="p">}]</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="na">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGHOST"</span><span class="p">,</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.lightdash.address</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGPORT", value = "5432"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGDATABASE", value = "lightdash"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGUSER", value = "lightdash"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_INSTALL_TYPE", value = "docker_image"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_LOG_LEVEL", value = "info"</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SITE_URL", value = "https://${aws_lb.lightdash.dns_name}"</span><span class="w"> </span><span class="p">},</span><span class="c1">  # Or custom domain</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">    </span><span class="na">secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGPASSWORD"</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.arn</span>
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">      </span><span class="p">},</span>
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">      </span><span class="p">{</span>
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_SECRET"</span>
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_secret_key.arn</span>
-<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>
-<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">    </span><span class="nb">logConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">      </span><span class="na">logDriver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"awslogs"</span>
-<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">      </span><span class="nb">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">        </span><span class="s2">"awslogs-group"</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudwatch_log_group.lightdash.name</span>
-<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">        </span><span class="s2">"awslogs-region"</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_region.current.name</span>
-<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">        </span><span class="s2">"awslogs-stream-prefix"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>
-<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="w">    </span><span class="nb">healthCheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">      </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/api/v1/health || exit 1"</span><span class="p">]</span>
-<a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a><span class="w">      </span><span class="na">interval</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
-<a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a><span class="w">      </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a><span class="w">      </span><span class="na">retries</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-<a id="__codelineno-5-56" name="__codelineno-5-56" href="#__codelineno-5-56"></a><span class="w">      </span><span class="na">startPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
-<a id="__codelineno-5-57" name="__codelineno-5-57" href="#__codelineno-5-57"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-5-58" name="__codelineno-5-58" href="#__codelineno-5-58"></a><span class="w">  </span><span class="p">}])</span>
-<a id="__codelineno-5-59" name="__codelineno-5-59" href="#__codelineno-5-59"></a>
-<a id="__codelineno-5-60" name="__codelineno-5-60" href="#__codelineno-5-60"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-61" name="__codelineno-5-61" href="#__codelineno-5-61"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Task Definition"</span>
-<a id="__codelineno-5-62" name="__codelineno-5-62" href="#__codelineno-5-62"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-5-63" name="__codelineno-5-63" href="#__codelineno-5-63"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-64" name="__codelineno-5-64" href="#__codelineno-5-64"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-task-definition.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_task_definition"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">family</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">  </span><span class="na">network_mode</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"awsvpc"</span>
+<span class="w">  </span><span class="na">requires_compatibilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"FARGATE"</span><span class="p">]</span>
+<span class="w">  </span><span class="na">cpu</span><span class="w">                      </span><span class="o">=</span><span class="w"> </span><span class="s2">"2048"</span><span class="c1">  # 2 vCPUs</span>
+<span class="w">  </span><span class="na">memory</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s2">"4096"</span><span class="c1">  # 4GB</span>
+
+<span class="w">  </span><span class="na">execution_role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.arn</span>
+<span class="w">  </span><span class="na">task_role_arn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.lightdash_task_role.arn</span>
+
+<span class="w">  </span><span class="na">container_definitions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">([{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/lightdash:latest"</span>
+
+<span class="w">    </span><span class="na">portMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="na">containerPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
+<span class="w">      </span><span class="na">protocol</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="p">}]</span>
+
+<span class="w">    </span><span class="na">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGHOST"</span><span class="p">,</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_db_instance.lightdash.address</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGPORT", value = "5432"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGDATABASE", value = "lightdash"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGUSER", value = "lightdash"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_INSTALL_TYPE", value = "docker_image"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_LOG_LEVEL", value = "info"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SITE_URL", value = "https://${aws_lb.lightdash.dns_name}"</span><span class="w"> </span><span class="p">},</span><span class="c1">  # Or custom domain</span>
+<span class="w">    </span><span class="p">]</span>
+
+<span class="w">    </span><span class="na">secrets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"PGPASSWORD"</span>
+<span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.arn</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"LIGHTDASH_SECRET"</span>
+<span class="w">        </span><span class="na">valueFrom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_secretsmanager_secret.lightdash_secret_key.arn</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+
+<span class="w">    </span><span class="nb">logConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">logDriver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"awslogs"</span>
+<span class="w">      </span><span class="nb">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">"awslogs-group"</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_cloudwatch_log_group.lightdash.name</span>
+<span class="w">        </span><span class="s2">"awslogs-region"</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_region.current.name</span>
+<span class="w">        </span><span class="s2">"awslogs-stream-prefix"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nb">healthCheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">command</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/api/v1/health || exit 1"</span><span class="p">]</span>
+<span class="w">      </span><span class="na">interval</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
+<span class="w">      </span><span class="na">timeout</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">      </span><span class="na">retries</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">      </span><span class="na">startPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}])</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Task Definition"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="generate-lightdash-secret-key">Generate Lightdash Secret Key</h3>
 <p>Lightdash requires a secret key for session encryption:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Generate a random 32-character secret</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LIGHTDASH_SECRET</span><span class="o">=</span><span class="k">$(</span>openssl<span class="w"> </span>rand<span class="w"> </span>-hex<span class="w"> </span><span class="m">32</span><span class="k">)</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Store in AWS Secrets Manager</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"lightdash/secret-key"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"Secret key for Lightdash session encryption"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="nv">$LIGHTDASH_SECRET</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate a random 32-character secret</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LIGHTDASH_SECRET</span><span class="o">=</span><span class="k">$(</span>openssl<span class="w"> </span>rand<span class="w"> </span>-hex<span class="w"> </span><span class="m">32</span><span class="k">)</span>
+
+<span class="c1"># Store in AWS Secrets Manager</span>
+aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"lightdash/secret-key"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"Secret key for Lightdash session encryption"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="nv">$LIGHTDASH_SECRET</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="iam-roles">IAM Roles</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># terraform/aws/lightdash-iam.tf</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># ECS task execution role (pulls images, writes logs, reads secrets)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role"</span><span class="w"> </span><span class="nv">"ecs_task_execution_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LightdashECSTaskExecutionRole"</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="na">assume_role_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">      </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">        </span><span class="na">Service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs-tasks.amazonaws.com"</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">    </span><span class="p">}]</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Task Execution Role"</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="p">}</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role_policy_attachment"</span><span class="w"> </span><span class="nv">"ecs_task_execution_role_policy"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">  </span><span class="na">role</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.name</span>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">  </span><span class="na">policy_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="p">}</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role_policy"</span><span class="w"> </span><span class="nv">"ecs_secrets_access"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ECSSecretsAccess"</span>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="w">  </span><span class="na">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.id</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="w">        </span><span class="s2">"secretsmanager:GetSecretValue"</span>
-<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="w">      </span><span class="p">]</span>
-<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="w">      </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="w">        </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.arn</span><span class="p">,</span>
-<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="w">        </span><span class="nv">aws_secretsmanager_secret.lightdash_secret_key.arn</span><span class="p">,</span>
-<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="w">        </span><span class="s2">"arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:lightdash/snowflake-credentials*"</span>
-<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="w">      </span><span class="p">]</span>
-<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a><span class="w">    </span><span class="p">}]</span>
-<a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a><span class="p">}</span>
-<a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a>
-<a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a><span class="c1"># Task role (permissions for Lightdash application itself)</span>
-<a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role"</span><span class="w"> </span><span class="nv">"lightdash_task_role"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a><span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LightdashTaskRole"</span>
-<a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a>
-<a id="__codelineno-7-53" name="__codelineno-7-53" href="#__codelineno-7-53"></a><span class="w">  </span><span class="na">assume_role_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-7-54" name="__codelineno-7-54" href="#__codelineno-7-54"></a><span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
-<a id="__codelineno-7-55" name="__codelineno-7-55" href="#__codelineno-7-55"></a><span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
-<a id="__codelineno-7-56" name="__codelineno-7-56" href="#__codelineno-7-56"></a><span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
-<a id="__codelineno-7-57" name="__codelineno-7-57" href="#__codelineno-7-57"></a><span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
-<a id="__codelineno-7-58" name="__codelineno-7-58" href="#__codelineno-7-58"></a><span class="w">      </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-59" name="__codelineno-7-59" href="#__codelineno-7-59"></a><span class="w">        </span><span class="na">Service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs-tasks.amazonaws.com"</span>
-<a id="__codelineno-7-60" name="__codelineno-7-60" href="#__codelineno-7-60"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-7-61" name="__codelineno-7-61" href="#__codelineno-7-61"></a><span class="w">    </span><span class="p">}]</span>
-<a id="__codelineno-7-62" name="__codelineno-7-62" href="#__codelineno-7-62"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-7-63" name="__codelineno-7-63" href="#__codelineno-7-63"></a>
-<a id="__codelineno-7-64" name="__codelineno-7-64" href="#__codelineno-7-64"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-65" name="__codelineno-7-65" href="#__codelineno-7-65"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Task Role"</span>
-<a id="__codelineno-7-66" name="__codelineno-7-66" href="#__codelineno-7-66"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-7-67" name="__codelineno-7-67" href="#__codelineno-7-67"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-7-68" name="__codelineno-7-68" href="#__codelineno-7-68"></a><span class="p">}</span>
-<a id="__codelineno-7-69" name="__codelineno-7-69" href="#__codelineno-7-69"></a>
-<a id="__codelineno-7-70" name="__codelineno-7-70" href="#__codelineno-7-70"></a><span class="c1"># Add policies as needed (e.g., S3 access for cached query results)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-iam.tf</span>
+
+<span class="c1"># ECS task execution role (pulls images, writes logs, reads secrets)</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role"</span><span class="w"> </span><span class="nv">"ecs_task_execution_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LightdashECSTaskExecutionRole"</span>
+
+<span class="w">  </span><span class="na">assume_role_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
+<span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">      </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="na">Service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs-tasks.amazonaws.com"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}]</span>
+<span class="w">  </span><span class="p">})</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Task Execution Role"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role_policy_attachment"</span><span class="w"> </span><span class="nv">"ecs_task_execution_role_policy"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">role</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.name</span>
+<span class="w">  </span><span class="na">policy_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role_policy"</span><span class="w"> </span><span class="nv">"ecs_secrets_access"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ECSSecretsAccess"</span>
+<span class="w">  </span><span class="na">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_iam_role.ecs_task_execution_role.id</span>
+
+<span class="w">  </span><span class="na">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"secretsmanager:GetSecretValue"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">      </span><span class="na">Resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="nv">aws_secretsmanager_secret.lightdash_db_password.arn</span><span class="p">,</span>
+<span class="w">        </span><span class="nv">aws_secretsmanager_secret.lightdash_secret_key.arn</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:lightdash/snowflake-credentials*"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}]</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1"># Task role (permissions for Lightdash application itself)</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_iam_role"</span><span class="w"> </span><span class="nv">"lightdash_task_role"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LightdashTaskRole"</span>
+
+<span class="w">  </span><span class="na">assume_role_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2012-10-17"</span>
+<span class="w">    </span><span class="na">Statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="na">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sts:AssumeRole"</span>
+<span class="w">      </span><span class="na">Effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow"</span>
+<span class="w">      </span><span class="nb">Principal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="na">Service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs-tasks.amazonaws.com"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}]</span>
+<span class="w">  </span><span class="p">})</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Task Role"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Add policies as needed (e.g., S3 access for cached query results)</span>
 </code></pre></div>
 <h3 id="cloudwatch-logs">CloudWatch Logs</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># terraform/aws/lightdash-cloudwatch.tf</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudwatch_log_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"/ecs/lightdash"</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="na">retention_in_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Logs"</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-cloudwatch.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_cloudwatch_log_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"/ecs/lightdash"</span>
+<span class="w">  </span><span class="na">retention_in_days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">7</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Logs"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="step-3-create-application-load-balancer">Step 3: Create Application Load Balancer</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># terraform/aws/lightdash-alb.tf</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_alb"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-alb-sg"</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash ALB"</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS from internet"</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP from internet (redirect to HTTPS)"</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound"</span>
-<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
-<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a><span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
-<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>
-<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ALB Security Group"</span>
-<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a><span class="p">}</span>
-<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>
-<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a><span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-alb"</span>
-<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a><span class="w">  </span><span class="na">internal</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a><span class="w">  </span><span class="na">load_balancer_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"application"</span>
-<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a><span class="w">  </span><span class="na">security_groups</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_alb.id</span><span class="p">]</span>
-<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a><span class="w">  </span><span class="na">subnets</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.public_subnet_ids</span>
-<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>
-<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a><span class="w">  </span><span class="na">enable_deletion_protection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Set to true for production</span>
-<a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>
-<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ALB"</span>
-<a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a><span class="p">}</span>
-<a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>
-<a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_target_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-tg"</span>
-<a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a><span class="w">  </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
-<a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a><span class="w">  </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
-<a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a><span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
-<a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a><span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ip"</span>
-<a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>
-<a id="__codelineno-9-59" name="__codelineno-9-59" href="#__codelineno-9-59"></a><span class="w">  </span><span class="nb">health_check</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-60" name="__codelineno-9-60" href="#__codelineno-9-60"></a><span class="w">    </span><span class="na">path</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"/api/v1/health"</span>
-<a id="__codelineno-9-61" name="__codelineno-9-61" href="#__codelineno-9-61"></a><span class="w">    </span><span class="na">interval</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
-<a id="__codelineno-9-62" name="__codelineno-9-62" href="#__codelineno-9-62"></a><span class="w">    </span><span class="na">timeout</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-9-63" name="__codelineno-9-63" href="#__codelineno-9-63"></a><span class="w">    </span><span class="na">healthy_threshold</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
-<a id="__codelineno-9-64" name="__codelineno-9-64" href="#__codelineno-9-64"></a><span class="w">    </span><span class="na">unhealthy_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-<a id="__codelineno-9-65" name="__codelineno-9-65" href="#__codelineno-9-65"></a><span class="w">    </span><span class="na">matcher</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"200"</span>
-<a id="__codelineno-9-66" name="__codelineno-9-66" href="#__codelineno-9-66"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-67" name="__codelineno-9-67" href="#__codelineno-9-67"></a>
-<a id="__codelineno-9-68" name="__codelineno-9-68" href="#__codelineno-9-68"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-69" name="__codelineno-9-69" href="#__codelineno-9-69"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Target Group"</span>
-<a id="__codelineno-9-70" name="__codelineno-9-70" href="#__codelineno-9-70"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-9-71" name="__codelineno-9-71" href="#__codelineno-9-71"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-72" name="__codelineno-9-72" href="#__codelineno-9-72"></a><span class="p">}</span>
-<a id="__codelineno-9-73" name="__codelineno-9-73" href="#__codelineno-9-73"></a>
-<a id="__codelineno-9-74" name="__codelineno-9-74" href="#__codelineno-9-74"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"lightdash_http"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-75" name="__codelineno-9-75" href="#__codelineno-9-75"></a><span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.lightdash.arn</span>
-<a id="__codelineno-9-76" name="__codelineno-9-76" href="#__codelineno-9-76"></a><span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
-<a id="__codelineno-9-77" name="__codelineno-9-77" href="#__codelineno-9-77"></a><span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
-<a id="__codelineno-9-78" name="__codelineno-9-78" href="#__codelineno-9-78"></a>
-<a id="__codelineno-9-79" name="__codelineno-9-79" href="#__codelineno-9-79"></a><span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-80" name="__codelineno-9-80" href="#__codelineno-9-80"></a><span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"redirect"</span>
-<a id="__codelineno-9-81" name="__codelineno-9-81" href="#__codelineno-9-81"></a><span class="w">    </span><span class="nb">redirect</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-82" name="__codelineno-9-82" href="#__codelineno-9-82"></a><span class="w">      </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"443"</span>
-<a id="__codelineno-9-83" name="__codelineno-9-83" href="#__codelineno-9-83"></a><span class="w">      </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
-<a id="__codelineno-9-84" name="__codelineno-9-84" href="#__codelineno-9-84"></a><span class="w">      </span><span class="na">status_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP_301"</span>
-<a id="__codelineno-9-85" name="__codelineno-9-85" href="#__codelineno-9-85"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-9-86" name="__codelineno-9-86" href="#__codelineno-9-86"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-87" name="__codelineno-9-87" href="#__codelineno-9-87"></a><span class="p">}</span>
-<a id="__codelineno-9-88" name="__codelineno-9-88" href="#__codelineno-9-88"></a>
-<a id="__codelineno-9-89" name="__codelineno-9-89" href="#__codelineno-9-89"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"lightdash_https"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-90" name="__codelineno-9-90" href="#__codelineno-9-90"></a><span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.lightdash.arn</span>
-<a id="__codelineno-9-91" name="__codelineno-9-91" href="#__codelineno-9-91"></a><span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
-<a id="__codelineno-9-92" name="__codelineno-9-92" href="#__codelineno-9-92"></a><span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
-<a id="__codelineno-9-93" name="__codelineno-9-93" href="#__codelineno-9-93"></a><span class="w">  </span><span class="na">ssl_policy</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"ELBSecurityPolicy-TLS13-1-2-2021-06"</span>
-<a id="__codelineno-9-94" name="__codelineno-9-94" href="#__codelineno-9-94"></a><span class="w">  </span><span class="na">certificate_arn</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_acm_certificate.lightdash.arn</span><span class="c1">  # Create ACM certificate or use self-signed for testing</span>
-<a id="__codelineno-9-95" name="__codelineno-9-95" href="#__codelineno-9-95"></a>
-<a id="__codelineno-9-96" name="__codelineno-9-96" href="#__codelineno-9-96"></a><span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-97" name="__codelineno-9-97" href="#__codelineno-9-97"></a><span class="w">    </span><span class="na">type</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"forward"</span>
-<a id="__codelineno-9-98" name="__codelineno-9-98" href="#__codelineno-9-98"></a><span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.lightdash.arn</span>
-<a id="__codelineno-9-99" name="__codelineno-9-99" href="#__codelineno-9-99"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-100" name="__codelineno-9-100" href="#__codelineno-9-100"></a><span class="p">}</span>
-<a id="__codelineno-9-101" name="__codelineno-9-101" href="#__codelineno-9-101"></a>
-<a id="__codelineno-9-102" name="__codelineno-9-102" href="#__codelineno-9-102"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"lightdash_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-103" name="__codelineno-9-103" href="#__codelineno-9-103"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash application URL"</span>
-<a id="__codelineno-9-104" name="__codelineno-9-104" href="#__codelineno-9-104"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_lb.lightdash.dns_name}"</span>
-<a id="__codelineno-9-105" name="__codelineno-9-105" href="#__codelineno-9-105"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-alb.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_security_group"</span><span class="w"> </span><span class="nv">"lightdash_alb"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-alb-sg"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group for Lightdash ALB"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+
+<span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS from internet"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">ingress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP from internet (redirect to HTTPS)"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">egress</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Allow all outbound"</span>
+<span class="w">    </span><span class="na">from_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">to_port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">    </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"-1"</span>
+<span class="w">    </span><span class="na">cidr_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ALB Security Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-alb"</span>
+<span class="w">  </span><span class="na">internal</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">  </span><span class="na">load_balancer_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"application"</span>
+<span class="w">  </span><span class="na">security_groups</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_alb.id</span><span class="p">]</span>
+<span class="w">  </span><span class="na">subnets</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.public_subnet_ids</span>
+
+<span class="w">  </span><span class="na">enable_deletion_protection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Set to true for production</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ALB"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_target_group"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-tg"</span>
+<span class="w">  </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
+<span class="w">  </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
+<span class="w">  </span><span class="na">vpc_id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.vpc_id</span>
+<span class="w">  </span><span class="na">target_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ip"</span>
+
+<span class="w">  </span><span class="nb">health_check</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">path</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"/api/v1/health"</span>
+<span class="w">    </span><span class="na">interval</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">30</span>
+<span class="w">    </span><span class="na">timeout</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">    </span><span class="na">healthy_threshold</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="na">unhealthy_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">    </span><span class="na">matcher</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"200"</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash Target Group"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"lightdash_http"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.lightdash.arn</span>
+<span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
+<span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP"</span>
+
+<span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"redirect"</span>
+<span class="w">    </span><span class="nb">redirect</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">port</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"443"</span>
+<span class="w">      </span><span class="na">protocol</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
+<span class="w">      </span><span class="na">status_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP_301"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_lb_listener"</span><span class="w"> </span><span class="nv">"lightdash_https"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">load_balancer_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb.lightdash.arn</span>
+<span class="w">  </span><span class="na">port</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="m">443</span>
+<span class="w">  </span><span class="na">protocol</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTPS"</span>
+<span class="w">  </span><span class="na">ssl_policy</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"ELBSecurityPolicy-TLS13-1-2-2021-06"</span>
+<span class="w">  </span><span class="na">certificate_arn</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_acm_certificate.lightdash.arn</span><span class="c1">  # Create ACM certificate or use self-signed for testing</span>
+
+<span class="w">  </span><span class="nb">default_action</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s2">"forward"</span>
+<span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.lightdash.arn</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"lightdash_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash application URL"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://${aws_lb.lightdash.dns_name}"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">HTTPS Certificate</p>
 <p>For production, request an ACM certificate for your custom domain (e.g., <code>lightdash.yourcompany.com</code>). For testing, you can use the ALB's default DNS name with a self-signed certificate (browsers will show a warning).</p>
 </div>
 <h2 id="step-4-create-ecs-service">Step 4: Create ECS Service</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># terraform/aws/lightdash-ecs-service.tf</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_service"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="na">name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-service"</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="na">cluster</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_cluster.lightdash.id</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="na">task_definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_task_definition.lightdash.arn</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="na">desired_count</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="na">launch_type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"FARGATE"</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="nb">network_configuration</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="na">subnets</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="na">security_groups</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_ecs.id</span><span class="p">]</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="na">assign_public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Use NAT Gateway for outbound</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">  </span><span class="nb">load_balancer</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.lightdash.arn</span>
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span><span class="na">container_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="na">container_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
-<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">  </span><span class="na">depends_on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_lb_listener.lightdash_https</span><span class="p">]</span>
-<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>
-<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Service"</span>
-<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-ecs-service.tf</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_ecs_service"</span><span class="w"> </span><span class="nv">"lightdash"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-service"</span>
+<span class="w">  </span><span class="na">cluster</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_cluster.lightdash.id</span>
+<span class="w">  </span><span class="na">task_definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_ecs_task_definition.lightdash.arn</span>
+<span class="w">  </span><span class="na">desired_count</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">  </span><span class="na">launch_type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"FARGATE"</span>
+
+<span class="w">  </span><span class="nb">network_configuration</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">subnets</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">module.vpc.private_subnet_ids</span>
+<span class="w">    </span><span class="na">security_groups</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.lightdash_ecs.id</span><span class="p">]</span>
+<span class="w">    </span><span class="na">assign_public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="c1">  # Use NAT Gateway for outbound</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">load_balancer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">target_group_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_lb_target_group.lightdash.arn</span>
+<span class="w">    </span><span class="na">container_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash"</span>
+<span class="w">    </span><span class="na">container_port</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">8080</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">depends_on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_lb_listener.lightdash_https</span><span class="p">]</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Lightdash ECS Service"</span>
+<span class="w">    </span><span class="na">ManagedBy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="step-5-apply-terraform-and-verify-deployment">Step 5: Apply Terraform and Verify Deployment</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>terraform/aws
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>terraform<span class="w"> </span>plan
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Review: Creates RDS, ECS cluster, task definition, service, ALB, security groups</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>terraform<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform/aws
+terraform<span class="w"> </span>plan
+<span class="c1"># Review: Creates RDS, ECS cluster, task definition, service, ALB, security groups</span>
+
+terraform<span class="w"> </span>apply
 </code></pre></div>
 <p>After Terraform completes (RDS takes the longest to provision):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Get the Lightdash URL</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>lightdash_url
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Output: https://lightdash-alb-123456789.eu-west-2.elb.amazonaws.com</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get the Lightdash URL</span>
+terraform<span class="w"> </span>output<span class="w"> </span>lightdash_url
+<span class="c1"># Output: https://lightdash-alb-123456789.eu-west-2.elb.amazonaws.com</span>
 </code></pre></div>
 <p>Navigate to the URL in your browser. You should see the Lightdash login page.</p>
 <div class="admonition info">
@@ -6978,14 +6980,14 @@
 <li><strong>Check for new releases</strong>: <a href="https://github.com/lightdash/lightdash/releases">Lightdash Releases</a></li>
 <li><strong>Update the image tag</strong> in your task definition:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># terraform/aws/lightdash-task-definition.tf</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/lightdash:v0.123.0"</span><span class="c1">  # Update to latest version</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-task-definition.tf</span>
+<span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash/lightdash:v0.123.0"</span><span class="c1">  # Update to latest version</span>
 </code></pre></div>
 <ol>
 <li><strong>Apply Terraform</strong>:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>terraform<span class="w"> </span>apply
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># ECS will deploy the new task definition with zero downtime (rolling update)</span>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
+<span class="c1"># ECS will deploy the new task definition with zero downtime (rolling update)</span>
 </code></pre></div>
 <ol>
 <li><strong>Verify</strong> the upgrade by checking the Lightdash UI → Settings → About</li>
@@ -6996,53 +6998,53 @@
 </div>
 <h3 id="backups">Backups</h3>
 <p>RDS automatically backs up the database daily (7-day retention). To restore:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># List available snapshots</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>aws<span class="w"> </span>rds<span class="w"> </span>describe-db-snapshots<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span>--db-instance-identifier<span class="w"> </span>lightdash-db<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1"># Restore from snapshot</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>aws<span class="w"> </span>rds<span class="w"> </span>restore-db-instance-from-db-snapshot<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span>--db-instance-identifier<span class="w"> </span>lightdash-db-restored<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span>--db-snapshot-identifier<span class="w"> </span>rds:lightdash-db-2026-02-19-03-00<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># List available snapshots</span>
+aws<span class="w"> </span>rds<span class="w"> </span>describe-db-snapshots<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--db-instance-identifier<span class="w"> </span>lightdash-db<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># Restore from snapshot</span>
+aws<span class="w"> </span>rds<span class="w"> </span>restore-db-instance-from-db-snapshot<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--db-instance-identifier<span class="w"> </span>lightdash-db-restored<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--db-snapshot-identifier<span class="w"> </span>rds:lightdash-db-2026-02-19-03-00<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="scaling">Scaling</h3>
 <p>To handle increased load, scale the ECS service:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># terraform/aws/lightdash-ecs-service.tf</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="na">desired_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="c1">  # Run 3 tasks</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform/aws/lightdash-ecs-service.tf</span>
+<span class="na">desired_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="c1">  # Run 3 tasks</span>
 </code></pre></div>
 <p>Or enable auto-scaling based on CPU/memory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_appautoscaling_target"</span><span class="w"> </span><span class="nv">"lightdash_ecs"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="na">max_capacity</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="na">min_capacity</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="na">resource_id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"service/${aws_ecs_cluster.lightdash.name}/${aws_ecs_service.lightdash.name}"</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="na">scalable_dimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs:service:DesiredCount"</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="na">service_namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs"</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="p">}</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_appautoscaling_policy"</span><span class="w"> </span><span class="nv">"lightdash_cpu"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-cpu-autoscaling"</span>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="na">policy_type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"TargetTrackingScaling"</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">  </span><span class="na">resource_id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.resource_id</span>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">  </span><span class="na">scalable_dimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.scalable_dimension</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">  </span><span class="na">service_namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.service_namespace</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">  </span><span class="nb">target_tracking_scaling_policy_configuration</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="nb">predefined_metric_specification</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">      </span><span class="na">predefined_metric_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ECSServiceAverageCPUUtilization"</span>
-<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">    </span><span class="na">target_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">70.0</span>
-<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_appautoscaling_target"</span><span class="w"> </span><span class="nv">"lightdash_ecs"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">max_capacity</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">  </span><span class="na">min_capacity</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">  </span><span class="na">resource_id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"service/${aws_ecs_cluster.lightdash.name}/${aws_ecs_service.lightdash.name}"</span>
+<span class="w">  </span><span class="na">scalable_dimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs:service:DesiredCount"</span>
+<span class="w">  </span><span class="na">service_namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs"</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_appautoscaling_policy"</span><span class="w"> </span><span class="nv">"lightdash_cpu"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"lightdash-cpu-autoscaling"</span>
+<span class="w">  </span><span class="na">policy_type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"TargetTrackingScaling"</span>
+<span class="w">  </span><span class="na">resource_id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.resource_id</span>
+<span class="w">  </span><span class="na">scalable_dimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.scalable_dimension</span>
+<span class="w">  </span><span class="na">service_namespace</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_appautoscaling_target.lightdash_ecs.service_namespace</span>
+
+<span class="w">  </span><span class="nb">target_tracking_scaling_policy_configuration</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">predefined_metric_specification</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">predefined_metric_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ECSServiceAverageCPUUtilization"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="na">target_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">70.0</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="monitoring">Monitoring</h3>
 <p>Monitor Lightdash with CloudWatch:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># View logs</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>aws<span class="w"> </span>logs<span class="w"> </span>tail<span class="w"> </span>/ecs/lightdash<span class="w"> </span>--follow<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># View ECS service metrics (CPU, memory, task count)</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1"># Navigate to AWS Console → ECS → lightdash-cluster → lightdash-service → Metrics</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># View logs</span>
+aws<span class="w"> </span>logs<span class="w"> </span>tail<span class="w"> </span>/ecs/lightdash<span class="w"> </span>--follow<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+
+<span class="c1"># View ECS service metrics (CPU, memory, task count)</span>
+<span class="c1"># Navigate to AWS Console → ECS → lightdash-cluster → lightdash-service → Metrics</span>
 </code></pre></div>
 <p>Set up alarms for:
 - High CPU/memory usage
@@ -7112,6 +7114,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7155,7 +7159,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

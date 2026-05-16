@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6513,37 +6515,37 @@ State files contain sensitive data like passwords and API keys. Having them on l
 </ol>
 <h2 id="architecture">Architecture</h2>
 <p>You'll create:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ S3 Bucket: terraform-state-&lt;account-id&gt; │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│                                         │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│ - Versioning enabled (can rollback)     │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│ - Encryption enabled (protects secrets) │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│ - Bucket policy (restricts access)      │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│ - Lifecycle rules (old versions → IA)   │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└─────────────────────────────────────────┘
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                    │ Terraform reads/writes state
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                    │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>┌─────────────────────────────────────--────┐
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│ DynamoDB Table: terraform-state-lock      │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│                                           │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│ - Key: LockID (string)                    │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│ - Pay-per-request billing (cost-effective)│
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│ - Used only for locking, not data         │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>└────────────────────────────────────────--─┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────┐
+│ S3 Bucket: terraform-state-&lt;account-id&gt; │
+│                                         │
+│ - Versioning enabled (can rollback)     │
+│ - Encryption enabled (protects secrets) │
+│ - Bucket policy (restricts access)      │
+│ - Lifecycle rules (old versions → IA)   │
+└─────────────────────────────────────────┘
+                    │
+                    │ Terraform reads/writes state
+                    │
+┌─────────────────────────────────────--────┐
+│ DynamoDB Table: terraform-state-lock      │
+│                                           │
+│ - Key: LockID (string)                    │
+│ - Pay-per-request billing (cost-effective)│
+│ - Used only for locking, not data         │
+└────────────────────────────────────────--─┘
 </code></pre></div>
 <h2 id="create-the-s3-bucket">Create the S3 Bucket</h2>
 <p>You'll create the S3 bucket manually this first time. Later, you'll import it into Terraform so everything is managed as code.</p>
 <h3 id="sign-in-to-aws">Sign in to AWS</h3>
 <p>Use your IAM user with the InfrastructureAdminRole. This role has write access to state files, which is required for setting up the remote state infrastructure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output showing you're using the InfrastructureAdminRole (note - your account ID will be different):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLE:aws-cli-session"</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/InfrastructureAdminRole/aws-cli-session"</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AROAEXAMPLE:aws-cli-session"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456789012"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Arn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:sts::123456789012:assumed-role/InfrastructureAdminRole/aws-cli-session"</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why InfrastructureAdminRole?</p>
@@ -6551,13 +6553,13 @@ State files contain sensitive data like passwords and API keys. Having them on l
 </div>
 <h3 id="determine-your-bucket-name">Determine Your Bucket Name</h3>
 <p>S3 bucket names must be globally unique across all AWS accounts. A good pattern is:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform-state-&lt;your-aws-account-id&gt;
+<div class="highlight"><pre><span></span><code>terraform-state-&lt;your-aws-account-id&gt;
 </code></pre></div>
 <p>Get your AWS account ID:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--query<span class="w"> </span>Account<span class="w"> </span>--output<span class="w"> </span>text<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--query<span class="w"> </span>Account<span class="w"> </span>--output<span class="w"> </span>text<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Example output:
-</p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>123456789012
+</p><div class="highlight"><pre><span></span><code>123456789012
 </code></pre></div><p></p>
 <p>So your bucket name would be: <code>terraform-state-123456789012</code></p>
 <div class="admonition tip">
@@ -6566,97 +6568,97 @@ State files contain sensitive data like passwords and API keys. Having them on l
 </div>
 <h3 id="create-the-bucket">Create the Bucket</h3>
 <p>Create the S3 bucket in your preferred region:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>create-bucket<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--create-bucket-configuration<span class="w"> </span><span class="nv">LocationConstraint</span><span class="o">=</span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>create-bucket<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--create-bucket-configuration<span class="w"> </span><span class="nv">LocationConstraint</span><span class="o">=</span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Region Constraint</p>
 <p>The <code>--create-bucket-configuration LocationConstraint=</code> parameter is required for all regions except <code>us-east-1</code>. If you're using <code>us-east-1</code>, omit this parameter.</p>
 </div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nt">"Location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://terraform-state-123456789012.s3.amazonaws.com/"</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://terraform-state-123456789012.s3.amazonaws.com/"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="enable-versioning">Enable Versioning</h3>
 <p>Versioning allows you to recover from accidental deletions or corruption:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-versioning<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>--versioning-configuration<span class="w"> </span><span class="nv">Status</span><span class="o">=</span>Enabled<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-versioning<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--versioning-configuration<span class="w"> </span><span class="nv">Status</span><span class="o">=</span>Enabled<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Verify versioning is enabled:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-versioning<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-versioning<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nt">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enabled"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enabled"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="enable-encryption">Enable Encryption</h3>
 <p>Enable default encryption to protect sensitive data in the state file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-encryption<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--server-side-encryption-configuration<span class="w"> </span><span class="s1">'{</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="s1">    "Rules": [{</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s1">      "ApplyServerSideEncryptionByDefault": {</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s1">        "SSEAlgorithm": "AES256"</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s1">      },</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s1">      "BucketKeyEnabled": true</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="s1">    }]</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-encryption<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--server-side-encryption-configuration<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "Rules": [{</span>
+<span class="s1">      "ApplyServerSideEncryptionByDefault": {</span>
+<span class="s1">        "SSEAlgorithm": "AES256"</span>
+<span class="s1">      },</span>
+<span class="s1">      "BucketKeyEnabled": true</span>
+<span class="s1">    }]</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Verify encryption is enabled:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-encryption<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-encryption<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">"ServerSideEncryptionConfiguration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">        </span><span class="nt">"Rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">            </span><span class="p">{</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">                </span><span class="nt">"ApplyServerSideEncryptionByDefault"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">                    </span><span class="nt">"SSEAlgorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AES256"</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">                </span><span class="p">},</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">                </span><span class="nt">"BucketKeyEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">            </span><span class="p">}</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">        </span><span class="p">]</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ServerSideEncryptionConfiguration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">"ApplyServerSideEncryptionByDefault"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">"SSEAlgorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AES256"</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">"BucketKeyEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="enable-bucket-versioning-lifecycle">Enable Bucket Versioning Lifecycle</h3>
 <p>Configure a lifecycle rule to move old state versions to cheaper storage:</p>
 <p>Create a file called <code>lifecycle-policy.json</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">"Rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">      </span><span class="nt">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MoveOldVersionsToIA"</span><span class="p">,</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">      </span><span class="nt">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enabled"</span><span class="p">,</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="nt">"NoncurrentVersionTransitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">          </span><span class="nt">"NoncurrentDays"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">          </span><span class="nt">"StorageClass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STANDARD_IA"</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">      </span><span class="p">],</span>
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">      </span><span class="nt">"NoncurrentVersionExpiration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">        </span><span class="nt">"NoncurrentDays"</span><span class="p">:</span><span class="w"> </span><span class="mi">90</span>
-<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MoveOldVersionsToIA"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enabled"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"NoncurrentVersionTransitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"NoncurrentDays"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"StorageClass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STANDARD_IA"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"NoncurrentVersionExpiration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"NoncurrentDays"</span><span class="p">:</span><span class="w"> </span><span class="mi">90</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Apply the lifecycle policy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-lifecycle-configuration<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span>--lifecycle-configuration<span class="w"> </span>file://lifecycle-policy.json<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-lifecycle-configuration<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--lifecycle-configuration<span class="w"> </span>file://lifecycle-policy.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>This policy:
 - Moves versions older than 30 days to Infrequent Access storage (cheaper)
@@ -6668,94 +6670,94 @@ State files contain sensitive data like passwords and API keys. Having them on l
 </div>
 <h3 id="block-public-access">Block Public Access</h3>
 <p>Ensure the bucket can never be made public:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-public-access-block<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span>--public-access-block-configuration<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="s2">"BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>put-public-access-block<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--public-access-block-configuration<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">"BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Verify public access is blocked:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-public-access-block<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>get-public-access-block<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p">{</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="nt">"PublicAccessBlockConfiguration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">        </span><span class="nt">"BlockPublicAcls"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">        </span><span class="nt">"IgnorePublicAcls"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">        </span><span class="nt">"BlockPublicPolicy"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">        </span><span class="nt">"RestrictPublicBuckets"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"PublicAccessBlockConfiguration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"BlockPublicAcls"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"IgnorePublicAcls"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"BlockPublicPolicy"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"RestrictPublicBuckets"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-the-dynamodb-table">Create the DynamoDB Table</h2>
 <p>DynamoDB provides the locking mechanism for Terraform state.</p>
 <h3 id="create-the-table">Create the Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>create-table<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span>--attribute-definitions<span class="w"> </span><span class="nv">AttributeName</span><span class="o">=</span>LockID,AttributeType<span class="o">=</span>S<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>--key-schema<span class="w"> </span><span class="nv">AttributeName</span><span class="o">=</span>LockID,KeyType<span class="o">=</span>HASH<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span>--billing-mode<span class="w"> </span>PAY_PER_REQUEST<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>create-table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--attribute-definitions<span class="w"> </span><span class="nv">AttributeName</span><span class="o">=</span>LockID,AttributeType<span class="o">=</span>S<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--key-schema<span class="w"> </span><span class="nv">AttributeName</span><span class="o">=</span>LockID,KeyType<span class="o">=</span>HASH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--billing-mode<span class="w"> </span>PAY_PER_REQUEST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>This creates a table with:
 - <strong>Primary key</strong>: <code>LockID</code> (string)
 - <strong>Billing mode</strong>: Pay-per-request (only pay for what you use)
 - No provisioned capacity (scales automatically)</p>
 <p>Expected output (truncated):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p">{</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="nt">"TableDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">        </span><span class="nt">"TableName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span><span class="p">,</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">        </span><span class="nt">"TableStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CREATING"</span><span class="p">,</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">        </span><span class="nt">"KeySchema"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">            </span><span class="p">{</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">                </span><span class="nt">"AttributeName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LockID"</span><span class="p">,</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">                </span><span class="nt">"KeyType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HASH"</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">            </span><span class="p">}</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">        </span><span class="p">],</span>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">        </span><span class="nt">"BillingModeSummary"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">            </span><span class="nt">"BillingMode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAY_PER_REQUEST"</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"TableDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"TableName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"terraform-state-lock"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"TableStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CREATING"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"KeySchema"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">"AttributeName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LockID"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"KeyType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HASH"</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"BillingModeSummary"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"BillingMode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAY_PER_REQUEST"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="wait-for-table-creation">Wait for Table Creation</h3>
 <p>The table takes a few moments to create:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>table-exists<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>table-exists<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>This command waits until the table is ready (no output means success).</p>
 <p>Verify the table exists:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span>--query<span class="w"> </span><span class="s1">'Table.TableStatus'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query<span class="w"> </span><span class="s1">'Table.TableStatus'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>"ACTIVE"
+<div class="highlight"><pre><span></span><code>"ACTIVE"
 </code></pre></div>
 <h3 id="enable-point-in-time-recovery">Enable Point-in-Time Recovery</h3>
 <p>Enable continuous backups for the DynamoDB table:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>update-continuous-backups<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span>--point-in-time-recovery-specification<span class="w"> </span><span class="nv">PointInTimeRecoveryEnabled</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>update-continuous-backups<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--point-in-time-recovery-specification<span class="w"> </span><span class="nv">PointInTimeRecoveryEnabled</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p">{</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">    </span><span class="nt">"ContinuousBackupsDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">        </span><span class="nt">"ContinuousBackupsStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ENABLED"</span><span class="p">,</span>
-<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">        </span><span class="nt">"PointInTimeRecoveryDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">            </span><span class="nt">"PointInTimeRecoveryStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ENABLED"</span>
-<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ContinuousBackupsDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"ContinuousBackupsStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ENABLED"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"PointInTimeRecoveryDescription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"PointInTimeRecoveryStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ENABLED"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Why Enable Backups?</p>
@@ -6764,45 +6766,45 @@ State files contain sensitive data like passwords and API keys. Having them on l
 <h2 id="tag-your-resources">Tag Your Resources</h2>
 <p>Add tags to make it clear these resources are for Terraform state:</p>
 <h3 id="tag-the-s3-bucket">Tag the S3 Bucket</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-tagging<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span>--tagging<span class="w"> </span><span class="s1">'TagSet=[</span>
-<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="s1">    {Key=Purpose,Value=TerraformState},</span>
-<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="s1">    {Key=ManagedBy,Value=Manual},</span>
-<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="s1">    {Key=Environment,Value=Shared}</span>
-<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="s1">  ]'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-tagging<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tagging<span class="w"> </span><span class="s1">'TagSet=[</span>
+<span class="s1">    {Key=Purpose,Value=TerraformState},</span>
+<span class="s1">    {Key=ManagedBy,Value=Manual},</span>
+<span class="s1">    {Key=Environment,Value=Shared}</span>
+<span class="s1">  ]'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="tag-the-dynamodb-table">Tag the DynamoDB Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>tag-resource<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span>--resource-arn<span class="w"> </span>arn:aws:dynamodb:eu-west-2:123456789012:table/terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span>--tags<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>Purpose,Value<span class="o">=</span>TerraformStateLock<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>ManagedBy,Value<span class="o">=</span>Manual<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>Environment,Value<span class="o">=</span>Shared<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>tag-resource<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource-arn<span class="w"> </span>arn:aws:dynamodb:eu-west-2:123456789012:table/terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tags<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>Purpose,Value<span class="o">=</span>TerraformStateLock<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>ManagedBy,Value<span class="o">=</span>Manual<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>Environment,Value<span class="o">=</span>Shared<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Finding Your Table ARN</p>
 <p>Replace <code>123456789012</code> with your AWS account ID, and <code>eu-west-2</code> with your region. Or get it from the table description:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span>--query<span class="w"> </span><span class="s1">'Table.TableArn'</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query<span class="w"> </span><span class="s1">'Table.TableArn'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 </div>
 <h2 id="verify-your-setup">Verify Your Setup</h2>
 <h3 id="check-s3-bucket-configuration">Check S3 Bucket Configuration</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># List all configuration for the bucket</span>
-<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>aws<span class="w"> </span>s3api<span class="w"> </span>head-bucket<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-versioning<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-encryption<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
-<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>aws<span class="w"> </span>s3api<span class="w"> </span>get-public-access-block<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code><span class="c1"># List all configuration for the bucket</span>
+aws<span class="w"> </span>s3api<span class="w"> </span>head-bucket<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-versioning<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+aws<span class="w"> </span>s3api<span class="w"> </span>get-bucket-encryption<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+aws<span class="w"> </span>s3api<span class="w"> </span>get-public-access-block<span class="w"> </span>--bucket<span class="w"> </span>terraform-state-123456789012<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="check-dynamodb-table">Check DynamoDB Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>dynamodb<span class="w"> </span>describe-table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--table-name<span class="w"> </span>terraform-state-lock<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--region<span class="w"> </span>eu-west-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h2 id="cost-considerations">Cost Considerations</h2>
 <p>Your remote state infrastructure will cost very little:</p>
@@ -6847,12 +6849,12 @@ You can enable S3 access logging to track who accesses the state bucket. This is
 <p>S3 bucket names are globally unique. If someone else has already taken your chosen name, pick a different one. The pattern <code>terraform-state-&lt;account-id&gt;-&lt;region&gt;</code> can help ensure uniqueness.</p>
 <h3 id="error-access-denied">Error: Access Denied</h3>
 <p>Ensure you're using the correct AWS profile and that your DataEngineerRole has the necessary permissions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--profile<span class="w"> </span>infrastructure-admin
 </code></pre></div>
 <h3 id="cannot-find-lifecycle-policyjson">Cannot Find lifecycle-policy.json</h3>
 <p>Make sure you created the <code>lifecycle-policy.json</code> file in your current directory. Check with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>ls<span class="w"> </span>-la<span class="w"> </span>lifecycle-policy.json
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>cat<span class="w"> </span>lifecycle-policy.json
+<div class="highlight"><pre><span></span><code>ls<span class="w"> </span>-la<span class="w"> </span>lifecycle-policy.json
+cat<span class="w"> </span>lifecycle-policy.json
 </code></pre></div>
 <h2 id="whats-next">What's Next</h2>
 <p>You now have the foundation for remote state management:</p>
@@ -6913,6 +6915,8 @@ You can enable S3 access logging to track who accesses the state bucket. This is
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6956,7 +6960,7 @@ You can enable S3 access logging to track who accesses the state bucket. This is
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6163,68 +6165,68 @@
 </ul>
 <h2 id="the-warehouse-module">The Warehouse Module</h2>
 <p>Navigate to your Snowflake Terraform directory and create the warehouse module:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_warehouse
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/projects/data/data-stack-infrastructure/terraform/snowflake
+mkdir<span class="w"> </span>-p<span class="w"> </span>modules/snowflake_warehouse
 </code></pre></div>
 <h3 id="maintf">main.tf</h3>
 <p>Create <code>modules/snowflake_warehouse/main.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.sys_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.security_admin</span><span class="p">]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># Warehouse</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_warehouse"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.warehouse_name</span><span class="p">)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_comment</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1">  # Start suspended to avoid immediate costs</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="na">initially_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1">  # Size and scaling</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_size</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">  </span><span class="na">min_cluster_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="na">max_cluster_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">  </span><span class="na">scaling_policy</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.warehouse_scaling_policy</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="c1">  # Cost control</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="na">auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_auto_suspend</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="na">auto_resume</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="c1">  # Query acceleration (Enterprise edition)</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">  </span><span class="na">enable_query_acceleration</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_enable_query_acceleration</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">  </span><span class="na">query_acceleration_max_scale_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_enable_query_acceleration</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">      </span><span class="err">initially_suspended</span><span class="c1">  # Prevents imported warehouses from being toggled</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">    </span><span class="p">]</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="p">}</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="c1"># Grants</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"usage"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">  </span><span class="na">provider</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">  </span><span class="na">for_each</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">var.warehouse_usage_roles</span><span class="p">)</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">  </span><span class="na">privileges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MONITOR", "OPERATE", "USAGE"</span><span class="p">]</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.value</span><span class="p">)</span>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"WAREHOUSE"</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.name</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">snowflake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake-Labs/snowflake"</span>
+<span class="w">      </span><span class="na">version</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 0.99"</span>
+<span class="w">      </span><span class="na">configuration_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake.sys_admin</span><span class="p">,</span><span class="w"> </span><span class="nv">snowflake.security_admin</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Warehouse</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_warehouse"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.warehouse_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_comment</span>
+
+<span class="c1">  # Start suspended to avoid immediate costs</span>
+<span class="w">  </span><span class="na">initially_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="c1">  # Size and scaling</span>
+<span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_size</span>
+<span class="w">  </span><span class="na">min_cluster_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span>
+<span class="w">  </span><span class="na">max_cluster_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span>
+<span class="w">  </span><span class="na">scaling_policy</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.warehouse_scaling_policy</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
+
+<span class="c1">  # Cost control</span>
+<span class="w">  </span><span class="na">auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_auto_suspend</span>
+<span class="w">  </span><span class="na">auto_resume</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="c1">  # Query acceleration (Enterprise edition)</span>
+<span class="w">  </span><span class="na">enable_query_acceleration</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_enable_query_acceleration</span>
+<span class="w">  </span><span class="na">query_acceleration_max_scale_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_enable_query_acceleration</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
+
+<span class="w">  </span><span class="nb">lifecycle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">ignore_changes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="err">initially_suspended</span><span class="c1">  # Prevents imported warehouses from being toggled</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Grants</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_grant_privileges_to_account_role"</span><span class="w"> </span><span class="nv">"usage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">toset</span><span class="p">(</span><span class="nv">var.warehouse_usage_roles</span><span class="p">)</span>
+<span class="w">  </span><span class="na">privileges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MONITOR", "OPERATE", "USAGE"</span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">account_role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">each.value</span><span class="p">)</span>
+
+<span class="w">  </span><span class="nb">on_account_object</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">object_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"WAREHOUSE"</span>
+<span class="w">    </span><span class="na">object_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.name</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This module:</p>
 <ul>
@@ -6235,218 +6237,218 @@
 </ul>
 <h3 id="variablestf">variables.tf</h3>
 <p>Create <code>modules/snowflake_warehouse/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the warehouse (will be uppercased)"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_comment"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the warehouse's purpose"</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_size"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The size of the warehouse"</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">      </span><span class="s2">"X-Small", "Small", "Medium", "Large", "X-Large"</span><span class="p">,</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">      </span><span class="s2">"2X-Large", "3X-Large", "4X-Large", "5X-Large", "6X-Large"</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="p">],</span><span class="w"> </span><span class="nv">var.warehouse_size</span><span class="p">)</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Invalid warehouse size. Must be X-Small through 6X-Large."</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="p">}</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_auto_suspend"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Seconds of inactivity before auto-suspend (minimum 60)"</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_auto_suspend</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">60</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Auto-suspend must be at least 60 seconds."</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="p">}</span>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_min_cluster_count"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Minimum clusters for multi-cluster warehouse (Enterprise edition)"</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Cluster count must be between 1 and 10."</span>
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="p">}</span>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_max_cluster_count"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Maximum clusters for multi-cluster warehouse (Enterprise edition)"</span>
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Cluster count must be between 1 and 10."</span>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="p">}</span>
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_scaling_policy"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Scaling policy for multi-cluster warehouses: STANDARD or ECONOMY"</span>
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"STANDARD"</span>
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">"STANDARD", "ECONOMY"</span><span class="p">],</span><span class="w"> </span><span class="nv">var.warehouse_scaling_policy</span><span class="p">)</span>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Scaling policy must be STANDARD or ECONOMY."</span>
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="p">}</span>
-<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>
-<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_enable_query_acceleration"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Enable query acceleration (Enterprise edition)"</span>
-<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="p">}</span>
-<a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>
-<a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_query_acceleration_max_scale_factor"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Max scale factor for query acceleration (1-100)"</span>
-<a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
-<a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">8</span>
-<a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>
-<a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">100</span>
-<a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Query acceleration scale factor must be between 1 and 100."</span>
-<a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a><span class="p">}</span>
-<a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>
-<a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_usage_roles"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account roles to grant USAGE, OPERATE, and MONITOR privileges"</span>
-<a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-2-90" name="__codelineno-2-90" href="#__codelineno-2-90"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the warehouse (will be uppercased)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_comment"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Description of the warehouse's purpose"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_size"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The size of the warehouse"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span>
+<span class="w">      </span><span class="s2">"X-Small", "Small", "Medium", "Large", "X-Large"</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">"2X-Large", "3X-Large", "4X-Large", "5X-Large", "6X-Large"</span>
+<span class="w">    </span><span class="p">],</span><span class="w"> </span><span class="nv">var.warehouse_size</span><span class="p">)</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Invalid warehouse size. Must be X-Small through 6X-Large."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_auto_suspend"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Seconds of inactivity before auto-suspend (minimum 60)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_auto_suspend</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">60</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Auto-suspend must be at least 60 seconds."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_min_cluster_count"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Minimum clusters for multi-cluster warehouse (Enterprise edition)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_min_cluster_count</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Cluster count must be between 1 and 10."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_max_cluster_count"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Maximum clusters for multi-cluster warehouse (Enterprise edition)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_max_cluster_count</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Cluster count must be between 1 and 10."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_scaling_policy"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Scaling policy for multi-cluster warehouses: STANDARD or ECONOMY"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"STANDARD"</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">"STANDARD", "ECONOMY"</span><span class="p">],</span><span class="w"> </span><span class="nv">var.warehouse_scaling_policy</span><span class="p">)</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Scaling policy must be STANDARD or ECONOMY."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_enable_query_acceleration"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Enable query acceleration (Enterprise edition)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_query_acceleration_max_scale_factor"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Max scale factor for query acceleration (1-100)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">8</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.warehouse_query_acceleration_max_scale_factor</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">100</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Query acceleration scale factor must be between 1 and 100."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"warehouse_usage_roles"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Account roles to grant USAGE, OPERATE, and MONITOR privileges"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="outputstf">outputs.tf</h3>
 <p>Create <code>modules/snowflake_warehouse/outputs.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"warehouse_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the warehouse"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.name</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kr">output</span><span class="w"> </span><span class="nv">"warehouse_size"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The size of the warehouse"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.warehouse_size</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"warehouse_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The name of the warehouse"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.name</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"warehouse_size"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The size of the warehouse"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_warehouse.this.warehouse_size</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-shared-warehouses">Create Shared Warehouses</h2>
 <p>Now use the module to create warehouses for different workloads. Create <code>warehouses.tf</code> in your root Snowflake directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Shared Warehouses</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Dedicated warehouses for different workload types.</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Each warehouse can be sized and configured independently.</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># Loading Warehouse</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># Used by data ingestion tools (Airbyte, dlt, Fivetran)</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_loading"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Data ingestion from external sources."</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="c1">  # Loaders run periodically, suspend quickly between loads</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="c1">    # Add loader service accounts here as you create them</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="c1">    # "SVC_AIRBYTE",</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="c1">    # "SVC_DLT",</span>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="p">}</span>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="c1"># Transforming Warehouse</span>
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="c1"># Used by dbt for transformations</span>
-<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_transforming"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
-<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>
-<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>
-<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"TRANSFORMING"</span>
-<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt transformations and data modelling."</span>
-<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Small"</span>
-<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>
-<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="c1">  # Transformations run in bursts, suspend between runs</span>
-<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a><span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
-<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>
-<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a><span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a><span class="c1">    # Add transformer service accounts here</span>
-<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a><span class="c1">    # "SVC_DBT",</span>
-<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a><span class="p">}</span>
-<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>
-<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a><span class="c1"># Reporting Warehouse</span>
-<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a><span class="c1"># Used by BI tools (Metabase, Looker, Tableau)</span>
-<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_reporting"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
-<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a>
-<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a>
-<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a><span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
-<a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a><span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Business intelligence and reporting queries."</span>
-<a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a><span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Small"</span>
-<a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>
-<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a><span class="c1">  # BI tools have sporadic usage, but keep warm for responsiveness</span>
-<a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a><span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span>
-<a id="__codelineno-4-76" name="__codelineno-4-76" href="#__codelineno-4-76"></a>
-<a id="__codelineno-4-77" name="__codelineno-4-77" href="#__codelineno-4-77"></a><span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-78" name="__codelineno-4-78" href="#__codelineno-4-78"></a><span class="c1">    # Add reporter roles here</span>
-<a id="__codelineno-4-79" name="__codelineno-4-79" href="#__codelineno-4-79"></a><span class="c1">    # "ANALYTICS_REPORTER",</span>
-<a id="__codelineno-4-80" name="__codelineno-4-80" href="#__codelineno-4-80"></a><span class="c1">    # "SVC_METABASE",</span>
-<a id="__codelineno-4-81" name="__codelineno-4-81" href="#__codelineno-4-81"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-4-82" name="__codelineno-4-82" href="#__codelineno-4-82"></a><span class="p">}</span>
-<a id="__codelineno-4-83" name="__codelineno-4-83" href="#__codelineno-4-83"></a>
-<a id="__codelineno-4-84" name="__codelineno-4-84" href="#__codelineno-4-84"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-85" name="__codelineno-4-85" href="#__codelineno-4-85"></a><span class="c1"># Developer Warehouse</span>
-<a id="__codelineno-4-86" name="__codelineno-4-86" href="#__codelineno-4-86"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-87" name="__codelineno-4-87" href="#__codelineno-4-87"></a><span class="c1"># Used by data team members for ad-hoc queries</span>
-<a id="__codelineno-4-88" name="__codelineno-4-88" href="#__codelineno-4-88"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_developer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-89" name="__codelineno-4-89" href="#__codelineno-4-89"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
-<a id="__codelineno-4-90" name="__codelineno-4-90" href="#__codelineno-4-90"></a>
-<a id="__codelineno-4-91" name="__codelineno-4-91" href="#__codelineno-4-91"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-92" name="__codelineno-4-92" href="#__codelineno-4-92"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-93" name="__codelineno-4-93" href="#__codelineno-4-93"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-94" name="__codelineno-4-94" href="#__codelineno-4-94"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-95" name="__codelineno-4-95" href="#__codelineno-4-95"></a>
-<a id="__codelineno-4-96" name="__codelineno-4-96" href="#__codelineno-4-96"></a><span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"DEVELOPER"</span>
-<a id="__codelineno-4-97" name="__codelineno-4-97" href="#__codelineno-4-97"></a><span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Ad-hoc queries and development work."</span>
-<a id="__codelineno-4-98" name="__codelineno-4-98" href="#__codelineno-4-98"></a><span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
-<a id="__codelineno-4-99" name="__codelineno-4-99" href="#__codelineno-4-99"></a>
-<a id="__codelineno-4-100" name="__codelineno-4-100" href="#__codelineno-4-100"></a><span class="c1">  # Developers often pause between queries</span>
-<a id="__codelineno-4-101" name="__codelineno-4-101" href="#__codelineno-4-101"></a><span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">120</span>
-<a id="__codelineno-4-102" name="__codelineno-4-102" href="#__codelineno-4-102"></a>
-<a id="__codelineno-4-103" name="__codelineno-4-103" href="#__codelineno-4-103"></a><span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-104" name="__codelineno-4-104" href="#__codelineno-4-104"></a><span class="c1">    # Add developer roles here</span>
-<a id="__codelineno-4-105" name="__codelineno-4-105" href="#__codelineno-4-105"></a><span class="c1">    # "ANALYTICS_DEVELOPER",</span>
-<a id="__codelineno-4-106" name="__codelineno-4-106" href="#__codelineno-4-106"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-4-107" name="__codelineno-4-107" href="#__codelineno-4-107"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Shared Warehouses</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Dedicated warehouses for different workload types.</span>
+<span class="c1"># Each warehouse can be sized and configured independently.</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Loading Warehouse</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Used by data ingestion tools (Airbyte, dlt, Fivetran)</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_loading"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
+<span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Data ingestion from external sources."</span>
+<span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
+
+<span class="c1">  # Loaders run periodically, suspend quickly between loads</span>
+<span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+
+<span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="c1">    # Add loader service accounts here as you create them</span>
+<span class="c1">    # "SVC_AIRBYTE",</span>
+<span class="c1">    # "SVC_DLT",</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Transforming Warehouse</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Used by dbt for transformations</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_transforming"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"TRANSFORMING"</span>
+<span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt transformations and data modelling."</span>
+<span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Small"</span>
+
+<span class="c1">  # Transformations run in bursts, suspend between runs</span>
+<span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span>
+
+<span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="c1">    # Add transformer service accounts here</span>
+<span class="c1">    # "SVC_DBT",</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Reporting Warehouse</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Used by BI tools (Metabase, Looker, Tableau)</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_reporting"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPORTING"</span>
+<span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Business intelligence and reporting queries."</span>
+<span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Small"</span>
+
+<span class="c1">  # BI tools have sporadic usage, but keep warm for responsiveness</span>
+<span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span>
+
+<span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="c1">    # Add reporter roles here</span>
+<span class="c1">    # "ANALYTICS_REPORTER",</span>
+<span class="c1">    # "SVC_METABASE",</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Developer Warehouse</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Used by data team members for ad-hoc queries</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"warehouse_developer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_warehouse"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">warehouse_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"DEVELOPER"</span>
+<span class="w">  </span><span class="na">warehouse_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Ad-hoc queries and development work."</span>
+<span class="w">  </span><span class="na">warehouse_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"X-Small"</span>
+
+<span class="c1">  # Developers often pause between queries</span>
+<span class="w">  </span><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">120</span>
+
+<span class="w">  </span><span class="na">warehouse_usage_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="c1">    # Add developer roles here</span>
+<span class="c1">    # "ANALYTICS_DEVELOPER",</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Roles Coming Later</p>
@@ -6498,7 +6500,7 @@
 <p>The module includes several cost control features:</p>
 <h3 id="auto-suspend">Auto-Suspend</h3>
 <p>Warehouses automatically suspend after a period of inactivity:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span><span class="c1">  # Suspend after 60 seconds</span>
+<div class="highlight"><pre><span></span><code><span class="na">warehouse_auto_suspend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span><span class="c1">  # Suspend after 60 seconds</span>
 </code></pre></div>
 <ul>
 <li><strong>60 seconds</strong>: Aggressive, best for batch workloads (loading, transforming)</li>
@@ -6507,32 +6509,32 @@
 </ul>
 <h3 id="auto-resume">Auto-Resume</h3>
 <p>Warehouses automatically resume when a query arrives:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="na">auto_resume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Always enabled in our module</span>
+<div class="highlight"><pre><span></span><code><span class="na">auto_resume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="c1">  # Always enabled in our module</span>
 </code></pre></div>
 <p>This is always enabled so queries don't fail when the warehouse is suspended.</p>
 <h3 id="initially-suspended">Initially Suspended</h3>
 <p>New warehouses start in a suspended state:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="na">initially_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<div class="highlight"><pre><span></span><code><span class="na">initially_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
 </code></pre></div>
 <p>This prevents charges from accumulating immediately after creation.</p>
 <h2 id="commit-and-deploy">Commit and Deploy</h2>
 <p>Commit your changes and push to trigger the CI/CD pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add snowflake_warehouse module and shared warehouses"</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add snowflake_warehouse module and shared warehouses"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <p>The pipeline will run <code>terraform plan</code> on the pull request. Review the plan to confirm it will create four warehouses:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Plan: 4 to add, 0 to change, 0 to destroy.
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  + module.warehouse_developer.snowflake_warehouse.this
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  + module.warehouse_loading.snowflake_warehouse.this
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  + module.warehouse_reporting.snowflake_warehouse.this
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>  + module.warehouse_transforming.snowflake_warehouse.this
+<div class="highlight"><pre><span></span><code>Plan: 4 to add, 0 to change, 0 to destroy.
+
+  + module.warehouse_developer.snowflake_warehouse.this
+  + module.warehouse_loading.snowflake_warehouse.this
+  + module.warehouse_reporting.snowflake_warehouse.this
+  + module.warehouse_transforming.snowflake_warehouse.this
 </code></pre></div>
 <p>Once merged, the pipeline applies the changes automatically.</p>
 <h2 id="verify-in-snowflake">Verify in Snowflake</h2>
 <p>After the pipeline completes, connect to Snowflake and verify the warehouses were created:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">WAREHOUSES</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">WAREHOUSES</span><span class="p">;</span>
 </code></pre></div>
 <p>You should see your four new warehouses, all initially suspended.</p>
 <h2 id="summary">Summary</h2>
@@ -6594,6 +6596,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6637,7 +6641,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

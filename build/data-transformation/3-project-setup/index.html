@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6445,10 +6447,10 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>The dbt project lives in its own repository, separate from <code>data-pipelines</code>. This keeps analytics engineering work — model development, schema changes, test coverage — independent from Prefect infrastructure.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GitHub Organisation
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── terraform/               ← Infrastructure as code
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── data-pipelines/          ← Prefect flows
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└── dbt-transform/           ← dbt project  ← you are here
+<div class="highlight"><pre><span></span><code>GitHub Organisation
+├── terraform/               ← Infrastructure as code
+├── data-pipelines/          ← Prefect flows
+└── dbt-transform/           ← dbt project  ← you are here
 </code></pre></div>
 <h2 id="create-the-repository">Create the Repository</h2>
 <p>In your GitHub organisation, create a new repository named <code>dbt-transform</code> through the GitHub UI:</p>
@@ -6459,109 +6461,109 @@
 </ul>
 <h3 id="readme">README</h3>
 <p>Replace the generated <code>README.md</code> with a developer setup guide. This is the first thing a new team member reads when onboarding to the project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gh"># dbt-transform</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>dbt transformation project for the [Company] data platform.
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gu">## Prerequisites</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">-</span><span class="w"> </span>[<span class="nt">direnv</span>](<span class="na">https://direnv.net/</span>) installed globally — see the [<span class="nt">local environment guide</span>](<span class="na">https://docs.your-company.com/getting-started/local-environment/</span>)
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">-</span><span class="w"> </span>[<span class="nt">uv</span>](<span class="na">https://docs.astral.sh/uv/</span>) installed globally
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">-</span><span class="w"> </span>Access to Snowflake (SSO via your company identity provider)
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="gu">## Getting Started</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">1.</span> Clone the repository:
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="sb">   ```sh</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">   </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your-org/dbt-transform.git
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">   </span><span class="nb">cd</span><span class="w"> </span>dbt-transform
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="sb">   ```</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="k">2.</span> Install Python dependencies:
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="sb">   ```sh</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">   </span>uv<span class="w"> </span>sync
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="sb">   ```</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="k">3.</span> Set up your local environment:
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="sb">   ```sh</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">   </span>cp<span class="w"> </span>.envrc.example<span class="w"> </span>.envrc
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">   </span><span class="c1"># Edit .envrc with your Snowflake credentials and personal schema prefix</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">   </span>direnv<span class="w"> </span>allow
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="sb">   ```</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="k">4.</span> Install dbt packages and verify the connection:
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="sb">   ```sh</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">   </span>dbt<span class="w"> </span>deps
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">   </span>dbt<span class="w"> </span>debug
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="sb">   ```</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>   <span class="sb">`dbt debug`</span> should report <span class="sb">`All checks passed!`</span>.
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="k">5.</span> Install pre-commit hooks:
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="sb">   ```sh</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">   </span>pre-commit<span class="w"> </span>install
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="sb">   ```</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="gu">## Common Commands</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="sb">```sh</span>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>dbt<span class="w"> </span>build<span class="w">                              </span><span class="c1"># build all models and run all tests</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>staging<span class="w">             </span><span class="c1"># build all staging models</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>my_model+<span class="w">           </span><span class="c1"># build a model and all downstream</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>+my_model<span class="w">           </span><span class="c1"># build a model and all upstream</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>my_model<span class="w">             </span><span class="c1"># run tests for a specific model</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w">                   </span><span class="c1"># check whether sources are up to date</span>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="sb">```</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="gu">## Quality Checks</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>Run project structure checks and custom rules:
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="sb">```sh</span>
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a>dbt<span class="w"> </span>build<span class="w"> </span>--selector<span class="w"> </span>ci_quality_checks
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="sb">```</span>
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="gu">## Project Structure</span>
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a>Models are organised into four layers:
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>| Layer | Folder | Prefix | Purpose |
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>|-------|--------|--------|---------|
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>| Staging | <span class="sb">`models/staging/`</span> | <span class="sb">`stg_`</span> | Clean and rename raw source data |
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>| Intermediate | <span class="sb">`models/intermediate/`</span> | <span class="sb">`int_`</span> | Business logic joins and transformations |
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a>| Marts | <span class="sb">`models/marts/`</span> | <span class="sb">`fct_`</span>, <span class="sb">`dim_`</span> | Final analytics-ready tables |
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a>| Utilities | <span class="sb">`models/utilities/`</span> | — | Date spines, shared lookup tables |
+<div class="highlight"><pre><span></span><code><span class="gh"># dbt-transform</span>
+
+dbt transformation project for the [Company] data platform.
+
+<span class="gu">## Prerequisites</span>
+
+<span class="k">-</span><span class="w"> </span>[<span class="nt">direnv</span>](<span class="na">https://direnv.net/</span>) installed globally — see the [<span class="nt">local environment guide</span>](<span class="na">https://docs.your-company.com/getting-started/local-environment/</span>)
+<span class="k">-</span><span class="w"> </span>[<span class="nt">uv</span>](<span class="na">https://docs.astral.sh/uv/</span>) installed globally
+<span class="k">-</span><span class="w"> </span>Access to Snowflake (SSO via your company identity provider)
+
+<span class="gu">## Getting Started</span>
+
+<span class="k">1.</span> Clone the repository:
+
+<span class="sb">   ```sh</span>
+<span class="w">   </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your-org/dbt-transform.git
+<span class="w">   </span><span class="nb">cd</span><span class="w"> </span>dbt-transform
+<span class="sb">   ```</span>
+
+<span class="k">2.</span> Install Python dependencies:
+
+<span class="sb">   ```sh</span>
+<span class="w">   </span>uv<span class="w"> </span>sync
+<span class="sb">   ```</span>
+
+<span class="k">3.</span> Set up your local environment:
+
+<span class="sb">   ```sh</span>
+<span class="w">   </span>cp<span class="w"> </span>.envrc.example<span class="w"> </span>.envrc
+<span class="w">   </span><span class="c1"># Edit .envrc with your Snowflake credentials and personal schema prefix</span>
+<span class="w">   </span>direnv<span class="w"> </span>allow
+<span class="sb">   ```</span>
+
+<span class="k">4.</span> Install dbt packages and verify the connection:
+
+<span class="sb">   ```sh</span>
+<span class="w">   </span>dbt<span class="w"> </span>deps
+<span class="w">   </span>dbt<span class="w"> </span>debug
+<span class="sb">   ```</span>
+
+   <span class="sb">`dbt debug`</span> should report <span class="sb">`All checks passed!`</span>.
+
+<span class="k">5.</span> Install pre-commit hooks:
+
+<span class="sb">   ```sh</span>
+<span class="w">   </span>pre-commit<span class="w"> </span>install
+<span class="sb">   ```</span>
+
+<span class="gu">## Common Commands</span>
+
+<span class="sb">```sh</span>
+dbt<span class="w"> </span>build<span class="w">                              </span><span class="c1"># build all models and run all tests</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>staging<span class="w">             </span><span class="c1"># build all staging models</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>my_model+<span class="w">           </span><span class="c1"># build a model and all downstream</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>+my_model<span class="w">           </span><span class="c1"># build a model and all upstream</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--select<span class="w"> </span>my_model<span class="w">             </span><span class="c1"># run tests for a specific model</span>
+dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w">                   </span><span class="c1"># check whether sources are up to date</span>
+<span class="sb">```</span>
+
+<span class="gu">## Quality Checks</span>
+
+Run project structure checks and custom rules:
+
+<span class="sb">```sh</span>
+dbt<span class="w"> </span>build<span class="w"> </span>--selector<span class="w"> </span>ci_quality_checks
+<span class="sb">```</span>
+
+<span class="gu">## Project Structure</span>
+
+Models are organised into four layers:
+
+| Layer | Folder | Prefix | Purpose |
+|-------|--------|--------|---------|
+| Staging | <span class="sb">`models/staging/`</span> | <span class="sb">`stg_`</span> | Clean and rename raw source data |
+| Intermediate | <span class="sb">`models/intermediate/`</span> | <span class="sb">`int_`</span> | Business logic joins and transformations |
+| Marts | <span class="sb">`models/marts/`</span> | <span class="sb">`fct_`</span>, <span class="sb">`dim_`</span> | Final analytics-ready tables |
+| Utilities | <span class="sb">`models/utilities/`</span> | — | Date spines, shared lookup tables |
 </code></pre></div>
 <h3 id="pr-template">PR Template</h3>
 <p>Create <code>.github/pull_request_template.md</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gu">## Summary</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>&lt;!-- What does this PR do? --&gt;
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="gu">## Changes</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>-
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="gu">## Test Plan</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">- [ ]</span> <span class="sb">`dbt build --select state:modified+`</span> runs without errors
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">- [ ]</span> All new models have YAML documentation
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">- [ ]</span> New tests pass locally
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="k">- [ ]</span> <span class="sb">`dbt build --selector ci_quality_checks`</span> passes
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="gu">## Notes</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>&lt;!-- Any context reviewers need to know? Breaking changes? Deprecations? --&gt;
+<div class="highlight"><pre><span></span><code><span class="gu">## Summary</span>
+
+&lt;!-- What does this PR do? --&gt;
+
+<span class="gu">## Changes</span>
+
+-
+
+<span class="gu">## Test Plan</span>
+
+<span class="k">- [ ]</span> <span class="sb">`dbt build --select state:modified+`</span> runs without errors
+<span class="k">- [ ]</span> All new models have YAML documentation
+<span class="k">- [ ]</span> New tests pass locally
+<span class="k">- [ ]</span> <span class="sb">`dbt build --selector ci_quality_checks`</span> passes
+
+<span class="gu">## Notes</span>
+
+&lt;!-- Any context reviewers need to know? Breaking changes? Deprecations? --&gt;
 </code></pre></div>
 <h3 id="codeowners">CODEOWNERS</h3>
 <p>Create <code>.github/CODEOWNERS</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Global owners
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>*       @your-org/data-platform-admins   @your-org/data-engineers
+<div class="highlight"><pre><span></span><code># Global owners
+*       @your-org/data-platform-admins   @your-org/data-engineers
 </code></pre></div>
 <h3 id="branch-protection">Branch Protection</h3>
 <p>Go to <strong>Settings</strong> → <strong>Branches</strong> → <strong>Add branch protection rule</strong> for <code>main</code>:</p>
@@ -6587,61 +6589,61 @@
 <h2 id="set-up-dbt">Set Up dbt</h2>
 <h3 id="install">Install</h3>
 <p>Install dbt and the Snowflake adapter into the project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>add<span class="w"> </span>dbt-snowflake
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>sync
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>dbt-snowflake
+uv<span class="w"> </span>sync
 </code></pre></div>
 <p><code>uv add</code> installs <code>dbt-snowflake</code> (which includes <code>dbt-core</code>) and records it in <code>pyproject.toml</code>. <code>uv sync</code> creates the <code>.venv</code> virtual environment.</p>
 <h3 id="configure-direnv">Configure direnv</h3>
 <p><a href="https://direnv.net/">direnv</a> activates the virtual environment and exports Snowflake credentials automatically when you <code>cd</code> into the project. Install it if you have not already — see <a href="../../../getting-started/initial-setup/2-local-environment/">Local Environment</a>.</p>
 <p>Commit <code>.envrc.example</code> to the repository as a template for the team:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># .envrc.example — commit this file</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Copy to .envrc and fill in your values (never commit .envrc)</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Auto-activate the Python virtual environment</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Snowflake credentials</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_ACCOUNT</span><span class="o">=</span><span class="s2">"your-account.snowflakecomputing.com"</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_USER</span><span class="o">=</span><span class="s2">"your.name@company.com"</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Your personal development schema prefix</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># Schemas will be named e.g. DBT_JBLOGGS_STAGING, DBT_JBLOGGS_MARTS</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DBT_TARGET_SCHEMA</span><span class="o">=</span><span class="s2">"dbt_yourname"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># .envrc.example — commit this file</span>
+<span class="c1"># Copy to .envrc and fill in your values (never commit .envrc)</span>
+
+<span class="c1"># Auto-activate the Python virtual environment</span>
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Snowflake credentials</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_ACCOUNT</span><span class="o">=</span><span class="s2">"your-account.snowflakecomputing.com"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SNOWFLAKE_USER</span><span class="o">=</span><span class="s2">"your.name@company.com"</span>
+
+<span class="c1"># Your personal development schema prefix</span>
+<span class="c1"># Schemas will be named e.g. DBT_JBLOGGS_STAGING, DBT_JBLOGGS_MARTS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DBT_TARGET_SCHEMA</span><span class="o">=</span><span class="s2">"dbt_yourname"</span>
 </code></pre></div>
 <p>Each developer copies <code>.envrc.example</code> to <code>.envrc</code> and fills in their own values:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cp<span class="w"> </span>.envrc.example<span class="w"> </span>.envrc
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># Edit .envrc with your values</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>direnv<span class="w"> </span>allow
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>.envrc.example<span class="w"> </span>.envrc
+<span class="c1"># Edit .envrc with your values</span>
+direnv<span class="w"> </span>allow
 </code></pre></div>
 <p>With <code>direnv allow</code>, the virtual environment activates automatically and <code>dbt</code> is available directly — no <code>uv run</code> prefix needed.</p>
 <h3 id="configure-profilesyml">Configure <code>profiles.yml</code></h3>
 <p><code>profiles.yml</code> references environment variables for all per-developer values, so it contains no secrets and <strong>can be committed to the repository</strong>.</p>
 <p>Create <code>profiles.yml</code> in the project root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">dev</span><span class="p">:</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_USER')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="nt">authenticator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">externalbrowser</span><span class="w">  </span><span class="c1"># SSO login</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEVELOPER</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEVELOPER</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('DBT_TARGET_SCHEMA')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">    </span><span class="nt">prod</span><span class="p">:</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">      </span><span class="nt">private_key_path</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PATH')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">      </span><span class="nt">private_key_passphrase</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE',</span><span class="nv"> </span><span class="s">'')</span><span class="nv"> </span><span class="s">}}"</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRANSFORMING</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<div class="highlight"><pre><span></span><code><span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
+<span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_USER')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">authenticator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">externalbrowser</span><span class="w">  </span><span class="c1"># SSO login</span>
+<span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEVELOPER</span>
+<span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEVELOPER</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS_DEV</span>
+<span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('DBT_TARGET_SCHEMA')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+
+<span class="w">    </span><span class="nt">prod</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
+<span class="w">      </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_ACCOUNT')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
+<span class="w">      </span><span class="nt">private_key_path</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PATH')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">private_key_passphrase</span><span class="p">:</span><span class="w"> </span><span class="s">"{{</span><span class="nv"> </span><span class="s">env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE',</span><span class="nv"> </span><span class="s">'')</span><span class="nv"> </span><span class="s">}}"</span>
+<span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SVC_DBT</span>
+<span class="w">      </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRANSFORMING</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
+<span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ANALYTICS</span>
+<span class="w">      </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Developer authentication</p>
@@ -6649,84 +6651,84 @@
 </div>
 <h2 id="project-structure">Project Structure</h2>
 <p>Clone the new repository and initialise the dbt project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your-org/dbt-transform.git
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>dbt-transform
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your-org/dbt-transform.git
+<span class="nb">cd</span><span class="w"> </span>dbt-transform
 </code></pre></div>
 <p>Use <code>dbt init</code> to scaffold the standard project structure:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>dbt<span class="w"> </span>init<span class="w"> </span>.<span class="w"> </span>--skip-profile-setup
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>init<span class="w"> </span>.<span class="w"> </span>--skip-profile-setup
 </code></pre></div>
 <p><code>dbt init</code> creates the standard directory layout and a <code>dbt_project.yml</code>. Remove the example models it generates and create the source-specific directories for this project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Remove generated examples</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>rm<span class="w"> </span>-rf<span class="w"> </span>models/example
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Create source-specific staging directories</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/dlt
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/snowpipe
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/airbyte
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># Create remaining directories</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/intermediate
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/utilities/dbt_project_evaluator
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/core
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/crm
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/reporting
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>.github/workflows
+<div class="highlight"><pre><span></span><code><span class="c1"># Remove generated examples</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>models/example
+
+<span class="c1"># Create source-specific staging directories</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/dlt
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/snowpipe
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/airbyte
+
+<span class="c1"># Create remaining directories</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/intermediate
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/utilities/dbt_project_evaluator
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/core
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/crm
+mkdir<span class="w"> </span>-p<span class="w"> </span>models/marts/reporting
+mkdir<span class="w"> </span>-p<span class="w"> </span>.github/workflows
 </code></pre></div>
 <p>The final layout:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>dbt-transform/
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>├── .github/
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>│   ├── CODEOWNERS
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>│   ├── pull_request_template.md
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>│   └── workflows/
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>│       ├── ci.yml          ← slim CI on pull requests
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>│       └── deploy.yml      ← production run on merge to main
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>├── analyses/               ← ad-hoc analyses (not materialised)
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>├── macros/
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>│   └── generate_schema_name.sql
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>├── models/
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>│   ├── staging/
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>│   │   ├── dlt/
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>│   │   │   └── sources.yml
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>│   │   ├── snowpipe/
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>│   │   │   └── sources.yml
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>│   │   └── airbyte/
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>│   │       └── sources.yml
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>│   ├── intermediate/
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>│   ├── utilities/
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>│   └── marts/
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>│       ├── core/
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>│       ├── crm/
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>│       └── reporting/
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>├── seeds/
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>├── .envrc.example
-<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>├── .gitignore
-<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>├── .pre-commit-config.yaml
-<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>├── .sqlfluff
-<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>├── .sqlfluffignore
-<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>├── .yamllint
-<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>├── dbt_project.yml
-<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>├── packages.yml
-<a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>├── profiles.yml            ← safe to commit — uses env vars only
-<a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a>├── README.md
-<a id="__codelineno-11-36" name="__codelineno-11-36" href="#__codelineno-11-36"></a>└── selectors.yml
+<div class="highlight"><pre><span></span><code>dbt-transform/
+├── .github/
+│   ├── CODEOWNERS
+│   ├── pull_request_template.md
+│   └── workflows/
+│       ├── ci.yml          ← slim CI on pull requests
+│       └── deploy.yml      ← production run on merge to main
+├── analyses/               ← ad-hoc analyses (not materialised)
+├── macros/
+│   └── generate_schema_name.sql
+├── models/
+│   ├── staging/
+│   │   ├── dlt/
+│   │   │   └── sources.yml
+│   │   ├── snowpipe/
+│   │   │   └── sources.yml
+│   │   └── airbyte/
+│   │       └── sources.yml
+│   ├── intermediate/
+│   ├── utilities/
+│   └── marts/
+│       ├── core/
+│       ├── crm/
+│       └── reporting/
+├── seeds/
+├── .envrc.example
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .sqlfluff
+├── .sqlfluffignore
+├── .yamllint
+├── dbt_project.yml
+├── packages.yml
+├── profiles.yml            ← safe to commit — uses env vars only
+├── README.md
+└── selectors.yml
 </code></pre></div>
 <h2 id="configure-gitignore">Configure <code>.gitignore</code></h2>
 <p>Create <code>.gitignore</code> to exclude generated files and credentials:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a># dbt generated files
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>target/
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>dbt_packages/
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>logs/
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a># Local environment variables (never commit — contains personal credentials)
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>.envrc
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a># State artifacts (fetched at runtime, not stored in repo)
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>.artifacts/
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a># Python
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>__pycache__/
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>*.pyc
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>.venv/
+<div class="highlight"><pre><span></span><code># dbt generated files
+target/
+dbt_packages/
+logs/
+
+# Local environment variables (never commit — contains personal credentials)
+.envrc
+
+# State artifacts (fetched at runtime, not stored in repo)
+.artifacts/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Never commit <code>.envrc</code></p>
@@ -6734,86 +6736,86 @@
 </div>
 <h2 id="configure-dbt_projectyml">Configure <code>dbt_project.yml</code></h2>
 <p>Replace the <code>dbt_project.yml</code> generated by <code>dbt init</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_transform</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'1.0.0'</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nt">config-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># Profile name — matches the profile in profiles.yml</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_transform</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1"># Paths</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="nt">model-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"models"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="nt">test-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"tests"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="nt">seed-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"seeds"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="nt">macro-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"macros"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="nt">analysis-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"analyses"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="nt">target-path</span><span class="p">:</span><span class="w"> </span><span class="s">"target"</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="nt">clean-targets</span><span class="p">:</span>
-<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">  </span><span class="c1"># These are the folders whose contents are deleted when `dbt clean` is run</span>
-<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"target"</span>
-<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"dbt_packages"</span>
-<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>
-<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="c1"># Model configurations</span>
-<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="w">    </span><span class="nt">staging</span><span class="p">:</span>
-<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">view</span>
-<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">staging</span>
-<a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="w">      </span><span class="nt">dlt</span><span class="p">:</span>
-<a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"dlt"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="w">      </span><span class="nt">snowpipe</span><span class="p">:</span>
-<a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"snowpipe"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="w">      </span><span class="nt">airbyte</span><span class="p">:</span>
-<a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a><span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"airbyte"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a><span class="w">    </span><span class="nt">intermediate</span><span class="p">:</span>
-<a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a><span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ephemeral</span>
-<a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a><span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">intermediate</span>
-<a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a><span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"intermediate"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a><span class="w">    </span><span class="nt">utilities</span><span class="p">:</span>
-<a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a><span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
-<a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a><span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">utilities</span>
-<a id="__codelineno-13-40" name="__codelineno-13-40" href="#__codelineno-13-40"></a><span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"utilities"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-41" name="__codelineno-13-41" href="#__codelineno-13-41"></a><span class="w">    </span><span class="nt">marts</span><span class="p">:</span>
-<a id="__codelineno-13-42" name="__codelineno-13-42" href="#__codelineno-13-42"></a><span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
-<a id="__codelineno-13-43" name="__codelineno-13-43" href="#__codelineno-13-43"></a><span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marts</span>
-<a id="__codelineno-13-44" name="__codelineno-13-44" href="#__codelineno-13-44"></a><span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"marts"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-45" name="__codelineno-13-45" href="#__codelineno-13-45"></a><span class="w">      </span><span class="nt">reporting</span><span class="p">:</span>
-<a id="__codelineno-13-46" name="__codelineno-13-46" href="#__codelineno-13-46"></a><span class="w">        </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reporting</span>
-<a id="__codelineno-13-47" name="__codelineno-13-47" href="#__codelineno-13-47"></a><span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"reporting"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-13-48" name="__codelineno-13-48" href="#__codelineno-13-48"></a>
-<a id="__codelineno-13-49" name="__codelineno-13-49" href="#__codelineno-13-49"></a><span class="c1"># Seed configurations</span>
-<a id="__codelineno-13-50" name="__codelineno-13-50" href="#__codelineno-13-50"></a><span class="nt">seeds</span><span class="p">:</span>
-<a id="__codelineno-13-51" name="__codelineno-13-51" href="#__codelineno-13-51"></a><span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-13-52" name="__codelineno-13-52" href="#__codelineno-13-52"></a><span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds</span>
-<a id="__codelineno-13-53" name="__codelineno-13-53" href="#__codelineno-13-53"></a>
-<a id="__codelineno-13-54" name="__codelineno-13-54" href="#__codelineno-13-54"></a><span class="c1"># Snapshot configurations</span>
-<a id="__codelineno-13-55" name="__codelineno-13-55" href="#__codelineno-13-55"></a><span class="nt">snapshots</span><span class="p">:</span>
-<a id="__codelineno-13-56" name="__codelineno-13-56" href="#__codelineno-13-56"></a><span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
-<a id="__codelineno-13-57" name="__codelineno-13-57" href="#__codelineno-13-57"></a><span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snapshots</span>
-<a id="__codelineno-13-58" name="__codelineno-13-58" href="#__codelineno-13-58"></a><span class="w">    </span><span class="nt">+strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">timestamp</span>
-<a id="__codelineno-13-59" name="__codelineno-13-59" href="#__codelineno-13-59"></a><span class="w">    </span><span class="nt">+updated_at</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">updated_at</span>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_transform</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'1.0.0'</span>
+<span class="nt">config-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="c1"># Profile name — matches the profile in profiles.yml</span>
+<span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_transform</span>
+
+<span class="c1"># Paths</span>
+<span class="nt">model-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"models"</span><span class="p p-Indicator">]</span>
+<span class="nt">test-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"tests"</span><span class="p p-Indicator">]</span>
+<span class="nt">seed-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"seeds"</span><span class="p p-Indicator">]</span>
+<span class="nt">macro-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"macros"</span><span class="p p-Indicator">]</span>
+<span class="nt">analysis-paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"analyses"</span><span class="p p-Indicator">]</span>
+<span class="nt">target-path</span><span class="p">:</span><span class="w"> </span><span class="s">"target"</span>
+
+<span class="nt">clean-targets</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># These are the folders whose contents are deleted when `dbt clean` is run</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"target"</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"dbt_packages"</span>
+
+<span class="c1"># Model configurations</span>
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">staging</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">view</span>
+<span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">staging</span>
+<span class="w">      </span><span class="nt">dlt</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"dlt"</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">snowpipe</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"snowpipe"</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">airbyte</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"staging"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"airbyte"</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">intermediate</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ephemeral</span>
+<span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">intermediate</span>
+<span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"intermediate"</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">utilities</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
+<span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">utilities</span>
+<span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"utilities"</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">marts</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">+materialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
+<span class="w">      </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">marts</span>
+<span class="w">      </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"marts"</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">reporting</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reporting</span>
+<span class="w">        </span><span class="nt">+tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"reporting"</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Seed configurations</span>
+<span class="nt">seeds</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seeds</span>
+
+<span class="c1"># Snapshot configurations</span>
+<span class="nt">snapshots</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbt_transform</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">+schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snapshots</span>
+<span class="w">    </span><span class="nt">+strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">timestamp</span>
+<span class="w">    </span><span class="nt">+updated_at</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">updated_at</span>
 </code></pre></div>
 <h2 id="add-the-custom-schema-macro">Add the Custom Schema Macro</h2>
 <p>By default, dbt appends a custom schema to the target schema. This project overrides that behaviour: in production, only the custom schema name is used, giving clean schema names. In all other environments (dev, CI), the target schema is prepended so schemas are clearly scoped to each developer or PR.</p>
 <p>Create <code>macros/generate_schema_name.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">macro</span><span class="w"> </span><span class="n">generate_schema_name</span><span class="p">(</span><span class="n">custom_schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">none</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="k">schema</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">elif</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'prod'</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
-<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
-<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="k">schema</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="err">}}</span><span class="n">_</span><span class="err">{{</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
-<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">endif</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
-<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>
-<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">endmacro</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">{</span><span class="o">%</span><span class="w"> </span><span class="n">macro</span><span class="w"> </span><span class="n">generate_schema_name</span><span class="p">(</span><span class="n">custom_schema_name</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
+
+<span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">none</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
+
+<span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="k">schema</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">elif</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'prod'</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
+
+<span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
+
+<span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="k">schema</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="err">}}</span><span class="n">_</span><span class="err">{{</span><span class="w"> </span><span class="n">custom_schema_name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">trim</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="w">    </span><span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">endif</span><span class="w"> </span><span class="o">-%</span><span class="err">}</span>
+
+<span class="err">{</span><span class="o">%-</span><span class="w"> </span><span class="n">endmacro</span><span class="w"> </span><span class="o">%</span><span class="err">}</span>
 </code></pre></div>
 <p>With this macro:</p>
 <table>
@@ -6876,45 +6878,45 @@
 </div>
 <h2 id="configure-packagesyml">Configure <code>packages.yml</code></h2>
 <p>Create <code>packages.yml</code> at the repository root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">packages</span><span class="p">:</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt-labs/dbt_utils</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=1.3.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;2.0.0"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metaplane/dbt_expectations</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=0.10.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;1.0.0"</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt-labs/dbt_project_evaluator</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=1.2.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;2.0.0"</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">packages</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt-labs/dbt_utils</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=1.3.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;2.0.0"</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metaplane/dbt_expectations</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=0.10.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;1.0.0"</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt-labs/dbt_project_evaluator</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&gt;=1.2.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;2.0.0"</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p>Install packages:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>dbt<span class="w"> </span>deps
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>deps
 </code></pre></div>
 <p>This creates a <code>dbt_packages/</code> directory (excluded by <code>.gitignore</code>). Always run <code>dbt deps</code> after cloning the repo or updating <code>packages.yml</code>.</p>
 <h3 id="package-overview">Package Overview</h3>
 <p><strong>dbt-utils</strong> provides utility macros used throughout the project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">-- Generate a surrogate key from multiple columns</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">generate_surrogate_key</span><span class="p">([</span><span class="s1">'date'</span><span class="p">,</span><span class="w"> </span><span class="s1">'currency'</span><span class="p">])</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1">-- Date spine for building a date dimension</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">date_spine</span><span class="p">(</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="n">datepart</span><span class="o">=</span><span class="ss">"day"</span><span class="p">,</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">start_date</span><span class="o">=</span><span class="ss">"cast('2020-01-01' as date)"</span><span class="p">,</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="n">end_date</span><span class="o">=</span><span class="ss">"current_date"</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="c1">-- Union all tables matching a pattern</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">union_relations</span><span class="p">(</span>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">    </span><span class="n">relations</span><span class="o">=</span><span class="p">[</span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__exchange_rates'</span><span class="p">),</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_snowpipe__exchange_rates'</span><span class="p">)]</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Generate a surrogate key from multiple columns</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">generate_surrogate_key</span><span class="p">([</span><span class="s1">'date'</span><span class="p">,</span><span class="w"> </span><span class="s1">'currency'</span><span class="p">])</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="c1">-- Date spine for building a date dimension</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">date_spine</span><span class="p">(</span>
+<span class="w">    </span><span class="n">datepart</span><span class="o">=</span><span class="ss">"day"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">start_date</span><span class="o">=</span><span class="ss">"cast('2020-01-01' as date)"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">end_date</span><span class="o">=</span><span class="ss">"current_date"</span>
+<span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="c1">-- Union all tables matching a pattern</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">union_relations</span><span class="p">(</span>
+<span class="w">    </span><span class="n">relations</span><span class="o">=</span><span class="p">[</span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_dlt__exchange_rates'</span><span class="p">),</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_snowpipe__exchange_rates'</span><span class="p">)]</span>
+<span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <p><strong>dbt_expectations</strong> adds column-level tests beyond the four built-in generic tests:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_expectations.expect_column_values_to_not_be_null</span>
+<div class="highlight"><pre><span></span><code><span class="nt">columns</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dbt_expectations.expect_column_values_to_be_between</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">          </span><span class="nt">strictly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbt_expectations.expect_column_values_to_not_be_null</span>
 </code></pre></div>
 <p><strong>dbt_project_evaluator</strong> enforces project structure rules in CI. Full configuration is covered in <a href="../8-testing-and-documentation/#dbt_project_evaluator">Testing and Documentation</a>.</p>
 <h2 id="linting-and-formatting">Linting and Formatting</h2>
@@ -6925,106 +6927,106 @@
 </ul>
 <p>Both are run automatically on commit via <a href="https://pre-commit.com/">pre-commit</a>. pre-commit itself is already installed globally — see <a href="../../../getting-started/initial-setup/2-local-environment/">Local Environment</a>. This section adds sqlfluff and yamllint as project-level dev dependencies.</p>
 <h3 id="install-dev-tools">Install Dev Tools</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>sqlfluff<span class="w"> </span>yamllint
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>sqlfluff<span class="w"> </span>yamllint
 </code></pre></div>
 <p>These are added as dev dependencies in <code>pyproject.toml</code> and are available after <code>uv sync</code>.</p>
 <h3 id="configure-sqlfluff">Configure sqlfluff</h3>
 <p>Create <code>.sqlfluff</code> in the project root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">[sqlfluff]</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="na">templater</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">dbt</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="na">dialect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">snowflake</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="k">[sqlfluff:templater:dbt]</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="na">project_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="k">[sqlfluff:rules:capitalisation.keywords]</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="k">[sqlfluff:rules:capitalisation.identifiers]</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
-<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="k">[sqlfluff:rules:capitalisation.functions]</span>
-<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
-<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>
-<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="k">[sqlfluff:rules:capitalisation.literals]</span>
-<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
+<div class="highlight"><pre><span></span><code><span class="k">[sqlfluff]</span>
+<span class="na">templater</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">dbt</span>
+<span class="na">dialect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">snowflake</span>
+
+<span class="k">[sqlfluff:templater:dbt]</span>
+<span class="na">project_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">.</span>
+
+<span class="k">[sqlfluff:rules:capitalisation.keywords]</span>
+<span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
+
+<span class="k">[sqlfluff:rules:capitalisation.identifiers]</span>
+<span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
+
+<span class="k">[sqlfluff:rules:capitalisation.functions]</span>
+<span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
+
+<span class="k">[sqlfluff:rules:capitalisation.literals]</span>
+<span class="na">capitalisation_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">upper</span>
 </code></pre></div>
 <p>Create <code>.sqlfluffignore</code> to exclude generated directories:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>dbt_packages/
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>target/
+<div class="highlight"><pre><span></span><code>dbt_packages/
+target/
 </code></pre></div>
 <h3 id="configure-yamllint">Configure yamllint</h3>
 <p>Create <code>.yamllint</code> in the project root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nt">extends</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nt">rules</span><span class="p">:</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span><span class="nt">line-length</span><span class="p">:</span>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">  </span><span class="nt">truthy</span><span class="p">:</span>
-<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">    </span><span class="nt">allowed-values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'true'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'false'</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">extends</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="nt">rules</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">line-length</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<span class="w">    </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+<span class="w">  </span><span class="nt">truthy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">allowed-values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'true'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'false'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="configure-pre-commit">Configure pre-commit</h3>
 <p>Create <code>.pre-commit-config.yaml</code> in the project root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nt">repos</span><span class="p">:</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/sqlfluff/sqlfluff</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.4.0</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlfluff-lint</span>
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlfluff-fix</span>
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">--force</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
-<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/adrienverge/yamllint</span>
-<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.35.1</span>
-<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yamllint</span>
+<div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/sqlfluff/sqlfluff</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.4.0</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlfluff-lint</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlfluff-fix</span>
+<span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">--force</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/adrienverge/yamllint</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.35.1</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yamllint</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Keep hook versions up to date</p>
 <p>Run <code>pre-commit autoupdate</code> periodically to bump the <code>rev</code> values to the latest releases.</p>
 </div>
 <p>Install the hooks into your local git repository:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>pre-commit<span class="w"> </span>install
+<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>install
 </code></pre></div>
 <p>From this point on, sqlfluff and yamllint run automatically on every <code>git commit</code>. Files that fail linting are flagged before the commit proceeds; sqlfluff will also attempt to auto-fix fixable issues.</p>
 <h3 id="run-manually">Run Manually</h3>
 <p>To lint all files at any time without committing:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 </code></pre></div>
 <p>To lint or fix SQL files directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Lint all models</span>
-<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>sqlfluff<span class="w"> </span>lint<span class="w"> </span>models/
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
-<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1"># Fix all models</span>
-<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>sqlfluff<span class="w"> </span>fix<span class="w"> </span>models/
+<div class="highlight"><pre><span></span><code><span class="c1"># Lint all models</span>
+sqlfluff<span class="w"> </span>lint<span class="w"> </span>models/
+
+<span class="c1"># Fix all models</span>
+sqlfluff<span class="w"> </span>fix<span class="w"> </span>models/
 </code></pre></div>
 <h2 id="verify-the-setup">Verify the Setup</h2>
 <p>With dbt installed and credentials configured, verify the project:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>dbt<span class="w"> </span>deps<span class="w">    </span><span class="c1"># install packages</span>
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>dbt<span class="w"> </span>debug<span class="w">   </span><span class="c1"># check connection and project configuration</span>
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>deps<span class="w">    </span><span class="c1"># install packages</span>
+dbt<span class="w"> </span>debug<span class="w">   </span><span class="c1"># check connection and project configuration</span>
 </code></pre></div>
 <p>Expected output from <code>dbt debug</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>dbt version: 1.8.x
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>python version: 3.11.x
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>...
-<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>Connection test: [OK connection ok]
-<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
-<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>All checks passed!
+<div class="highlight"><pre><span></span><code>dbt version: 1.8.x
+python version: 3.11.x
+...
+Connection test: [OK connection ok]
+
+All checks passed!
 </code></pre></div>
 <h2 id="commit-the-initial-structure">Commit the Initial Structure</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>git<span class="w"> </span>add<span class="w"> </span>.
-<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Initial dbt project structure</span>
-<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
-<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="s2">- README with developer setup guide</span>
-<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="s2">- .github/pull_request_template.md</span>
-<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="s2">- .github/CODEOWNERS</span>
-<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="s2">- dbt_project.yml with custom schema naming</span>
-<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="s2">- packages.yml (dbt-utils, dbt_expectations, dbt_project_evaluator)</span>
-<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="s2">- profiles.yml using env vars (safe to commit — no secrets)</span>
-<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="s2">- .envrc.example template for local developer setup</span>
-<a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="s2">- Custom generate_schema_name macro</span>
-<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="s2">- .sqlfluff, .sqlfluffignore, .yamllint, .pre-commit-config.yaml</span>
-<a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="s2">- .gitignore excluding .envrc and generated files"</span>
-<a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Initial dbt project structure</span>
+
+<span class="s2">- README with developer setup guide</span>
+<span class="s2">- .github/pull_request_template.md</span>
+<span class="s2">- .github/CODEOWNERS</span>
+<span class="s2">- dbt_project.yml with custom schema naming</span>
+<span class="s2">- packages.yml (dbt-utils, dbt_expectations, dbt_project_evaluator)</span>
+<span class="s2">- profiles.yml using env vars (safe to commit — no secrets)</span>
+<span class="s2">- .envrc.example template for local developer setup</span>
+<span class="s2">- Custom generate_schema_name macro</span>
+<span class="s2">- .sqlfluff, .sqlfluffignore, .yamllint, .pre-commit-config.yaml</span>
+<span class="s2">- .gitignore excluding .envrc and generated files"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've set up the <code>dbt-transform</code> repository:</p>
@@ -7089,6 +7091,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7132,7 +7136,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

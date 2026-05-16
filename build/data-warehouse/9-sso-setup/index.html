@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6378,60 +6380,60 @@
 <p>The SAML2 security integration tells Snowflake how to authenticate users via your identity provider. This is managed in Terraform for version control and consistency.</p>
 <h3 id="add-variables">Add Variables</h3>
 <p>Add to <code>variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_enabled"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether SSO is enabled"</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_issuer"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 issuer (from your IdP)"</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">}</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_sso_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 SSO URL (from your IdP)"</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">}</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_certificate"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 X509 certificate (from your IdP)"</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_enabled"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Whether SSO is enabled"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">bool</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_issuer"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 issuer (from your IdP)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_sso_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 SSO URL (from your IdP)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"sso_certificate"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SAML2 X509 certificate (from your IdP)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="create-the-security-integration">Create the Security Integration</h3>
 <p>Create <code>sso.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># SSO Security Integration</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># SAML2 integration for human user authentication.</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Enable by setting sso_enabled = true and providing IdP values.</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_saml2_integration"</span><span class="w"> </span><span class="nv">"sso"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="na">count</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_enabled</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="na">name</span><span class="w">                        </span><span class="o">=</span><span class="w"> </span><span class="s2">"SSO_INTEGRATION"</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="na">enabled</span><span class="w">                     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">saml2_issuer</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_issuer</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="na">saml2_sso_url</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_sso_url</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="na">saml2_provider</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"CUSTOM"  # Or "OKTA", "ADFS"</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">saml2_x509_cert</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_certificate</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="na">saml2_enable_sp_initiated</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="na">saml2_sp_initiated_login_page_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SSO Login"</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># SSO Security Integration</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># SAML2 integration for human user authentication.</span>
+<span class="c1"># Enable by setting sso_enabled = true and providing IdP values.</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_saml2_integration"</span><span class="w"> </span><span class="nv">"sso"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">count</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_enabled</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">                        </span><span class="o">=</span><span class="w"> </span><span class="s2">"SSO_INTEGRATION"</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w">                     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">saml2_issuer</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_issuer</span>
+<span class="w">  </span><span class="na">saml2_sso_url</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_sso_url</span>
+<span class="w">  </span><span class="na">saml2_provider</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"CUSTOM"  # Or "OKTA", "ADFS"</span>
+<span class="w">  </span><span class="na">saml2_x509_cert</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_certificate</span>
+<span class="w">  </span><span class="na">saml2_enable_sp_initiated</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">saml2_sp_initiated_login_page_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SSO Login"</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="configure-in-terraformtfvars">Configure in terraform.tfvars</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># SSO Configuration</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">sso_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">sso_issuer</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://www.okta.com/exk123456"</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">sso_sso_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://your-org.okta.com/app/snowflake/exk123456/sso/saml"</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># sso_certificate is sensitive - set via environment variable:</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># export TF_VAR_sso_certificate="MIIDp..."</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># SSO Configuration</span>
+<span class="na">sso_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="na">sso_issuer</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://www.okta.com/exk123456"</span>
+<span class="na">sso_sso_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://your-org.okta.com/app/snowflake/exk123456/sso/saml"</span>
+<span class="c1"># sso_certificate is sensitive - set via environment variable:</span>
+<span class="c1"># export TF_VAR_sso_certificate="MIIDp..."</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Certificate Management</p>
@@ -6479,20 +6481,20 @@
 <p>SCIM (System for Cross-domain Identity Management) automatically syncs users from your identity provider to Snowflake. This is optional - you can manage users in Terraform instead.</p>
 <h3 id="create-scim-integration">Create SCIM Integration</h3>
 <p>Add to <code>sso.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_scim_integration"</span><span class="w"> </span><span class="nv">"scim"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">count</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_enabled</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.scim_enabled</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="na">name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"SCIM_INTEGRATION"</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="na">enabled</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="na">scim_client</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GENERIC"  # Or "OKTA", "AZURE"</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="na">run_as_role</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SCIM_PROVISIONER"</span><span class="c1">  # Create this role first</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_scim_integration"</span><span class="w"> </span><span class="nv">"scim"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">count</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sso_enabled</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nv">var.scim_enabled</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"SCIM_INTEGRATION"</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">scim_client</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GENERIC"  # Or "OKTA", "AZURE"</span>
+<span class="w">  </span><span class="na">run_as_role</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"SCIM_PROVISIONER"</span><span class="c1">  # Create this role first</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="generate-scim-token">Generate SCIM Token</h3>
 <p>After applying, generate a SCIM token:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- As ACCOUNTADMIN</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">GENERATE_SCIM_ACCESS_TOKEN</span><span class="p">(</span><span class="s1">'SCIM_INTEGRATION'</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- As ACCOUNTADMIN</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">SYSTEM</span><span class="err">$</span><span class="n">GENERATE_SCIM_ACCESS_TOKEN</span><span class="p">(</span><span class="s1">'SCIM_INTEGRATION'</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Token Security</p>
@@ -6508,22 +6510,22 @@
 <li><strong>User must exist</strong> in Snowflake before they can authenticate via SSO</li>
 </ol>
 <p>Update your <code>users.auto.tfvars</code> to ensure <code>login_name</code> matches IdP usernames:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="s2">"JSMITH"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"jsmith@company.com"</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jane Smith"</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jane"</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Smith"</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"jsmith@company.com"</span><span class="c1">  # Must match IdP username</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="s2">"BJONES"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"bjones@company.com"</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bob Jones"</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bob"</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jones"</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"bjones@company.com"</span><span class="c1">  # Must match IdP username</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">"JSMITH"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"jsmith@company.com"</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jane Smith"</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jane"</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Smith"</span>
+<span class="w">    </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"jsmith@company.com"</span><span class="c1">  # Must match IdP username</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="s2">"BJONES"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"bjones@company.com"</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bob Jones"</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bob"</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Jones"</span>
+<span class="w">    </span><span class="na">login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"bjones@company.com"</span><span class="c1">  # Must match IdP username</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="update-the-user-module-for-sso">Update the User Module for SSO</h3>
 <p>Ensure your <code>snowflake_user</code> module handles SSO users correctly. The key changes:</p>
@@ -6533,35 +6535,35 @@
 <li>Keep <code>must_change_password = false</code></li>
 </ol>
 <p>Update <code>modules/snowflake_user/variables.tf</code> to add a <code>login_name</code> variable if not present:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_login_name"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Login name for SSO authentication (usually email). Defaults to user_name if not set."</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_login_name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Login name for SSO authentication (usually email). Defaults to user_name if not set."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Update <code>modules/snowflake_user/main.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">  # SSO login name - must match IdP username</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="na">login_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_login_name</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.user_login_name</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">  </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_warehouse</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span><span class="na">default_role</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_role</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="na">default_namespace</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_namespace</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">  </span><span class="na">default_secondary_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_secondary_roles</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="c1">  # SSO users: no password management</span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="c1">  # Password is only set for service accounts or fallback access</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">  </span><span class="na">must_change_password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="na">name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+
+<span class="c1">  # SSO login name - must match IdP username</span>
+<span class="w">  </span><span class="na">login_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_login_name</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">var.user_login_name</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+
+<span class="w">  </span><span class="na">email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
+<span class="w">  </span><span class="na">display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
+<span class="w">  </span><span class="na">first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
+<span class="w">  </span><span class="na">last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
+
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_warehouse</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_role</span>
+<span class="w">  </span><span class="na">default_namespace</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_namespace</span>
+<span class="w">  </span><span class="na">default_secondary_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_default_secondary_roles</span>
+
+<span class="c1">  # SSO users: no password management</span>
+<span class="c1">  # Password is only set for service accounts or fallback access</span>
+<span class="w">  </span><span class="na">must_change_password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="hybrid-approach-terraform-users-with-sso-auth">Hybrid Approach: Terraform Users with SSO Auth</h3>
 <p>This is the recommended approach:</p>
@@ -6598,28 +6600,28 @@
 <li><strong>Auditability</strong>: Git history shows who was granted access and when</li>
 <li><strong>No sync issues</strong>: No race conditions between SCIM and Terraform</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># users.tf - Terraform manages the user lifecycle</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="na">user_login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.login_name</span><span class="c1">  # For SSO matching</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">  </span><span class="na">grant_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">module.role_analytics_developer.role_name</span><span class="p">]</span>
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># users.tf - Terraform manages the user lifecycle</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">each.key</span>
+<span class="w">  </span><span class="na">user_email</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.email</span>
+<span class="w">  </span><span class="na">user_login_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.login_name</span><span class="c1">  # For SSO matching</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.display_name</span>
+<span class="w">  </span><span class="na">user_first_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.first_name</span>
+<span class="w">  </span><span class="na">user_last_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.last_name</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_developer.role_name</span>
+
+<span class="w">  </span><span class="na">grant_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">module.role_analytics_developer.role_name</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="onboarding-new-users">Onboarding New Users</h3>
 <p>When a new team member joins:</p>
@@ -6644,55 +6646,55 @@
 <li><strong>Public key</strong>: Assigned to the Snowflake user</li>
 </ol>
 <p>When you add new service accounts (e.g., <code>SVC_DBT</code>, <code>SVC_AIRBYTE</code>), follow the same pattern:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_dbt"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for dbt transformations."</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt Service Account"</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_transforming.warehouse_name</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_transformer.role_name</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">  </span><span class="na">grant_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">module.role_analytics_transformer.role_name</span><span class="p">]</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_dbt"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DBT"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for dbt transformations."</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"dbt Service Account"</span>
+<span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_transforming.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.role_analytics_transformer.role_name</span>
+
+<span class="w">  </span><span class="na">grant_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">module.role_analytics_transformer.role_name</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="generate-keys-for-new-service-accounts">Generate Keys for New Service Accounts</h3>
 <p>Follow the same process used for <code>SVC_TERRAFORM</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Generate private key (PKCS8 format, no encryption)</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>svc_dbt_key.p8<span class="w"> </span>-nocrypt
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Generate public key</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_dbt_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_dbt_key.pub
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Get the public key without headers (for Snowflake)</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN\|END"</span><span class="w"> </span>svc_dbt_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate private key (PKCS8 format, no encryption)</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>pkcs8<span class="w"> </span>-topk8<span class="w"> </span>-inform<span class="w"> </span>PEM<span class="w"> </span>-out<span class="w"> </span>svc_dbt_key.p8<span class="w"> </span>-nocrypt
+
+<span class="c1"># Generate public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>svc_dbt_key.p8<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>svc_dbt_key.pub
+
+<span class="c1"># Get the public key without headers (for Snowflake)</span>
+grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"BEGIN\|END"</span><span class="w"> </span>svc_dbt_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\n'</span>
 </code></pre></div>
 <h3 id="assign-public-key">Assign Public Key</h3>
 <p>Assign the public key to the user in Snowflake. You can either:</p>
 <p><strong>Option 1: SQL command</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- As SECURITYADMIN</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'MIIBIjANBgkqh...'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- As SECURITYADMIN</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">SVC_DBT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">RSA_PUBLIC_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'MIIBIjANBgkqh...'</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Option 2: Add to Terraform module</strong></p>
 <p>Update the user module to accept an optional public key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_rsa_public_key"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"RSA public key for key pair authentication"</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">}</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># In the user resource</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1">  # ... existing config ...</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_rsa_public_key</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_rsa_public_key"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"RSA public key for key pair authentication"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
+
+<span class="c1"># In the user resource</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">  # ... existing config ...</span>
+<span class="w">  </span><span class="na">rsa_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_rsa_public_key</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Key Storage</p>
@@ -6700,18 +6702,18 @@
 </div>
 <h2 id="verify-sso-configuration">Verify SSO Configuration</h2>
 <p>Test the complete setup:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- Check SSO integration</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="k">SECURITY</span><span class="w"> </span><span class="n">INTEGRATIONS</span><span class="p">;</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1">-- Check a user's authentication methods</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">JBLOGGS</span><span class="p">;</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1">-- Check SSO login history</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">FIRST_AUTHENTICATION_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SAML'</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">EVENT_TIMESTAMP</span><span class="w"> </span><span class="k">DESC</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check SSO integration</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="k">SECURITY</span><span class="w"> </span><span class="n">INTEGRATIONS</span><span class="p">;</span>
+
+<span class="c1">-- Check a user's authentication methods</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">JBLOGGS</span><span class="p">;</span>
+
+<span class="c1">-- Check SSO login history</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">LOGIN_HISTORY</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">FIRST_AUTHENTICATION_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SAML'</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">EVENT_TIMESTAMP</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've configured enterprise authentication for Snowflake:</p>
@@ -6775,6 +6777,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6818,7 +6822,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

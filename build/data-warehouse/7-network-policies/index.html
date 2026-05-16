@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6233,31 +6235,31 @@
 </div>
 <h2 id="add-the-github-provider">Add the GitHub Provider</h2>
 <p>To dynamically fetch GitHub Actions IP ranges, add the GitHub provider to your <code>providers.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># GitHub Provider (for IP ranges)</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># GitHub Provider (for IP ranges)</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">"github"</span><span class="w"> </span><span class="p">{}</span>
 </code></pre></div>
 <p>Add the provider to your <code>versions.tf</code> or <code>main.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">    # ... existing providers ...</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nb">github</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"integrations/github"</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 6.0"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">    # ... existing providers ...</span>
+<span class="w">    </span><span class="nb">github</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"integrations/github"</span>
+<span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~&gt; 6.0"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="fetch-github-ip-ranges">Fetch GitHub IP Ranges</h2>
 <p>Create a data source to fetch the current GitHub Actions IP ranges. Add to <code>network_policies.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># GitHub IP Ranges</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Dynamically fetch GitHub Actions IP ranges from the GitHub API.</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># This ensures IP ranges are always current without manual maintenance.</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kr">data</span><span class="w"> </span><span class="nc">"github_ip_ranges"</span><span class="w"> </span><span class="nv">"latest"</span><span class="w"> </span><span class="p">{}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># GitHub IP Ranges</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Dynamically fetch GitHub Actions IP ranges from the GitHub API.</span>
+<span class="c1"># This ensures IP ranges are always current without manual maintenance.</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="nc">"github_ip_ranges"</span><span class="w"> </span><span class="nv">"latest"</span><span class="w"> </span><span class="p">{}</span>
 </code></pre></div>
 <p>This data source provides <code>data.github_ip_ranges.latest.actions_ipv4</code> - a list of all IPv4 CIDR ranges used by GitHub Actions runners.</p>
 <div class="admonition tip">
@@ -6266,69 +6268,69 @@
 <p>Due to how many IP addresses there are for GitHub actions, the GitHub provider makes a dynamic reference available within terraform. However, many companies do not do this, and you will need to hard-code the values. Make sure to set regular reminders to check the lists are still up-to-date.</p>
 <h2 id="create-the-network-policies-schema">Create the Network Policies Schema</h2>
 <p>Network rules are schema-level objects, so we need a schema to store them. Add a network policies schema to the ADMIN database in <code>schemas.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"schema_admin_network_policies"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="na">schema_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"NETWORK_POLICIES"</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="na">schema_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="na">schema_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Network rules for access control policies."</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"schema_admin_network_policies"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">schema_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"NETWORK_POLICIES"</span>
+<span class="w">  </span><span class="na">schema_database_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
+<span class="w">  </span><span class="na">schema_comment</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Network rules for access control policies."</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="create-network-rules">Create Network Rules</h2>
 <p>Network rules define the IP addresses that can be referenced by policies. Create <code>network_policies.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Network Rules</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Reusable IP address lists stored in the ADMIN database.</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># GitHub Actions Network Rule</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_rule"</span><span class="w"> </span><span class="nv">"github_actions"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"GITHUB_ACTIONS"</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="na">database</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="na">schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_admin_network_policies.schema_name</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="na">comment</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub Actions runner IP ranges."</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="na">type</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"IPV4"</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="na">mode</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGRESS"</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="na">value_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">data.github_ip_ranges.latest.actions_ipv4</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="p">}</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="c1"># Office Network Rule</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_rule"</span><span class="w"> </span><span class="nv">"office"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"OFFICE_ACCESS"</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">  </span><span class="na">database</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">  </span><span class="na">schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_admin_network_policies.schema_name</span>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="na">comment</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Office and VPN IP ranges."</span>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">  </span><span class="na">type</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"IPV4"</span>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">  </span><span class="na">mode</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGRESS"</span>
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">  </span><span class="na">value_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.office_ip_ranges</span>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Network Rules</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Reusable IP address lists stored in the ADMIN database.</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># GitHub Actions Network Rule</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_rule"</span><span class="w"> </span><span class="nv">"github_actions"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"GITHUB_ACTIONS"</span>
+<span class="w">  </span><span class="na">database</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
+<span class="w">  </span><span class="na">schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_admin_network_policies.schema_name</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GitHub Actions runner IP ranges."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"IPV4"</span>
+<span class="w">  </span><span class="na">mode</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGRESS"</span>
+<span class="w">  </span><span class="na">value_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">data.github_ip_ranges.latest.actions_ipv4</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Office Network Rule</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_rule"</span><span class="w"> </span><span class="nv">"office"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"OFFICE_ACCESS"</span>
+<span class="w">  </span><span class="na">database</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_admin.database_name</span>
+<span class="w">  </span><span class="na">schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.schema_admin_network_policies.schema_name</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"Office and VPN IP ranges."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"IPV4"</span>
+<span class="w">  </span><span class="na">mode</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"INGRESS"</span>
+<span class="w">  </span><span class="na">value_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.office_ip_ranges</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="add-variables">Add Variables</h2>
 <p>Add the office IP ranges variable to <code>variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"office_ip_ranges"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Office and VPN IP ranges for human user access."</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span><span class="c1">  # Allow all by default - restrict in tfvars</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"office_ip_ranges"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Office and VPN IP ranges for human user access."</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span><span class="c1">  # Allow all by default - restrict in tfvars</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Configure your office IP ranges in <code>network_policies.auto.tfvars</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="na">office_ip_ranges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="s2">"203.0.113.0/24"</span><span class="p">,</span><span class="c1">  # Office IP range</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="s2">"198.51.100.0/24"</span><span class="p">,</span><span class="c1"> # VPN IP range</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="na">office_ip_ranges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">"203.0.113.0/24"</span><span class="p">,</span><span class="c1">  # Office IP range</span>
+<span class="w">  </span><span class="s2">"198.51.100.0/24"</span><span class="p">,</span><span class="c1"> # VPN IP range</span>
+<span class="p">]</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Update these</p>
@@ -6336,173 +6338,173 @@
 <p>Make sure that you update these with your actual IP addresses or you will be locked out. The CIDR notation <code>0.0.0.0/0</code> means "any IP address". Use this initially if you don't want to restrict access yet, then update with specific ranges when ready.</p>
 <h2 id="create-network-policies">Create Network Policies</h2>
 <p>Network policies reference network rules to control access. Add to <code>network_policies.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Network Policies</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Policies that reference network rules and are attached to users.</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># GitHub Actions Policy</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy"</span><span class="w"> </span><span class="nv">"github_actions"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">  </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GITHUB_ACTIONS_POLICY"</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="na">comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Access from GitHub Actions runners."</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span><span class="na">allowed_network_rule_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">    </span><span class="nv">snowflake_network_rule.github_actions.fully_qualified_name</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="p">}</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="c1"># Office Access Policy</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy"</span><span class="w"> </span><span class="nv">"office"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">  </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"OFFICE_ACCESS_POLICY"</span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">  </span><span class="na">comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Access from office network and VPN."</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">  </span><span class="na">allowed_network_rule_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">    </span><span class="nv">snowflake_network_rule.office.fully_qualified_name</span>
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Network Policies</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Policies that reference network rules and are attached to users.</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># GitHub Actions Policy</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy"</span><span class="w"> </span><span class="nv">"github_actions"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"GITHUB_ACTIONS_POLICY"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Access from GitHub Actions runners."</span>
+
+<span class="w">  </span><span class="na">allowed_network_rule_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">snowflake_network_rule.github_actions.fully_qualified_name</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Office Access Policy</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy"</span><span class="w"> </span><span class="nv">"office"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"OFFICE_ACCESS_POLICY"</span>
+<span class="w">  </span><span class="na">comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Access from office network and VPN."</span>
+
+<span class="w">  </span><span class="na">allowed_network_rule_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">snowflake_network_rule.office.fully_qualified_name</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="attach-policies-to-users">Attach Policies to Users</h2>
 <p>Network policies are attached to individual users. This restricts where they can connect from.</p>
 <h3 id="terraform-service-account">Terraform Service Account</h3>
 <p>The <code>SVC_TERRAFORM</code> service account runs in GitHub Actions, so it should be restricted to GitHub's IP ranges. Update the user resource to attach the policy.</p>
 <p>First, add the <code>network_policy</code> attribute to the user module. Update <code>modules/snowflake_user/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_network_policy"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Network policy to attach to the user"</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"user_network_policy"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Network policy to attach to the user"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Update <code>modules/snowflake_user/main.tf</code> to apply the policy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="na">login_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="na">display_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="na">comment</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="na">email</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="na">first_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">  </span><span class="na">last_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_warehouse</span><span class="p">)</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="c1">  # Lifecycle as before...</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">}</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="c1"># Network Policy Attachment</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="c1"># -----------------------------------------------------------------------------</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy_attachment"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">  </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_network_policy</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">  </span><span class="na">provider</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">  </span><span class="na">network_policy_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_network_policy</span>
-<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="w">  </span><span class="na">users</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake_user.this.name</span><span class="p">]</span>
-<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_user"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">login_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_name</span><span class="p">)</span>
+<span class="w">  </span><span class="na">display_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_display_name</span>
+<span class="w">  </span><span class="na">comment</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_comment</span>
+<span class="w">  </span><span class="na">email</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_email</span>
+<span class="w">  </span><span class="na">first_name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_first_name</span>
+<span class="w">  </span><span class="na">last_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_last_name</span>
+<span class="w">  </span><span class="na">default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">local.default_role</span>
+<span class="w">  </span><span class="na">default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">upper</span><span class="p">(</span><span class="nv">var.user_default_warehouse</span><span class="p">)</span>
+
+<span class="c1">  # Lifecycle as before...</span>
+<span class="p">}</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Network Policy Attachment</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_network_policy_attachment"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_network_policy</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="m">0</span>
+
+<span class="w">  </span><span class="na">provider</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="na">network_policy_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.user_network_policy</span>
+<span class="w">  </span><span class="na">users</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">snowflake_user.this.name</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Now attach the GitHub Actions policy to <code>SVC_TERRAFORM</code> in <code>users.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_terraform"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management."</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="c1">  # Restrict to GitHub Actions IP ranges</span>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">  </span><span class="na">user_network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.github_actions.name</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"user_svc_terraform"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_TERRAFORM"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for Terraform infrastructure management."</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"Terraform Service Account"</span>
+<span class="w">  </span><span class="na">user_is_service_account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_developer.warehouse_name</span>
+<span class="w">  </span><span class="na">user_default_role</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"ACCOUNTADMIN"</span>
+
+<span class="c1">  # Restrict to GitHub Actions IP ranges</span>
+<span class="w">  </span><span class="na">user_network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.github_actions.name</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="human-users">Human Users</h3>
 <p>For human users defined via tfvars, we need a different approach. Since tfvars files can only contain literal values (not Terraform resource references), we use a lookup map to translate string keys to actual policy names.</p>
 <p>First, update the user variable types to include network policy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"admin_users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Admin users who get both admin and developer accounts."</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="c1">  # Add this</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="p">}))</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="p">}</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"developer_users"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Non-admin developers."</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="c1">  # Add this</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">  </span><span class="p">}))</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"admin_users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Admin users who get both admin and developer accounts."</span>
+<span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="c1">  # Add this</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"developer_users"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Non-admin developers."</span>
+<span class="w">  </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">object</span><span class="p">({</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">optional</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="c1">  # Add this</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="nb">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Then reference policies in <code>users.auto.tfvars</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">admin_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="s2">"JBLOGGS"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Joe Bloggs"</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Joe"</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bloggs"</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"joe.bloggs@company.com"</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"office"</span><span class="c1">  # Apply office access policy</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="p">}</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span><span class="s2">"ASMITH"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith"</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice"</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Smith"</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice.smith@company.com"</span>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"office"</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">admin_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">"JBLOGGS"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Joe Bloggs"</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Joe"</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bloggs"</span>
+<span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"joe.bloggs@company.com"</span>
+<span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"office"</span><span class="c1">  # Apply office access policy</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">developer_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">"ASMITH"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">display_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice Smith"</span>
+<span class="w">    </span><span class="na">first_name</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice"</span>
+<span class="w">    </span><span class="na">last_name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"Smith"</span>
+<span class="w">    </span><span class="na">email</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"alice.smith@company.com"</span>
+<span class="w">    </span><span class="na">network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"office"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Create a local map to look up policies by name in <code>users.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nb">network_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="s2">"office"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.office.name</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="s2">"github"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.github_actions.name</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">network_policies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">"office"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.office.name</span>
+<span class="w">    </span><span class="s2">"github"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.github_actions.name</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Update the user module calls to apply the policy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1">  # ... other config ...</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1">  # Lookup the network policy by key, if specified</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">  </span><span class="na">user_network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.network_policy</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">local.network_policies[each.value.network_policy</span><span class="p">]</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"user_developers"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+<span class="c1">  # ... other config ...</span>
+
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.developer_users</span>
+
+<span class="c1">  # Lookup the network policy by key, if specified</span>
+<span class="w">  </span><span class="na">user_network_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.network_policy</span><span class="w"> </span><span class="p">!=</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="nv">local.network_policies[each.value.network_policy</span><span class="p">]</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">null</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="account-level-policies">Account-Level Policies</h2>
 <p>You can also set a default network policy for the entire account. This applies to any user without an explicit policy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_account_parameter"</span><span class="w"> </span><span class="nv">"network_policy"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="na">key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"NETWORK_POLICY"</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="na">value</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.office.name</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"snowflake_account_parameter"</span><span class="w"> </span><span class="nv">"network_policy"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake.account_admin</span>
+<span class="w">  </span><span class="na">key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"NETWORK_POLICY"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">snowflake_network_policy.office.name</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">Use With Caution</p>
@@ -6510,9 +6512,9 @@
 </div>
 <h2 id="commit-and-deploy">Commit and Deploy</h2>
 <p>Commit your changes and push to trigger the CI/CD pipeline:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add network policies for service accounts and users"</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/snowflake/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add network policies for service accounts and users"</span>
+git<span class="w"> </span>push
 </code></pre></div>
 <p>Review the plan carefully - verify that:</p>
 <ul>
@@ -6523,22 +6525,22 @@
 </ul>
 <h2 id="verify-in-snowflake">Verify in Snowflake</h2>
 <p>After deployment, verify the rules and policies:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">-- List all network rules</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">RULES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">ADMIN</span><span class="p">.</span><span class="n">NETWORK_POLICIES</span><span class="p">;</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1">-- Check rule details</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="k">ADMIN</span><span class="p">.</span><span class="n">NETWORK_POLICIES</span><span class="p">.</span><span class="n">GITHUB_ACTIONS</span><span class="p">;</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1">-- List all network policies</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICIES</span><span class="p">;</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="c1">-- Check policy details</span>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="k">DESCRIBE</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICY</span><span class="w"> </span><span class="n">GITHUB_ACTIONS_POLICY</span><span class="p">;</span>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="c1">-- Check which users have policies attached</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">network_policy</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">network_policy</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- List all network rules</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">RULES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">ADMIN</span><span class="p">.</span><span class="n">NETWORK_POLICIES</span><span class="p">;</span>
+
+<span class="c1">-- Check rule details</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="k">ADMIN</span><span class="p">.</span><span class="n">NETWORK_POLICIES</span><span class="p">.</span><span class="n">GITHUB_ACTIONS</span><span class="p">;</span>
+
+<span class="c1">-- List all network policies</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICIES</span><span class="p">;</span>
+
+<span class="c1">-- Check policy details</span>
+<span class="k">DESCRIBE</span><span class="w"> </span><span class="n">NETWORK</span><span class="w"> </span><span class="n">POLICY</span><span class="w"> </span><span class="n">GITHUB_ACTIONS_POLICY</span><span class="p">;</span>
+
+<span class="c1">-- Check which users have policies attached</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">network_policy</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">SNOWFLAKE</span><span class="p">.</span><span class="n">ACCOUNT_USAGE</span><span class="p">.</span><span class="n">USERS</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">network_policy</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>If a user gets locked out:</p>
@@ -6548,8 +6550,8 @@
 <li><strong>Contact Snowflake Support</strong> as a last resort - they can help with account recovery</li>
 </ol>
 <p>To temporarily disable a policy for a user:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">-- Run as SECURITYADMIN</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">JBLOGGS</span><span class="w"> </span><span class="n">UNSET</span><span class="w"> </span><span class="n">NETWORK_POLICY</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Run as SECURITYADMIN</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">JBLOGGS</span><span class="w"> </span><span class="n">UNSET</span><span class="w"> </span><span class="n">NETWORK_POLICY</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've implemented network-based access control:</p>
@@ -6612,6 +6614,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6655,7 +6659,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

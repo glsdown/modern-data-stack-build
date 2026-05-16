@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6093,7 +6095,7 @@
 <p>Now that all resources are imported, delete the <code>imports.tf</code> file.</p>
 <p>Import blocks are only needed once. After successful import, the entire file can be deleted.</p>
 <h3 id="delete-importstf">Delete imports.tf</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>rm<span class="w"> </span>imports.tf
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>imports.tf
 </code></pre></div>
 <p>Your configuration now consists of:
 - <code>backend.tf</code> - S3 backend configuration
@@ -6107,114 +6109,114 @@
 - <code>teams.tf</code> - Team definitions and team memberships with validation
 - <code>members.tf</code> - Organisation member management</p>
 <h3 id="verify-no-changes">Verify No Changes</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>No changes. Your infrastructure matches the configuration.
+<div class="highlight"><pre><span></span><code>No changes. Your infrastructure matches the configuration.
 </code></pre></div>
 <p>If Terraform shows planned changes, something is misconfigured. Review the diff and adjust your resource definitions to match reality.</p>
 <h2 id="format-and-validate">Format and Validate</h2>
 <p>Format your code:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>fmt<span class="w"> </span>-recursive
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w"> </span>-recursive
 </code></pre></div>
 <p>Validate syntax:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>validate
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>validate
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Success! The configuration is valid.
+<div class="highlight"><pre><span></span><code>Success! The configuration is valid.
 </code></pre></div>
 <h2 id="create-github-readme">Create GitHub README</h2>
 <p>Document your GitHub Terraform configuration:</p>
 <p>Create or update <code>github/README.md</code> in the <code>terraform/</code> directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gh"># GitHub Infrastructure</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>This directory manages GitHub organisation settings and teams via Terraform.
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="gu">## Resources Managed</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="gu">### Organisation</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">-</span><span class="w"> </span>Organisation settings and policies
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">-</span><span class="w"> </span>Default permissions for new repositories
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">-</span><span class="w"> </span>Security settings (Dependabot, secret scanning)
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">-</span><span class="w"> </span>Member permissions
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="gu">### Teams</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Team definitions**</span>: Managed via <span class="sb">`teams`</span> variable in <span class="sb">`terraform.tfvars`</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="k">-</span><span class="w"> </span><span class="gs">**data-platform-admins**</span>: Full access to data infrastructure
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="k">-</span><span class="w"> </span><span class="gs">**data-engineers**</span>: Data Engineers
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="k">-</span><span class="w"> </span><span class="gs">**data-analysts**</span>: Data Analysts
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="k">-</span><span class="w"> </span>Teams created using <span class="sb">`for_each`</span> for easy scalability
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="gu">### Members</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Organisation members**</span>: Managed via <span class="sb">`organization_members`</span> in <span class="sb">`members.auto.tfvars`</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Team memberships**</span>: Managed via <span class="sb">`team_memberships`</span> in <span class="sb">`members.auto.tfvars`</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Validation**</span>: Ensures all team members are organisation members first
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="k">-</span><span class="w"> </span><span class="gs">**CODEOWNERS**</span>: Membership changes require admin approval
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>
-<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="gu">## What We Don't Manage Here</span>
-<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>
-<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Repositories**</span>: Create repositories through GitHub UI or CLI as needed. Managing repos in Terraform creates tight coupling and makes it difficult to delete repositories.
-<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Branch protection rules**</span>: These are repository-specific and better managed per-repository through GitHub's UI.
-<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>
-<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="gu">## File Structure</span>
-<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>
-<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="k">-</span><span class="w"> </span><span class="sb">`backend.tf`</span> - S3 backend configuration
-<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="k">-</span><span class="w"> </span><span class="sb">`main.tf`</span> - Terraform and provider version requirements
-<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="k">-</span><span class="w"> </span><span class="sb">`providers.tf`</span> - GitHub provider configuration
-<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="k">-</span><span class="w"> </span><span class="sb">`variables.tf`</span> - Input variable definitions
-<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="k">-</span><span class="w"> </span><span class="sb">`terraform.tfvars`</span> - General configuration (org name, teams)
-<a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a><span class="k">-</span><span class="w"> </span><span class="sb">`members.auto.tfvars`</span> - Membership configuration (auto-loaded, requires admin approval)
-<a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a><span class="k">-</span><span class="w"> </span><span class="sb">`outputs.tf`</span> - Output definitions
-<a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="k">-</span><span class="w"> </span><span class="sb">`organisation.tf`</span> - Organisation settings and policies
-<a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="k">-</span><span class="w"> </span><span class="sb">`teams.tf`</span> - Team definitions and team memberships with validation
-<a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="k">-</span><span class="w"> </span><span class="sb">`members.tf`</span> - Organisation member management
-<a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a>
-<a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a><span class="gu">## Configuration Approach</span>
-<a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a>
-<a id="__codelineno-6-46" name="__codelineno-6-46" href="#__codelineno-6-46"></a>This setup uses a clear separation:
-<a id="__codelineno-6-47" name="__codelineno-6-47" href="#__codelineno-6-47"></a>
-<a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a><span class="k">-</span><span class="w"> </span><span class="gs">**`terraform.tfvars`**</span>: General configuration (organisation name, billing email, team definitions)
-<a id="__codelineno-6-49" name="__codelineno-6-49" href="#__codelineno-6-49"></a><span class="k">-</span><span class="w"> </span><span class="gs">**`members.auto.tfvars`**</span>: Membership configuration (organisation members, team memberships)
-<a id="__codelineno-6-50" name="__codelineno-6-50" href="#__codelineno-6-50"></a><span class="w">  </span><span class="k">-</span><span class="w"> </span>Auto-loaded by Terraform (no <span class="sb">`-var-file`</span> flag needed)
-<a id="__codelineno-6-51" name="__codelineno-6-51" href="#__codelineno-6-51"></a><span class="w">  </span><span class="k">-</span><span class="w"> </span>Protected by CODEOWNERS requiring admin approval
-<a id="__codelineno-6-52" name="__codelineno-6-52" href="#__codelineno-6-52"></a><span class="w">  </span><span class="k">-</span><span class="w"> </span>Contains only public GitHub usernames (no secrets)
-<a id="__codelineno-6-53" name="__codelineno-6-53" href="#__codelineno-6-53"></a><span class="k">-</span><span class="w"> </span><span class="gs">**`organisation.tf`**</span>: Organisation settings and security policies
-<a id="__codelineno-6-54" name="__codelineno-6-54" href="#__codelineno-6-54"></a><span class="k">-</span><span class="w"> </span><span class="gs">**`teams.tf`**</span>: Team resources with <span class="sb">`for_each`</span> and validation logic
-<a id="__codelineno-6-55" name="__codelineno-6-55" href="#__codelineno-6-55"></a><span class="k">-</span><span class="w"> </span><span class="gs">**`members.tf`**</span>: Organisation member resources
-<a id="__codelineno-6-56" name="__codelineno-6-56" href="#__codelineno-6-56"></a>
-<a id="__codelineno-6-57" name="__codelineno-6-57" href="#__codelineno-6-57"></a>This means you:
-<a id="__codelineno-6-58" name="__codelineno-6-58" href="#__codelineno-6-58"></a><span class="k">-</span><span class="w"> </span>Update <span class="sb">`terraform.tfvars`</span> for teams and general settings
-<a id="__codelineno-6-59" name="__codelineno-6-59" href="#__codelineno-6-59"></a><span class="k">-</span><span class="w"> </span>Update <span class="sb">`members.auto.tfvars`</span> for membership changes (requires admin approval)
-<a id="__codelineno-6-60" name="__codelineno-6-60" href="#__codelineno-6-60"></a><span class="k">-</span><span class="w"> </span>Everything else is reusable configuration
-<a id="__codelineno-6-61" name="__codelineno-6-61" href="#__codelineno-6-61"></a>
-<a id="__codelineno-6-62" name="__codelineno-6-62" href="#__codelineno-6-62"></a><span class="gu">## Making Changes</span>
-<a id="__codelineno-6-63" name="__codelineno-6-63" href="#__codelineno-6-63"></a>
-<a id="__codelineno-6-64" name="__codelineno-6-64" href="#__codelineno-6-64"></a><span class="gu">### Adding a New Team</span>
-<a id="__codelineno-6-65" name="__codelineno-6-65" href="#__codelineno-6-65"></a>
-<a id="__codelineno-6-66" name="__codelineno-6-66" href="#__codelineno-6-66"></a><span class="k">1.</span> Add the team to <span class="sb">`terraform.tfvars`</span> in the <span class="sb">`teams`</span> variable
-<a id="__codelineno-6-67" name="__codelineno-6-67" href="#__codelineno-6-67"></a><span class="k">2.</span> Run <span class="sb">`terraform plan`</span> to preview
-<a id="__codelineno-6-68" name="__codelineno-6-68" href="#__codelineno-6-68"></a><span class="k">3.</span> Create a PR for review
-<a id="__codelineno-6-69" name="__codelineno-6-69" href="#__codelineno-6-69"></a><span class="k">4.</span> After approval, merge and CI/CD will apply changes
-<a id="__codelineno-6-70" name="__codelineno-6-70" href="#__codelineno-6-70"></a>
-<a id="__codelineno-6-71" name="__codelineno-6-71" href="#__codelineno-6-71"></a><span class="gu">### Adding/Removing Organisation Members</span>
-<a id="__codelineno-6-72" name="__codelineno-6-72" href="#__codelineno-6-72"></a>
-<a id="__codelineno-6-73" name="__codelineno-6-73" href="#__codelineno-6-73"></a><span class="k">1.</span> Update <span class="sb">`members.auto.tfvars`</span> with the new member in <span class="sb">`organization_members`</span>
-<a id="__codelineno-6-74" name="__codelineno-6-74" href="#__codelineno-6-74"></a><span class="k">2.</span> Optionally add them to teams in <span class="sb">`team_memberships`</span>
-<a id="__codelineno-6-75" name="__codelineno-6-75" href="#__codelineno-6-75"></a><span class="k">3.</span> Run <span class="sb">`terraform plan`</span> to preview (validation will check team members are org members)
-<a id="__codelineno-6-76" name="__codelineno-6-76" href="#__codelineno-6-76"></a><span class="k">4.</span> Create a PR for review
-<a id="__codelineno-6-77" name="__codelineno-6-77" href="#__codelineno-6-77"></a><span class="k">5.</span> Get approval from data-platform-admins team (required by CODEOWNERS)
-<a id="__codelineno-6-78" name="__codelineno-6-78" href="#__codelineno-6-78"></a><span class="k">6.</span> After approval, merge and CI/CD will apply changes
-<a id="__codelineno-6-79" name="__codelineno-6-79" href="#__codelineno-6-79"></a>
-<a id="__codelineno-6-80" name="__codelineno-6-80" href="#__codelineno-6-80"></a><span class="gu">### Changing Organisation Settings</span>
-<a id="__codelineno-6-81" name="__codelineno-6-81" href="#__codelineno-6-81"></a>
-<a id="__codelineno-6-82" name="__codelineno-6-82" href="#__codelineno-6-82"></a><span class="k">1.</span> Update <span class="sb">`organisation.tf`</span> with desired changes
-<a id="__codelineno-6-83" name="__codelineno-6-83" href="#__codelineno-6-83"></a><span class="k">2.</span> Run <span class="sb">`terraform plan`</span> to preview
-<a id="__codelineno-6-84" name="__codelineno-6-84" href="#__codelineno-6-84"></a><span class="k">3.</span> Create a PR for review
-<a id="__codelineno-6-85" name="__codelineno-6-85" href="#__codelineno-6-85"></a><span class="k">4.</span> After approval, merge and CI/CD will apply changes
+<div class="highlight"><pre><span></span><code><span class="gh"># GitHub Infrastructure</span>
+
+This directory manages GitHub organisation settings and teams via Terraform.
+
+<span class="gu">## Resources Managed</span>
+
+<span class="gu">### Organisation</span>
+<span class="k">-</span><span class="w"> </span>Organisation settings and policies
+<span class="k">-</span><span class="w"> </span>Default permissions for new repositories
+<span class="k">-</span><span class="w"> </span>Security settings (Dependabot, secret scanning)
+<span class="k">-</span><span class="w"> </span>Member permissions
+
+<span class="gu">### Teams</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**Team definitions**</span>: Managed via <span class="sb">`teams`</span> variable in <span class="sb">`terraform.tfvars`</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**data-platform-admins**</span>: Full access to data infrastructure
+<span class="k">-</span><span class="w"> </span><span class="gs">**data-engineers**</span>: Data Engineers
+<span class="k">-</span><span class="w"> </span><span class="gs">**data-analysts**</span>: Data Analysts
+<span class="k">-</span><span class="w"> </span>Teams created using <span class="sb">`for_each`</span> for easy scalability
+
+<span class="gu">### Members</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**Organisation members**</span>: Managed via <span class="sb">`organization_members`</span> in <span class="sb">`members.auto.tfvars`</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**Team memberships**</span>: Managed via <span class="sb">`team_memberships`</span> in <span class="sb">`members.auto.tfvars`</span>
+<span class="k">-</span><span class="w"> </span><span class="gs">**Validation**</span>: Ensures all team members are organisation members first
+<span class="k">-</span><span class="w"> </span><span class="gs">**CODEOWNERS**</span>: Membership changes require admin approval
+
+<span class="gu">## What We Don't Manage Here</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**Repositories**</span>: Create repositories through GitHub UI or CLI as needed. Managing repos in Terraform creates tight coupling and makes it difficult to delete repositories.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Branch protection rules**</span>: These are repository-specific and better managed per-repository through GitHub's UI.
+
+<span class="gu">## File Structure</span>
+
+<span class="k">-</span><span class="w"> </span><span class="sb">`backend.tf`</span> - S3 backend configuration
+<span class="k">-</span><span class="w"> </span><span class="sb">`main.tf`</span> - Terraform and provider version requirements
+<span class="k">-</span><span class="w"> </span><span class="sb">`providers.tf`</span> - GitHub provider configuration
+<span class="k">-</span><span class="w"> </span><span class="sb">`variables.tf`</span> - Input variable definitions
+<span class="k">-</span><span class="w"> </span><span class="sb">`terraform.tfvars`</span> - General configuration (org name, teams)
+<span class="k">-</span><span class="w"> </span><span class="sb">`members.auto.tfvars`</span> - Membership configuration (auto-loaded, requires admin approval)
+<span class="k">-</span><span class="w"> </span><span class="sb">`outputs.tf`</span> - Output definitions
+<span class="k">-</span><span class="w"> </span><span class="sb">`organisation.tf`</span> - Organisation settings and policies
+<span class="k">-</span><span class="w"> </span><span class="sb">`teams.tf`</span> - Team definitions and team memberships with validation
+<span class="k">-</span><span class="w"> </span><span class="sb">`members.tf`</span> - Organisation member management
+
+<span class="gu">## Configuration Approach</span>
+
+This setup uses a clear separation:
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**`terraform.tfvars`**</span>: General configuration (organisation name, billing email, team definitions)
+<span class="k">-</span><span class="w"> </span><span class="gs">**`members.auto.tfvars`**</span>: Membership configuration (organisation members, team memberships)
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>Auto-loaded by Terraform (no <span class="sb">`-var-file`</span> flag needed)
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>Protected by CODEOWNERS requiring admin approval
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>Contains only public GitHub usernames (no secrets)
+<span class="k">-</span><span class="w"> </span><span class="gs">**`organisation.tf`**</span>: Organisation settings and security policies
+<span class="k">-</span><span class="w"> </span><span class="gs">**`teams.tf`**</span>: Team resources with <span class="sb">`for_each`</span> and validation logic
+<span class="k">-</span><span class="w"> </span><span class="gs">**`members.tf`**</span>: Organisation member resources
+
+This means you:
+<span class="k">-</span><span class="w"> </span>Update <span class="sb">`terraform.tfvars`</span> for teams and general settings
+<span class="k">-</span><span class="w"> </span>Update <span class="sb">`members.auto.tfvars`</span> for membership changes (requires admin approval)
+<span class="k">-</span><span class="w"> </span>Everything else is reusable configuration
+
+<span class="gu">## Making Changes</span>
+
+<span class="gu">### Adding a New Team</span>
+
+<span class="k">1.</span> Add the team to <span class="sb">`terraform.tfvars`</span> in the <span class="sb">`teams`</span> variable
+<span class="k">2.</span> Run <span class="sb">`terraform plan`</span> to preview
+<span class="k">3.</span> Create a PR for review
+<span class="k">4.</span> After approval, merge and CI/CD will apply changes
+
+<span class="gu">### Adding/Removing Organisation Members</span>
+
+<span class="k">1.</span> Update <span class="sb">`members.auto.tfvars`</span> with the new member in <span class="sb">`organization_members`</span>
+<span class="k">2.</span> Optionally add them to teams in <span class="sb">`team_memberships`</span>
+<span class="k">3.</span> Run <span class="sb">`terraform plan`</span> to preview (validation will check team members are org members)
+<span class="k">4.</span> Create a PR for review
+<span class="k">5.</span> Get approval from data-platform-admins team (required by CODEOWNERS)
+<span class="k">6.</span> After approval, merge and CI/CD will apply changes
+
+<span class="gu">### Changing Organisation Settings</span>
+
+<span class="k">1.</span> Update <span class="sb">`organisation.tf`</span> with desired changes
+<span class="k">2.</span> Run <span class="sb">`terraform plan`</span> to preview
+<span class="k">3.</span> Create a PR for review
+<span class="k">4.</span> After approval, merge and CI/CD will apply changes
 </code></pre></div>
 <h2 id="commit-your-work">Commit Your Work</h2>
 <p>Once again, you should commit the work that you have done. Then, you can push to GitHub:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>push
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Pre-commit Hooks Run on Push</p>
@@ -6312,6 +6314,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6355,7 +6359,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>

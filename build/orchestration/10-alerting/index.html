@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6448,26 +6450,26 @@
 <li><strong>Automations</strong>: Platform-level rules that trigger actions based on events</li>
 </ol>
 <p>For production systems, automations are recommended because they're centralised and don't require code changes.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                         ALERTING ARCHITECTURE                               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌─────────────────────────────────────────────────────────────────────┐    │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │                      Prefect Cloud                                  │    │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │                                                                     │    │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │  Flow Run Failed ──────▶ Automation Trigger ──────▶ Actions         │    │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │                                                                     │    │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │                                              ┌─────────────────┐    │    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │                                              │  Slack Webhook  │    │    │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │                                              └────────┬────────┘    │    │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │                                                       │             │    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │                                              ┌────────▼────────┐    │    │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │                                              │   PagerDuty     │    │    │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │                                              │   (optional)    │    │    │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │                                              └─────────────────┘    │    │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  └─────────────────────────────────────────────────────────────────────┘    │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                                                             │
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         ALERTING ARCHITECTURE                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                      Prefect Cloud                                  │    │
+│  │                                                                     │    │
+│  │  Flow Run Failed ──────▶ Automation Trigger ──────▶ Actions         │    │
+│  │                                                                     │    │
+│  │                                              ┌─────────────────┐    │    │
+│  │                                              │  Slack Webhook  │    │    │
+│  │                                              └────────┬────────┘    │    │
+│  │                                                       │             │    │
+│  │                                              ┌────────▼────────┐    │    │
+│  │                                              │   PagerDuty     │    │    │
+│  │                                              │   (optional)    │    │    │
+│  │                                              └─────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul class="task-list">
@@ -6498,74 +6500,74 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Add to <code>terraform/prefect/blocks.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># Notification Blocks</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># =============================================================================</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_block"</span><span class="w"> </span><span class="nv">"slack_alerts"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"alerts"</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="na">type_slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"slack-webhook"</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="na">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.slack_webhook_url</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># =============================================================================</span>
+<span class="c1"># Notification Blocks</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_block"</span><span class="w"> </span><span class="nv">"slack_alerts"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"alerts"</span>
+<span class="w">  </span><span class="na">type_slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"slack-webhook"</span>
+
+<span class="w">  </span><span class="na">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.slack_webhook_url</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Add to <code>terraform/prefect/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"slack_webhook_url"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Slack webhook URL for pipeline failure alerts"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"slack_webhook_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Slack webhook URL for pipeline failure alerts"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Store the webhook URL in AWS Secrets Manager:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/slack-webhook-url"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"Slack webhook URL for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>--profile<span class="w"> </span>admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/slack-webhook-url"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"Slack webhook URL for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>admin
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Avoid Shell History</p>
 <p>To keep the URL out of your shell history, pipe it from 1Password:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/slack-webhook-url"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"Slack webhook URL for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s1">'Slack Webhook - Prefect Alerts'</span><span class="w"> </span>--fields<span class="w"> </span>credential<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>--profile<span class="w"> </span>admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/slack-webhook-url"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"Slack webhook URL for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span><span class="s1">'Slack Webhook - Prefect Alerts'</span><span class="w"> </span>--fields<span class="w"> </span>credential<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>admin
 </code></pre></div>
 </div>
 <p><strong>Update your GitHub Actions workflows</strong> to retrieve the secret. In <code>.github/workflows/terraform_ci.yml</code> and <code>.github/workflows/terraform_apply.yml</code>, add to the <code>secret-ids</code> in the Prefect plan/apply jobs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get secrets from AWS Secrets Manager</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">      </span><span class="no">TF_VAR_SLACK_WEBHOOK_URL, prefect/slack-webhook-url</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get secrets from AWS Secrets Manager</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">TF_VAR_SLACK_WEBHOOK_URL, prefect/slack-webhook-url</span>
+<span class="w">    </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <p>This sets <code>TF_VAR_SLACK_WEBHOOK_URL</code> as an environment variable, which Terraform automatically uses for the <code>slack_webhook_url</code> variable.</p>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect.blocks.notifications
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>slack-webhook/alerts<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span>--url<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect.blocks.notifications
+
+prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>slack-webhook/alerts<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--url<span class="w"> </span><span class="s2">"https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">"https://hooks.slack.com/services/..."</span><span class="p">)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">slack</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+
+<span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">"https://hooks.slack.com/services/..."</span><span class="p">)</span>
+<span class="n">slack</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <h3 id="test-the-webhook">Test the Webhook</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">"Test notification from Prefect!"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+
+<span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
+<span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">"Test notification from Prefect!"</span><span class="p">)</span>
 </code></pre></div>
 <p>You should see the message in your Slack channel.</p>
 <h2 id="prefect-automations">Prefect Automations</h2>
@@ -6630,50 +6632,50 @@
 </table>
 <h3 id="message-template">Message Template</h3>
 <p>Use this template for informative Slack messages:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>:x: *Pipeline Failed*
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>*Flow*: {{ flow.name }}
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>*Deployment*: {{ deployment.name }}
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>*Run ID*: {{ flow_run.id }}
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>*State*: {{ flow_run.state.name }}
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>*Error*: {{ flow_run.state.message }}
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>&lt;{{ flow_run_url }}|View in Prefect Cloud&gt;
+<div class="highlight"><pre><span></span><code>:x: *Pipeline Failed*
+
+*Flow*: {{ flow.name }}
+*Deployment*: {{ deployment.name }}
+*Run ID*: {{ flow_run.id }}
+*State*: {{ flow_run.state.name }}
+*Error*: {{ flow_run.state.message }}
+
+&lt;{{ flow_run_url }}|View in Prefect Cloud&gt;
 </code></pre></div>
 <h3 id="terraform-automation">Terraform Automation</h3>
 <p>Add to <code>terraform/prefect/automations.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"dlt_failure_alert"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT Pipeline Failure Alert"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alert on any dlt pipeline failure via Slack"</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="na">enabled</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="na">type</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="na">posture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Reactive"</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="na">expect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">      </span><span class="s2">"prefect.resource.role"</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"flow-run"</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt"</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
-<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.slack_alerts.id</span>
-<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">      </span><span class="na">subject</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Pipeline Failed: {{ flow.name }}"</span>
-<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;&lt;-</span><span class="dl">EOT</span>
-<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="sh">        :x: *Pipeline Failed*</span>
-<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="sh">        *Flow*: {{ flow.name }}</span>
-<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="sh">        *State*: {{ flow_run.state.name }}</span>
-<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="sh">        *Error*: {{ flow_run.state.message }}</span>
-<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="dl">      EOT</span>
-<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"dlt_failure_alert"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT Pipeline Failure Alert"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alert on any dlt pipeline failure via Slack"</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
+<span class="w">    </span><span class="na">posture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Reactive"</span>
+
+<span class="w">    </span><span class="na">expect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
+
+<span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">"prefect.resource.role"</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"flow-run"</span>
+<span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
+<span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.slack_alerts.id</span>
+<span class="w">      </span><span class="na">subject</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"Pipeline Failed: {{ flow.name }}"</span>
+<span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;&lt;-</span><span class="dl">EOT</span>
+<span class="sh">        :x: *Pipeline Failed*</span>
+
+<span class="sh">        *Flow*: {{ flow.name }}</span>
+<span class="sh">        *State*: {{ flow_run.state.name }}</span>
+<span class="sh">        *Error*: {{ flow_run.state.message }}</span>
+<span class="dl">      EOT</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="pagerduty-integration-optional">PagerDuty Integration (Optional)</h2>
 <p>PagerDuty provides advanced incident management for production systems. Use it when you need:</p>
@@ -6697,98 +6699,98 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Add to <code>terraform/prefect/blocks.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_block"</span><span class="w"> </span><span class="nv">"pagerduty_data_pipelines"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-pipelines"</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="na">type_slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pager-duty-webhook"</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="na">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="na">integration_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pagerduty_integration_key</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="na">api_key</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pagerduty_api_key</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="p">})</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_block"</span><span class="w"> </span><span class="nv">"pagerduty_data_pipelines"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-pipelines"</span>
+<span class="w">  </span><span class="na">type_slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pager-duty-webhook"</span>
+
+<span class="w">  </span><span class="na">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">jsonencode</span><span class="p">({</span>
+<span class="w">    </span><span class="na">integration_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pagerduty_integration_key</span>
+<span class="w">    </span><span class="na">api_key</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pagerduty_api_key</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Add to <code>terraform/prefect/variables.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"pagerduty_integration_key"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PagerDuty Events API v2 integration key for data pipeline alerts"</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">}</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">"pagerduty_api_key"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PagerDuty API key for incident management"</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"pagerduty_integration_key"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PagerDuty Events API v2 integration key for data pipeline alerts"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"pagerduty_api_key"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"PagerDuty API key for incident management"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">sensitive</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Store the credentials in AWS Secrets Manager:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/pagerduty-integration-key"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span>--description<span class="w"> </span><span class="s2">"PagerDuty integration key for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"YOUR_INTEGRATION_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span>--profile<span class="w"> </span>admin
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>secretsmanager<span class="w"> </span>create-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">"prefect/pagerduty-integration-key"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">"PagerDuty integration key for Prefect pipeline alerts"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--secret-string<span class="w"> </span><span class="s2">"YOUR_INTEGRATION_KEY"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profile<span class="w"> </span>admin
 </code></pre></div>
 <p><strong>Update your GitHub Actions workflows</strong> to retrieve the secret. In <code>.github/workflows/terraform_ci.yml</code> and <code>.github/workflows/terraform_apply.yml</code>, add to the <code>secret-ids</code> in the Prefect plan/apply jobs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get secrets from AWS Secrets Manager</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">      </span><span class="no">TF_VAR_PAGERDUTY_INTEGRATION_KEY, prefect/pagerduty-integration-key</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get secrets from AWS Secrets Manager</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-actions/aws-secretsmanager-get-secrets@v2</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">secret-ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">TF_VAR_PAGERDUTY_INTEGRATION_KEY, prefect/pagerduty-integration-key</span>
+<span class="w">    </span><span class="nt">parse-json-secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect.blocks.notifications
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>pager-duty-webhook/data-pipelines<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span>--integration-key<span class="w"> </span><span class="s2">"your-integration-key"</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect.blocks.notifications
+
+prefect<span class="w"> </span>block<span class="w"> </span>create<span class="w"> </span>pager-duty-webhook/data-pipelines<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--integration-key<span class="w"> </span><span class="s2">"your-integration-key"</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagerDutyWebHook</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">pagerduty</span> <span class="o">=</span> <span class="n">PagerDutyWebHook</span><span class="p">(</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">integration_key</span><span class="o">=</span><span class="s2">"your-integration-key"</span><span class="p">,</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">api_key</span><span class="o">=</span><span class="s2">"your-api-key"</span><span class="p">,</span>  <span class="c1"># Optional, for API access</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="p">)</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">pagerduty</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"data-pipelines"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagerDutyWebHook</span>
+
+<span class="n">pagerduty</span> <span class="o">=</span> <span class="n">PagerDutyWebHook</span><span class="p">(</span>
+    <span class="n">integration_key</span><span class="o">=</span><span class="s2">"your-integration-key"</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">"your-api-key"</span><span class="p">,</span>  <span class="c1"># Optional, for API access</span>
+<span class="p">)</span>
+<span class="n">pagerduty</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"data-pipelines"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <h3 id="add-pagerduty-automation-terraform">Add PagerDuty Automation (Terraform)</h3>
 <p>For critical failures, add an automation that pages via PagerDuty. Add to <code>terraform/prefect/automations.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"dlt_critical_alert"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT Pipeline Critical Alert (PagerDuty)"</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Page on-call engineer after 3 consecutive dlt pipeline failures"</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="na">enabled</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="na">type</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="na">posture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Reactive"</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="na">expect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
-<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>
-<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">      </span><span class="s2">"prefect.resource.role"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"flow-run"</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt"</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
-<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="c1">    # Only trigger after 3 consecutive failures</span>
-<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">    </span><span class="na">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
-<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">    </span><span class="na">within</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">86400</span><span class="c1">  # 24 hours</span>
-<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>
-<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
-<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.pagerduty_data_pipelines.id</span>
-<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="w">      </span><span class="na">subject</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"CRITICAL: {{ flow.name }} failed 3 times"</span>
-<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Flow {{ flow.name }} has failed 3 times in 24 hours. State: {{ flow_run.state.message }}"</span>
-<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"prefect_automation"</span><span class="w"> </span><span class="nv">"dlt_critical_alert"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT Pipeline Critical Alert (PagerDuty)"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Page on-call engineer after 3 consecutive dlt pipeline failures"</span>
+<span class="w">  </span><span class="na">enabled</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="nb">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"event"</span>
+<span class="w">    </span><span class="na">posture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Reactive"</span>
+
+<span class="w">    </span><span class="na">expect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"prefect.flow-run.Failed", "prefect.flow-run.Crashed"</span><span class="p">]</span>
+
+<span class="w">    </span><span class="nb">match_related</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">"prefect.resource.role"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"flow-run"</span>
+<span class="w">      </span><span class="s2">"prefect.tag"</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">"dlt"</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="c1">    # Only trigger after 3 consecutive failures</span>
+<span class="w">    </span><span class="na">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">    </span><span class="na">within</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">86400</span><span class="c1">  # 24 hours</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="na">type</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"send-notification"</span>
+<span class="w">      </span><span class="na">block_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">prefect_block.pagerduty_data_pipelines.id</span>
+<span class="w">      </span><span class="na">subject</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"CRITICAL: {{ flow.name }} failed 3 times"</span>
+<span class="w">      </span><span class="na">body</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Flow {{ flow.name }} has failed 3 times in 24 hours. State: {{ flow_run.state.message }}"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="tiered-alerting">Tiered Alerting</h3>
 <p>Configure different actions based on severity:</p>
@@ -6855,40 +6857,40 @@
 <p>For most small data teams, the free tier or Slack-only is sufficient.</p>
 <h2 id="flow-level-notifications">Flow-Level Notifications</h2>
 <p>For specific flows that need custom notification logic, use flow hooks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">notify_on_failure</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="sd">"""Send detailed failure notification."""</span>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Flow </span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>    <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>        <span class="sa">f</span><span class="s2">":x: *</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">* failed!</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>        <span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>        <span class="sa">f</span><span class="s2">"Run ID: `</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">`"</span>
-<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="p">)</span>
-<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>
-<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>
-<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">notify_on_completion</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="w">    </span><span class="sd">"""Send completion notification (optional)."""</span>
-<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>    <span class="c1"># Only for critical flows</span>
-<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>    <span class="k">if</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"products-daily"</span><span class="p">,</span> <span class="s2">"exchange-rates-daily"</span><span class="p">]:</span>
-<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a>        <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
-<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>        <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="sa">f</span><span class="s2">":white_check_mark: *</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">* completed successfully"</span><span class="p">)</span>
-<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>
-<a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a>
-<a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="nd">@flow</span><span class="p">(</span>
-<a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange-rates-daily"</span><span class="p">,</span>
-<a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a>    <span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_on_failure</span><span class="p">],</span>
-<a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a>    <span class="n">on_crashed</span><span class="o">=</span><span class="p">[</span><span class="n">notify_on_failure</span><span class="p">],</span>
-<a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a>    <span class="c1"># on_completion=[notify_on_completion],  # Optional</span>
-<a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="p">)</span>
-<a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates_daily_flow</span><span class="p">():</span>
-<a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a>    <span class="c1"># ... flow logic</span>
-<a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a>    <span class="k">pass</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">notify_on_failure</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Send detailed failure notification."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Flow </span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
+    <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">":x: *</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">* failed!</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"Run ID: `</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">`"</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">notify_on_completion</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Send completion notification (optional)."""</span>
+    <span class="c1"># Only for critical flows</span>
+    <span class="k">if</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"products-daily"</span><span class="p">,</span> <span class="s2">"exchange-rates-daily"</span><span class="p">]:</span>
+        <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"alerts"</span><span class="p">)</span>
+        <span class="n">slack</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="sa">f</span><span class="s2">":white_check_mark: *</span><span class="si">{</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">* completed successfully"</span><span class="p">)</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"exchange-rates-daily"</span><span class="p">,</span>
+    <span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_on_failure</span><span class="p">],</span>
+    <span class="n">on_crashed</span><span class="o">=</span><span class="p">[</span><span class="n">notify_on_failure</span><span class="p">],</span>
+    <span class="c1"># on_completion=[notify_on_completion],  # Optional</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates_daily_flow</span><span class="p">():</span>
+    <span class="c1"># ... flow logic</span>
+    <span class="k">pass</span>
 </code></pre></div>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-dont-alert-on-everything">1. Don't Alert on Everything</h3>
@@ -6945,10 +6947,10 @@
 </table>
 <h3 id="5-test-your-alerts">5. Test Your Alerts</h3>
 <p>Regularly test that alerts work:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"test-alert"</span><span class="p">)</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_alert_flow</span><span class="p">():</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="sd">"""Flow that intentionally fails to test alerting."""</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"This is a test failure - ignore"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"test-alert"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_alert_flow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Flow that intentionally fails to test alerting."""</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"This is a test failure - ignore"</span><span class="p">)</span>
 </code></pre></div>
 <p>Run this periodically to verify Slack/PagerDuty integration.</p>
 <h2 id="monitoring-dashboard">Monitoring Dashboard</h2>
@@ -6960,18 +6962,18 @@
 <li>Data freshness (when was data last loaded)</li>
 </ul>
 <p>Prefect Cloud provides these in the UI. For custom dashboards, use the Prefect API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_failures</span><span class="p">():</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>        <span class="n">runs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_runs</span><span class="p">(</span>
-<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>            <span class="n">flow_run_filter</span><span class="o">=</span><span class="p">{</span>
-<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>                <span class="s2">"state"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"any_"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"FAILED"</span><span class="p">,</span> <span class="s2">"CRASHED"</span><span class="p">]}},</span>
-<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>                <span class="s2">"start_time"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"after_"</span><span class="p">:</span> <span class="s2">"2026-01-01T00:00:00Z"</span><span class="p">},</span>
-<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>            <span class="p">},</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>            <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>        <span class="p">)</span>
-<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>        <span class="k">return</span> <span class="n">runs</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_failures</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">runs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_runs</span><span class="p">(</span>
+            <span class="n">flow_run_filter</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"state"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"any_"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"FAILED"</span><span class="p">,</span> <span class="s2">"CRASHED"</span><span class="p">]}},</span>
+                <span class="s2">"start_time"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"after_"</span><span class="p">:</span> <span class="s2">"2026-01-01T00:00:00Z"</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">runs</span>
 </code></pre></div>
 <h2 id="summary">Summary</h2>
 <p>You've configured alerting for your data pipelines:</p>
@@ -7032,6 +7034,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -7075,7 +7079,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

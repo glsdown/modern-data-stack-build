@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6245,25 +6247,25 @@
 </ul>
 <h2 id="overview">Overview</h2>
 <p>dlt (data load tool) is built around a few core concepts that compose together to create data pipelines. Understanding these concepts will help you build and debug pipelines effectively.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                            dlt PIPELINE                                     │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                                             │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌─────────────────┐                              ┌─────────────────┐       │
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │     SOURCE      │                              │   DESTINATION   │       │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │  ┌───────────┐  │                              │                 │       │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  │  │ Resource  │  │     ┌─────────────────┐      │   Snowflake     │       │
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │  │ (table 1) │──┼────▶│    Pipeline     │─────▶│   S3            │       │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │  ├───────────┤  │     │                 │      │   BigQuery      │       │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  │  │ Resource  │──┼────▶│  • Extract      │      │   DuckDB        │       │
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  │  │ (table 2) │  │     │  • Normalise    │      │   etc.          │       │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │  ├───────────┤  │     │  • Load         │      │                 │       │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  │  │ Resource  │──┼────▶│                 │      │                 │       │
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  │  │ (table 3) │  │     └─────────────────┘      └─────────────────┘       │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  │  └───────────┘  │                                                        │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  └─────────────────┘                                                        │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│                                                                             │
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                            dlt PIPELINE                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────┐                              ┌─────────────────┐       │
+│  │     SOURCE      │                              │   DESTINATION   │       │
+│  │  ┌───────────┐  │                              │                 │       │
+│  │  │ Resource  │  │     ┌─────────────────┐      │   Snowflake     │       │
+│  │  │ (table 1) │──┼────▶│    Pipeline     │─────▶│   S3            │       │
+│  │  ├───────────┤  │     │                 │      │   BigQuery      │       │
+│  │  │ Resource  │──┼────▶│  • Extract      │      │   DuckDB        │       │
+│  │  │ (table 2) │  │     │  • Normalise    │      │   etc.          │       │
+│  │  ├───────────┤  │     │  • Load         │      │                 │       │
+│  │  │ Resource  │──┼────▶│                 │      │                 │       │
+│  │  │ (table 3) │  │     └─────────────────┘      └─────────────────┘       │
+│  │  └───────────┘  │                                                        │
+│  └─────────────────┘                                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <h2 id="sources-and-resources">Sources and Resources</h2>
 <div class="admonition tip">
@@ -6272,13 +6274,13 @@
 </div>
 <h3 id="resources">Resources</h3>
 <p>A <strong>resource</strong> is a function that yields data. It typically represents a single table or endpoint. Resources are decorated with <code>@dlt.resource</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates</span><span class="p">():</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="sd">"""Fetch current exchange rates from API."""</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://api.example.com/rates"</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="k">yield</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"rates"</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exchange_rates</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Fetch current exchange rates from API."""</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://api.example.com/rates"</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"rates"</span><span class="p">]</span>
 </code></pre></div>
 <p>Key resource options:</p>
 <table>
@@ -6314,41 +6316,41 @@
 </table>
 <h3 id="sources">Sources</h3>
 <p>A <strong>source</strong> is a collection of related resources. It groups resources that come from the same system:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="sd">"""Source for Open Exchange Rates API."""</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span> <span class="n">merge_key</span><span class="o">=</span><span class="s2">"date"</span><span class="p">)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">latest_rates</span><span class="p">():</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>            <span class="sa">f</span><span class="s2">"https://openexchangerates.org/api/latest.json?app_id=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="p">)</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="k">yield</span> <span class="p">{</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>            <span class="s2">"date"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>            <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>            <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">]</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="p">}</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">currencies</span><span class="p">():</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>            <span class="sa">f</span><span class="s2">"https://openexchangerates.org/api/currencies.json?app_id=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>        <span class="p">)</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="k">yield from</span> <span class="p">[</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>            <span class="p">{</span><span class="s2">"code"</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>            <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="p">]</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="k">return</span> <span class="n">latest_rates</span><span class="p">,</span> <span class="n">currencies</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Source for Open Exchange Rates API."""</span>
+
+    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span> <span class="n">merge_key</span><span class="o">=</span><span class="s2">"date"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest_rates</span><span class="p">():</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"https://openexchangerates.org/api/latest.json?app_id=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="p">{</span>
+            <span class="s2">"date"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
+            <span class="s2">"base"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"base"</span><span class="p">],</span>
+            <span class="s2">"rates"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"rates"</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">currencies</span><span class="p">():</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"https://openexchangerates.org/api/currencies.json?app_id=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="k">yield from</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">"code"</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">latest_rates</span><span class="p">,</span> <span class="n">currencies</span>
 </code></pre></div>
 <p>When you call a source, you get back its resources. You can then select which resources to load:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Load all resources</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">source</span> <span class="o">=</span> <span class="n">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">"xxx"</span><span class="p">)</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Load only specific resources</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">with_resources</span><span class="p">(</span><span class="s2">"latest_rates"</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Load all resources</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">"xxx"</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+<span class="c1"># Load only specific resources</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">with_resources</span><span class="p">(</span><span class="s2">"latest_rates"</span><span class="p">))</span>
 </code></pre></div>
 <h2 id="pipelines">Pipelines</h2>
 <p>A <strong>pipeline</strong> is the execution context that moves data from source to destination. It handles:</p>
@@ -6357,15 +6359,15 @@
 <li><strong>Normalisation</strong> - Flattening nested structures into tables</li>
 <li><strong>Loading</strong> - Writing data to the destination</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span>  <span class="c1"># Schema name in Snowflake</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Run the pipeline</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">"xxx"</span><span class="p">))</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"exchange_rates"</span><span class="p">,</span>
+    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"open_exchange_rates"</span>  <span class="c1"># Schema name in Snowflake</span>
+<span class="p">)</span>
+
+<span class="c1"># Run the pipeline</span>
+<span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">open_exchange_rates</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">"xxx"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">load_info</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="pipeline-state">Pipeline State</h3>
 <p>Pipelines maintain state between runs. This enables:</p>
@@ -6382,29 +6384,29 @@
 <li><strong>State is restored automatically</strong>: When a pipeline starts on a clean filesystem, dlt detects the missing local state and restores it from the destination.</li>
 <li><strong>State is identified by three values</strong>: <code>pipeline_name</code>, destination location, and <code>dataset_name</code>. As long as these remain consistent between runs, state is preserved.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│                       PIPELINE STATE LIFECYCLE                              │
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│                                                                             │
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│  Run 1 (Container A)                     Run 2 (Container B)                │
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│  ────────────────────                    ────────────────────               │
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│                                                                             │
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│  1. No local state found                 1. No local state found            │
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│  2. Check destination ──▶ Not found      2. Check destination ──▶ Found!    │
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│  3. Start fresh                          3. Restore state                   │
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│  4. Extract + Load data                  4. Extract only NEW data           │
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│  5. Save state to destination            5. Save updated state              │
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│                                                                             │
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│              ┌─────────────────────────────────--─┐                         │
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│              │    _dlt_pipeline_state table       │                         │
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>│              │    (in Snowflake / destination)    │                         │
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│              │                                    │                         │
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│              │  pipeline_name: exchange_rates     │                         │
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│              │  dataset_name: open_exchange_rates │                         │
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│              │  state: {last incremental values}  │                         │
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│              └──────────────────────────────────--┘                         │
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│                                                                             │
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>└─────────────────────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                       PIPELINE STATE LIFECYCLE                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Run 1 (Container A)                     Run 2 (Container B)                │
+│  ────────────────────                    ────────────────────               │
+│                                                                             │
+│  1. No local state found                 1. No local state found            │
+│  2. Check destination ──▶ Not found      2. Check destination ──▶ Found!    │
+│  3. Start fresh                          3. Restore state                   │
+│  4. Extract + Load data                  4. Extract only NEW data           │
+│  5. Save state to destination            5. Save updated state              │
+│                                                                             │
+│              ┌─────────────────────────────────--─┐                         │
+│              │    _dlt_pipeline_state table       │                         │
+│              │    (in Snowflake / destination)    │                         │
+│              │                                    │                         │
+│              │  pipeline_name: exchange_rates     │                         │
+│              │  dataset_name: open_exchange_rates │                         │
+│              │  state: {last incremental values}  │                         │
+│              └──────────────────────────────────--┘                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p>This means:</p>
 <ul>
@@ -6426,9 +6428,9 @@
 <li>Small reference data</li>
 <li>Development/testing</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">currencies</span><span class="p">():</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="k">yield from</span> <span class="n">fetch_all_currencies</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">currencies</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">fetch_all_currencies</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="append">Append</h3>
 <p>Adds new rows without modifying existing data. Use for:</p>
@@ -6437,9 +6439,9 @@
 <li>Time-series data</li>
 <li>When you handle deduplication elsewhere</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">)</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">events</span><span class="p">():</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="k">yield from</span> <span class="n">fetch_new_events</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"append"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">events</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">fetch_new_events</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="merge">Merge</h3>
 <p>Updates existing rows and inserts new ones based on a key. Use for:</p>
@@ -6448,13 +6450,13 @@
 <li>Data that gets updated at source</li>
 <li>Idempotent pipelines</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">primary_key</span><span class="o">=</span><span class="s2">"id"</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">merge_key</span><span class="o">=</span><span class="s2">"id"</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">)</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">products</span><span class="p">():</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">yield from</span> <span class="n">fetch_products</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
+    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="s2">"id"</span><span class="p">,</span>
+    <span class="n">merge_key</span><span class="o">=</span><span class="s2">"id"</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">products</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">fetch_products</span><span class="p">()</span>
 </code></pre></div>
 <p>With merge, dlt generates <code>MERGE</code> statements (or equivalent) for your destination.</p>
 <h2 id="schema-evolution">Schema Evolution</h2>
@@ -6464,45 +6466,45 @@
 <li><strong>Type changes</strong> - Widened when possible (e.g. int → bigint)</li>
 <li><strong>Nested data</strong> - Flattened into separate tables with foreign keys</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># First run - creates table with columns: id, name</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Product A"</span><span class="p">}</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Second run - automatically adds 'price' column</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Product B"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mf">9.99</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># First run - creates table with columns: id, name</span>
+<span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Product A"</span><span class="p">}</span>
+
+<span class="c1"># Second run - automatically adds 'price' column</span>
+<span class="k">yield</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Product B"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mf">9.99</span><span class="p">}</span>
 </code></pre></div>
 <h3 id="nested-data-normalisation">Nested Data Normalisation</h3>
 <p>dlt flattens nested structures into related tables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Source data</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">yield</span> <span class="p">{</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">"order_id"</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="s2">"customer"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="s2">"items"</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>        <span class="p">{</span><span class="s2">"product"</span><span class="p">:</span> <span class="s2">"Widget"</span><span class="p">,</span> <span class="s2">"qty"</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="p">{</span><span class="s2">"product"</span><span class="p">:</span> <span class="s2">"Gadget"</span><span class="p">,</span> <span class="s2">"qty"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="p">]</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">}</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># Creates two tables:</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1"># 1. orders (order_id, customer)</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1"># 2. orders__items (order_id, product, qty)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Source data</span>
+<span class="k">yield</span> <span class="p">{</span>
+    <span class="s2">"order_id"</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+    <span class="s2">"customer"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>
+    <span class="s2">"items"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"product"</span><span class="p">:</span> <span class="s2">"Widget"</span><span class="p">,</span> <span class="s2">"qty"</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"product"</span><span class="p">:</span> <span class="s2">"Gadget"</span><span class="p">,</span> <span class="s2">"qty"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Creates two tables:</span>
+<span class="c1"># 1. orders (order_id, customer)</span>
+<span class="c1"># 2. orders__items (order_id, product, qty)</span>
 </code></pre></div>
 <h2 id="incremental-loading">Incremental Loading</h2>
 <p>For large datasets, you don't want to reload everything on each run. dlt supports incremental loading:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">primary_key</span><span class="o">=</span><span class="s2">"id"</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">)</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">orders</span><span class="p">(</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">updated_after</span><span class="p">:</span> <span class="n">dlt</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">incremental</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">incremental</span><span class="p">(</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        <span class="s2">"updated_at"</span><span class="p">,</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>        <span class="n">initial_value</span><span class="o">=</span><span class="s2">"2024-01-01"</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="p">)</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="p">):</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="sd">"""Fetch orders updated since last run."""</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">last_value</span> <span class="o">=</span> <span class="n">updated_after</span><span class="o">.</span><span class="n">last_value</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">api</span><span class="o">.</span><span class="n">get_orders</span><span class="p">(</span><span class="n">updated_after</span><span class="o">=</span><span class="n">last_value</span><span class="p">):</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>        <span class="k">yield</span> <span class="n">order</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span>
+    <span class="n">write_disposition</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="s2">"id"</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">orders</span><span class="p">(</span>
+    <span class="n">updated_after</span><span class="p">:</span> <span class="n">dlt</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">incremental</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">incremental</span><span class="p">(</span>
+        <span class="s2">"updated_at"</span><span class="p">,</span>
+        <span class="n">initial_value</span><span class="o">=</span><span class="s2">"2024-01-01"</span>
+    <span class="p">)</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Fetch orders updated since last run."""</span>
+    <span class="n">last_value</span> <span class="o">=</span> <span class="n">updated_after</span><span class="o">.</span><span class="n">last_value</span>
+
+    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">api</span><span class="o">.</span><span class="n">get_orders</span><span class="p">(</span><span class="n">updated_after</span><span class="o">=</span><span class="n">last_value</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">order</span>
 </code></pre></div>
 <p>dlt tracks the maximum value of the incremental field and uses it on the next run.</p>
 <h2 id="destinations">Destinations</h2>
@@ -6542,21 +6544,21 @@
 </tbody>
 </table>
 <p>Each destination has specific configuration. For Snowflake:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"my_pipeline"</span><span class="p">,</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"my_schema"</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"my_pipeline"</span><span class="p">,</span>
+    <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"my_schema"</span>
+<span class="p">)</span>
 </code></pre></div>
 <p>Credentials are loaded from environment variables or <code>.dlt/secrets.toml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># .dlt/secrets.toml</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">[destination.snowflake.credentials]</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT"</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT_LOADER"</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DLT"</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx.snowflakecomputing.com"</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># .dlt/secrets.toml</span>
+<span class="k">[destination.snowflake.credentials]</span>
+<span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT"</span>
+<span class="n">warehouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LOADING"</span>
+<span class="n">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DLT_LOADER"</span>
+<span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_DLT"</span>
+<span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx"</span>
+<span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"xxx.snowflakecomputing.com"</span>
 </code></pre></div>
 <h2 id="configuration">Configuration</h2>
 <p>dlt uses a layered configuration system:</p>
@@ -6565,10 +6567,10 @@
 <li><strong>config.toml</strong> - Non-sensitive configuration</li>
 <li><strong>Environment variables</strong> - Override any config value</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>.dlt/
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>├── secrets.toml     # API keys, database passwords
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>├── config.toml      # Pipeline settings, timeouts
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>└── pipeline_name/   # Pipeline state (auto-managed)
+<div class="highlight"><pre><span></span><code>.dlt/
+├── secrets.toml     # API keys, database passwords
+├── config.toml      # Pipeline settings, timeouts
+└── pipeline_name/   # Pipeline state (auto-managed)
 </code></pre></div>
 <p>In production, you'll typically use environment variables or a secrets manager instead of files. dlt uses a specific naming convention for environment variables — sections are separated with double underscores and names are capitalised:</p>
 <table>
@@ -6653,6 +6655,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6696,7 +6700,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

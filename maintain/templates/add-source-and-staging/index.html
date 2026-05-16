@@ -41,10 +41,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -5875,78 +5877,78 @@
 </ol>
 <h2 id="reference-existing-sources">Reference: Existing Sources</h2>
 <p>Read <code>models/staging/</code> to see existing source definitions and staging models:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>models/staging/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── dlt/
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── _sources.yml              # DLT.APPLICATION_DATA + DLT.OPEN_EXCHANGE_RATES
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── stg_dlt__products.sql
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── stg_dlt__products.yml
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── stg_dlt__currencies.sql
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   └── stg_dlt__currencies.yml
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>├── snowpipe/
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├── _sources.yml              # SNOWPIPE.OPEN_EXCHANGE_RATES
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── stg_snowpipe__exchange_rates.sql
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   └── stg_snowpipe__exchange_rates.yml
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>└── airbyte/
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    ├── _sources.yml              # AIRBYTE.HUBSPOT
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    ├── stg_airbyte__contacts.sql
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    └── stg_airbyte__contacts.yml
+<div class="highlight"><pre><span></span><code>models/staging/
+├── dlt/
+│   ├── _sources.yml              # DLT.APPLICATION_DATA + DLT.OPEN_EXCHANGE_RATES
+│   ├── stg_dlt__products.sql
+│   ├── stg_dlt__products.yml
+│   ├── stg_dlt__currencies.sql
+│   └── stg_dlt__currencies.yml
+├── snowpipe/
+│   ├── _sources.yml              # SNOWPIPE.OPEN_EXCHANGE_RATES
+│   ├── stg_snowpipe__exchange_rates.sql
+│   └── stg_snowpipe__exchange_rates.yml
+└── airbyte/
+    ├── _sources.yml              # AIRBYTE.HUBSPOT
+    ├── stg_airbyte__contacts.sql
+    └── stg_airbyte__contacts.yml
 </code></pre></div>
 <h2 id="steps">Steps</h2>
 <h3 id="1-create-or-update-source-definition">1. Create or Update Source Definition</h3>
 <p>If the source system directory does not exist, create it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/<span class="o">{</span>source_system<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>models/staging/<span class="o">{</span>source_system<span class="o">}</span>
 </code></pre></div>
 <p>Create or update <code>models/staging/{source_system}/_sources.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">sources</span><span class="p">:</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">source_system</span><span class="p p-Indicator">}</span><span class="l l-Scalar l-Scalar-Plain">_{schema_name}</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="no">Description of what data this source contains and how it is loaded.</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">DATABASE</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">SCHEMA</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">loader</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">loader_tool</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nt">loaded_at_field</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">timestamp_field</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">25</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">49</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="nt">tables</span><span class="p">:</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">table_name</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">          </span><span class="no">Description of this table and what each row represents.</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">primary_key</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">            </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">sources</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">source_system</span><span class="p p-Indicator">}</span><span class="l l-Scalar l-Scalar-Plain">_{schema_name}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Description of what data this source contains and how it is loaded.</span>
+<span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">DATABASE</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">SCHEMA</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">loader</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">loader_tool</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">loaded_at_field</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">timestamp_field</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">25</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="nv">49</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">tables</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">table_name</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">          </span><span class="no">Description of this table and what each row represents.</span>
+<span class="w">        </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">primary_key</span><span class="p p-Indicator">}</span>
+<span class="w">            </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
 </code></pre></div>
 <p>If the <code>_sources.yml</code> already exists for this source system, add the new source group or table to it.</p>
 <h3 id="2-create-staging-model-sql">2. Create Staging Model SQL</h3>
 <p>Create <code>models/staging/{source_system}/stg_{source_system}__{table_name}.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">with</span><span class="w"> </span><span class="k">source</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'{source_system}_{schema}'</span><span class="p">,</span><span class="w"> </span><span class="s1">'{table_name}'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">),</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">renamed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">select</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="c1">-- Primary key</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="err">{</span><span class="n">pk_column</span><span class="err">}</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="err">{</span><span class="n">clean_pk_name</span><span class="err">}</span><span class="p">,</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">        </span><span class="c1">-- Dimensions</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="err">{</span><span class="n">dimension_columns</span><span class="err">}</span><span class="p">,</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">        </span><span class="c1">-- Timestamps</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="err">{</span><span class="n">timestamp_columns</span><span class="err">}</span><span class="p">,</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">        </span><span class="c1">-- Metadata</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="err">{</span><span class="n">loaded_at_field</span><span class="err">}</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">loaded_at</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="k">source</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="p">)</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">renamed</span>
+<div class="highlight"><pre><span></span><code><span class="k">with</span><span class="w"> </span><span class="k">source</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'{source_system}_{schema}'</span><span class="p">,</span><span class="w"> </span><span class="s1">'{table_name}'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="p">),</span>
+
+<span class="n">renamed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span>
+<span class="w">        </span><span class="c1">-- Primary key</span>
+<span class="w">        </span><span class="err">{</span><span class="n">pk_column</span><span class="err">}</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="err">{</span><span class="n">clean_pk_name</span><span class="err">}</span><span class="p">,</span>
+
+<span class="w">        </span><span class="c1">-- Dimensions</span>
+<span class="w">        </span><span class="err">{</span><span class="n">dimension_columns</span><span class="err">}</span><span class="p">,</span>
+
+<span class="w">        </span><span class="c1">-- Timestamps</span>
+<span class="w">        </span><span class="err">{</span><span class="n">timestamp_columns</span><span class="err">}</span><span class="p">,</span>
+
+<span class="w">        </span><span class="c1">-- Metadata</span>
+<span class="w">        </span><span class="err">{</span><span class="n">loaded_at_field</span><span class="err">}</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">loaded_at</span>
+
+<span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="k">source</span>
+
+<span class="p">)</span>
+
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">renamed</span>
 </code></pre></div>
 <p>The staging model should:</p>
 <ul>
@@ -5958,27 +5960,27 @@
 </ul>
 <h3 id="3-create-model-yaml">3. Create Model YAML</h3>
 <p>Create <code>models/staging/{source_system}/stg_{source_system}__{table_name}.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_{source_system}__{table_name}</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">      </span><span class="no">Staging model for {table_name} from {source_system}.</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">      </span><span class="no">Cleans column names, casts types, and removes loader metadata.</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">primary_key</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">        </span><span class="nt">data_tests</span><span class="p">:</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">other_columns</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Column description.</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_{source_system}__{table_name}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">Staging model for {table_name} from {source_system}.</span>
+<span class="w">      </span><span class="no">Cleans column names, casts types, and removes loader metadata.</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">primary_key</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
+<span class="w">        </span><span class="nt">data_tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nv">other_columns</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Column description.</span>
 </code></pre></div>
 <p>Every column must have a description. The primary key must have <code>unique</code> and <code>not_null</code> tests.</p>
 <h3 id="4-validate">4. Validate</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>dbt<span class="w"> </span>run<span class="w"> </span>-s<span class="w"> </span>stg_<span class="o">{</span>source_system<span class="o">}</span>__<span class="o">{</span>table_name<span class="o">}</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>stg_<span class="o">{</span>source_system<span class="o">}</span>__<span class="o">{</span>table_name<span class="o">}</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w"> </span>-s<span class="w"> </span>source:<span class="o">{</span>source_system<span class="o">}</span>_<span class="o">{</span>schema_name<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>run<span class="w"> </span>-s<span class="w"> </span>stg_<span class="o">{</span>source_system<span class="o">}</span>__<span class="o">{</span>table_name<span class="o">}</span>
+dbt<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>stg_<span class="o">{</span>source_system<span class="o">}</span>__<span class="o">{</span>table_name<span class="o">}</span>
+dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w"> </span>-s<span class="w"> </span>source:<span class="o">{</span>source_system<span class="o">}</span>_<span class="o">{</span>schema_name<span class="o">}</span>
 </code></pre></div>
 <p>Verify:</p>
 <ul>
@@ -6074,6 +6076,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6117,7 +6121,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

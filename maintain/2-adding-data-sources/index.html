@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
-        <style>:root{--md-text-font:"Raleway";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Raleway";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -6271,73 +6273,73 @@
 </div>
 <h4 id="2a-create-the-database">2a. Create the Database</h4>
 <p>Add to <code>snowflake/config/databases.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">module</span><span class="w"> </span><span class="s2">"database_&lt;loader&gt;"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;LOADER&gt;"</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Raw data loaded by &lt;loader&gt;."</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="nv">module.role_analytics_sources_reader.role_name</span><span class="p">,</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="nv">module.user_svc_</span><span class="err">&lt;loader&gt;</span><span class="p">.</span><span class="err">user_default_role</span><span class="p">,</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">module</span><span class="w"> </span><span class="s2">"database_&lt;loader&gt;"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_database"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;LOADER&gt;"</span>
+<span class="w">  </span><span class="na">database_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Raw data loaded by &lt;loader&gt;."</span>
+
+<span class="w">  </span><span class="na">grant_reader_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.role_analytics_sources_reader.role_name</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="w">  </span><span class="na">grant_writer_to_account_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nv">module.user_svc_</span><span class="err">&lt;loader&gt;</span><span class="p">.</span><span class="err">user_default_role</span><span class="p">,</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The database module creates <code>&lt;LOADER&gt;_DB_READER</code> and <code>&lt;LOADER&gt;_DB_WRITER</code> database roles. Granting the reader to <code>ANALYTICS_SOURCES_READER</code> maintains the reader access chain so developers and transformers can query the data.</p>
 <h4 id="2b-create-the-service-account">2b. Create the Service Account</h4>
 <p>Add to <code>snowflake/config/users.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">module</span><span class="w"> </span><span class="s2">"user_svc_&lt;loader&gt;"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="na">user_name</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_&lt;LOADER&gt;"</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="na">user_display_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;Loader&gt; Service Account"</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="na">user_comment</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for &lt;loader&gt; data loading."</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="na">user_is_service_account</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="na">user_default_warehouse</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="na">user_additional_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">module</span><span class="w"> </span><span class="s2">"user_svc_&lt;loader&gt;"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_user"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">    </span><span class="nv">snowflake.user_admin</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.user_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">user_name</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s2">"SVC_&lt;LOADER&gt;"</span>
+<span class="w">  </span><span class="na">user_display_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;Loader&gt; Service Account"</span>
+<span class="w">  </span><span class="na">user_comment</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"Service account for &lt;loader&gt; data loading."</span>
+<span class="w">  </span><span class="na">user_is_service_account</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">user_create_dedicated_role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">  </span><span class="na">user_default_warehouse</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">module.warehouse_loading.warehouse_name</span>
+
+<span class="w">  </span><span class="na">user_additional_roles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h4 id="2c-add-aws-secrets-manager-container">2c. Add AWS Secrets Manager Container</h4>
 <p>Add to <code>aws/config/secrets.tf</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="err">resource</span><span class="w"> </span><span class="s2">"aws_secretsmanager_secret" "&lt;loader&gt;_snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;loader&gt;/snowflake-credentials"</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for SVC_&lt;LOADER&gt;."</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">resource</span><span class="w"> </span><span class="s2">"aws_secretsmanager_secret" "&lt;loader&gt;_snowflake_credentials"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;loader&gt;/snowflake-credentials"</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Snowflake credentials for SVC_&lt;LOADER&gt;."</span>
+<span class="p">}</span>
 </code></pre></div>
 <h4 id="2d-validate-and-deploy">2d. Validate and Deploy</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>snowflake/config<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>plan
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">cd</span><span class="w"> </span>../../aws/config<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>plan
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>snowflake/config<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>plan
+<span class="nb">cd</span><span class="w"> </span>../../aws/config<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>plan
 </code></pre></div>
 <p>Create a PR, get approval, and merge. CI/CD applies the changes.</p>
 <p>After merge, generate a key pair and store credentials in Secrets Manager (see <a href="../1-adding-users/">Adding Users</a> step 6 for the key pair process).</p>
 <h3 id="3-create-schemas">3. Create Schemas</h3>
 <p>Add to <code>snowflake/config/schemas.tf</code> for each data source within the database:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="err">module</span><span class="w"> </span><span class="s2">"schema_&lt;loader&gt;_&lt;source&gt;"</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="na">database_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_</span><span class="err">&lt;loader&gt;</span><span class="p">.</span><span class="err">database_name</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">schema_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;SOURCE&gt;"</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="na">schema_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Data from &lt;source&gt; loaded by &lt;loader&gt;."</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">module</span><span class="w"> </span><span class="s2">"schema_&lt;loader&gt;_&lt;source&gt;"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/snowflake_schema"</span>
+
+<span class="w">  </span><span class="nb">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">snowflake.sys_admin</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.sys_admin</span>
+<span class="w">    </span><span class="nv">snowflake.security_admin</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">snowflake.security_admin</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">database_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.database_</span><span class="err">&lt;loader&gt;</span><span class="p">.</span><span class="err">database_name</span>
+<span class="w">  </span><span class="na">schema_name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;SOURCE&gt;"</span>
+<span class="w">  </span><span class="na">schema_comment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Data from &lt;source&gt; loaded by &lt;loader&gt;."</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Repeat for each source (e.g. <code>HUBSPOT</code>, <code>STRIPE</code>, <code>SALESFORCE</code>). Create a PR and merge.</p>
 <h3 id="4-build-the-ingestion-pipeline">4. Build the Ingestion Pipeline</h3>
@@ -6348,31 +6350,31 @@
 <ol>
 <li>
 <p><strong>Create the source</strong> in <code>sources/&lt;source_name&gt;/</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"&lt;source_name&gt;"</span><span class="p">)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">def</span><span class="w"> </span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span><span class="p">():</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="k">def</span><span class="w"> </span><span class="o">&lt;</span><span class="n">table_name</span><span class="o">&gt;</span><span class="p">():</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>        <span class="c1"># Fetch data from the API</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="k">yield from</span> <span class="n">api_client</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="k">return</span> <span class="o">&lt;</span><span class="n">table_name</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+
+<span class="nd">@dlt</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s2">"&lt;source_name&gt;"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span><span class="p">():</span>
+    <span class="nd">@dlt</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">write_disposition</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="o">&lt;</span><span class="n">table_name</span><span class="o">&gt;</span><span class="p">():</span>
+        <span class="c1"># Fetch data from the API</span>
+        <span class="k">yield from</span> <span class="n">api_client</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="o">&lt;</span><span class="n">table_name</span><span class="o">&gt;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Create the pipeline</strong> in <code>pipelines/&lt;source_name&gt;.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sources.</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">():</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"&lt;source_name&gt;"</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"&lt;SOURCE&gt;"</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="p">)</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span><span class="p">())</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="k">return</span> <span class="n">load_info</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dlt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sources.</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">():</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">dlt</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="o">=</span><span class="s2">"&lt;source_name&gt;"</span><span class="p">,</span>
+        <span class="n">destination</span><span class="o">=</span><span class="s2">"snowflake"</span><span class="p">,</span>
+        <span class="n">dataset_name</span><span class="o">=</span><span class="s2">"&lt;SOURCE&gt;"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">load_info</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">load_info</span>
 </code></pre></div>
 </li>
 <li>
@@ -6380,8 +6382,8 @@
 </li>
 <li>
 <p><strong>Test locally with DuckDB first</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Temporarily change destination to duckdb for testing</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>python<span class="w"> </span>-m<span class="w"> </span>pipelines.&lt;source_name&gt;
+<div class="highlight"><pre><span></span><code><span class="c1"># Temporarily change destination to duckdb for testing</span>
+python<span class="w"> </span>-m<span class="w"> </span>pipelines.&lt;source_name&gt;
 </code></pre></div>
 </li>
 </ol>
@@ -6410,128 +6412,128 @@
 </div>
 <h3 id="5-create-prefect-flow-if-using-dlt">5. Create Prefect Flow (if Using dlt)</h3>
 <p>Create <code>flows/&lt;source_name&gt;.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="sd">"""Prefect flow for &lt;source_name&gt; pipeline."""</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="nd">@task</span><span class="p">(</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"load-&lt;source-name&gt;"</span><span class="p">,</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="p">)</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_task</span><span class="p">():</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">    </span><span class="sd">"""Load &lt;source_name&gt; data to Snowflake."""</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting &lt;source_name&gt; load"</span><span class="p">)</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">run</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="n">load_info</span> <span class="o">=</span> <span class="n">run</span><span class="p">()</span>
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Load completed: </span><span class="si">{</span><span class="n">load_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>    <span class="k">return</span> <span class="n">load_info</span>
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"&lt;source-name&gt;-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="k">def</span><span class="w"> </span><span class="nf">daily_flow</span><span class="p">():</span>
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="w">    </span><span class="sd">"""Daily &lt;source_name&gt; load."""</span>
-<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>    <span class="n">load_info</span> <span class="o">=</span> <span class="n">load_task</span><span class="p">()</span>
-<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;Source&gt; loaded: </span><span class="si">{</span><span class="n">load_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"load_info"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">load_info</span><span class="p">)}</span>
-<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>
-<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>
-<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a>    <span class="n">daily_flow</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="sd">"""Prefect flow for &lt;source_name&gt; pipeline."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
+
+
+<span class="nd">@task</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"load-&lt;source-name&gt;"</span><span class="p">,</span>
+    <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_task</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Load &lt;source_name&gt; data to Snowflake."""</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting &lt;source_name&gt; load"</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipelines.</span><span class="o">&lt;</span><span class="n">source_name</span><span class="o">&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">run</span>
+
+    <span class="n">load_info</span> <span class="o">=</span> <span class="n">run</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Load completed: </span><span class="si">{</span><span class="n">load_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_info</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"&lt;source-name&gt;-daily"</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">daily_flow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Daily &lt;source_name&gt; load."""</span>
+    <span class="n">load_info</span> <span class="o">=</span> <span class="n">load_task</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;Source&gt; loaded: </span><span class="si">{</span><span class="n">load_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span> <span class="s2">"load_info"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">load_info</span><span class="p">)}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">daily_flow</span><span class="p">()</span>
 </code></pre></div>
 <p>Add the deployment to <code>prefect.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">deployments</span><span class="p">:</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="c1"># ... existing deployments ...</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;source-name&gt;-daily</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/&lt;source_name&gt;.py:daily_flow</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">&lt;source_name&gt;</span><span class="nv"> </span><span class="s">load"</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dlt</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;source-name&gt;</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... existing deployments ...</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;source-name&gt;-daily</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/&lt;source_name&gt;.py:daily_flow</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Daily</span><span class="nv"> </span><span class="s">&lt;source_name&gt;</span><span class="nv"> </span><span class="s">load"</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
+<span class="w">        </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"UTC"</span>
+<span class="w">        </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dlt</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;source-name&gt;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
 </code></pre></div>
 <p>Deploy:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deploy<span class="w"> </span>--all
 </code></pre></div>
 <h3 id="6-add-dbt-source-and-staging-model">6. Add dbt Source and Staging Model</h3>
 <p>In the <code>dbt-transform</code> repository:</p>
 <ol>
 <li>
 <p><strong>Create or update <code>_sources.yml</code></strong> in <code>models/staging/&lt;loader&gt;/</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nt">sources</span><span class="p">:</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;loader&gt;_&lt;source&gt;</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;LOADER&gt;</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;SOURCE&gt;</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="nt">loaded_at_field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_dlt_load_time</span><span class="w">  </span><span class="c1"># or _airbyte_extracted_at for Airbyte</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> count</span><span class="p">:</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="w"> </span><span class="p p-Indicator">}</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> count</span><span class="p">:</span><span class="w"> </span><span class="nv">48</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="w"> </span><span class="p p-Indicator">}</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="nt">tables</span><span class="p">:</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table_name&gt;</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;Description</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">table&gt;"</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">sources</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;loader&gt;_&lt;source&gt;</span>
+<span class="w">    </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;LOADER&gt;</span>
+<span class="w">    </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;SOURCE&gt;</span>
+<span class="w">    </span><span class="nt">loaded_at_field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_dlt_load_time</span><span class="w">  </span><span class="c1"># or _airbyte_extracted_at for Airbyte</span>
+<span class="w">    </span><span class="nt">freshness</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">warn_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> count</span><span class="p">:</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="nt">error_after</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> count</span><span class="p">:</span><span class="w"> </span><span class="nv">48</span><span class="p p-Indicator">,</span><span class="nt"> period</span><span class="p">:</span><span class="w"> </span><span class="nv">hour</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">tables</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;table_name&gt;</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;Description</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">table&gt;"</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Create the staging model</strong> <code>models/staging/&lt;loader&gt;/stg_&lt;loader&gt;__&lt;table&gt;.sql</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">with</span><span class="w"> </span><span class="k">source</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'&lt;loader&gt;_&lt;source&gt;'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;table_name&gt;'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">),</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">renamed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="k">select</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">        </span><span class="c1">-- identifiers</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">        </span><span class="n">id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">&lt;</span><span class="n">entity</span><span class="o">&gt;</span><span class="n">_id</span><span class="p">,</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">        </span><span class="c1">-- dimensions</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">        </span><span class="n">column_a</span><span class="p">,</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">        </span><span class="n">column_b</span><span class="p">,</span>
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">        </span><span class="c1">-- timestamps</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">        </span><span class="k">cast</span><span class="p">(</span><span class="n">created_at</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">timestamp_ntz</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">created_at</span>
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="k">source</span>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
-<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="p">)</span>
-<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>
-<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">renamed</span>
+<div class="highlight"><pre><span></span><code><span class="k">with</span><span class="w"> </span><span class="k">source</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">source</span><span class="p">(</span><span class="s1">'&lt;loader&gt;_&lt;source&gt;'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;table_name&gt;'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="p">),</span>
+
+<span class="n">renamed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span>
+
+<span class="w">    </span><span class="k">select</span>
+<span class="w">        </span><span class="c1">-- identifiers</span>
+<span class="w">        </span><span class="n">id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">&lt;</span><span class="n">entity</span><span class="o">&gt;</span><span class="n">_id</span><span class="p">,</span>
+
+<span class="w">        </span><span class="c1">-- dimensions</span>
+<span class="w">        </span><span class="n">column_a</span><span class="p">,</span>
+<span class="w">        </span><span class="n">column_b</span><span class="p">,</span>
+
+<span class="w">        </span><span class="c1">-- timestamps</span>
+<span class="w">        </span><span class="k">cast</span><span class="p">(</span><span class="n">created_at</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">timestamp_ntz</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">created_at</span>
+
+<span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="k">source</span>
+
+<span class="p">)</span>
+
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">renamed</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Create the model YAML</strong> <code>models/staging/&lt;loader&gt;/stg_&lt;loader&gt;__&lt;table&gt;.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nt">models</span><span class="p">:</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_&lt;loader&gt;__&lt;table&gt;</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">      </span><span class="no">&lt;Description&gt;. One row per &lt;entity&gt;.</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;entity&gt;_id</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
+<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">models</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg_&lt;loader&gt;__&lt;table&gt;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">&lt;Description&gt;. One row per &lt;entity&gt;.</span>
+<span class="w">    </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;entity&gt;_id</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary key.</span>
+<span class="w">        </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unique</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not_null</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Run and test</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>stg_&lt;loader&gt;__&lt;table&gt;
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>stg_&lt;loader&gt;__&lt;table&gt;
 </code></pre></div>
 </li>
 </ol>
@@ -6539,18 +6541,18 @@
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Snowflake database exists (if new loader):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'&lt;LOADER&gt;'</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'&lt;LOADER&gt;'</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Schema exists:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Reader access chain works:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SOURCE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ANALYTICS_DEVELOPER</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SOURCE</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">TABLE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 </code></pre></div>
 </li>
 <li class="task-list-item">
@@ -6558,12 +6560,12 @@
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> dbt staging model builds and tests pass:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>stg_&lt;loader&gt;__&lt;table&gt;
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span>build<span class="w"> </span>--select<span class="w"> </span>stg_&lt;loader&gt;__&lt;table&gt;
 </code></pre></div>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox"><span class="task-list-indicator"></span></label> Source freshness check passes:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w"> </span>--select<span class="w"> </span>source:&lt;loader&gt;_&lt;source&gt;
+<div class="highlight"><pre><span></span><code>dbt<span class="w"> </span><span class="nb">source</span><span class="w"> </span>freshness<span class="w"> </span>--select<span class="w"> </span>source:&lt;loader&gt;_&lt;source&gt;
 </code></pre></div>
 </li>
 </ul>
@@ -6575,10 +6577,10 @@
 <li><strong>dbt models</strong> - Revert the PR in the dbt-transform repository. Run <code>dbt run</code> to clean up any partially created models</li>
 <li>
 <p><strong>Snowflake data</strong> (manual cleanup):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">DROP</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SOURCE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">;</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="c1">-- Only if removing the entire loader:</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">.</span><span class="o">&lt;</span><span class="k">SOURCE</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">;</span>
+<span class="c1">-- Only if removing the entire loader:</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOADER</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
 </li>
 </ol>
@@ -6644,6 +6646,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -6687,7 +6691,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "toc.follow", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
